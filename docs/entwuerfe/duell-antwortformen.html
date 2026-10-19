@@ -1,0 +1,86 @@
+<style>
+  .duel { background:#1d2b3a; border-radius:10px; padding:12px; font-family: "Courier New", monospace; color:#f3ecd2; }
+  .arena { position:relative; height:150px; background:linear-gradient(#3b5a6e,#2a4150 60%,#4d6b3c 60%,#3c5530); border-radius:6px; overflow:hidden; }
+  .hp { position:absolute; background:#f3ecd2; color:#1d2b3a; padding:4px 8px; border-radius:4px; font-size:11px; font-weight:bold; width:120px; }
+  .hp .bar { height:6px; background:#ccc; border-radius:3px; margin-top:3px; }
+  .hp .fill { height:100%; border-radius:3px; }
+  .foe-hp { top:8px; left:8px; } .me-hp { bottom:8px; right:8px; }
+  .foe { position:absolute; top:18px; right:28px; }
+  .me { position:absolute; bottom:6px; left:24px; }
+  .box { background:#f3ecd2; color:#1d2b3a; border:3px solid #a8743a; border-radius:6px; padding:10px; margin-top:8px; font-size:13px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:8px; }
+  .ans { background:#2f4a5e; color:#f3ecd2; border-radius:5px; padding:8px; text-align:center; font-size:13px; }
+  .tile { display:inline-block; background:#a8743a; color:#fff; padding:5px 8px; margin:3px; border-radius:4px; font-size:12px; }
+  .slot { display:inline-block; min-width:40px; border-bottom:2px dashed #a8743a; margin:3px; }
+  .inp { background:#fff; border:2px solid #2f4a5e; border-radius:4px; padding:6px; margin-top:6px; color:#888; }
+</style>
+
+<h2>Wie beantwortet das Kind die Fragen im Duell?</h2>
+<p class="subtitle">Drei Arten zu antworten. Klick an, was dir gefällt, gern auch mehrere, wenn sie sich abwechseln sollen.</p>
+
+<div class="cards" data-multiselect>
+
+  <div class="card" data-choice="auswahl" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="duel">
+        <div class="arena">
+          <div class="hp foe-hp">MOSSKRAL Lv4<div class="bar"><div class="fill" style="width:60%;background:#d9a43a"></div></div></div>
+          <svg class="foe" width="60" height="60" viewBox="0 0 60 60"><ellipse cx="30" cy="36" rx="24" ry="20" fill="#6b8f3c"/><circle cx="22" cy="30" r="4" fill="#fff"/><circle cx="38" cy="30" r="4" fill="#fff"/><circle cx="22" cy="30" r="2" fill="#111"/><circle cx="38" cy="30" r="2" fill="#111"/><path d="M14 18 L20 26 L24 14Z M46 18 L40 26 L36 14Z" fill="#4a6a28"/></svg>
+          <svg class="me" width="64" height="64" viewBox="0 0 60 60"><ellipse cx="30" cy="38" rx="22" ry="18" fill="#3f8fc4"/><circle cx="24" cy="32" r="4" fill="#fff"/><circle cx="24" cy="32" r="2" fill="#111"/><path d="M8 30 Q2 14 16 20Z" fill="#2c6f9c"/></svg>
+          <div class="hp me-hp">FUNKO Lv5<div class="bar"><div class="fill" style="width:85%;background:#5cb85c"></div></div></div>
+        </div>
+        <div class="box">What is <b>„Schmetterling“</b> in English?</div>
+        <div class="grid">
+          <div class="ans">butterfly</div><div class="ans">bird</div>
+          <div class="ans">bee</div><div class="ans">beetle</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A · Auswahl aus 4 Antworten</h3>
+      <p>Schnell, ideal fürs Tablet, auch für schwächere Kinder machbar.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="eintippen" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="duel">
+        <div class="arena">
+          <div class="hp foe-hp">MOSSKRAL Lv4<div class="bar"><div class="fill" style="width:40%;background:#d9a43a"></div></div></div>
+          <svg class="foe" width="60" height="60" viewBox="0 0 60 60"><ellipse cx="30" cy="36" rx="24" ry="20" fill="#6b8f3c"/><circle cx="22" cy="30" r="4" fill="#fff"/><circle cx="38" cy="30" r="4" fill="#fff"/><circle cx="22" cy="30" r="2" fill="#111"/><circle cx="38" cy="30" r="2" fill="#111"/><path d="M14 18 L20 26 L24 14Z M46 18 L40 26 L36 14Z" fill="#4a6a28"/></svg>
+          <svg class="me" width="64" height="64" viewBox="0 0 60 60"><ellipse cx="30" cy="38" rx="22" ry="18" fill="#3f8fc4"/><circle cx="24" cy="32" r="4" fill="#fff"/><circle cx="24" cy="32" r="2" fill="#111"/><path d="M8 30 Q2 14 16 20Z" fill="#2c6f9c"/></svg>
+          <div class="hp me-hp">FUNKO Lv5<div class="bar"><div class="fill" style="width:85%;background:#5cb85c"></div></div></div>
+        </div>
+        <div class="box">Complete: <b>She ___ (go) to school every day.</b>
+          <div class="inp">goes ▌</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B · Selbst eintippen</h3>
+      <p>Trainiert Rechtschreibung, ist schwerer. Am Tablet braucht man die Bildschirmtastatur.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="satzbau" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="duel">
+        <div class="arena">
+          <div class="hp foe-hp">MOSSKRAL Lv4<div class="bar"><div class="fill" style="width:20%;background:#d9534f"></div></div></div>
+          <svg class="foe" width="60" height="60" viewBox="0 0 60 60"><ellipse cx="30" cy="36" rx="24" ry="20" fill="#6b8f3c"/><circle cx="22" cy="30" r="4" fill="#fff"/><circle cx="38" cy="30" r="4" fill="#fff"/><circle cx="22" cy="30" r="2" fill="#111"/><circle cx="38" cy="30" r="2" fill="#111"/><path d="M14 18 L20 26 L24 14Z M46 18 L40 26 L36 14Z" fill="#4a6a28"/></svg>
+          <svg class="me" width="64" height="64" viewBox="0 0 60 60"><ellipse cx="30" cy="38" rx="22" ry="18" fill="#3f8fc4"/><circle cx="24" cy="32" r="4" fill="#fff"/><circle cx="24" cy="32" r="2" fill="#111"/><path d="M8 30 Q2 14 16 20Z" fill="#2c6f9c"/></svg>
+          <div class="hp me-hp">FUNKO Lv5<div class="bar"><div class="fill" style="width:70%;background:#5cb85c"></div></div></div>
+        </div>
+        <div class="box">Build the question:<br>
+          <span class="slot">Do</span><span class="slot">you</span><span class="slot"></span><span class="slot"></span>?
+          <div><span class="tile">pizza</span><span class="tile">likes</span><span class="tile">like</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C · Satz aus Wortkärtchen bauen</h3>
+      <p>Gut für Grammatik und Satzstellung, gut am Touchscreen zu bedienen.</p>
+    </div>
+  </div>
+
+</div>
