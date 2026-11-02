@@ -7,6 +7,8 @@ import { createScreen } from './gfx/screen.js';
 import { createInput } from './core/input.js';
 import { mountControls } from './ui/controls.js';
 import { createWorldScene } from './scenes/world.js';
+import { createTitleScene } from './scenes/title.js';
+import { createPackScene } from './scenes/pack.js';
 
 const screen = createScreen(document.getElementById('screen'), document.getElementById('stage'));
 const input = createInput();
@@ -39,8 +41,10 @@ const game = {
 
 window.lumara = game;
 
-// Vorläufig: direkt in die Bucht (der Spielstart kommt in Task 15).
-game.go(createWorldScene(game));
+// Ablauf: Titel → Lernpaket → (vorläufig) Bucht. Intro, Name und Eiwahl kommen in Task 15.
+const toWorld = () => game.go(createWorldScene(game));
+const toPack = () => game.go(createPackScene(game, toWorld));
+game.go(createTitleScene(game, toPack));
 
 startLoop({
   update(dt) {
