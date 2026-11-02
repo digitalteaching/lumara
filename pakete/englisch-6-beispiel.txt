@@ -1,0 +1,266 @@
+# Lumara – Beispielpaket Englisch Jahrgang 6
+# Erste Fassung mit zwei Themen. Weitere Trainer folgen in späteren Fassungen.
+# Die KENNUNG bitte nie ändern, sonst gilt die Datei als neues Paket.
+
+PAKET: Englisch Jahrgang 6 – Beispielpaket
+KENNUNG: englisch6-beispiel
+FACH: Englisch
+ZEITDRUCK: normal
+
+=== TRAINER 1 ===
+# Leuchtturmbucht – junge Fischerin mit Netz und Kopftuch
+NAME: Maren
+THEMA: Simple present und Häufigkeitsadverbien
+HALLO: Ahoy! I'm Maren, the keeper of the bay.
+HALLO: Nobody walks into the fog without a test.
+HALLO: Show me what you know about the simple present!
+SIEG: Well done! You really know your stuff.
+NIEDERLAGE: Not yet! Practise a little and come back.
+REVANCHE: Back again? This time I'm ready!
+
+FRAGE: She ___ (play) tennis every Monday.
+ANTWORT: plays
+FALSCH: play | playing | played
+
+FRAGE: My brother ___ (watch) TV after school.
+ANTWORT: watches
+FALSCH: watch | watchs | watching
+
+FRAGE: We ___ (go) to the beach on Sundays.
+ANTWORT: go
+FALSCH: goes | going | gos
+
+FRAGE: Tom ___ (not / like) fish.
+ANTWORT: doesn't like
+AUCH RICHTIG: does not like
+FALSCH: don't like | doesn't likes | not likes
+
+FRAGE: ___ your dad work in a shop?
+ANTWORT: Does
+FALSCH: Do | Is | Are
+
+FRAGE: ___ you have a pet?
+ANTWORT: Do
+FALSCH: Does | Are | Is
+
+FRAGE: Which word means „immer“?
+ANTWORT: always
+FALSCH: never | often | sometimes
+FORM: auswahl
+
+FRAGE: Which word means „nie“?
+ANTWORT: never
+FALSCH: always | usually | often
+FORM: auswahl
+
+FRAGE: Which word means „manchmal“?
+ANTWORT: sometimes
+FALSCH: often | never | usually
+
+FRAGE: Wie heißt „normalerweise“ auf Englisch?
+ANTWORT: usually
+
+FRAGE: Wie heißt „oft“ auf Englisch?
+ANTWORT: often
+
+FRAGE: The cat ___ (sleep) on my bed.
+ANTWORT: sleeps
+
+FRAGE: Lisa ___ (fly) her kite on windy days.
+ANTWORT: flies
+FALSCH: flys | fly | flying
+
+FRAGE: My parents ___ (not / drive) to work.
+ANTWORT: don't drive
+AUCH RICHTIG: do not drive
+FALSCH: doesn't drive | don't drives | not drive
+
+FRAGE: He ___ (do) his homework in the evening.
+ANTWORT: does
+
+FRAGE: Bilde den Satz: „Sie ist nie zu spät.“
+SATZ: She is never late.
+EXTRA: always | are
+
+FRAGE: Bilde den Satz: „Wir spielen oft Fußball.“
+SATZ: We often play football.
+EXTRA: plays | never
+
+FRAGE: Bilde den Satz: „Mein Bruder steht immer früh auf.“
+SATZ: My brother always gets up early.
+EXTRA: get | never
+
+FRAGE: Bilde die Frage: „Magst du Pizza?“
+SATZ: Do you like pizza?
+EXTRA: Does | likes
+
+FRAGE: Bilde den Satz: „Er trinkt keine Milch.“
+SATZ: He doesn't drink milk.
+EXTRA: don't | drinks
+
+FRAGE: Bilde den Satz: „Ich gehe manchmal schwimmen.“
+SATZ: I sometimes go swimming.
+EXTRA: goes | always
+
+FRAGE: Choose the right sentence.
+ANTWORT: I usually walk to school.
+FALSCH: I walk usually to school. | Usually I to school walk. | I walk to usually school.
+FORM: auswahl
+
+FRAGE: My friends ___ (live) near the lighthouse.
+ANTWORT: live
+FALSCH: lives | living | lifes
+
+=== TRAINER 2 ===
+# Flüsterwald – Waldläufer mit Kapuze und Moosumhang
+NAME: Rowan
+THEMA: Present progressive oder simple present
+HALLO: Shh ... listen! The trees are whispering.
+HALLO: I'm Rowan. I watch the forest every day.
+HALLO: And right now, I'm testing you!
+SIEG: Great! The forest is listening to you now.
+NIEDERLAGE: The trees are laughing. Try again soon!
+REVANCHE: You're coming back? Good. I'm waiting.
+
+FRAGE: Look! The boy ___ (run) to the boat.
+ANTWORT: is running
+FALSCH: runs | run | is runing
+
+FRAGE: Listen! The birds ___ (sing).
+ANTWORT: are singing
+FALSCH: sing | sings | is singing
+
+FRAGE: I ___ (read) a book at the moment.
+ANTWORT: am reading
+FALSCH: read | reads | is reading
+
+FRAGE: She usually ___ (walk) to school.
+ANTWORT: walks
+FALSCH: is walking | walk | walking
+
+FRAGE: Right now we ___ (have) lunch.
+ANTWORT: are having
+FALSCH: have | has | are haveing
+
+FRAGE: Every summer my family ___ (visit) Grandma.
+ANTWORT: visits
+FALSCH: is visiting | visit | visiting
+
+FRAGE: Which signal word goes with the present progressive?
+ANTWORT: now
+FALSCH: every day | always | on Mondays
+FORM: auswahl
+
+FRAGE: Which signal word goes with the simple present?
+ANTWORT: every day
+FALSCH: now | at the moment | Look!
+FORM: auswahl
+
+FRAGE: ___ you listening to me?
+ANTWORT: Are
+FALSCH: Do | Is | Does
+
+FRAGE: He ___ (not / sleep) now. He is awake.
+ANTWORT: isn't sleeping
+AUCH RICHTIG: is not sleeping
+FALSCH: doesn't sleep | not sleeping | isn't sleep
+
+FRAGE: Wie heißt „im Moment“ auf Englisch?
+ANTWORT: at the moment
+AUCH RICHTIG: right now | now
+
+FRAGE: The sun ___ (shine) today.
+ANTWORT: is shining
+
+FRAGE: My dad ___ (cook) dinner every evening.
+ANTWORT: cooks
+
+FRAGE: Look! It ___ (rain).
+ANTWORT: is raining
+FALSCH: rains | raining | is rainning
+
+FRAGE: Tina ___ (swim) in the lake right now.
+ANTWORT: is swimming
+FALSCH: is swiming | swims | swim
+
+FRAGE: Bilde den Satz: „Ich lese gerade ein Buch.“
+SATZ: I am reading a book now.
+EXTRA: read | is
+
+FRAGE: Bilde den Satz: „Die Kinder spielen im Moment am Strand.“
+SATZ: The children are playing on the beach at the moment.
+EXTRA: play | is
+
+FRAGE: Bilde den Satz: „Er fährt jeden Tag Rad.“
+SATZ: He rides his bike every day.
+EXTRA: is | riding
+
+FRAGE: Bilde die Frage: „Was machst du gerade?“
+SATZ: What are you doing now?
+EXTRA: do | does
+
+FRAGE: Bilde den Satz: „Sie schläft nicht, sie liest.“
+SATZ: She isn't sleeping, she is reading.
+EXTRA: doesn't | reads
+
+FRAGE: Bilde den Satz: „Wir gehen samstags einkaufen.“
+SATZ: We go shopping on Saturdays.
+EXTRA: are | going
+
+FRAGE: Choose the right sentence.
+ANTWORT: She is wearing a red hat today.
+FALSCH: She wears a red hat now. | She is wear a red hat today. | She wearing a red hat today.
+FORM: auswahl
+
+FRAGE: The ferry ___ (leave) at 9 o'clock every morning.
+ANTWORT: leaves
+FALSCH: is leaving | leave | leafs
+
+=== ENDGEGNER ===
+HALLO: Who are you? Nobody comes down here any more.
+HALLO: I keep all the forgotten words. Do you still remember them?
+SIEG: You remember ... you really remember!
+NIEDERLAGE: Forgotten again ... like everything else.
+
+=== ZETTEL ===
+FRAGE: Wie heißt „Leuchtturm“ auf Englisch?
+ANTWORT: lighthouse
+
+FRAGE: Wie heißt „Möwe“ auf Englisch?
+ANTWORT: seagull
+AUCH RICHTIG: gull
+
+FRAGE: Which word means „Strand“?
+ANTWORT: beach
+FALSCH: bench | beech | breach
+
+FRAGE: Wie heißt „Nebel“ auf Englisch?
+ANTWORT: fog
+AUCH RICHTIG: mist
+
+FRAGE: Which word means „Boot“?
+ANTWORT: boat
+FALSCH: boot | bottle | bow
+
+FRAGE: Bilde den Satz: „Das Meer ist heute ruhig.“
+SATZ: The sea is calm today.
+EXTRA: see | are
+
+FRAGE: Wie heißt „Welle“ auf Englisch?
+ANTWORT: wave
+
+FRAGE: Which word means „Insel“?
+ANTWORT: island
+FALSCH: Iceland | highland | inland
+
+FRAGE: Wie heißt „Muschel“ auf Englisch?
+ANTWORT: shell
+AUCH RICHTIG: seashell
+
+FRAGE: Bilde den Satz: „Ich höre die Möwen.“
+SATZ: I hear the seagulls.
+EXTRA: here | hears
+
+FRAGE: Which word means „Netz“?
+ANTWORT: net
+FALSCH: nest | nut | neck

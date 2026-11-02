@@ -1,0 +1,217 @@
+# ============================================================
+#  LUMARA – VORLAGE FÜR EIN LERNPAKET
+# ============================================================
+#
+# So funktioniert die Datei:
+# - Jede Zeile beginnt mit einem Schlüsselwort und einem Doppelpunkt,
+#   zum Beispiel  FRAGE: Wie heißt „Hund“ auf Englisch?
+# - Zeilen, die mit # beginnen, sind Kommentare. Das Spiel liest sie nicht.
+# - Abschnitte beginnen mit === … ===, zum Beispiel === TRAINER 1 ===.
+# - Eine leere Zeile trennt zwei Fragen.
+# - Speichere die Datei als reinen Text (.txt, UTF-8), zum Beispiel mit
+#   TextEdit (Format → In reinen Text umwandeln) oder dem Windows-Editor.
+#   Word- oder Pages-Dateien kann das Spiel nicht lesen.
+# - Prüfen kannst du die Datei auf der Seite für Lehrkräfte.
+#
+# ------------------------------------------------------------
+#  KOPF DES PAKETS
+# ------------------------------------------------------------
+# PAKET:      Titel des Pakets (Pflicht). Die Kinder sehen ihn beim Laden.
+# KENNUNG:    Ein kurzer, frei gewählter Name ohne Leerzeichen, zum Beispiel
+#             englisch6-unit1-4. Ersetze fach-jahrgang-name durch deinen eigenen.
+#             WICHTIG: Ändere die KENNUNG danach nie mehr. Solange sie gleich bleibt,
+#             gilt eine überarbeitete oder erweiterte Datei als dasselbe Paket und
+#             die Kinder behalten ihre Statistik. Ohne KENNUNG wird jede Änderung
+#             an der Datei zu einem neuen Paket.
+# FACH:       Das Fach (Pflicht).
+# ZEITDRUCK:  normal, lang oder aus (freiwillig, Standard ist normal).
+#             Ab Trainer 4 gibt es Zeitdruck. lang verdoppelt die Zeit, aus schaltet ihn ab.
+
+PAKET:
+KENNUNG: fach-jahrgang-name
+FACH:
+ZEITDRUCK: normal
+
+# ------------------------------------------------------------
+#  TRAINER
+# ------------------------------------------------------------
+# Es gibt bis zu 8 Trainer, einen pro Gebiet. Trainer 1 ist Pflicht.
+# Die Trainer müssen ohne Lücke ab 1 durchnummeriert sein (1 bis 3 geht, 1, 2 und 4 nicht).
+# So kannst du Thema für Thema freigeben: Gebiete ohne Trainer bleiben im Nebel.
+#
+# In jedem Trainerabschnitt:
+# NAME:        Name des Trainers (Pflicht). Das Aussehen der Figur ist fest, siehe Beschreibung.
+# THEMA:       Thema der Fragen (Pflicht), zum Beispiel Simple past.
+# HALLO:       1 bis 5 Zeilen, die der Trainer vor dem Duell sagt, gern in der Fachsprache.
+# SIEG:        Was der Trainer sagt, wenn das Kind gewinnt (freiwillig).
+# NIEDERLAGE:  Was der Trainer sagt, wenn das Kind verliert (freiwillig).
+# REVANCHE:    Was der Trainer bei einer erneuten Herausforderung sagt (freiwillig).
+# Danach folgen die Fragen: mindestens 8, besser 20 oder mehr.
+#
+# ------------------------------------------------------------
+#  FRAGEN
+# ------------------------------------------------------------
+# FRAGE:         Der Fragetext (Pflicht, beginnt eine neue Frage).
+# ANTWORT:       Die richtige Antwort.
+# SATZ:          Statt ANTWORT: ein Satz, den das Kind aus Wortkärtchen baut.
+#                Jede Frage hat genau eines von beiden: ANTWORT oder SATZ.
+# AUCH RICHTIG:  Weitere richtige Antworten oder Sätze, getrennt durch |
+# FALSCH:        Falsche Antworten für die Auswahl, getrennt durch |. Mindestens 3.
+#                Gibt es mehr, wählt das Spiel jedes Mal 3 zufällig aus.
+# EXTRA:         Zusätzliche falsche Wortkärtchen beim Satzbau, getrennt durch |
+# FORM:          Freiwillig. Erzwingt eine Antwortform: auswahl, eintippen oder satzbau.
+#
+# Welche Antwortform kommt?
+# - ANTWORT mit mindestens 3 FALSCH: zufällig Auswahl oder Eintippen.
+# - ANTWORT ohne FALSCH: nur Eintippen.
+# - SATZ: nur Satzbau.
+#
+# Beim Eintippen zählt die Rechtschreibung. Groß- und Kleinschreibung, Leerzeichen
+# am Rand und Satzzeichen am Ende werden ignoriert. Bei Zahlen sind 3,5 und 3.5 gleich.
+# Beim Satzbau hängen Satzzeichen am Wort davor: „school.“ ist ein Kärtchen.
+#
+# Beispiele (zum Ausprobieren das # am Zeilenanfang entfernen):
+#
+# FRAGE: She ___ (play) tennis every Monday.
+# ANTWORT: plays
+# FALSCH: play | playing | played
+#
+# FRAGE: Wie heißt „Schmetterling“ auf Englisch?
+# ANTWORT: butterfly
+#
+# FRAGE: Bilde den Satz: „Er geht nie zu Fuß zur Schule.“
+# SATZ: He never walks to school.
+# EXTRA: walk | always
+
+=== TRAINER 1 ===
+# Gebiet 1, Leuchtturmbucht: junge Fischerin mit Netz und Kopftuch
+NAME:
+THEMA:
+HALLO:
+SIEG:
+NIEDERLAGE:
+REVANCHE:
+
+# FRAGE:
+# ANTWORT:
+# FALSCH:
+
+# FRAGE:
+# ANTWORT:
+
+# FRAGE:
+# SATZ:
+# EXTRA:
+
+=== TRAINER 2 ===
+# Gebiet 2, Flüsterwald: Waldläufer mit Kapuze und Moosumhang
+NAME:
+THEMA:
+HALLO:
+SIEG:
+NIEDERLAGE:
+REVANCHE:
+
+# FRAGE:
+# ANTWORT:
+# FALSCH:
+
+=== TRAINER 3 ===
+# Gebiet 3, Pilzmoor: Pilzsammlerin mit großem Korb und Pilzhut
+NAME:
+THEMA:
+HALLO:
+SIEG:
+NIEDERLAGE:
+REVANCHE:
+
+# FRAGE:
+# ANTWORT:
+# FALSCH:
+
+=== TRAINER 4 ===
+# Gebiet 4, Spiegeldünen: Karawanenführer mit Turban und Spiegel
+NAME:
+THEMA:
+HALLO:
+SIEG:
+NIEDERLAGE:
+REVANCHE:
+
+# FRAGE:
+# ANTWORT:
+# FALSCH:
+
+=== TRAINER 5 ===
+# Gebiet 5, Windklippen: Drachenfliegerin mit Schutzbrille
+NAME:
+THEMA:
+HALLO:
+SIEG:
+NIEDERLAGE:
+REVANCHE:
+
+# FRAGE:
+# ANTWORT:
+# FALSCH:
+
+=== TRAINER 6 ===
+# Gebiet 6, Uhrwerkruinen: Erfinder mit Lupenbrille und Werkzeuggürtel
+NAME:
+THEMA:
+HALLO:
+SIEG:
+NIEDERLAGE:
+REVANCHE:
+
+# FRAGE:
+# ANTWORT:
+# FALSCH:
+
+=== TRAINER 7 ===
+# Gebiet 7, Nordlichtsee: Eisfischerin im Pelzmantel
+NAME:
+THEMA:
+HALLO:
+SIEG:
+NIEDERLAGE:
+REVANCHE:
+
+# FRAGE:
+# ANTWORT:
+# FALSCH:
+
+=== TRAINER 8 ===
+# Gebiet 8, Sternenwiese: Sternendeuterin mit Fernrohr
+NAME:
+THEMA:
+HALLO:
+SIEG:
+NIEDERLAGE:
+REVANCHE:
+
+# FRAGE:
+# ANTWORT:
+# FALSCH:
+
+# ------------------------------------------------------------
+#  ENDGEGNER (freiwillig)
+# ------------------------------------------------------------
+# Morrow, ein einsames Wesen tief im Berg. Hier stehen nur Dialogzeilen,
+# die Fragen kommen gemischt aus allen Themen. Ohne diesen Abschnitt spricht
+# Morrow feste deutsche Texte.
+
+=== ENDGEGNER ===
+HALLO:
+SIEG:
+NIEDERLAGE:
+
+# ------------------------------------------------------------
+#  ZETTEL (freiwillig)
+# ------------------------------------------------------------
+# Kleine Aufgaben auf Zetteln unter Steinen. Nur Fragen, wie oben.
+# Ohne diesen Abschnitt nehmen die Zettel Fragen aus den Trainerthemen.
+
+=== ZETTEL ===
+# FRAGE:
+# ANTWORT:
