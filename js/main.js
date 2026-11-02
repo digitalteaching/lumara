@@ -6,7 +6,7 @@ import { startLoop } from './core/loop.js';
 import { createScreen } from './gfx/screen.js';
 import { createInput } from './core/input.js';
 import { mountControls } from './ui/controls.js';
-import { createWorldScene } from './scenes/world.js';
+import { createGameWorld } from './scenes/worldEvents.js';
 import { createTitleScene } from './scenes/title.js';
 import { createPackScene } from './scenes/pack.js';
 import { createGalleryScene } from './scenes/gallery.js';
@@ -62,7 +62,7 @@ function startFlow() {
         game.go(createNameScene(game, name =>
           game.go(createEggScene(game, name, (species, nickname) => {
             game.state = newGameState({ name, species, nickname });
-            game.go(createWorldScene(game));
+            game.go(createGameWorld(game));
           })),
         )),
       )),
@@ -83,7 +83,7 @@ async function devStart() {
   game.pack = await devPack();
   const species = STARTERS.includes(params.get('wesen')) ? params.get('wesen') : 'funki';
   game.state = newGameState({ name: 'Test', species, nickname: null });
-  game.go(createWorldScene(game));
+  game.go(createGameWorld(game));
 }
 
 async function devDuel(kind) {

@@ -207,7 +207,7 @@ FRAGE: Bilde den Satz: „Wir gehen samstags einkaufen.“
 SATZ: We go shopping on Saturdays.
 EXTRA: are | going
 
-FRAGE: Choose the right sentence.
+FRAGE: Which sentence is right for today?
 ANTWORT: She is wearing a red hat today.
 FALSCH: She wears a red hat now. | She is wear a red hat today. | She wearing a red hat today.
 FORM: auswahl

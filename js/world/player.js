@@ -64,6 +64,15 @@ export function createPlayer({ x, y, dir }) {
     };
   };
 
+  // Einen gerade begonnenen Schritt zurücknehmen (wenn nach dem letzten Schritt etwas passiert).
+  p.cancelMove = () => {
+    if (!p.moving) return;
+    p.x = p.fromX;
+    p.y = p.fromY;
+    p.moving = false;
+    p.progress = 0;
+  };
+
   p.teleport = (nx, ny, nd) => {
     p.x = p.fromX = nx;
     p.y = p.fromY = ny;

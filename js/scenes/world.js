@@ -50,6 +50,8 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
   const player = createPlayer(start);
   const onStepped = [];
   const onInteract = [];
+  const onTick = []; // (dt) – läuft auch, während die Welt gesperrt ist
+  const afterRender = []; // (ctx, cam) – z. B. Ausrufezeichen über Trainern
   const rustle = new Map();
   const facing = new Map(); // Figuren, die sich zur Spielfigur gedreht haben
   let locked = 0;
@@ -137,6 +139,8 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
     player,
     onStepped,
     onInteract,
+    onTick,
+    afterRender,
     lock,
     camera,
     get time() {
@@ -179,6 +183,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
         if (ms - dt <= 0) rustle.delete(k);
         else rustle.set(k, ms - dt);
       }
+      for (const fn of [...onTick]) fn(dt);
       if (locked) return;
       const intent = { dir: game.input.dir(), a: game.input.pressed('a') };
       const events = player.update(dt, intent, map);
@@ -186,7 +191,15 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
         if (ev.type === 'stepped') {
           if (map.isTallGrass(ev.x, ev.y)) rustle.set(cellKey(ev.x, ev.y), 220);
           if (game.state) game.state.position = { map: def.id, x: ev.x, y: ev.y, dir: player.dir };
-          if (onStepped.length) lock(() => handle(onStepped, ev.x, ev.y));
+          // Handler entscheiden sofort: null oder eine Aktion, die unter Sperre läuft.
+          for (const fn of onStepped) {
+            const action = fn(ev.x, ev.y);
+            if (action) {
+              player.cancelMove();
+              lock(action);
+              break;
+            }
+          }
         } else if (ev.type === 'interact') {
           if (onInteract.length) lock(() => handle(onInteract, ev));
         }
@@ -256,6 +269,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
       }
 
       drawFog(ctx, cam);
+      for (const fn of afterRender) fn(ctx, cam);
     },
   };
 

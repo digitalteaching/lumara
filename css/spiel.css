@@ -424,3 +424,19 @@ body.kbd #panel {
   width: auto;
   max-height: var(--vv-height, 50vh);
 }
+
+/* Kleine Anzeige in der Welt */
+.hud {
+  position: absolute;
+  left: calc(var(--gpx) * 4);
+  top: calc(var(--gpx) * 4);
+  background: var(--cream);
+  color: var(--ink);
+  border: 3px solid var(--frame);
+  border-radius: 6px;
+  padding: 3px 8px 5px;
+  min-width: 150px;
+  font-size: clamp(14px, calc(var(--gpx) * 3.4), 18px);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
+}
+body:not([data-mode="walk"]) .hud { display: none; }
