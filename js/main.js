@@ -9,6 +9,7 @@ import { mountControls } from './ui/controls.js';
 import { createWorldScene } from './scenes/world.js';
 import { createTitleScene } from './scenes/title.js';
 import { createPackScene } from './scenes/pack.js';
+import { createGalleryScene } from './scenes/gallery.js';
 
 const screen = createScreen(document.getElementById('screen'), document.getElementById('stage'));
 const input = createInput();
@@ -41,10 +42,15 @@ const game = {
 
 window.lumara = game;
 
+// Entwickler-Abkürzungen nur auf dem eigenen Rechner.
+const params = new URLSearchParams(location.search);
+const isLocal = ['localhost', '127.0.0.1'].includes(location.hostname);
+
 // Ablauf: Titel → Lernpaket → (vorläufig) Bucht. Intro, Name und Eiwahl kommen in Task 15.
 const toWorld = () => game.go(createWorldScene(game));
 const toPack = () => game.go(createPackScene(game, toWorld));
-game.go(createTitleScene(game, toPack));
+if (isLocal && params.has('galerie')) game.go(createGalleryScene(game));
+else game.go(createTitleScene(game, toPack));
 
 startLoop({
   update(dt) {
