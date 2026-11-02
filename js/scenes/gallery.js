@@ -4,27 +4,7 @@ import { CREATURE_ART } from '../gfx/art/creatures.js';
 import { spriteFrom } from '../gfx/canvasSprites.js';
 import { SPECIES } from '../data/species.js';
 import { el } from '../ui/dom.js';
-
-export function drawBayArena(ctx, t = 0) {
-  const sky = ctx.createLinearGradient(0, 0, 0, 70);
-  sky.addColorStop(0, '#4fa3c4');
-  sky.addColorStop(1, '#a7dde8');
-  ctx.fillStyle = sky;
-  ctx.fillRect(0, 0, 240, 70);
-  ctx.fillStyle = '#f3ecd2';
-  for (const [x, y, w] of [[30, 14, 26], [150, 22, 34], [96, 8, 18]]) {
-    ctx.fillRect(x, y, w, 4);
-    ctx.fillRect(x + 4, y - 3, w - 10, 3);
-  }
-  ctx.fillStyle = '#2f6f9c';
-  ctx.fillRect(0, 56, 240, 16);
-  ctx.fillStyle = '#4fa3c4';
-  for (let x = (Math.floor(t / 120) % 12) - 12; x < 240; x += 12) ctx.fillRect(x, 60, 6, 1);
-  ctx.fillStyle = '#f1ddb0';
-  ctx.fillRect(0, 72, 240, 88);
-  ctx.fillStyle = '#e2c48f';
-  for (let i = 0; i < 70; i++) ctx.fillRect((i * 53) % 240, 74 + ((i * 29) % 80), 1, 1);
-}
+import { drawBayArena } from '../gfx/arena.js';
 
 export function createGalleryScene(game) {
   const entries = [];

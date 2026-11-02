@@ -17,6 +17,7 @@ import { newGameState } from './state.js';
 import { STARTERS } from './data/species.js';
 import { parsePack } from './pack/parser.js';
 import { createPackStore } from './pack/store.js';
+import { createDuelScene, makeWildSetup, makeTrainerSetup } from './scenes/duel.js';
 
 const screen = createScreen(document.getElementById('screen'), document.getElementById('stage'));
 const input = createInput();
@@ -85,7 +86,20 @@ async function devStart() {
   game.go(createWorldScene(game));
 }
 
+async function devDuel(kind) {
+  game.pack = await devPack();
+  const species = STARTERS.includes(params.get('wesen')) ? params.get('wesen') : 'funki';
+  game.state = newGameState({ name: 'Test', species, nickname: null });
+  const again = () => {
+    game.state.creature.energy = Math.max(game.state.creature.energy, 1);
+    const setup = kind === 'trainer' ? makeTrainerSetup(game, 1) : makeWildSetup(game, 1);
+    game.go(createDuelScene(game, setup, again));
+  };
+  again();
+}
+
 if (isLocal && params.has('galerie')) game.go(createGalleryScene(game));
+else if (isLocal && params.has('duell')) devDuel(params.get('duell'));
 else if (isLocal && params.has('dev')) devStart();
 else startFlow();
 

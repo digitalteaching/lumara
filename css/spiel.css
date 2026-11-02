@@ -330,3 +330,97 @@ label.btn { display: inline-flex; align-items: center; justify-content: center; 
 .egg-special { font-size: var(--text-small); }
 .egg-hit { position: absolute; background: transparent; border: none; padding: 0; cursor: pointer; }
 .egg-hit:focus-visible { outline: 3px solid var(--cream); }
+
+/* Duell */
+body[data-mode="duel"] #panel { background: var(--ink); border-radius: 8px 8px 0 0; }
+.duel-panel { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+.duel-top { display: flex; gap: 10px; align-items: stretch; }
+.duel-question { flex: 1; font-size: max(18px, var(--text)); font-weight: 600; }
+.duel-side { display: flex; flex-direction: column; gap: 6px; }
+.btn.side { font-size: var(--text-small); padding: 6px 12px; white-space: nowrap; }
+.duel-notice { margin: 0; color: #ffb4a8; font-weight: 700; }
+.answers { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.btn.answer { display: flex; align-items: center; gap: 10px; text-align: left; min-height: 56px; font-weight: 600; }
+.answer-key {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  background: rgba(243, 236, 210, 0.18);
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+body.touch .answer-key { display: none; }
+.btn.answer.struck { text-decoration: line-through; opacity: 0.35; }
+.typing-row { display: flex; gap: 8px; }
+.answer-input {
+  flex: 1;
+  min-width: 0;
+  font-size: max(18px, calc(var(--text) * 1.1));
+  padding: 10px 12px;
+  min-height: 56px;
+  border: 3px solid var(--frame);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+}
+.answer-hint { margin: 6px 0 0; color: var(--cream); font-size: var(--text-small); }
+.answer-hint:empty { display: none; }
+.tiles { display: flex; flex-direction: column; gap: 8px; }
+.tiles-line, .tiles-pool { display: flex; flex-wrap: wrap; gap: 6px; min-height: 56px; align-items: center; }
+.tiles-line { border-bottom: 3px dashed var(--frame); padding-bottom: 6px; }
+.tiles-empty { color: var(--mist, #a3a7c4); font-size: var(--text-small); }
+.btn.tile { background: var(--frame); color: #fff; border-color: var(--frame-dark); min-height: 48px; font-weight: 700; }
+.btn.tile.placed { background: var(--cream); color: var(--ink); }
+.btn.tile.locked { opacity: 1; outline: 3px solid #ffe08a; }
+.duel-feedback { border-width: 5px; }
+.duel-feedback.ok { border-color: var(--ok); }
+.duel-feedback.bad { border-color: var(--bad); }
+.feedback-title { margin: 0 0 4px; font-weight: 800; font-size: calc(var(--text) * 1.1); }
+.duel-feedback.ok .feedback-title { color: var(--ok); }
+.duel-feedback.bad .feedback-title { color: var(--bad); }
+.feedback-icon { font-size: 1.3em; }
+.feedback-line { margin: 4px 0; }
+.feedback-more { margin: 4px 0 0; text-align: right; color: var(--frame); font-size: var(--text-small); }
+
+.plate {
+  position: absolute;
+  background: var(--cream);
+  color: var(--ink);
+  border: 3px solid var(--frame);
+  border-radius: 6px;
+  padding: 4px 8px 6px;
+  width: calc(var(--gpx) * 92);
+  max-width: 46%;
+  font-size: clamp(14px, calc(var(--gpx) * 3.6), 20px);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
+}
+.plate.foe { left: calc(var(--gpx) * 6); top: calc(var(--gpx) * 6); }
+.plate.own { right: calc(var(--gpx) * 6); top: calc(var(--gpx) * 60); }
+.plate-head { display: flex; justify-content: space-between; gap: 8px; font-weight: 800; }
+.plate-lv { font-weight: 600; }
+.plate-bar { display: flex; gap: 2px; margin-top: 3px; height: 9px; }
+.plate-bar .seg { flex: 1; background: #c9c2a8; border-radius: 2px; }
+.plate-bar .seg.on { background: #5cb85c; }
+.plate-bar.low .seg.on { background: #d9a43a; }
+.plate-extra { display: flex; align-items: center; gap: 8px; margin-top: 3px; min-height: 12px; }
+.pips { display: flex; gap: 3px; }
+.pip { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--frame); }
+.pip.on { background: #ffe08a; }
+.ready { font-size: 0.8em; font-weight: 800; color: var(--frame-dark); }
+
+@media (orientation: portrait) {
+  .plate.own { top: auto; bottom: calc(var(--gpx) * 6); }
+}
+
+/* Bildschirmtastatur offen (iPad): Panel oben im sichtbaren Bereich */
+body.kbd #panel {
+  top: var(--vv-top, 0px);
+  bottom: auto;
+  left: 0;
+  right: 0;
+  width: auto;
+  max-height: var(--vv-height, 50vh);
+}
