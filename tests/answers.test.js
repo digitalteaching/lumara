@@ -75,6 +75,15 @@ test('Joker je Form', () => {
   assert.deepEqual(jokerHint({ question: s, form: 'tiles', tiles: ['is.', 'He'] }, rng), { firstTile: 'He' });
 });
 
+test('Joker bleibt bei weniger als vier Knöpfen innerhalb der vorhandenen Knöpfe', () => {
+  const qq = q();
+  for (let s = 0; s < 100; s++) {
+    const choices = { options: ['plays', 'play', 'playing'], correctIndex: 0 };
+    const h = jokerHint({ question: qq, form: 'choice', choices }, createRng(s));
+    assert.ok(h.removeIndices.every(i => i >= 1 && i <= 2));
+  }
+});
+
 test('akzeptierte Antworten und Anzeige der richtigen Antwort', () => {
   assert.deepEqual(acceptedAnswers(q({ alsoCorrect: ['does play'] })), ['plays', 'does play']);
   assert.equal(correctText(q({ answer: null, sentence: 'I am here.' })), 'I am here.');

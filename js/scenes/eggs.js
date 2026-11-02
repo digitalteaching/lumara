@@ -7,6 +7,7 @@ import { creatureRows } from '../gfx/art/creatures.js';
 import { spriteFrom } from '../gfx/canvasSprites.js';
 import { say, choose, closeDialogs } from '../ui/dialog.js';
 import { el, clear } from '../ui/dom.js';
+import { createFreshGuard, guardClicks } from '../ui/freshGuard.js';
 import { askName } from './name.js';
 
 const EGG_Y = 50;
@@ -39,6 +40,7 @@ export function createEggScene(game, playerName, next) {
   const hitAreas = [];
   const offs = [];
   let active = true;
+  const pickGuard = createFreshGuard();
 
   function showInfo() {
     if (!info) return;
@@ -106,7 +108,9 @@ export function createEggScene(game, playerName, next) {
     if (!active) return;
     phase = 'pick';
     info = el('div', { class: 'box egg-info' });
+    pickGuard.reset();
     game.panel.append(info);
+    guardClicks(info, pickGuard);
     showInfo();
   }
 
@@ -130,7 +134,7 @@ export function createEggScene(game, playerName, next) {
         game.ui.append(hit);
       });
       offs.push(game.input.on('left', () => move(-1)), game.input.on('right', () => move(1)), game.input.on('a', () => {
-        if (phase === 'pick') confirm();
+        if (phase === 'pick' && !pickGuard.isFresh()) confirm();
       }));
       intro();
     },

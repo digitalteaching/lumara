@@ -20,7 +20,7 @@ const BOAT_FROM = { x: 40 * 16, y: 26 * 16 };
 const ARRIVE_MS = 2600;
 
 export function createIntroScene(game, next) {
-  const world = createWorldScene(game, undefined, { hidePlayer: true, hiddenIds: ['boot'] });
+  const world = createWorldScene(game, undefined, { hidePlayer: true, hiddenIds: ['boot'], passive: true });
   let t = 0;
   let skipBtn = null;
   let offB = null;

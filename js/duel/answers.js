@@ -113,7 +113,8 @@ export function buildTiles(q, rng) {
 export function jokerHint(presented, rng) {
   const { question, form } = presented;
   if (form === 'choice') {
-    const wrong = [0, 1, 2, 3].filter(i => i !== presented.choices.correctIndex);
+    const { options, correctIndex } = presented.choices;
+    const wrong = options.map((_, i) => i).filter(i => i !== correctIndex);
     return { removeIndices: rng.shuffle(wrong).slice(0, 2) };
   }
   if (form === 'typing') return { firstLetter: question.answer.trim()[0] };

@@ -2,6 +2,7 @@
 // A, Enter, Leertaste oder ein Tipp: erst die ganze Zeile zeigen, dann weiter.
 
 import { el } from './dom.js';
+import { createFreshGuard, guardClicks } from './freshGuard.js';
 
 // Offene Fenster, damit ein Szenenwechsel sie sauber schließen kann.
 const active = new Set();
@@ -102,10 +103,12 @@ export function say(game, lines, { speaker } = {}) {
   });
 }
 
-export function choose(game, prompt, options, { cancelIndex = options.length - 1 } = {}) {
+// selected: vorausgewählte Möglichkeit (bei riskanten Fragen wie „Aufgeben?“ die sichere).
+export function choose(game, prompt, options, { cancelIndex = options.length - 1, selected: initial = 0 } = {}) {
   return new Promise(resolve => {
     const restore = enterDialogMode(game);
-    let selected = 0;
+    const fresh = createFreshGuard();
+    let selected = initial;
     const buttons = options.map((label, i) =>
       el('button', { class: 'btn', type: 'button', onclick: () => pick(i) }, label),
     );
@@ -116,6 +119,7 @@ export function choose(game, prompt, options, { cancelIndex = options.length - 1
       el('div', { class: 'choice' }, buttons),
     );
     game.panel.append(box);
+    guardClicks(box, fresh);
 
     function highlight() {
       buttons.forEach((b, i) => b.classList.toggle('selected', i === selected));
@@ -125,7 +129,9 @@ export function choose(game, prompt, options, { cancelIndex = options.length - 1
     const offs = [
       game.input.on('up', () => { selected = (selected + options.length - 1) % options.length; highlight(); }),
       game.input.on('down', () => { selected = (selected + 1) % options.length; highlight(); }),
-      game.input.on('a', () => pick(selected)),
+      game.input.on('a', () => {
+        if (!fresh.isFresh()) pick(selected);
+      }),
       game.input.on('b', () => pick(cancelIndex)),
     ];
 

@@ -2,6 +2,7 @@
 // Nach einer Antwort ist alles sofort gesperrt, damit ein Doppeltipp nur einmal zählt.
 
 import { el, clear } from './dom.js';
+import { createFreshGuard, guardClicks } from './freshGuard.js';
 
 const isTouch = () => document.body.classList.contains('touch');
 
@@ -121,6 +122,10 @@ export function createDuelPanel(game) {
   const root = el('div', { class: 'duel-panel' });
   game.panel.append(root);
   let disposeForm = () => {};
+  // Jede neu gezeigte Frage oder Rückmeldung nimmt kurz keine Tipps an (Doppeltipp-Schutz).
+  const fresh = createFreshGuard();
+  guardClicks(root, fresh);
+  const species = game.state?.creature?.species;
 
   function reset() {
     disposeForm();
@@ -148,19 +153,40 @@ export function createDuelPanel(game) {
 
       function render() {
         reset();
+        fresh.reset();
         const p = duel.current;
         if (p.form === 'choice') form = choiceForm(p, i => finish({ type: 'answer', response: { index: i } }), disabledIndex);
         else if (p.form === 'typing') form = typingForm(p, text => finish({ type: 'answer', response: { text } }));
         else form = tilesForm(p, tokens => finish({ type: 'answer', response: { tokens } }));
         disposeForm = form.dispose;
 
+        // Fähigkeitsknöpfe bleiben an ihrem Platz und werden nach Gebrauch nur gesperrt,
+        // damit „Fliehen“ nie unter den Finger rutscht.
         const side = el('div', { class: 'duel-side' });
-        if (duel.canJoker()) {
-          const b = el('button', { class: 'btn side', type: 'button', onclick: () => { form.applyHint(duel.useJoker()); b.remove(); } }, '✦ Erleuchtung');
+        if (species === 'funki') {
+          const b = el('button', {
+            class: 'btn side',
+            type: 'button',
+            disabled: !duel.canJoker(),
+            onclick: () => {
+              const hint = duel.useJoker();
+              if (hint) form.applyHint(hint);
+              b.disabled = true;
+            },
+          }, '✦ Erleuchtung');
           side.append(b);
         }
-        if (duel.canSwap()) {
-          side.append(el('button', { class: 'btn side', type: 'button', onclick: () => { duel.swap(); disabledIndex = null; render(); } }, '↻ Rückenwind'));
+        if (species === 'flausch') {
+          side.append(el('button', {
+            class: 'btn side',
+            type: 'button',
+            disabled: !duel.canSwap(),
+            onclick: () => {
+              if (!duel.swap()) return;
+              disabledIndex = null;
+              render();
+            },
+          }, '↻ Rückenwind'));
         }
         side.append(
           duel.kind === 'wild'
@@ -179,6 +205,7 @@ export function createDuelPanel(game) {
   function feedback({ ok, title, lines = [], minMs = 0, autoMs = null }) {
     return new Promise(resolve => {
       reset();
+      fresh.reset();
       const box = el(
         'div',
         { class: `box duel-feedback ${ok ? 'ok' : 'bad'}`, role: 'status' },
@@ -196,7 +223,7 @@ export function createDuelPanel(game) {
 
       function finish(force = false) {
         if (done) return;
-        if (!force && performance.now() - start < minMs) return;
+        if (!force && (performance.now() - start < minMs || fresh.isFresh())) return;
         done = true;
         clearTimeout(reveal);
         clearTimeout(auto);
@@ -210,8 +237,8 @@ export function createDuelPanel(game) {
         finish();
       }
       const offA = game.input.on('a', () => finish());
-      // Den Tipp, der die Antwort abgeschickt hat, nicht gleich als „Weiter“ werten.
-      setTimeout(() => window.addEventListener('pointerdown', onPointer), 120);
+      // Den Tipp, der die Antwort abgeschickt hat, wertet der Frische-Schutz nicht als „Weiter“.
+      window.addEventListener('pointerdown', onPointer);
     });
   }
 

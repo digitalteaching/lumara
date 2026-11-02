@@ -97,6 +97,15 @@ test('Prüffokus: falsche Antwort gleich der richtigen oder doppelt wird entfern
   assert.equal(parsePack(makePackText() + 'FRAGE: X\nANTWORT: a\nFALSCH: A | b | c\n').ok, false);
 });
 
+test('Prüffokus: falsche Antwort, die nur durch Satzzeichen oder Apostroph abweicht, zählt als gleich', () => {
+  const r = parsePack(makePackText() + 'FRAGE: X\nANTWORT: He plays tennis.\nFALSCH: He plays tennis | He play tennis. | He playing tennis. | He is playing tennis.\n');
+  assert.deepEqual(r.pack.trainers[0].questions.at(-1).wrong, ['He play tennis.', 'He playing tennis.', 'He is playing tennis.']);
+  assert.ok(r.warnings.some(w => /gleich der richtigen/.test(w.message)));
+  const apo = parsePack(makePackText() + "FRAGE: Y\nANTWORT: don't\nFALSCH: don’t | doesn't | not | didn't\n");
+  assert.deepEqual(apo.pack.trainers[0].questions.at(-1).wrong, ["doesn't", 'not', "didn't"]);
+  assert.equal(parsePack(makePackText() + 'FRAGE: Z\nANTWORT: plays\nFALSCH: plays. | play | playing\n').ok, false);
+});
+
 test('Prüffokus: Word-, RTF- und Zip-Dateien werden klar abgelehnt', () => {
   for (const bad of ['{\\rtf1\\ansi PAKET: x', 'PK\u0003\u0004word/document.xml', 'P\u0000A\u0000K\u0000E\u0000T\u0000']) {
     assert.deepEqual(parsePack(bad).errors, [

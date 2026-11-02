@@ -5,6 +5,8 @@ import { CONFIG } from '../config.js';
 import { parsePack } from '../pack/parser.js';
 import { createPackStore } from '../pack/store.js';
 import { el, clear } from '../ui/dom.js';
+import { createFreshGuard, guardClicks } from '../ui/freshGuard.js';
+import { decodePackBytes } from '../pack/decode.js';
 import { drawTitleArt } from './title.js';
 
 const EXAMPLE_URL = 'pakete/englisch-6-beispiel.txt';
@@ -55,7 +57,7 @@ export function createPackScene(game, next) {
     if (file.size > CONFIG.pack.maxBytes) return showErrors(['Die Datei ist größer als 1 MB.']);
     busy = true;
     try {
-      accept(await file.text());
+      accept(decodePackBytes(await file.arrayBuffer()));
     } catch {
       showErrors(['Die Datei konnte nicht gelesen werden.']);
     } finally {
@@ -110,6 +112,7 @@ export function createPackScene(game, next) {
       );
     }
     game.panel.append(card);
+    guardClicks(card, createFreshGuard());
   }
 
   return {

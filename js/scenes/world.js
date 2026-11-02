@@ -42,7 +42,8 @@ function getFogTexture() {
   return c;
 }
 
-// opts.hidePlayer und opts.hiddenIds braucht das Intro (Boot legt an, noch keine Spielfigur).
+// opts.hidePlayer, opts.hiddenIds und opts.passive braucht das Intro
+// (Boot legt an, noch keine Spielfigur, Tasten bewegen nichts).
 export function createWorldScene(game, def = BUCHT, opts = {}) {
   const hiddenIds = new Set(opts.hiddenIds ?? []);
   const map = createMap(def);
@@ -184,7 +185,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
         else rustle.set(k, ms - dt);
       }
       for (const fn of [...onTick]) fn(dt);
-      if (locked) return;
+      if (locked || opts.passive) return;
       const intent = { dir: game.input.dir(), a: game.input.pressed('a') };
       const events = player.update(dt, intent, map);
       for (const ev of events) {

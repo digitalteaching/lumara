@@ -220,7 +220,7 @@ export function createDuelScene(game, setup, onEnd) {
       }
       if (action.type === 'surrender') {
         panel.clear();
-        const yes = (await choose(game, 'Aufgeben?', ['Ja', 'Nein'], { cancelIndex: 1 })) === 0;
+        const yes = (await choose(game, 'Aufgeben?', ['Ja', 'Nein'], { cancelIndex: 1, selected: 1 })) === 0;
         if (yes) {
           duel.surrender();
           break;

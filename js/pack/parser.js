@@ -4,6 +4,7 @@
 import { CONFIG } from '../config.js';
 import { DEFAULT_LINES } from '../data/texts.js';
 import { packIdentity, shortId } from './packId.js';
+import { normalizeTyped } from '../duel/answers.js';
 
 const HEADER_KEYS = new Set(['PAKET', 'KENNUNG', 'FACH', 'ZEITDRUCK']);
 const TRAINER_KEYS = new Set(['NAME', 'THEMA', 'HALLO', 'SIEG', 'NIEDERLAGE', 'REVANCHE']);
@@ -81,10 +82,12 @@ export function parsePack(input) {
     const extra = f.EXTRA ? splitList(f.EXTRA.value) : [];
     const wrong = [];
     if (f.FALSCH) {
-      const accepted = new Set([answer ?? sentence, ...alsoCorrect].map(normalizeKey));
+      // Gleich vergleichen wie beim Eintippen (Satzzeichen am Ende, ’ statt ', Leerzeichen),
+      // sonst wäre eine „falsche“ Antwort beim Tippen richtig und es fehlten Knöpfe.
+      const accepted = new Set([answer ?? sentence, ...alsoCorrect].map(normalizeTyped));
       const seen = new Set();
       for (const w of splitList(f.FALSCH.value)) {
-        const k = normalizeKey(w);
+        const k = normalizeTyped(w);
         if (accepted.has(k)) warn(f.FALSCH.line, 'Eine falsche Antwort ist gleich der richtigen und wird ignoriert.');
         else if (seen.has(k)) warn(f.FALSCH.line, 'Eine falsche Antwort steht doppelt und wird nur einmal benutzt.');
         else {
