@@ -1,0 +1,109 @@
+// Figuren (16×16): eine gemeinsame Grundform, je Figur eigene Farben und kleine Merkmale.
+// Rollenzeichen der Vorlage: o Umriss, h/i Haar oder Kapuze (hell/dunkel), s/t Haut (hell/Schatten),
+// e Augen, c/d/l Kleidung (Grund/Schatten/hell), b Beine und Schuhe.
+// side schaut nach rechts, links wird gespiegelt. Bild 0 steht, Bild 1 macht einen Schritt.
+
+const DOWN = [
+  '................',
+  '.....oooooo.....',
+  '....ohhhhhho....',
+  '...ohhhhhhhho...',
+  '...ohhhhhhhho...',
+  '...ohssssssho...',
+  '...osessssseo...',
+  '...otssssssto...',
+  '....otttttto....',
+  '...occclllcco...',
+  '..oscccllcccso..',
+  '..otdccllccdto..',
+  '...oddddddddo...',
+  '....obbo.obbo...',
+  '....obbo.obbo...',
+  '.....oo...oo....',
+];
+const DOWN_STEP = [...DOWN.slice(0, 13), '....obbo.obbo...', '....oooo.obbo...', '..........oo....'];
+
+const UP = [
+  '................',
+  '.....oooooo.....',
+  '....ohhhhhho....',
+  '...ohhhhhhhho...',
+  '...ohhhhhhhho...',
+  '...ohhhhhhhho...',
+  '...ohhhhhhhho...',
+  '...oihhhhhhio...',
+  '....oiiiiiio....',
+  '...occcccccco...',
+  '..osccccccccso..',
+  '..otdccccccdto..',
+  '...oddddddddo...',
+  '....obbo.obbo...',
+  '....obbo.obbo...',
+  '.....oo...oo....',
+];
+const UP_STEP = [...UP.slice(0, 13), '....obbo.obbo...', '....oooo.obbo...', '..........oo....'];
+
+const SIDE = [
+  '................',
+  '.....ooooo......',
+  '....ohhhhho.....',
+  '...ohhhhhhho....',
+  '...ohhhhhsso....',
+  '...ohhhhseso....',
+  '...ohhhhsssso...',
+  '...oihhhtssto...',
+  '....oiiitto.....',
+  '....occclllo....',
+  '....occcllso....',
+  '....odccllto....',
+  '....oddddddo....',
+  '.....obbbbo.....',
+  '.....obbobbo....',
+  '.....oo..oo.....',
+];
+const SIDE_STEP = [...SIDE.slice(0, 13), '....obbo.obo....', '...obbo...obo...', '...oo......oo...'];
+
+const BASE = { o: 'k', e: 'k', s: 'p', t: 'C' };
+
+function paint(template, colors) {
+  return template.map(line => [...line].map(ch => (ch === '.' ? '.' : colors[ch] ?? BASE[ch] ?? ch)).join(''));
+}
+
+function stamp(rowsArr, marks) {
+  const g = rowsArr.map(r => [...r]);
+  for (const [x, y, ch] of marks) g[y][x] = ch;
+  return g.map(r => r.join(''));
+}
+
+function character(colors, extras = {}) {
+  const out = {};
+  for (const [dir, frames] of Object.entries({ down: [DOWN, DOWN_STEP], up: [UP, UP_STEP], side: [SIDE, SIDE_STEP] })) {
+    out[dir] = frames.map(f => stamp(paint(f, colors), extras[dir] ?? []));
+  }
+  return out;
+}
+
+// Laterne in der Hand (Ilvy)
+const LANTERN_DOWN = [[13, 10, 'k'], [13, 11, 'H'], [13, 12, 'k'], [14, 11, 'k']];
+const LANTERN_SIDE = [[11, 10, 'k'], [12, 10, 'k'], [12, 11, 'H'], [12, 12, 'k'], [13, 11, 'k']];
+// Haarknoten (Ilvy)
+const BUN_DOWN = [[7, 0, 'k'], [8, 0, 'k']];
+// Bart (Bram)
+const BEARD_DOWN = [[5, 7, 'm'], [6, 8, 'm'], [7, 8, 'm'], [8, 8, 'm'], [9, 8, 'm'], [10, 7, 'm']];
+const BEARD_SIDE = [[9, 7, 'm'], [10, 7, 'm'], [9, 8, 'm']];
+// Netz über der Schulter (Trainerin der Bucht)
+const NET_DOWN = [[2, 9, 'm'], [1, 10, 'f'], [2, 11, 'm'], [1, 12, 'f'], [2, 13, 'm']];
+const NET_SIDE = [[3, 9, 'm'], [2, 10, 'f'], [3, 11, 'm'], [2, 12, 'f']];
+// Kopftuch-Knoten (Trainerin der Bucht)
+const KNOT_UP = [[7, 8, 'e'], [8, 8, 'e'], [7, 9, 'e']];
+
+export const CHARACTERS = {
+  // neutrale Figur mit Kapuzenumhang (Design 14)
+  player: character({ h: 't', i: 'F', c: 't', d: 'F', l: 'c', b: 'b' }),
+  ilvy: character({ h: 'm', i: 's', c: 'D', d: 'n', l: 'S', b: 'n' }, { down: [...LANTERN_DOWN, ...BUN_DOWN], side: LANTERN_SIDE }),
+  fischer: character({ h: 'S', i: 'D', c: 'o', d: 'b', l: 'Y', b: 'n' }, { down: BEARD_DOWN, side: BEARD_SIDE }),
+  kind: character({ h: 'h', i: 'r', c: 'C', d: 'e', l: 'p', b: 'o' }),
+  netz: character({ h: 'o', i: 'b', c: 'v', d: 'P', l: 'c', b: 'b' }),
+  // junge Fischerin mit Netz und Kopftuch (Design 5.3)
+  trainer1: character({ h: 'R', i: 'e', c: 'L', d: 'S', l: 'A', b: 'b' }, { down: NET_DOWN, side: NET_SIDE, up: KNOT_UP }),
+};

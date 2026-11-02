@@ -5,6 +5,10 @@ import { createPlayer } from '../world/player.js';
 import { BUCHT } from '../world/maps/bucht.js';
 import { TILES, BUILDINGS, PROPS, OVERLAY_TILES } from '../gfx/art/tiles.js';
 import { spriteFrom } from '../gfx/canvasSprites.js';
+import { CHARACTERS } from '../gfx/art/characters.js';
+import { say } from '../ui/dialog.js';
+
+const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 
 const T = 16;
 const SCREEN_W = 240;
@@ -135,16 +139,22 @@ export function createWorldScene(game, def = BUCHT) {
     get locked() {
       return locked > 0;
     },
-    // Wird von späteren Tasks ersetzt (Figuren-Sprites).
-    drawCharacter(ctx, key, dir, frame, x, y) {
-      const colors = { ilvy: '#2f6f9c', fischer: '#7a5236', kind: '#e8b64a', netz: '#8f62a8', trainer1: '#e0705a', player: '#3f8f86' };
-      ctx.fillStyle = '#1b1a2e';
-      ctx.fillRect(x + 2, y + 1, 12, 15);
-      ctx.fillStyle = colors[key] ?? '#f3ecd2';
-      ctx.fillRect(x + 3, y + 2, 10, 13);
-      ctx.fillStyle = '#f3ecd2';
-      const ex = dir === 'left' ? 4 : dir === 'right' ? 9 : 6;
-      if (dir !== 'up') ctx.fillRect(x + ex, y + 5, 3, 2);
+    // step: 0 steht, 1 und 2 sind abwechselnde Schritte
+    drawCharacter(ctx, key, dir, step, x, y) {
+      const set = CHARACTERS[key];
+      if (!set) return;
+      const d = dir === 'left' || dir === 'right' ? 'side' : dir;
+      const frames = set[d];
+      let idx = 0;
+      let flip = dir === 'left';
+      if (step) {
+        idx = Math.min(1, frames.length - 1);
+        if (d !== 'side' && step === 2) flip = !flip;
+      }
+      ctx.fillStyle = 'rgba(27, 26, 46, 0.28)';
+      ctx.fillRect(x + 4, y + 15, 8, 2);
+      ctx.fillRect(x + 3, y + 16, 10, 1);
+      ctx.drawImage(spriteFrom(`char:${key}:${d}:${idx}`, frames[idx], { flip }), x, y);
     },
     turnToward(o, dir) {
       facing.set(o, dir);
@@ -205,14 +215,16 @@ export function createWorldScene(game, def = BUCHT) {
         } else if (o.type === 'npc' || o.type === 'trainer') {
           const pos = o.pixel ? o.pixel() : { x: o.x * T, y: o.y * T };
           const s = npcSprite(o);
-          drawables.push({ z: pos.y / T, draw: () => scene.drawCharacter(ctx, s.key, s.dir, 0, pos.x - cam.x, pos.y - cam.y - 2) });
+          const step = o.walking ? (Math.floor(time / 130) % 2) + 1 : 0;
+          drawables.push({ z: pos.y / T, draw: () => scene.drawCharacter(ctx, s.key, s.dir, step, pos.x - cam.x, pos.y - cam.y - 2) });
         }
       }
       const pp = player.pixel();
       drawables.push({
         z: pp.y / T + 0.01,
         draw: () => {
-          scene.drawCharacter(ctx, 'player', player.dir, player.moving ? player.frame : 0, pp.x - cam.x, pp.y - cam.y - 2);
+          const step = player.moving && player.progress < 0.6 ? (player.frame ? 1 : 2) : 0;
+          scene.drawCharacter(ctx, 'player', player.dir, step, pp.x - cam.x, pp.y - cam.y - 2);
           // Hohes Gras verdeckt die Füße
           const onGrass = map.isTallGrass(player.x, player.y) && (!player.moving || player.progress > 0.5);
           if (onGrass) {
@@ -239,6 +251,31 @@ export function createWorldScene(game, def = BUCHT) {
       drawFog(ctx, cam);
     },
   };
+
+  // Gespräche mit Bewohnern, Schilder und verschlossene Türen.
+  // Trainer und die Leuchtturmtür übernehmen spätere Handler (Task 17).
+  onInteract.push(async ev => {
+    const o = ev.target;
+    if (!o) return false;
+    if (o.type === 'npc') {
+      scene.turnToward(o, OPPOSITE[player.dir]);
+      await say(game, o.lines, { speaker: o.name });
+      scene.resetFacing(o);
+      return true;
+    }
+    if (o.type === 'sign') {
+      await say(game, o.lines);
+      return true;
+    }
+    if (o.type === 'building') {
+      // Jede Zelle der vorderen Reihe zählt als Tür, wenn man nach oben darauf schaut.
+      const front = player.dir === 'up' && ev.y === o.y + o.h - 1;
+      if (!front || o.onDoor === 'heal') return false;
+      await say(game, o.lines ?? ['Die Tür ist verschlossen.']);
+      return true;
+    }
+    return false;
+  });
 
   return scene;
 }

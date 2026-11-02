@@ -212,3 +212,33 @@ body.touch[data-mode="walk"] #pad { display: block; }
   #pad { top: calc(var(--img-top) + var(--img-height)); background: var(--ink); }
   #pad .dpad, #pad .ab { opacity: 1; }
 }
+
+/* Textfenster */
+#panel { padding-top: 20px; }
+.dialog { position: relative; min-height: 4.4em; margin: 0 auto; max-width: 900px; }
+.dialog + .dialog { margin-top: 10px; }
+.dialog-speaker {
+  position: absolute;
+  top: -16px;
+  left: 14px;
+  background: var(--frame);
+  color: #fff;
+  border: 3px solid var(--frame-dark);
+  border-radius: 5px;
+  padding: 1px 10px;
+  font-size: var(--text-small);
+  font-weight: 700;
+}
+.dialog-text { display: block; white-space: pre-wrap; }
+.dialog-more {
+  position: absolute;
+  right: 14px;
+  bottom: 6px;
+  color: var(--frame);
+  font-size: 14px;
+  animation: lumara-bob 1.2s ease-in-out infinite;
+}
+@keyframes lumara-bob { 50% { transform: translateY(3px); } }
+.choice { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.choice .btn { text-align: left; }
+.choice .btn.selected { background: var(--frame); color: #fff; outline: 3px solid var(--cream); outline-offset: -6px; }
