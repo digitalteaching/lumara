@@ -42,7 +42,9 @@ function getFogTexture() {
   return c;
 }
 
-export function createWorldScene(game, def = BUCHT) {
+// opts.hidePlayer und opts.hiddenIds braucht das Intro (Boot legt an, noch keine Spielfigur).
+export function createWorldScene(game, def = BUCHT, opts = {}) {
+  const hiddenIds = new Set(opts.hiddenIds ?? []);
   const map = createMap(def);
   const start = game.state?.position?.map === def.id ? game.state.position : def.spawn;
   const player = createPlayer(start);
@@ -136,6 +138,10 @@ export function createWorldScene(game, def = BUCHT) {
     onStepped,
     onInteract,
     lock,
+    camera,
+    get time() {
+      return time;
+    },
     get locked() {
       return locked > 0;
     },
@@ -206,6 +212,7 @@ export function createWorldScene(game, def = BUCHT) {
       // Gebäude, Figuren und Spielfigur nach unterer Kante sortiert
       const drawables = [];
       for (const o of def.objects) {
+        if (o.id && hiddenIds.has(o.id)) continue;
         if (o.type === 'building') {
           const img = spriteFrom(`building:${o.sprite}`, BUILDINGS[o.sprite]);
           const bx = o.x * T - cam.x, by = (o.y + o.h) * T - img.height - cam.y;
@@ -220,7 +227,7 @@ export function createWorldScene(game, def = BUCHT) {
         }
       }
       const pp = player.pixel();
-      drawables.push({
+      if (!opts.hidePlayer) drawables.push({
         z: pp.y / T + 0.01,
         draw: () => {
           const step = player.moving && player.progress < 0.6 ? (player.frame ? 1 : 2) : 0;

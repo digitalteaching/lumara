@@ -3,6 +3,13 @@
 
 import { el } from './dom.js';
 
+// Offene Fenster, damit ein Szenenwechsel sie sauber schließen kann.
+const active = new Set();
+
+export function closeDialogs() {
+  for (const close of [...active]) close();
+}
+
 function isOtherControl(target, box) {
   const ctl = target?.closest?.('button, input, a, label, textarea, select');
   return ctl && !box.contains(ctl);
@@ -75,9 +82,12 @@ export function say(game, lines, { speaker } = {}) {
 
     const offA = game.input.on('a', advance);
     window.addEventListener('pointerdown', onPointer);
+    active.add(finish);
 
     function finish() {
+      if (done) return;
       done = true;
+      active.delete(finish);
       clearInterval(timer);
       offA();
       window.removeEventListener('pointerdown', onPointer);
@@ -120,9 +130,12 @@ export function choose(game, prompt, options, { cancelIndex = options.length - 1
     ];
 
     let done = false;
+    const cancel = () => pick(cancelIndex);
+    active.add(cancel);
     function pick(i) {
       if (done) return;
       done = true;
+      active.delete(cancel);
       offs.forEach(off => off());
       box.remove();
       restore();
