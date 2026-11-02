@@ -4,11 +4,9 @@ import { CONFIG } from './config.js';
 import { createRng } from './core/rng.js';
 import { startLoop } from './core/loop.js';
 import { createScreen } from './gfx/screen.js';
-import { PALETTE } from './gfx/palette.js';
-import { rows } from './gfx/sprites.js';
-import { spriteFrom } from './gfx/canvasSprites.js';
 import { createInput } from './core/input.js';
 import { mountControls } from './ui/controls.js';
+import { createWorldScene } from './scenes/world.js';
 
 const screen = createScreen(document.getElementById('screen'), document.getElementById('stage'));
 const input = createInput();
@@ -39,59 +37,10 @@ const game = {
   },
 };
 
-// Vorläufiges Testbild (Task 2): Schachbrett, Palette, ein Test-Sprite.
-const TEST = rows(`
-  ....kkkk....
-  ..kkHHHHkk..
-  .kHHHwwHHHk.
-  .kHHwwHHHHk.
-  kHHHHHHHHHHk
-  kHhHHHHHHhHk
-  kHHhhhhhhHHk
-  .kHHHHHHHHk.
-  .khHHHHHHhk.
-  ..kkhhhhkk..
-  ....kkkk....
-  ............
-`);
-
-// Vorläufiger Eingabetest (Task 3): Quadrat folgt input.dir(), Knöpfe als Text.
-const probe = { x: 112, y: 72 };
-const label = document.createElement('div');
-label.className = 'passive';
-label.style.cssText = 'position:absolute;left:8px;top:8px;font-size:18px;color:#fff;text-shadow:0 1px 2px #000';
-game.ui.appendChild(label);
-game.mode = 'walk';
-
-game.go({
-  update() {
-    const d = input.dir();
-    if (d === 'left') probe.x -= 1;
-    if (d === 'right') probe.x += 1;
-    if (d === 'up') probe.y -= 1;
-    if (d === 'down') probe.y += 1;
-    const held = ['up', 'down', 'left', 'right', 'a', 'b', 'menu'].filter(b => input.held(b));
-    label.textContent = `dir=${d ?? '-'} held=${held.join(',') || '-'}`;
-  },
-  render(ctx, t) {
-    for (let y = 0; y < 10; y++) {
-      for (let x = 0; x < 15; x++) {
-        ctx.fillStyle = (x + y) % 2 ? '#2b2d4a' : '#46496e';
-        ctx.fillRect(x * 16, y * 16, 16, 16);
-      }
-    }
-    PALETTE.forEach((p, i) => {
-      ctx.fillStyle = p.hex;
-      ctx.fillRect(i * 7 + 8, 140, 7, 12);
-    });
-    const bob = Math.round(Math.sin(t / 400) * 2);
-    ctx.drawImage(spriteFrom('test', TEST), 114, 60 + bob);
-    ctx.fillStyle = '#e0705a';
-    ctx.fillRect(probe.x, probe.y, 16, 16);
-  },
-});
-
 window.lumara = game;
+
+// Vorläufig: direkt in die Bucht (der Spielstart kommt in Task 15).
+game.go(createWorldScene(game));
 
 startLoop({
   update(dt) {
