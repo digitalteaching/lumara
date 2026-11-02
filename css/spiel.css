@@ -147,3 +147,68 @@ input, textarea { -webkit-user-select: text; user-select: text; font-family: var
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* Steuerkreuz und Knöpfe: nur bei Touch und nur beim Laufen */
+#pad { display: none; }
+body.touch[data-mode="walk"] #pad { display: block; }
+
+#pad {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 30;
+}
+#pad .dpad, #pad .ab { pointer-events: auto; position: absolute; touch-action: none; }
+
+#pad .dpad {
+  width: 150px;
+  height: 150px;
+  right: calc(18px + env(safe-area-inset-right));
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  border-radius: 50%;
+  background: rgba(18, 17, 31, 0.28);
+  opacity: 0.8;
+}
+#pad .dpad-arm, #pad .dpad-hub {
+  position: absolute;
+  background: rgba(243, 236, 210, 0.75);
+  border: 3px solid rgba(122, 82, 54, 0.9);
+}
+#pad .dpad-arm.up, #pad .dpad-arm.down { left: 52px; width: 46px; height: 52px; }
+#pad .dpad-arm.left, #pad .dpad-arm.right { top: 52px; width: 52px; height: 46px; }
+#pad .dpad-arm.up { top: 4px; border-radius: 8px 8px 0 0; border-bottom: none; }
+#pad .dpad-arm.down { bottom: 4px; border-radius: 0 0 8px 8px; border-top: none; }
+#pad .dpad-arm.left { left: 4px; border-radius: 8px 0 0 8px; border-right: none; }
+#pad .dpad-arm.right { right: 4px; border-radius: 0 8px 8px 0; border-left: none; }
+#pad .dpad-hub { left: 52px; top: 52px; width: 46px; height: 46px; border: none; }
+#pad .dpad[data-dir="up"] .dpad-arm.up,
+#pad .dpad[data-dir="down"] .dpad-arm.down,
+#pad .dpad[data-dir="left"] .dpad-arm.left,
+#pad .dpad[data-dir="right"] .dpad-arm.right { background: var(--frame); }
+
+#pad .ab {
+  left: calc(18px + env(safe-area-inset-left));
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  width: 170px;
+  height: 150px;
+}
+#pad .pad-btn {
+  position: absolute;
+  border-radius: 50%;
+  border: 3px solid rgba(122, 82, 54, 0.95);
+  background: rgba(243, 236, 210, 0.78);
+  color: var(--ink);
+  font: 700 26px var(--font);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  opacity: 0.85;
+}
+#pad .pad-btn.down { background: var(--frame); color: #fff; }
+#pad .pad-btn.a { width: 84px; height: 84px; right: 0; top: 0; }
+#pad .pad-btn.b { width: 64px; height: 64px; left: 0; bottom: 0; font-size: 22px; }
+
+@media (orientation: portrait) {
+  #pad { top: calc(var(--img-top) + var(--img-height)); background: var(--ink); }
+  #pad .dpad, #pad .ab { opacity: 1; }
+}

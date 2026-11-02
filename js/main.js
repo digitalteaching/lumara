@@ -7,13 +7,18 @@ import { createScreen } from './gfx/screen.js';
 import { PALETTE } from './gfx/palette.js';
 import { rows } from './gfx/sprites.js';
 import { spriteFrom } from './gfx/canvasSprites.js';
+import { createInput } from './core/input.js';
+import { mountControls } from './ui/controls.js';
 
 const screen = createScreen(document.getElementById('screen'), document.getElementById('stage'));
+const input = createInput();
+mountControls(document.getElementById('pad'), input);
 
 const game = {
   config: CONFIG,
   rng: createRng((Date.now() ^ Math.floor(Math.random() * 0x7fffffff)) >>> 0),
   screen,
+  input,
   ui: document.getElementById('ui'),
   panel: document.getElementById('panel'),
   reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
@@ -50,8 +55,24 @@ const TEST = rows(`
   ............
 `);
 
+// Vorläufiger Eingabetest (Task 3): Quadrat folgt input.dir(), Knöpfe als Text.
+const probe = { x: 112, y: 72 };
+const label = document.createElement('div');
+label.className = 'passive';
+label.style.cssText = 'position:absolute;left:8px;top:8px;font-size:18px;color:#fff;text-shadow:0 1px 2px #000';
+game.ui.appendChild(label);
+game.mode = 'walk';
+
 game.go({
-  update() {},
+  update() {
+    const d = input.dir();
+    if (d === 'left') probe.x -= 1;
+    if (d === 'right') probe.x += 1;
+    if (d === 'up') probe.y -= 1;
+    if (d === 'down') probe.y += 1;
+    const held = ['up', 'down', 'left', 'right', 'a', 'b', 'menu'].filter(b => input.held(b));
+    label.textContent = `dir=${d ?? '-'} held=${held.join(',') || '-'}`;
+  },
   render(ctx, t) {
     for (let y = 0; y < 10; y++) {
       for (let x = 0; x < 15; x++) {
@@ -65,6 +86,8 @@ game.go({
     });
     const bob = Math.round(Math.sin(t / 400) * 2);
     ctx.drawImage(spriteFrom('test', TEST), 114, 60 + bob);
+    ctx.fillStyle = '#e0705a';
+    ctx.fillRect(probe.x, probe.y, 16, 16);
   },
 });
 
@@ -73,6 +96,7 @@ window.lumara = game;
 startLoop({
   update(dt) {
     game.scene?.update(dt);
+    input.endFrame();
   },
   render(t) {
     game.scene?.render(screen.ctx, t);
