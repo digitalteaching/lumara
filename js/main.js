@@ -17,7 +17,7 @@ import { createPackStore } from './pack/store.js';
 import { createSaveStore } from './save/store.js';
 import { createAutosave } from './save/autosave.js';
 import { createPlayClock } from './save/playClock.js';
-import { makeSaver } from './app/flow.js';
+import { makeSaver, watchOtherTabs } from './app/flow.js';
 import { APP_VERSION } from './version.js';
 import { requestPersist } from './app/platform.js';
 import { bootUpdates, removeServiceWorkers } from './app/update.js';
@@ -69,6 +69,23 @@ const autosave = createAutosave({
   onFail: () => showToast('Dein Spielstand kann auf diesem Gerät gerade nicht gespeichert werden. Sichere ihn über Menü → Einstellungen → Spielstand sichern.', 9000),
 });
 autosave.attach(document, window);
+
+// Zwei offene Tabs: Hat ein anderer Tab gespeichert, speichert dieser nicht mehr und bietet das
+// Neuladen an, damit kein Fortschritt überschrieben wird.
+watchOtherTabs(game, window, {
+  onTakenOver() {
+    if (game.probe) return;
+    game.input.releaseAll();
+    const card = el(
+      'div',
+      { class: 'box sheet-card taken', role: 'alertdialog' },
+      el('p', { class: 'recover-title' }, 'Lumara ist in einem anderen Fenster offen.'),
+      el('p', {}, 'Dort wurde gerade weitergespielt. Damit nichts verloren geht, wird hier nicht mehr gespeichert.'),
+      el('button', { class: 'btn primary', type: 'button', onclick: () => location.reload() }, 'Hier weiterspielen'),
+    );
+    document.body.append(el('div', { class: 'sheet' }, card));
+  },
+});
 
 // Spielzeit für die Lehrkraft: jede Eingabe zählt als „das Kind ist dabei“.
 const markActivity = () => game.clock.activity(performance.now());

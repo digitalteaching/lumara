@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { routeAfterTitle, makeSaver, reloadGame } from '../js/app/flow.js';
+import { routeAfterTitle, makeSaver, reloadGame, watchOtherTabs } from '../js/app/flow.js';
 import { createSaveStore } from '../js/save/store.js';
 import { createPackStore } from '../js/pack/store.js';
 import { newGameState } from '../js/state.js';
@@ -50,6 +50,33 @@ test('Sicherung laden: Stand und Paket gespeichert, das Speichern beim Schließe
   assert.equal(game.save(), null);
   assert.equal(game.store.load().state.name, 'Mia');
   assert.equal(game.packStore.load(), 'PAKET: X');
+});
+
+test('zwei Tabs: speichert der andere Tab, überschreibt dieser Tab nichts mehr', () => {
+  const mem = fakeStorage();
+  const tab = name => {
+    const g = { saveEnabled: true, state: newGameState({ name, species: 'nixi', nickname: null }), store: createSaveStore(mem) };
+    g.save = makeSaver(g);
+    return g;
+  };
+  const a = tab('Alt');
+  const win = new EventTarget();
+  let told = 0;
+  watchOtherTabs(a, win, { onTakenOver: () => told++ });
+  const other = new Event('storage');
+  other.key = 'lumara.paket.v1';
+  win.dispatchEvent(other);
+  assert.equal(told, 0);
+  const b = tab('Neu');
+  b.save();
+  const ev = new Event('storage');
+  ev.key = 'lumara.spielstand.v1';
+  win.dispatchEvent(ev);
+  assert.equal(told, 1);
+  assert.equal(a.save(), null);
+  a.saveEnabled = true; // auch wenn der Startablauf später wieder einschaltet
+  assert.equal(a.save(), null);
+  assert.equal(a.store.load().state.name, 'Neu');
 });
 
 test('makeSaver meldet nur das erste erfolgreiche Speichern', () => {
