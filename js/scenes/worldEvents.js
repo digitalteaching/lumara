@@ -216,7 +216,7 @@ export function createGameWorld(game) {
     if (trainerSpotsPlayer({ x, y })) return () => trainerDuel({ spotted: true });
     // Ein Stein im Gras zählt vor der Begegnung: Dann gibt es in diesem Schritt kein Duell.
     if (map.isTallGrass(x, y)) {
-      const item = stepFind(game.state, game.rng);
+      const item = stepFind(game.state, game.rng, def.area);
       if (item) return () => foundStone(item);
     }
     if (counter.onStep(map.isTallGrass(x, y))) return () => wildDuel();
@@ -264,7 +264,7 @@ export function createGameWorld(game) {
     if (ev.target) return false;
     const f = findAt(ev.x, ev.y);
     if (!f) return false;
-    const { item } = takeFind(game.state, findKey(def.id, f), game.rng);
+    const { item } = takeFind(game.state, findKey(def.id, f), game.rng, def.area);
     await foundStone(item);
     return true;
   });

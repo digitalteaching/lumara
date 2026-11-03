@@ -11,9 +11,10 @@ export const STONE_LINES = {
   life: name => `Ein Lebensstein! ${name} hat jetzt dauerhaft 1 Energie mehr.`,
 };
 
-// Aus der Fundtabelle. Wirken schon alle Lebenssteine, wird aus „Leben“ ein Weitblickstein.
-export function rollStone(state, rng) {
-  const table = Object.entries(CONFIG.finds.table);
+// Aus der Fundtabelle des Gebiets (Zeitsteine erst dort, wo es Zeitdruck gibt). Wirken schon alle
+// Lebenssteine, wird aus „Leben“ ein Weitblickstein.
+export function rollStone(state, rng, area = 1) {
+  const table = Object.entries(area >= CONFIG.time.fromArea ? CONFIG.finds.tableTimed : CONFIG.finds.table);
   const total = table.reduce((n, [, w]) => n + w, 0);
   let r = rng.next() * total;
   let item = table.at(-1)[0];
@@ -33,9 +34,9 @@ export const findKey = (mapId, f) => `${mapId}:${f.x},${f.y}`;
 export const findReady = (state, key) => (state.world.finds[key] ?? 0) <= state.playMs;
 
 // Glitzert die Fundstelle gerade nicht (etwa bei einem Doppeltipp), gibt es nichts.
-export function takeFind(state, key, rng) {
+export function takeFind(state, key, rng, area = 1) {
   if (!findReady(state, key)) return { item: null, added: 0 };
-  const item = rollStone(state, rng);
+  const item = rollStone(state, rng, area);
   const added = addItem(state, item);
   state.world.finds[key] = state.playMs + CONFIG.finds.respawnMs;
   return { item, added };
@@ -49,9 +50,9 @@ export function useShine(state) {
 }
 
 // Bei jedem Schritt im hohen Gras: selten ein Stein, gleich im Rucksack (oder im Wesen).
-export function stepFind(state, rng) {
+export function stepFind(state, rng, area = 1) {
   if (!(rng.next() < CONFIG.finds.stepChance)) return null;
-  const item = rollStone(state, rng);
+  const item = rollStone(state, rng, area);
   addItem(state, item);
   return item;
 }

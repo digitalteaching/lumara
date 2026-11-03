@@ -11,7 +11,7 @@ const seq = (...v) => {
 };
 
 test('Fundwerte aus der Einstellung', () => {
-  assert.deepEqual(CONFIG.finds, { stepChance: 1 / 150, respawnMs: 600000, table: { farsight: 3, shine: 2, life: 1 } });
+  assert.deepEqual(CONFIG.finds, { stepChance: 1 / 150, respawnMs: 600000, table: { farsight: 3, shine: 2, life: 1 }, tableTimed: { farsight: 3, shine: 2, life: 1, time: 3 } });
 });
 
 test('Fundtabelle: Weitblick 3, Glanz 2, Leben 1; mit 3 Lebenssteinen kein weiterer', () => {
@@ -74,4 +74,14 @@ test('Fundstelle zweimal aufgehoben: beim zweiten Mal nichts', () => {
   takeFind(s, 'wald:5,6', seq(0));
   assert.deepEqual(takeFind(s, 'wald:5,6', seq(0)), { item: null, added: 0 });
   assert.equal(s.bag.farsight, 1);
+});
+
+test('Zeitsteine gibt es erst ab Gebiet 4, wo Trainer Zeitdruck haben', () => {
+  assert.equal(rollStone(s0(), seq(0.95), 3), 'life');
+  assert.equal(rollStone(s0(), seq(0.95), 4), 'time');
+  assert.equal(rollStone(s0(), seq(0.95)), 'life'); // ohne Gebiet wie bisher
+  const s = s0();
+  assert.deepEqual(takeFind(s, 'duenen:5,6', seq(0.95), 4), { item: 'time', added: 1 });
+  assert.equal(s.bag.time, 1);
+  assert.equal(stepFind(s0(), seq(0, 0.95), 5), 'time');
 });

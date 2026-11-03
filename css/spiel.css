@@ -339,6 +339,24 @@ body[data-mode="duel"] #panel { background: var(--ink); border-radius: 8px 8px 0
 .duel-side { display: flex; flex-direction: column; gap: 6px; }
 .btn.side { font-size: var(--text-small); padding: 6px 12px; white-space: nowrap; }
 .duel-notice { margin: 0; color: #ffb4a8; font-weight: 700; }
+/* Zeitbalken (Design 7.4): blinkt nie; knapp = Farbe und Streifen, angehalten = blau mit Text. */
+.timebar { position: relative; height: 18px; border-radius: 4px; background: rgba(243, 236, 210, 0.16); overflow: hidden; }
+.timebar-fill { position: absolute; inset: 0 auto 0 0; background: #e0b34a; }
+.timebar.low .timebar-fill {
+  background: repeating-linear-gradient(-45deg, #e2553f 0 6px, #b8321f 6px 12px);
+}
+.timebar.frozen .timebar-fill { background: #5a9fd6; }
+.timebar-label {
+  position: absolute;
+  inset: 0 8px 0 auto;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cream);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+}
+.timebar.frozen .timebar-label { inset: 0; justify-content: center; }
 .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .btn.answer { display: flex; align-items: center; gap: 10px; text-align: left; min-height: 56px; font-weight: 600; }
 .answer-key {

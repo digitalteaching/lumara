@@ -15,8 +15,8 @@ export const noteKey = (mapId, o) => `${mapId}:${o.x},${o.y}`;
 
 export const noteReady = (state, key) => (state.world.notes[key] ?? 0) <= state.playMs;
 
-function pickReward(state, rng) {
-  const table = Object.entries(CONFIG.notes.rewards);
+function pickReward(state, rng, area) {
+  const table = Object.entries(area >= CONFIG.time.fromArea ? CONFIG.notes.rewardsTimed : CONFIG.notes.rewards);
   const total = table.reduce((n, [, w]) => n + w, 0);
   let r = rng.next() * total;
   let item = table.at(-1)[0];
@@ -47,7 +47,7 @@ export function solveNote(state, key, area, correct, rng) {
   let item = null;
   let lost = null;
   if (rng.next() < CONFIG.notes.rewardChance) {
-    const reward = pickReward(state, rng);
+    const reward = pickReward(state, rng, area);
     if (addItem(state, reward) > 0) item = reward;
     else lost = reward;
   }

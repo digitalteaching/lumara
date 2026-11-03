@@ -15,7 +15,13 @@ const seq = (...v) => {
 };
 
 test('Zettelwerte aus der Einstellung', () => {
-  assert.deepEqual(CONFIG.notes, { xp: 15, rewardChance: 0.5, refillMs: 600000, rewards: { berry: 3, starfruit: 1, farsight: 2, shine: 1, life: 1 } });
+  assert.deepEqual(CONFIG.notes, {
+    xp: 15,
+    rewardChance: 0.5,
+    refillMs: 600000,
+    rewards: { berry: 3, starfruit: 1, farsight: 2, shine: 1, life: 1 },
+    rewardsTimed: { berry: 3, starfruit: 1, farsight: 2, shine: 1, life: 1, time: 2 },
+  });
 });
 
 test('Zettel ohne ZETTEL-Abschnitt nehmen Fragen wie wilde Wesen', () => {
@@ -105,4 +111,11 @@ test('Zettel-XP lassen das Wesen sich entwickeln: evolved', () => {
   s.creature.xpInLevel = xpToNext(14) - 5;
   assert.equal(solveNote(s, 'bucht:1,1', 1, true, seq(0.6)).evolved, true);
   assert.equal(solveNote(s, 'bucht:2,1', 1, true, seq(0.6)).evolved, false);
+});
+
+test('Zettel ab Gebiet 4 können einen Zeitstein bringen', () => {
+  const s = s0();
+  assert.equal(solveNote(s, 'duenen:1,1', 4, true, seq(0, 0.95)).item, 'time');
+  assert.equal(s.bag.time, 1);
+  assert.equal(solveNote(s0(), 'moor:1,1', 3, true, seq(0, 0.95)).item, 'life'); // in Gebiet 3 noch die alte Tabelle
 });

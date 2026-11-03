@@ -1,6 +1,8 @@
 // Das Antwort-Panel im Duell (Design 7.2): Frage, drei Antwortformen, Joker, Rückmeldung.
 // Nach einer Antwort ist alles sofort gesperrt, damit ein Doppeltipp nur einmal zählt.
+// Mit Zeitdruck (Design 7.4) steht oben ein Zeitbalken, auch bei offener iPad-Tastatur sichtbar.
 
+import { CONFIG } from '../config.js';
 import { el, clear } from './dom.js';
 import { createFreshGuard, guardClicks } from './freshGuard.js';
 
@@ -137,10 +139,39 @@ export function watchKeyboard() {
   };
 }
 
+// Zeitbalken: volle Breite, ohne Blinken. Knapp (unter lowShare) heißt orange-rot und gestreift,
+// angehalten heißt blau mit Beschriftung. aria-valuenow ändert sich nur beim Sekundenwechsel.
+function timeBar(lowShare) {
+  const fill = el('div', { class: 'timebar-fill' });
+  const label = el('span', { class: 'timebar-label' });
+  const node = el('div', { class: 'timebar', role: 'progressbar', 'aria-label': 'Zeit', 'aria-valuemin': '0' }, fill, label);
+  let shownSec = null;
+  let shownFrozen = null;
+  return {
+    node,
+    set(left, limit, frozen) {
+      const share = limit > 0 ? Math.max(0, Math.min(1, left / limit)) : 0;
+      fill.style.width = `${(share * 100).toFixed(2)}%`;
+      node.classList.toggle('low', !frozen && share < lowShare);
+      node.classList.toggle('frozen', frozen);
+      const sec = Math.ceil(left / 1000);
+      if (sec === shownSec && frozen === shownFrozen) return;
+      shownSec = sec;
+      shownFrozen = frozen;
+      node.setAttribute('aria-valuemax', String(Math.ceil(limit / 1000)));
+      node.setAttribute('aria-valuenow', String(sec));
+      node.setAttribute('aria-valuetext', frozen ? `Die Zeit steht still. Noch ${sec} Sekunden.` : `Noch ${sec} Sekunden`);
+      label.textContent = frozen ? 'Die Zeit steht still.' : `${sec} s`;
+    },
+  };
+}
+
 export function createDuelPanel(game) {
   const root = el('div', { class: 'duel-panel' });
   game.panel.append(root);
   let disposeForm = () => {};
+  let finishOpen = null; // beendet ein offenes ask (Zeitablauf)
+  let bar = null;
   // Jede neu gezeigte Frage oder Rückmeldung nimmt kurz keine Tipps an (Doppeltipp-Schutz).
   const fresh = createFreshGuard();
   guardClicks(root, fresh);
@@ -149,6 +180,7 @@ export function createDuelPanel(game) {
   function reset() {
     disposeForm();
     disposeForm = () => {};
+    bar = null;
     clear(root);
   }
 
@@ -158,7 +190,9 @@ export function createDuelPanel(game) {
   // feed: { show, enabled } – „Füttern“ steht das ganze Duell an seinem Platz, wenn zu Beginn
   // Futter im Rucksack war, und ist gesperrt, wenn gerade nicht gefüttert werden kann.
   // farsight: { label(), enabled(), use() → hint | null } – Weitblickstein, wirkt wie die Erleuchtung.
-  function ask(duel, { disabledIndex = null, notice = null, feed = null, farsight = null } = {}) {
+  // time: { label(), enabled(), use() → boolean } – Zeitstein, hält die Uhr für diese Frage an.
+  //   Ein Zeitablauf beendet ask über interrupt({ type: 'timeout', result }).
+  function ask(duel, { disabledIndex = null, notice = null, feed = null, farsight = null, time = null } = {}) {
     return new Promise(resolve => {
       let done = false;
       let form = null;
@@ -166,12 +200,14 @@ export function createDuelPanel(game) {
       function finish(value) {
         if (done) return;
         done = true;
+        finishOpen = null;
         root.querySelectorAll('button, input').forEach(b => {
           b.disabled = true;
         });
         offB();
         resolve(value);
       }
+      finishOpen = finish;
 
       // Ein Zettel (kind 'note') ist kein Duell: keine Fähigkeiten, „Später“ statt Fliehen.
       const note = duel.kind === 'note';
@@ -238,12 +274,31 @@ export function createDuelPanel(game) {
             },
           }, '↻ Rückenwind'));
         }
+        if (time && !note) {
+          const timeBtn = el('button', {
+            class: 'btn side',
+            type: 'button',
+            disabled: !time.enabled(),
+            onclick: () => {
+              time.use();
+              timeBtn.disabled = !time.enabled();
+              timeBtn.textContent = time.label();
+              bar?.set(duel.timeLeft, duel.timeLimit, duel.frozen);
+            },
+          }, time.label());
+          side.append(timeBtn);
+        }
         if (feed?.show && !note) {
           side.append(el('button', { class: 'btn side', type: 'button', disabled: !feed.enabled, onclick: () => finish({ type: 'feed' }) }, 'Füttern'));
         }
         const leaveLabel = { flee: 'Fliehen', surrender: 'Aufgeben', later: 'Später' }[leave];
         side.append(el('button', { class: 'btn side', type: 'button', onclick: () => finish({ type: leave }) }, leaveLabel));
 
+        if (duel.timeLimit != null) {
+          bar = timeBar(CONFIG.time.lowShare);
+          bar.set(duel.timeLeft, duel.timeLimit, duel.frozen);
+          root.append(bar.node);
+        }
         if (notice) root.append(el('p', { class: 'duel-notice' }, notice));
         root.append(el('div', { class: 'duel-top' }, el('div', { class: 'box duel-question' }, p.question.text), side), form.node);
       }
@@ -295,6 +350,14 @@ export function createDuelPanel(game) {
   return {
     ask,
     feedback,
+    // Beendet eine offene Frage von außen (Zeitablauf). Ohne offene Frage passiert nichts.
+    interrupt(value) {
+      finishOpen?.(value);
+    },
+    // Zeichnet den Zeitbalken der offenen Frage neu (aus der Spielschleife).
+    setTime(left, limit, frozen) {
+      bar?.set(left, limit, frozen);
+    },
     clear: reset,
     remove() {
       reset();

@@ -14,6 +14,7 @@ const FOUND = {
   farsight: 'einen Weitblickstein',
   shine: 'einen Glanzstein',
   life: 'einen Lebensstein',
+  time: 'einen Zeitstein',
 };
 
 // settle(answer) wird nach der Antwort genau einmal gerufen (answer = { key, correct, trainer })

@@ -2,6 +2,7 @@
 
 import { CONFIG } from '../config.js';
 import { createDuel } from '../duel/duel.js';
+import { timerFor } from '../duel/timing.js';
 import { createDeck, poolFor } from '../duel/questions.js';
 import { stageForLevel, maxEnergy } from '../duel/progress.js';
 import { speciesName, displayName, wildName, AREA_WILD, TRAINER_CREATURES } from '../data/species.js';
@@ -45,6 +46,7 @@ export function makeTrainerSetup(game, number) {
     foe: { ...TRAINER_CREATURES[number], level: cfg.level, maxEnergy: cfg.energy },
     trainer: { number, name: t.name, lines: { hello: t.hello, win: t.win, loss: t.loss } },
     pool: poolFor(pack, { kind: 'trainer', trainerNumber: number, beaten: [] }),
+    time: { trainerNumber: number, setting: pack.timePressure }, // Zeitdruck ab Trainer 4 (Design 7.4)
   };
 }
 
@@ -60,6 +62,7 @@ export function makeProbeSetup(game, number) {
     foe: { ...(TRAINER_CREATURES[t.number] ?? TRAINER_CREATURES[1]), level: cfg.level, maxEnergy: cfg.energy },
     trainer: { number: t.number, name: t.name, lines: { hello: t.hello, win: t.win, loss: t.loss } },
     pool: poolFor(pack, { kind: 'trainer', trainerNumber: t.number, beaten: [] }),
+    time: { trainerNumber: t.number, setting: pack.timePressure },
   };
 }
 
@@ -106,13 +109,16 @@ export function createDuelScene(game, setup, onEnd) {
   const stage = stageForLevel(c.level);
   const player = { species: c.species, stage, energy: c.energy, maxEnergy: maxEnergy(c) };
   const progress = packProgress(game.state, game.pack.data.shortId);
+  const timeFor = timerFor(setup, c.species);
   const duel = createDuel({
     kind: setup.kind,
     player,
     foe: { maxEnergy: setup.foe.maxEnergy },
     deck: createDeck(setup.pool, progress.history, game.rng),
     rng: game.rng,
+    timeFor,
   });
+  const hasClock = timeFor({ form: 'choice' }) !== null;
   const foeName = speciesName(setup.foe.species, setup.foe.stage);
   const ownRows = creatureRows(c.species, stage);
   const foeRows = creatureRows(setup.foe.species, setup.foe.stage);
@@ -120,6 +126,7 @@ export function createDuelScene(game, setup, onEnd) {
   let t = 0;
   let alive = true;
   let panel = null;
+  let asking = false; // eine Frage ist zu sehen: Nur dann läuft die Uhr (Design 7.4)
   const plates = { own: plate('own'), foe: plate('foe') };
   const anim = { own: { lunge: -1e9, hit: -1e9, faint: null }, foe: { lunge: -1e9, hit: -1e9, faint: null }, sparkle: -1e9 };
 
@@ -153,15 +160,15 @@ export function createDuelScene(game, setup, onEnd) {
       return;
     }
     if (r.secondChance) {
-      ctx.disabledIndex = duel.current.form === 'choice' ? response.index : null;
-      ctx.notice = '✗ Leider falsch. Zweite Chance! Versuch es noch einmal.';
+      ctx.disabledIndex = !r.timedOut && duel.current.form === 'choice' ? response.index : null;
+      ctx.notice = r.timedOut ? '✗ Die Zeit ist um. Zweite Chance! Versuch es noch einmal.' : '✗ Leider falsch. Zweite Chance! Versuch es noch einmal.';
       return;
     }
     const lines = [`Richtig ist: ${r.correctText}`];
     if (r.shielded) lines.push('Der Schild schützt dein Wesen.');
     await panel.feedback({
       ok: false,
-      title: r.almost ? 'Fast! Achte auf die Schreibweise.' : 'Leider falsch.',
+      title: r.timedOut ? 'Die Zeit ist um.' : r.almost ? 'Fast! Achte auf die Schreibweise.' : 'Leider falsch.',
       lines,
       minMs: CONFIG.duel.wrongMinMs,
     });
@@ -250,7 +257,7 @@ export function createDuelScene(game, setup, onEnd) {
       }
     }
     panel = createDuelPanel(game);
-    const ctx = { disabledIndex: null, notice: null, feed: null, farsight: null };
+    const ctx = { disabledIndex: null, notice: null, feed: null, farsight: null, time: null };
     const hadFood = foodCount(game.state.bag) > 0;
     // Weitblick steht das ganze Duell an seinem Platz, wenn zu Beginn einer im Rucksack war.
     if (game.state.bag.farsight > 0) {
@@ -260,16 +267,31 @@ export function createDuelScene(game, setup, onEnd) {
         use: () => (ctx.farsight.enabled() && takeItem(game.state, 'farsight') ? duel.useFarsight() : null),
       };
     }
+    // Zeitstein: nach derselben Regel, wenn das Duell eine Uhr hat.
+    if (hasClock && game.state.bag.time > 0) {
+      ctx.time = {
+        label: () => `Zeitstein (${game.state.bag.time})`,
+        enabled: () => duel.canFreeze() && game.state.bag.time > 0,
+        use: () => ctx.time.enabled() && takeItem(game.state, 'time') && duel.freezeTime(),
+      };
+    }
     while (alive && !FINAL.has(duel.state)) {
       if (duel.state === 'ready') duel.ask();
       ctx.feed = {
         show: hadFood,
         enabled: duel.canFeed() && foodCount(game.state.bag) > 0 && duel.playerEnergy < duel.playerMax,
       };
+      asking = true;
       const action = await panel.ask(duel, ctx);
+      asking = false;
       ctx.disabledIndex = null;
       ctx.notice = null;
       if (!alive) return;
+      if (action.type === 'timeout') {
+        await showResult(action.result, null, ctx);
+        updatePlates();
+        continue;
+      }
       if (action.type === 'feed') {
         await feed();
         continue;
@@ -338,6 +360,15 @@ export function createDuelScene(game, setup, onEnd) {
     },
     update(dt) {
       t += dt;
+      // Die Uhr läuft nur, solange die Frage zu sehen ist, nicht bei Futterauswahl, „Aufgeben?“ oder
+      // Rückmeldungen. Ist die App verdeckt, steht die Spielschleife und damit auch die Uhr.
+      if (!asking || !panel || duel.timeLimit == null) return;
+      const r = duel.tick(dt);
+      if (r) {
+        asking = false; // weitere Schritte in diesem Bild (Aufholen) ticken nicht nach
+        panel.interrupt({ type: 'timeout', result: r });
+      }
+      else panel.setTime(duel.timeLeft, duel.timeLimit, duel.frozen);
     },
     render(ctx) {
       drawArena(ctx, setup.area, t, game.reducedMotion);
