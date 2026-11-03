@@ -68,6 +68,15 @@ export function mapOfBeacon(number) {
 // mit einem Thema mehr hat dieselbe Kurzform, aber einen anderen Schlüssel (Design 10.4).
 export const packWorldKey = pack => `${pack.shortId}|${pack.trainers.map(t => t.number).sort((a, b) => a - b).join(',')}`;
 
+// Vor dem höchsten entzündeten Stein in einem offenen Gebiet, oder null.
+export function highestOpenStone(state, pack) {
+  for (const n of [...state.stones].sort((a, b) => b - a)) {
+    const d = mapOfBeacon(n);
+    if (d && areaOpen(state, pack, d.area)) return { map: d.id, ...beaconFront(d, n) };
+  }
+  return null;
+}
+
 // Gilt die gespeicherte Position noch? Sonst der höchste entzündete Stein in einem offenen Gebiet,
 // sonst der Leuchtturm.
 export function resolveStart(state, pack) {
@@ -75,9 +84,5 @@ export function resolveStart(state, pack) {
   const def = MAPS[pos?.map];
   // Auch das Feld selbst muss frei sein: Ein Tor kann sich mit einem anderen Paket wieder schließen.
   if (def && areaOpen(state, pack, def.area) && createMap(def, { openGates: openGatesFor(def, state, pack) }).canEnter(pos.x, pos.y)) return pos;
-  for (const n of [...state.stones].sort((a, b) => b - a)) {
-    const d = mapOfBeacon(n);
-    if (d && areaOpen(state, pack, d.area)) return { map: d.id, ...beaconFront(d, n) };
-  }
-  return { map: 'bucht', ...BUCHT.respawn };
+  return highestOpenStone(state, pack) ?? { map: 'bucht', ...BUCHT.respawn };
 }

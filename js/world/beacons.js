@@ -2,7 +2,7 @@
 
 import { packProgress, lightStone } from '../state.js';
 import { BUCHT } from './maps/bucht.js';
-import { areaOpen, beaconFront, mapOfBeacon } from './network.js';
+import { areaOpen, beaconFront, mapOfBeacon, highestOpenStone } from './network.js';
 
 // Entzündet wird im selben Schritt wie der Sieg (state.js, applyDuelResult).
 export { lightStone };
@@ -19,11 +19,12 @@ export function travelTargets(state, pack) {
     .map(t => ({ number: t.number, map: t.def.id, name: t.def.name }));
 }
 
-// Vor dem zuletzt besuchten Stein, wenn sein Gebiet offen ist, sonst am Leuchtturm.
+// Vor dem zuletzt besuchten Stein, wenn sein Gebiet offen ist. Liegt es nach einem Paketwechsel im
+// Nebel, vor dem höchsten entzündeten Stein in einem offenen Gebiet (wie beim Start), sonst am Leuchtturm.
 export function respawnPoint(state, pack) {
   const def = state.lastStone ? mapOfBeacon(state.lastStone) : null;
   if (def && areaOpen(state, pack, def.area)) return { map: def.id, ...beaconFront(def, state.lastStone) };
-  return { map: 'bucht', ...BUCHT.respawn };
+  return highestOpenStone(state, pack) ?? { map: 'bucht', ...BUCHT.respawn };
 }
 
 // Der Stein leuchtet schon, aber mit diesem Paket ist der Trainer noch nicht besiegt (Design 10.4).

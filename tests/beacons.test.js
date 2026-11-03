@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { lightStone, visitStone, travelTargets, respawnPoint, challengeMark } from '../js/world/beacons.js';
-import { beaconFront } from '../js/world/network.js';
+import { beaconFront, MAPS } from '../js/world/network.js';
 import { BUCHT } from '../js/world/maps/bucht.js';
 import { WALD } from '../js/world/maps/wald.js';
 import { newGameState, packProgress } from '../js/state.js';
@@ -38,7 +38,7 @@ test('Aufwachen nach Niederlage: am zuletzt besuchten Stein, sonst am Leuchtturm
   visitStone(s, 1);
   assert.deepEqual(respawnPoint(s, pack(2)), { map: 'bucht', ...beaconFront(BUCHT, 1) });
   s.lastStone = 2;
-  assert.deepEqual(respawnPoint(s, pack(1)), { map: 'bucht', ...BUCHT.respawn });
+  assert.deepEqual(respawnPoint(s, pack(1)), { map: 'bucht', ...beaconFront(BUCHT, 1) }); // Wald im Nebel: der offene Stein 1
 });
 
 test('Zeichen „neue Herausforderung“', () => {
@@ -48,4 +48,13 @@ test('Zeichen „neue Herausforderung“', () => {
   packProgress(s, 'ENQ9').beaten.push(1);
   assert.equal(challengeMark(s, pack(2), 1), false);
   assert.equal(challengeMark(s, pack(2), 2), false);
+});
+
+test('Aufwachen nach einem Paketwechsel: am höchsten offenen Stein, nicht drei Karten weiter am Leuchtturm', () => {
+  const s = s0();
+  for (const n of [1, 2, 3, 4, 5]) lightStone(s, n);
+  assert.equal(s.lastStone, 5);
+  assert.deepEqual(respawnPoint(s, pack(4)), { map: 'duenen', ...beaconFront(MAPS.duenen, 4) });
+  assert.deepEqual(respawnPoint(s, pack(3)), { map: 'moor', ...beaconFront(MAPS.moor, 3) });
+  assert.deepEqual(respawnPoint(s, pack(5)), { map: 'klippen', ...beaconFront(MAPS.klippen, 5) });
 });
