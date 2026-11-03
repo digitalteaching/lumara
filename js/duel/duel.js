@@ -7,7 +7,8 @@ import { buildChoices, buildTiles, checkTyped, checkTiles, jokerHint, acceptedAn
 
 const FINAL = new Set(['won', 'lost', 'fled']);
 
-export function createDuel({ kind, player, foe, deck, rng }) {
+// timeFor(presented) → Millisekunden oder null (Zeitdruck, Design 7.4); fehlt es, gibt es keine Uhr.
+export function createDuel({ kind, player, foe, deck, rng, timeFor = () => null }) {
   const critEvery = player.stage >= 3 ? CONFIG.duel.critEveryFromStage3 : CONFIG.duel.critEvery;
   const recentForms = [];
   const answers = [];
@@ -29,7 +30,15 @@ export function createDuel({ kind, player, foe, deck, rng }) {
     streak: 0,
     critEvery,
     current: null,
+    timeLimit: null, // Uhr der aktuellen Frage in ms, null ohne Zeitdruck
+    timeLeft: null,
+    frozen: false, // Zeitstein: die Uhr steht für diese Frage
   };
+
+  function startClock() {
+    d.timeLimit = timeFor(d.current) ?? null;
+    d.timeLeft = d.timeLimit;
+  }
 
   function present(question) {
     const form = pickForm(question.forms, recentForms, rng);
@@ -45,6 +54,8 @@ export function createDuel({ kind, player, foe, deck, rng }) {
     d.current = present(deck.draw());
     d.state = 'question';
     hintShown = false;
+    d.frozen = false;
+    startClock();
     return d.current;
   };
 
@@ -72,6 +83,7 @@ export function createDuel({ kind, player, foe, deck, rng }) {
     recentForms.pop();
     d.current = present(deck.draw());
     hintShown = false;
+    startClock(); // neue Frage, neue Zeit; ein Zeitstein gilt für den ganzen Zug
     return d.current;
   };
 
@@ -96,6 +108,29 @@ export function createDuel({ kind, player, foe, deck, rng }) {
     if (form === 'choice') correct = response.index === d.current.choices.correctIndex;
     else if (form === 'typing') ({ correct, almost } = checkTyped(response.text ?? '', acceptedAnswers(question), question.wrong));
     else correct = checkTiles(response.tokens ?? [], acceptedAnswers(question));
+    return settle(correct, almost);
+  };
+
+  // Die Uhr läuft nur bei offener Frage (die Szene ruft tick nur, solange die Frage zu sehen ist).
+  // Abgelaufene Zeit zählt wie eine falsche Antwort (Design 7.1).
+  d.tick = ms => {
+    if (d.state !== 'question' || d.timeLeft == null || d.frozen) return null;
+    d.timeLeft -= ms;
+    if (d.timeLeft > 0) return null;
+    d.timeLeft = 0;
+    return { ...settle(false, false), timedOut: true };
+  };
+
+  // Zeitstein (Design 7.6, 8.2): hält die Uhr für diese Frage an. Ob einer im Rucksack ist, prüft die Szene.
+  d.canFreeze = () => d.state === 'question' && d.timeLeft != null && !d.frozen;
+  d.freezeTime = () => {
+    if (!d.canFreeze()) return false;
+    d.frozen = true;
+    return true;
+  };
+
+  function settle(correct, almost) {
+    const { question } = d.current;
     answers.push({ key: question.key, correct, trainer: question.trainer ?? null });
 
     const r = {
@@ -132,6 +167,7 @@ export function createDuel({ kind, player, foe, deck, rng }) {
         secondChanceUsed = true;
         r.secondChance = true;
         d.state = 'question';
+        d.timeLeft = d.timeLimit; // zweiter Versuch mit voller Zeit
       } else {
         r.playerDamage = 1;
         d.playerEnergy = Math.max(0, d.playerEnergy - 1);
@@ -140,7 +176,7 @@ export function createDuel({ kind, player, foe, deck, rng }) {
     }
     r.state = d.state;
     return r;
-  };
+  }
 
   d.next = () => {
     if (d.state === 'feedback') d.state = 'ready';

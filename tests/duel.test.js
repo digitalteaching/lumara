@@ -207,3 +207,120 @@ test('die Zusammenfassung nennt das Thema jeder Antwort', () => {
   reply(d, true);
   assert.equal(d.summary().answers[0].trainer, 3);
 });
+
+// Zeitdruck (Design 7.1, 7.4): eine Uhr pro Frage.
+const timed = (p = {}, ms = 1000) =>
+  createDuel({
+    kind: 'trainer',
+    rng: createRng(1),
+    timeFor: () => ms,
+    player: { species: 'kiesel', stage: 1, energy: 4, maxEnergy: 4, ...p },
+    foe: { maxEnergy: 5 },
+    deck: deckOf(['A', 'B', 'C'].map(t => q({ text: t, forms: ['typing'] }))),
+  });
+
+test('Zeit abgelaufen: zählt als falsch, Serie weg, 1 Energie', () => {
+  const d = timed();
+  d.ask();
+  reply(d, true);
+  d.next();
+  d.ask();
+  assert.equal(d.timeLimit, 1000);
+  assert.equal(d.tick(400), null);
+  assert.equal(d.timeLeft, 600);
+  const r = d.tick(700);
+  assert.equal(r.correct, false);
+  assert.equal(r.timedOut, true);
+  assert.equal(d.timeLeft, 0);
+  assert.equal(d.playerEnergy, 3);
+  assert.equal(d.streak, 0);
+  assert.equal(d.summary().answers.at(-1).correct, false);
+  assert.equal(d.summary().flawless, false);
+});
+
+test('Die Uhr steht außerhalb einer offenen Frage', () => {
+  const d = timed();
+  assert.equal(d.tick(5000), null); // ready
+  d.ask();
+  reply(d, false); // feedback
+  assert.equal(d.tick(5000), null);
+  assert.equal(d.state, 'feedback');
+});
+
+test('Antwort und Zeitablauf zugleich: Es zählt nur eines', () => {
+  const d = timed();
+  d.ask();
+  d.tick(1500);
+  assert.equal(d.answer({ text: d.current.question.answer }), null);
+  assert.equal(d.summary().answers.length, 1);
+  const e = timed();
+  e.ask();
+  reply(e, true);
+  assert.equal(e.tick(1500), null);
+  assert.equal(e.summary().answers.length, 1);
+});
+
+test('Zeitstein hält die Uhr für diese Frage an, die nächste läuft wieder', () => {
+  const d = timed();
+  d.ask();
+  assert.equal(d.canFreeze(), true);
+  assert.equal(d.freezeTime(), true);
+  assert.equal(d.frozen, true);
+  assert.equal(d.tick(1e9), null);
+  assert.equal(d.canFreeze(), false);
+  assert.equal(d.freezeTime(), false);
+  reply(d, true);
+  d.next();
+  d.ask();
+  assert.equal(d.frozen, false);
+  assert.equal(d.timeLeft, 1000);
+});
+
+test('Zweite Chance nach Zeitablauf: volle Zeit von vorn', () => {
+  const d = timed({ stage: 2 });
+  d.ask();
+  const r = d.tick(1000);
+  assert.equal(r.secondChance, true);
+  assert.equal(r.timedOut, true);
+  assert.equal(d.state, 'question');
+  assert.equal(d.timeLeft, 1000);
+});
+
+test('Zweite Chance nach falscher Antwort: volle Zeit von vorn, ein Zeitstein bleibt wirksam', () => {
+  const d = timed({ stage: 2 });
+  d.ask();
+  d.tick(700);
+  d.freezeTime();
+  reply(d, false);
+  assert.equal(d.state, 'question');
+  assert.equal(d.timeLeft, 1000);
+  assert.equal(d.frozen, true);
+  assert.equal(d.tick(5000), null);
+});
+
+test('Flausch tauscht die Frage: neue Zeit, ein Zeitstein bleibt für diesen Zug wirksam', () => {
+  const d = createDuel({
+    kind: 'trainer',
+    rng: createRng(1),
+    timeFor: p => (p.form === 'typing' ? 1500 : 1000),
+    player: { species: 'flausch', stage: 1, energy: 4, maxEnergy: 4 },
+    foe: { maxEnergy: 5 },
+    deck: deckOf([q({ text: 'A', forms: ['choice'] }), q({ text: 'B', forms: ['typing'] })]),
+  });
+  d.ask();
+  d.tick(400);
+  d.freezeTime();
+  d.swap();
+  assert.equal(d.timeLimit, 1500);
+  assert.equal(d.timeLeft, 1500);
+  assert.equal(d.frozen, true);
+});
+
+test('Ohne Zeitdruck keine Uhr', () => {
+  const d = mk();
+  d.ask();
+  assert.equal(d.timeLimit, null);
+  assert.equal(d.timeLeft, null);
+  assert.equal(d.tick(1e9), null);
+  assert.equal(d.canFreeze(), false);
+});
