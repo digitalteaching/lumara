@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { MAPS, areaOpen, openGatesFor, exitAt, resolveStart, beaconFront, packWorldKey } from '../js/world/network.js';
+import { MAPS, areaOpen, openGatesFor, exitAt, resolveStart, beaconFront, packWorldKey, npcLines } from '../js/world/network.js';
 import { createMap } from '../js/world/map.js';
 import { parsePack } from '../js/pack/parser.js';
 import { makePackText } from './helpers/fixtures.js';
@@ -69,4 +69,12 @@ test('neue Fassung desselben Pakets (gleiche KENNUNG) mit einem Thema mehr: Die 
   assert.equal(one.shortId, two.shortId); // dieselbe KENNUNG, dieselbe Kurzform
   assert.notEqual(packWorldKey(one), packWorldKey(two));
   assert.equal(packWorldKey(two), packWorldKey(parsePack(makePackText({ trainers: 2 })).pack));
+});
+
+test('Bewohner: Sätze zum offenen Weg erst, wenn das nächste Gebiet wirklich offen ist', () => {
+  const o = { lines: ['a'], linesLit: ['lit'], linesOpen: ['offen'] };
+  assert.deepEqual(npcLines(o, st([]), 1, pack(2)), ['a']);
+  assert.deepEqual(npcLines(o, st([1]), 1, pack(1)), ['lit']); // Stein leuchtet, Wald liegt im Nebel
+  assert.deepEqual(npcLines(o, st([1]), 1, pack(2)), ['offen']);
+  assert.deepEqual(npcLines({ lines: ['a'], linesLit: ['lit'] }, st([1]), 1, pack(2)), ['lit']);
 });

@@ -386,7 +386,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
     if (!o) return false;
     if (o.type === 'npc') {
       scene.turnToward(o, OPPOSITE[player.dir]);
-      await say(game, game.state ? npcLines(o, game.state, def.area) : o.lines, { speaker: o.name });
+      await say(game, game.state ? npcLines(o, game.state, def.area, game.pack?.data) : o.lines, { speaker: o.name });
       scene.resetFacing(o);
       return true;
     }

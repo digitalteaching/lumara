@@ -5,6 +5,7 @@ import { parsePack } from '../js/pack/parser.js';
 import { notePool, noteKey, noteReady, solveNote, storyFound } from '../js/world/notes.js';
 import { STORY } from '../js/data/story.js';
 import { CONFIG } from '../js/config.js';
+import { xpToNext } from '../js/duel/progress.js';
 import { makePackText, fillerQuestions } from './helpers/fixtures.js';
 
 const s0 = () => newGameState({ name: 'A', species: 'nixi', nickname: null });
@@ -28,7 +29,7 @@ test('falsch: nichts, der Zettel bleibt liegen', () => {
   assert.equal(noteKey('bucht', { x: 3, y: 12 }), 'bucht:3,12');
   const s = s0();
   s.playMs = 0;
-  assert.deepEqual(solveNote(s, 'bucht:3,12', 1, false, seq(0)), { xp: 0, item: null, story: null });
+  assert.deepEqual(solveNote(s, 'bucht:3,12', 1, false, seq(0)), { xp: 0, item: null, lost: null, story: null, evolved: false });
   assert.equal(noteReady(s, 'bucht:3,12'), true);
   assert.equal(s.creature.xpInLevel, 0);
 });
@@ -80,4 +81,28 @@ test('Zettelantwort zählt in Statistik und Historie, aber nicht als Sieg', () =
   assert.equal(p.stats.right, 1);
   assert.equal(p.stats.wins, 0);
   assert.equal(p.history['z frage 1'].n, 1);
+});
+
+test('Zettel zweimal gelöst (Doppeltipp): Nur das erste Mal zählt', () => {
+  const s = s0();
+  s.playMs = 0;
+  solveNote(s, 'bucht:3,12', 1, true, seq(0.6));
+  assert.deepEqual(solveNote(s, 'bucht:3,12', 1, true, seq(0.6)), { xp: 0, item: null, lost: null, story: null, evolved: false });
+  assert.equal(s.story[1], 1);
+});
+
+test('Belohnung bei vollem Rucksack wird gemeldet, nicht verschluckt', () => {
+  const s = s0();
+  s.bag.berry = 10;
+  const r = solveNote(s, 'bucht:1,1', 1, true, seq(0, 0));
+  assert.equal(r.item, null);
+  assert.equal(r.lost, 'berry');
+});
+
+test('Zettel-XP lassen das Wesen sich entwickeln: evolved', () => {
+  const s = s0();
+  s.creature.level = 14;
+  s.creature.xpInLevel = xpToNext(14) - 5;
+  assert.equal(solveNote(s, 'bucht:1,1', 1, true, seq(0.6)).evolved, true);
+  assert.equal(solveNote(s, 'bucht:2,1', 1, true, seq(0.6)).evolved, false);
 });

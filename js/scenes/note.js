@@ -17,7 +17,8 @@ const FOUND = {
 };
 
 // settle(answer) wird nach der Antwort genau einmal gerufen (answer = { key, correct, trainer })
-// und liefert { xp, item, story }. Ergebnis: null bei „Später“, sonst { correct, xp, item, story }.
+// und liefert { xp, item, lost, story, evolved }. Ergebnis: null bei „Später“, sonst
+// { correct, xp, item, lost, story, evolved }.
 export async function playNote(game, pool, settle) {
   const c = game.state.creature;
   const history = packProgress(game.state, game.pack.data.shortId).history;
@@ -45,6 +46,7 @@ export async function playNote(game, pool, settle) {
       const lines = [];
       if (out.item) lines.push(`Du findest außerdem ${FOUND[out.item]}.`);
       if (out.item === 'life') lines.push(`${displayName(c)} hat jetzt dauerhaft 1 Energie mehr.`);
+      if (out.lost) lines.push(`Du findest außerdem ${FOUND[out.lost]}. Dein Rucksack ist voll.`);
       await panel.feedback({ ok: true, title: `Richtig! +${out.xp} XP`, lines, minMs: 600 });
     } else {
       await panel.feedback({

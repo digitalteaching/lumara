@@ -67,7 +67,8 @@ export const BUCHT = {
         'Ist dein Wesen erschöpft, komm zur Tür des Leuchtturms. Sein Licht gibt neue Kraft.',
         'Die Hüterin der Bucht wartet oben am Nordweg. Zeig ihr, was du gelernt hast!',
       ],
-      linesLit: [
+      linesLit: ['Der Leuchtstein der Bucht leuchtet wieder! Ich wusste, dass du es schaffst.'],
+      linesOpen: [
         'Der Leuchtstein der Bucht leuchtet wieder! Ich wusste, dass du es schaffst.',
         'Nördlich der Bucht liegt der Flüsterwald. Hör gut zu, was die Bäume dort flüstern.',
       ],
@@ -79,7 +80,8 @@ export const BUCHT = {
         'Die Hüterin der Bucht steht oben am Nordweg, kurz vor dem Nebel.',
         'Wer an ihr vorbei will, muss ihre Fragen beantworten.',
       ],
-      linesLit: ['Hast du den Nebel im Norden gesehen? Er ist weg!'],
+      linesLit: ['Der Leuchtstein strahlt! Jetzt fange ich wieder Fische bei Nacht.'],
+      linesOpen: ['Hast du den Nebel im Norden gesehen? Er ist weg!'],
     },
     {
       type: 'npc', id: 'pim', name: 'Pim', x: 11, y: 8, dir: 'left', sprite: 'kind',

@@ -31,10 +31,13 @@ function pickReward(state, rng) {
   return item;
 }
 
-// Falsch: nichts, der Zettel bleibt. Richtig: XP, mit rewardChance ein Gegenstand (nur gemeldet,
-// wenn er in den Rucksack passt), das nächste Geschichtsstück und ein neuer Zettel erst später.
+const NOTHING = () => ({ xp: 0, item: null, lost: null, story: null, evolved: false });
+
+// Falsch: nichts, der Zettel bleibt. Richtig: XP, mit rewardChance ein Gegenstand (passt er nicht
+// mehr in den Rucksack, steht er in lost), das nächste Geschichtsstück und ein neuer Zettel erst
+// später. Liegt gerade kein Zettel unter dem Stein (etwa bei einem Doppeltipp), passiert nichts.
 export function solveNote(state, key, area, correct, rng) {
-  if (!correct) return { xp: 0, item: null, story: null };
+  if (!correct || !noteReady(state, key)) return NOTHING();
   const c = state.creature;
   const xp = CONFIG.notes.xp;
   const r = addXp(c, xp);
@@ -42,9 +45,11 @@ export function solveNote(state, key, area, correct, rng) {
   c.xpInLevel = r.xpInLevel;
 
   let item = null;
+  let lost = null;
   if (rng.next() < CONFIG.notes.rewardChance) {
     const reward = pickReward(state, rng);
     if (addItem(state, reward) > 0) item = reward;
+    else lost = reward;
   }
 
   let story = null;
@@ -56,7 +61,7 @@ export function solveNote(state, key, area, correct, rng) {
   }
 
   state.world.notes[key] = state.playMs + CONFIG.notes.refillMs;
-  return { xp, item, story };
+  return { xp, item, lost, story, evolved: r.stageAfter > r.stageBefore };
 }
 
 // Alle gefundenen Stücke, nach Gebiet und Fundreihenfolge.

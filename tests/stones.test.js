@@ -67,3 +67,10 @@ test('Meldungen zu den Funden', () => {
   assert.equal(STONE_LINES.shine('Nixi'), 'Du findest einen Glanzstein!');
   assert.equal(STONE_LINES.life('Nixi'), 'Ein Lebensstein! Nixi hat jetzt dauerhaft 1 Energie mehr.');
 });
+
+test('Fundstelle zweimal aufgehoben: beim zweiten Mal nichts', () => {
+  const s = s0();
+  takeFind(s, 'wald:5,6', seq(0));
+  assert.deepEqual(takeFind(s, 'wald:5,6', seq(0)), { item: null, added: 0 });
+  assert.equal(s.bag.farsight, 1);
+});

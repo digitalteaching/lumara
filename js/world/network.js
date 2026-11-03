@@ -49,8 +49,10 @@ export function whisperLine(o, passCount) {
   return o.lines[passCount % o.lines.length];
 }
 
-// Bewohner reagieren auf den Fortschritt (Design 5.6): eigene Sätze, sobald der Stein ihres Gebiets leuchtet.
-export function npcLines(o, state, area) {
+// Bewohner reagieren auf den Fortschritt (Design 5.6): eigene Sätze, sobald der Weg ins nächste
+// Gebiet wirklich offen ist, sonst sobald der Stein ihres Gebiets leuchtet.
+export function npcLines(o, state, area, pack) {
+  if (o.linesOpen && pack && areaOpen(state, pack, area + 1)) return o.linesOpen;
   return o.linesLit && state.stones.includes(area) ? o.linesLit : o.lines;
 }
 

@@ -31,7 +31,9 @@ export const findKey = (mapId, f) => `${mapId}:${f.x},${f.y}`;
 
 export const findReady = (state, key) => (state.world.finds[key] ?? 0) <= state.playMs;
 
+// Glitzert die Fundstelle gerade nicht (etwa bei einem Doppeltipp), gibt es nichts.
 export function takeFind(state, key, rng) {
+  if (!findReady(state, key)) return { item: null, added: 0 };
   const item = rollStone(state, rng);
   const added = addItem(state, item);
   state.world.finds[key] = state.playMs + CONFIG.finds.respawnMs;

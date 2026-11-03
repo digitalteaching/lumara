@@ -25,7 +25,6 @@ import { openMenu } from '../menu/menu.js';
 
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 const DELTA = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
-const AFTER_WIN = 'Der Leuchtstein der Bucht wartet darauf, wieder zu leuchten. Bald ist es so weit.';
 export const RELOCATED = 'Der Nebel ist zurückgekommen. Ich habe dich hierher gebracht.';
 
 // In ein anderes Gebiet (oder an einen anderen Ort) wechseln: überblenden, speichern, neue Welt.
@@ -295,6 +294,7 @@ export function createGameWorld(game) {
     });
     if (!result) return;
     for (let lvl = levelBefore + 1; lvl <= c.level; lvl++) await say(game, [`${displayName(c)} erreicht Level ${lvl}!`]);
+    if (result.evolved) await say(game, [`${displayName(c)} wird stärker!`]);
     if (result.story) await say(game, [result.story], { speaker: 'Ein Stück Geschichte' });
   }
 
@@ -351,9 +351,9 @@ export function createGameWorld(game) {
   // Text vom Nebelrand (nächstes Thema fehlt im Paket oder das Gebiet ist noch nicht gebaut).
   function afterWinLines(t) {
     const sign = def.objects.find(o => o.type === 'sign' && o.role === 'fogEdge');
-    if (!sign) return [t.afterWin ?? AFTER_WIN];
-    if (areaOpen(game.state, game.pack.data, sign.leadsTo)) return [t.afterWin ?? AFTER_WIN];
-    return fogEdgeLines(sign, { gateBeaten: true, packHasNext: game.pack.data.trainers.some(x => x.number === sign.leadsTo), builtAreas: CONFIG.world.builtAreas }) ?? [t.afterWin ?? AFTER_WIN];
+    if (!sign) return [t.afterWin];
+    if (areaOpen(game.state, game.pack.data, sign.leadsTo)) return [t.afterWin];
+    return fogEdgeLines(sign, { gateBeaten: true, packHasNext: game.pack.data.trainers.some(x => x.number === sign.leadsTo), builtAreas: CONFIG.world.builtAreas }) ?? [t.afterWin];
   }
 
   // Weißer Stern über einem Trainer, dessen Stein leuchtet, der mit diesem Paket aber noch nicht
