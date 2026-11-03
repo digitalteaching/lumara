@@ -67,7 +67,7 @@ export function settingsPage(game) {
         game.state && game.pack ? section('Lehrkraft', el('div', { class: 'sheet-list' }, entry('Für die Lehrkraft', () => nav.push(teacherStatsPage(game))))) : null,
         section('Gerät', el('div', { class: 'sheet-list' }, entry('Zum Home-Bildschirm', () => nav.push(homeScreenPage(game))))),
         section('Neu anfangen', el('button', { class: 'btn danger', type: 'button', onclick: () => nav.push(newGamePages(game)) }, 'Neues Spiel')),
-        el('p', { class: 'sheet-foot' }, `Spielfassung ${game.version}`),
+        el('p', { class: 'sheet-foot' }, `Spielfassung ${game.version}${game.updateReady ? ' · Neue Version da – beim nächsten Start aktiv' : ''}`),
       );
     },
   };

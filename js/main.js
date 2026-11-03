@@ -20,6 +20,7 @@ import { createPlayClock } from './save/playClock.js';
 import { makeSaver } from './app/flow.js';
 import { APP_VERSION } from './version.js';
 import { requestPersist } from './app/platform.js';
+import { bootUpdates, removeServiceWorkers } from './app/update.js';
 import { createDuelScene, makeWildSetup, makeTrainerSetup, makeProbeSetup } from './scenes/duel.js';
 import { maxEnergy } from './duel/progress.js';
 import { el } from './ui/dom.js';
@@ -145,8 +146,29 @@ else if (isLocal && params.has('duell')) devDuel(params.get('duell'));
 else if (isLocal && params.has('dev')) devStart();
 else startFlow(game, game.store.load());
 
+// Offline und Updates (Design 16). Auf dem eigenen Rechner nur mit ?sw, sonst immer frische Dateien.
+const UPDATE_TEXT = 'Neue Version da – beim nächsten Start aktiv';
+let updateToastPending = false;
+if (!game.probe) {
+  if (isLocal && !params.has('sw')) removeServiceWorkers();
+  else {
+    bootUpdates({
+      version: APP_VERSION,
+      onReady: () => {
+        game.updateReady = true;
+        updateToastPending = true;
+      },
+    });
+  }
+}
+
 startLoop({
   update(dt) {
+    // Den Hinweis auf eine neue Fassung nie mitten im Duell zeigen.
+    if (updateToastPending && game.mode !== 'duel') {
+      updateToastPending = false;
+      showToast(UPDATE_TEXT);
+    }
     game.scene?.update(dt);
     autosave.tick(dt);
     const add = game.clock.step(performance.now(), !document.hidden);
