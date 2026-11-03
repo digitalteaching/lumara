@@ -1,11 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createPackStore } from '../js/pack/store.js';
-
-const fake = () => {
-  const m = new Map();
-  return { getItem: k => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, String(v)), removeItem: k => m.delete(k) };
-};
+import { fakeStorage as fake } from './helpers/fixtures.js';
 
 test('speichert, lädt und löscht den Paket-Text', () => {
   const s = createPackStore(fake());

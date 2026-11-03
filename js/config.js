@@ -54,4 +54,6 @@ export const CONFIG = deepFreeze({
     templateId: 'fach-jahrgang-name',
   },
   names: { maxLength: 12 },
+  save: { autosaveMs: 30000 },
+  play: { idleMs: 120000 },
 });

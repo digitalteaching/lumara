@@ -1,5 +1,11 @@
 // Gemeinsame Testdaten.
 
+// Ein localStorage im Speicher.
+export function fakeStorage() {
+  const m = new Map();
+  return { getItem: k => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, String(v)), removeItem: k => m.delete(k) };
+}
+
 export const TEST_MAP_DEF = {
   id: 't',
   name: 'Test',
