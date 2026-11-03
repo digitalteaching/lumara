@@ -10,9 +10,10 @@ import { ALPHABET } from '../pack/packId.js';
 const SALT = 'Lumara·Prüfcode·2026';
 const RANGE = ALPHABET.length ** 6; // 31^6 = 887503681
 
-// Die Lehrkraft tippt den Namen vom Screenshot ab: Groß- und Kleinschreibung und Leerzeichen zählen nicht.
+// Die Lehrkraft tippt den Namen vom Screenshot ab: Groß- und Kleinschreibung, Leerzeichen und die
+// Form des Apostrophs (das iPad macht aus ' ein ’) zählen nicht.
 export function normalizeName(name) {
-  return String(name ?? '').normalize('NFC').trim().replace(/\s+/g, ' ').toLowerCase();
+  return String(name ?? '').normalize('NFC').trim().replace(/\s+/g, ' ').replace(/[’‘`´]/g, "'").toLowerCase();
 }
 
 export function checkCode(s) {
