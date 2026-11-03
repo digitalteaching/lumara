@@ -66,6 +66,10 @@ export const BUCHT = {
         'Ist dein Wesen erschöpft, komm zur Tür des Leuchtturms. Sein Licht gibt neue Kraft.',
         'Die Hüterin der Bucht wartet oben am Nordweg. Zeig ihr, was du gelernt hast!',
       ],
+      linesLit: [
+        'Der Leuchtstein der Bucht leuchtet wieder! Ich wusste, dass du es schaffst.',
+        'Nördlich der Bucht liegt der Flüsterwald. Hör gut zu, was die Bäume dort flüstern.',
+      ],
     },
     {
       type: 'npc', id: 'bram', name: 'Bram', x: 18, y: 26, dir: 'right', sprite: 'fischer',
@@ -74,6 +78,7 @@ export const BUCHT = {
         'Die Hüterin der Bucht steht oben am Nordweg, kurz vor dem Nebel.',
         'Wer an ihr vorbei will, muss ihre Fragen beantworten.',
       ],
+      linesLit: ['Hast du den Nebel im Norden gesehen? Er ist weg!'],
     },
     {
       type: 'npc', id: 'pim', name: 'Pim', x: 11, y: 8, dir: 'left', sprite: 'kind',
@@ -81,6 +86,7 @@ export const BUCHT = {
         'Pass auf! Im hohen Gras wohnen wilde Wesen.',
         'Wenn dir eins zu stark ist, kannst du mit B fliehen.',
       ],
+      linesLit: ['Ich habe gesehen, wie der Stein aufgeleuchtet hat. So hell!'],
     },
     {
       type: 'npc', id: 'oda', name: 'Oda', x: 12, y: 13, dir: 'down', sprite: 'netz',
@@ -89,9 +95,13 @@ export const BUCHT = {
         'Seit sie erloschen sind, kommt der Nebel jedes Jahr ein Stück näher.',
         'Vielleicht kannst du sie wieder zum Leuchten bringen?',
       ],
+      linesLit: ['Ein Leuchtstein leuchtet wieder. Vielleicht kommen die anderen auch zurück.'],
     },
 
-    { type: 'trainer', number: 1, x: 22, y: 6, dir: 'left', sight: 4, sprite: 'trainer1' },
+    {
+      type: 'trainer', number: 1, x: 22, y: 6, dir: 'left', sight: 4, sprite: 'trainer1',
+      afterWin: 'Dein Leuchtstein strahlt. Der Weg in den Flüsterwald ist frei.',
+    },
 
     {
       // Nebelrand zum Flüsterwald (Design 10.4): Der Text hängt vom Stand ab, siehe world/fogEdge.js.

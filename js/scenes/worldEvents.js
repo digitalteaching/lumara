@@ -8,7 +8,7 @@ import { playTransition, reveal } from './transition.js';
 import { createEncounterCounter } from '../world/encounters.js';
 import { trainerSees } from '../world/map.js';
 import { fogEdgeLines } from '../world/fogEdge.js';
-import { MAPS, areaConfig, exitAt, openGatesFor, resolveStart } from '../world/network.js';
+import { MAPS, areaConfig, areaOpen, exitAt, openGatesFor, resolveStart, whisperLine } from '../world/network.js';
 import { BUCHT } from '../world/maps/bucht.js';
 import { packProgress } from '../state.js';
 import { displayName } from '../data/species.js';
@@ -168,6 +168,30 @@ export function createGameWorld(game) {
 
   // ---------- Ereignisse ----------
 
+  // Flüsternde Bäume (Design 5.3): Wer vorbeigeht, hört sie leise sprechen. Blockiert nichts.
+  const whispers = def.objects.filter(o => o.type === 'whisper');
+  const whisperCount = new Map();
+  let nearWhisper = null;
+  let whisperNode = null;
+  let whisperTimer = null;
+  function showWhisper(text) {
+    whisperNode?.remove();
+    clearTimeout(whisperTimer);
+    whisperNode = el('div', { class: 'whisper passive', 'aria-live': 'polite' }, text);
+    game.ui.append(whisperNode);
+    whisperTimer = setTimeout(() => whisperNode?.remove(), 3000);
+  }
+  world.onStepped.unshift((x, y) => {
+    const tree = whispers.find(o => Math.abs(o.x - x) + Math.abs(o.y - y) === 1) ?? null;
+    if (tree && tree !== nearWhisper) {
+      const n = whisperCount.get(tree) ?? 0;
+      whisperCount.set(tree, n + 1);
+      showWhisper(whisperLine(tree, n));
+    }
+    nearWhisper = tree;
+    return null;
+  });
+
   world.onStepped.push((x, y) => {
     // Ausgang in ein anderes Gebiet zählt vor allem anderen.
     const exit = exitAt(def, x, y);
@@ -181,8 +205,9 @@ export function createGameWorld(game) {
   world.onInteract.unshift(async ev => {
     const o = ev.target;
     if (o?.type !== 'sign' || o.role !== 'fogEdge') return false;
+    // Ob der Stein leuchtet, entscheidet über das Tor (auch mit einem anderen Paket entzündet).
     const lines = fogEdgeLines(o, {
-      gateBeaten: packProgress(game.state, shortId()).beaten.includes(o.gate),
+      gateBeaten: game.state.stones.includes(o.gate),
       packHasNext: game.pack.data.trainers.some(t => t.number === o.leadsTo),
       builtAreas: CONFIG.world.builtAreas,
     });
@@ -195,7 +220,7 @@ export function createGameWorld(game) {
     if (o?.type === 'trainer' && o.number === trainerNumber) {
       if (beaten()) {
         world.turnToward(o, OPPOSITE[player.dir]);
-        await say(game, [AFTER_WIN], { speaker: packTrainer()?.name });
+        await say(game, afterWinLines(o), { speaker: packTrainer()?.name });
         world.resetFacing(o);
       } else {
         await trainerDuel({ spotted: false });
@@ -210,6 +235,15 @@ export function createGameWorld(game) {
     }
     return false;
   });
+
+  // Was ein besiegter Trainer sagt: Ist der Weg weiter offen, sein Satz aus der Karte, sonst der
+  // Text vom Nebelrand (nächstes Thema fehlt im Paket oder das Gebiet ist noch nicht gebaut).
+  function afterWinLines(t) {
+    const sign = def.objects.find(o => o.type === 'sign' && o.role === 'fogEdge');
+    if (!sign) return [t.afterWin ?? AFTER_WIN];
+    if (areaOpen(game.state, game.pack.data, sign.leadsTo)) return [t.afterWin ?? AFTER_WIN];
+    return fogEdgeLines(sign, { gateBeaten: true, packHasNext: game.pack.data.trainers.some(x => x.number === sign.leadsTo), builtAreas: CONFIG.world.builtAreas }) ?? [t.afterWin ?? AFTER_WIN];
+  }
 
   // Ausrufezeichen über der Trainerin
   world.afterRender.push((ctx, cam) => {
@@ -274,6 +308,7 @@ export function createGameWorld(game) {
     baseExit?.();
     hud.remove();
     menuBtn.remove();
+    whisperNode?.remove();
     offMenu?.();
     offMenu = null;
   };

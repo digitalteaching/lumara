@@ -246,7 +246,66 @@ function glimmqualle() {
   return done(g);
 }
 
+// ---------- Gebiet 2: Flüsterwald ----------
+
+function moosling() {
+  const g = canvas(32);
+  ellipse(g, 16, 21, 10, 8, ['G', 'g', 'l']); // Moosballen
+  ellipse(g, 15, 11, 8, 4, ['p', 'C', 'e'], { cutBelow: 12 }); // Pilzhut
+  for (let x = 8; x <= 22; x++) put(g, x, 13, 'c'); // Hutrand
+  outline(g);
+  dots(g, [[12, 9, 'w'], [17, 8, 'w'], [20, 10, 'w'], [10, 20, 'F'], [21, 24, 'F'], [14, 26, 'F'], [19, 18, 'G'], [8, 23, 'F']]);
+  eye(g, 17, 17);
+  eye(g, 21, 17);
+  dots(g, [[19, 21, 'k'], [20, 21, 'k'], [11, 29, 'l'], [12, 29, 'l'], [20, 29, 'l'], [21, 29, 'l']]);
+  return done(g);
+}
+
+function eichhuscher1() {
+  const g = canvas(32);
+  ellipse(g, 9, 14, 6, 10, ['h', 'r', 'o']); // buschiger Laubschwanz
+  ellipse(g, 18, 22, 7, 6, ['p', 'C', 'e']); // Körper
+  ellipse(g, 21, 13, 6, 5, ['p', 'C', 'e']); // Kopf
+  ellipse(g, 21, 8, 4, 2.5, ['o', 'r', 'b']); // Eichelkappe
+  outline(g);
+  dots(g, [[21, 5, 'b'], [21, 4, 'b'], [6, 8, 'H'], [8, 12, 'H'], [7, 17, 'H'], [10, 20, 'r'], [15, 25, 'c'], [17, 26, 'c']]);
+  eye(g, 21, 12);
+  eye(g, 24, 12);
+  dots(g, [[26, 15, 'k'], [23, 16, 'k'], [24, 16, 'k'], [14, 28, 'e'], [20, 28, 'e']]);
+  return done(g);
+}
+
+// Kronenhuscher: größer, mit einer Krone aus Eichenblättern
+function eichhuscher2() {
+  const g = canvas(40);
+  ellipse(g, 11, 17, 8, 13, ['h', 'r', 'o']);
+  ellipse(g, 23, 28, 9, 8, ['p', 'C', 'e']);
+  ellipse(g, 27, 16, 7, 6, ['p', 'C', 'e']);
+  for (const [x, y] of [[21, 8], [25, 6], [29, 6], [33, 8]]) ellipse(g, x, y, 2.5, 3, ['G', 'g', 'l']);
+  outline(g);
+  dots(g, [[25, 3, 'h'], [29, 3, 'h'], [7, 10, 'H'], [9, 16, 'H'], [8, 23, 'H'], [12, 28, 'r'], [19, 33, 'c'], [22, 34, 'c']]);
+  eye(g, 26, 14, 2, 3);
+  eye(g, 30, 14, 2, 3);
+  dots(g, [[33, 18, 'k'], [29, 20, 'k'], [30, 20, 'k'], [17, 36, 'e'], [26, 36, 'e']]);
+  return done(g);
+}
+
+function rindenwicht() {
+  const g = canvas(32);
+  poly(g, [[9, 28], [7, 14], [11, 6], [19, 4], [24, 9], [25, 20], [23, 28], [19, 25], [16, 29], [13, 25]], ['r', 'o', 'b']);
+  ellipse(g, 27, 14, 2, 3, ['g', 'l', 'F']); // Moosbüschel
+  outline(g);
+  dots(g, [[12, 10, 'b'], [12, 11, 'b'], [13, 18, 'b'], [13, 19, 'b'], [20, 20, 'b'], [20, 21, 'b'], [10, 22, 'b']]);
+  // Laternenaugen
+  for (const [x, y] of [[14, 12], [19, 12]]) dots(g, [[x, y, 'H'], [x + 1, y, 'H'], [x, y + 1, 'h'], [x + 1, y + 1, 'H']]);
+  dots(g, [[16, 16, 'k'], [17, 16, 'k'], [27, 11, 'G']]);
+  return done(g);
+}
+
 export const CREATURE_ART = {
+  moosling: { 1: moosling() },
+  eichhuscher: { 1: eichhuscher1(), 2: eichhuscher2() },
+  rindenwicht: { 1: rindenwicht() },
   funki: { 1: funki() },
   kiesel: { 1: kiesel() },
   nixi: { 1: nixi() },

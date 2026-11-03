@@ -97,7 +97,22 @@ const NET_SIDE = [[3, 9, 'm'], [2, 10, 'f'], [3, 11, 'm'], [2, 12, 'f']];
 // Kopftuch-Knoten (Trainerin der Bucht)
 const KNOT_UP = [[7, 8, 'e'], [8, 8, 'e'], [7, 9, 'e']];
 
+// Moosflecken auf dem Umhang (Waldläufer)
+const MOSS_DOWN = [[4, 10, 'g'], [11, 11, 'g'], [6, 12, 'G'], [9, 13, 'g']];
+const MOSS_SIDE = [[5, 10, 'g'], [8, 12, 'G']];
+// Kräuterkorb am Arm (Fenna)
+const BASKET_DOWN = [[12, 11, 'o'], [13, 11, 'r'], [14, 11, 'k'], [12, 12, 'o'], [13, 12, 'o'], [13, 10, 'g']];
+const BASKET_SIDE = [[11, 11, 'o'], [12, 11, 'r'], [11, 12, 'o'], [12, 10, 'g']];
+// Glas für Glühwürmchen (Lio)
+const JAR_DOWN = [[12, 10, 'k'], [12, 11, 'A'], [12, 12, 'H'], [13, 11, 'k']];
+const JAR_SIDE = [[11, 10, 'k'], [11, 11, 'A'], [11, 12, 'H']];
+
 export const CHARACTERS = {
+  // Flüsterwald (Plan 3a): Waldläufer mit Kapuze und Moosumhang (Design 5.3) und die Bewohner
+  trainer2: character({ h: 'F', i: 'k', c: 'l', d: 'F', l: 'o', b: 'b' }, { down: MOSS_DOWN, side: MOSS_SIDE }),
+  fenna: character({ h: 'h', i: 'r', c: 'v', d: 'P', l: 'c', b: 'b' }, { down: BASKET_DOWN, side: BASKET_SIDE }),
+  birk: character({ h: 'm', i: 's', c: 'o', d: 'b', l: 'Y', b: 'k' }, { down: BEARD_DOWN.map(([x, y]) => [x, y, 'w']), side: BEARD_SIDE.map(([x, y]) => [x, y, 'w']) }),
+  lio: character({ h: 'b', i: 'k', c: 'h', d: 'r', l: 'D', b: 'b' }, { down: JAR_DOWN, side: JAR_SIDE }),
   // neutrale Figur mit Kapuzenumhang (Design 14)
   player: character({ h: 't', i: 'F', c: 't', d: 'F', l: 'c', b: 'b' }),
   ilvy: character({ h: 'm', i: 's', c: 'D', d: 'n', l: 'S', b: 'n' }, { down: [...LANTERN_DOWN, ...BUN_DOWN], side: LANTERN_SIDE }),

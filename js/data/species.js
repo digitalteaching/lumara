@@ -75,14 +75,42 @@ export const SPECIES = {
     names: ['Glimmqualle'],
     description: 'Eine Qualle, die nachts über dem Wasser schwebt. Ihre Punkte leuchten wie Sterne.',
   },
+
+  // Gebiet 2: Flüsterwald
+  moosling: {
+    id: 'moosling',
+    kind: 'wild',
+    area: 2,
+    rarity: 'common',
+    names: ['Moosling', 'Moosmuffel'],
+    description: 'Ein runder Moosballen mit Pilzhut. Er rollt lieber, als dass er läuft.',
+  },
+  eichhuscher: {
+    id: 'eichhuscher',
+    kind: 'wild',
+    area: 2,
+    rarity: 'common',
+    names: ['Eichhuscher', 'Kronenhuscher'],
+    description: 'Ein Hörnchen aus Herbstlaub mit einer Eichel als Mütze. Es versteckt überall Vorräte.',
+  },
+  rindenwicht: {
+    id: 'rindenwicht',
+    kind: 'wild',
+    area: 2,
+    rarity: 'rare',
+    names: ['Rindenwicht'],
+    description: 'Ein kleiner Geist aus Rinde. Seine Augen leuchten wie zwei Laternen im dunklen Wald.',
+  },
 };
 
 export const AREA_WILD = {
   1: { common: ['gischtling', 'haeuschel'], rare: 'glimmqualle' },
+  2: { common: ['moosling', 'eichhuscher'], rare: 'rindenwicht' },
 };
 
 export const TRAINER_CREATURES = {
   1: { species: 'haeuschel', stage: 2 },
+  2: { species: 'eichhuscher', stage: 2 },
 };
 
 export function speciesName(speciesId, stage) {

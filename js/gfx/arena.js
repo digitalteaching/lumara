@@ -16,8 +16,45 @@ function oval(ctx, cx, cy, rx, ry, fill, rim) {
   ctx.fill();
 }
 
+// Waldlichtung: Stämme im Hintergrund, Blätterdach, Waldboden mit Lichtflecken, Plattformen aus Moos.
+function drawForestArena(ctx, t = 0, reducedMotion = false) {
+  ctx.fillStyle = '#24493d';
+  ctx.fillRect(0, 0, 240, 56);
+  // Stämme
+  for (const [x, w] of [[8, 10], [40, 14], [78, 9], [112, 12], [150, 10], [190, 16], [226, 10]]) {
+    ctx.fillStyle = '#4a3328';
+    ctx.fillRect(x, 0, w, 56);
+    ctx.fillStyle = '#7a5236';
+    ctx.fillRect(x + 2, 0, 2, 56);
+  }
+  // Blätterdach
+  ctx.fillStyle = '#3d7a55';
+  for (let x = -10; x < 250; x += 22) {
+    ctx.beginPath();
+    ctx.ellipse(x, 6 + ((x / 22) % 2) * 4, 18, 12, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.fillStyle = '#6aa55c';
+  for (let x = 4; x < 250; x += 37) ctx.fillRect(x, 10, 6, 2);
+  // Waldboden
+  ctx.fillStyle = '#3d7a55';
+  ctx.fillRect(0, 50, 240, 110);
+  ctx.fillStyle = '#24493d';
+  for (let i = 0; i < 70; i++) ctx.fillRect((i * 53) % 240, 52 + ((i * 29) % 106), 2, 1);
+  // Lichtflecken, die langsam atmen (still bei „Bewegung reduzieren“)
+  const a = reducedMotion ? 0.18 : 0.14 + 0.06 * Math.sin(t / 1400);
+  ctx.fillStyle = `rgba(255, 224, 138, ${a})`;
+  for (const [x, y, rx, ry] of [[100, 70, 22, 6], [30, 120, 18, 5], [200, 105, 20, 6]]) {
+    ctx.beginPath();
+    ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  oval(ctx, ARENA.foe.x, ARENA.foe.y, 30, 6, '#6aa55c', '#24493d');
+  oval(ctx, ARENA.own.x, ARENA.own.y, 34, 7, '#6aa55c', '#24493d');
+}
+
 // Hintergrund passend zum Gebiet (Design 7.1). Gebiete ohne eigene Arena nehmen die Bucht.
-const ARENAS = {};
+const ARENAS = { 2: drawForestArena };
 export function drawArena(ctx, area, t = 0, reducedMotion = false) {
   (ARENAS[area] ?? drawBayArena)(ctx, t, reducedMotion);
 }

@@ -10,6 +10,12 @@ test('jedes Startwesen und jede wilde Art von Gebiet 1 hat Stufe 1, das Trainerw
   assert.ok(CREATURE_ART[t.species][t.stage]);
 });
 
+test('jede wilde Art von Gebiet 2 hat Stufe 1, der Kronenhuscher Stufe 2', () => {
+  for (const id of [...AREA_WILD[2].common, AREA_WILD[2].rare]) assert.ok(CREATURE_ART[id]?.[1], id);
+  const t = TRAINER_CREATURES[2];
+  assert.ok(CREATURE_ART[t.species][t.stage]);
+});
+
 test('Größe passt zur Stufe, Bild ist ausgefüllt und bunt genug', () => {
   for (const [id, stages] of Object.entries(CREATURE_ART)) {
     for (const [st, r] of Object.entries(stages)) {

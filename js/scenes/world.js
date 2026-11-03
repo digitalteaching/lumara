@@ -7,6 +7,7 @@ import { TILES, BUILDINGS, PROPS, OVERLAY_TILES } from '../gfx/art/tiles.js';
 import { spriteFrom } from '../gfx/canvasSprites.js';
 import { CHARACTERS } from '../gfx/art/characters.js';
 import { say } from '../ui/dialog.js';
+import { npcLines } from '../world/network.js';
 
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 
@@ -304,7 +305,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
     if (!o) return false;
     if (o.type === 'npc') {
       scene.turnToward(o, OPPOSITE[player.dir]);
-      await say(game, o.lines, { speaker: o.name });
+      await say(game, game.state ? npcLines(o, game.state, def.area) : o.lines, { speaker: o.name });
       scene.resetFacing(o);
       return true;
     }

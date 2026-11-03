@@ -44,6 +44,16 @@ export function areaConfig(def) {
   return { area: def.area, trainerNumber: trainer?.number ?? null, beacon: beacon?.number ?? null };
 }
 
+// Flüsternde Bäume sagen ihre Zeilen der Reihe nach, dann wieder von vorn.
+export function whisperLine(o, passCount) {
+  return o.lines[passCount % o.lines.length];
+}
+
+// Bewohner reagieren auf den Fortschritt (Design 5.6): eigene Sätze, sobald der Stein ihres Gebiets leuchtet.
+export function npcLines(o, state, area) {
+  return o.linesLit && state.stones.includes(area) ? o.linesLit : o.lines;
+}
+
 export function mapOfBeacon(number) {
   return Object.values(MAPS).find(d => beaconOf(d, number)) ?? null;
 }

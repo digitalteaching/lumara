@@ -441,6 +441,24 @@ body.kbd #panel {
 }
 body:not([data-mode="walk"]) .hud { display: none; }
 
+/* Flüsternde Bäume: blasser Text oben im Bild, blockiert nichts */
+.whisper {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--gpx) * 22);
+  transform: translateX(-50%);
+  max-width: 80%;
+  padding: 4px 12px;
+  border-radius: 8px;
+  background: rgba(27, 26, 46, 0.45);
+  color: #f3ecd2;
+  font-size: var(--text-small);
+  font-style: italic;
+  text-align: center;
+  opacity: 0.9;
+}
+body:not([data-mode="walk"]) .whisper { display: none; }
+
 /* Hinweis oben in der Mitte (Speicherfehler, neue Version) */
 .toast {
   position: fixed;
