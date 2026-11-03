@@ -19,8 +19,9 @@ import { BUCHT } from '../world/maps/bucht.js';
 import { packProgress, recordNoteAnswer } from '../state.js';
 import { notePool, noteKey, noteReady, solveNote } from '../world/notes.js';
 import { playNote } from './note.js';
-import { displayName } from '../data/species.js';
-import { maxEnergy } from '../duel/progress.js';
+import { displayName, nameAtStage, evolutionLines } from '../data/species.js';
+import { playEvolution } from './evolution.js';
+import { maxEnergy, stageForLevel } from '../duel/progress.js';
 import { say, choose } from '../ui/dialog.js';
 import { el, clear } from '../ui/dom.js';
 import { openMenu } from '../menu/menu.js';
@@ -302,8 +303,13 @@ export function createGameWorld(game) {
       return out;
     });
     if (!result) return;
-    for (let lvl = levelBefore + 1; lvl <= c.level; lvl++) await say(game, [tr('duel.levelUp', { name: displayName(c), level: lvl })]);
-    if (result.evolved) await say(game, [tr('duel.stronger', { name: displayName(c) })]);
+    // Bis zur Entwicklung heißt das Wesen noch wie vorher (Design 6.3).
+    const from = stageForLevel(levelBefore), to = stageForLevel(c.level);
+    for (let lvl = levelBefore + 1; lvl <= c.level; lvl++) await say(game, [tr('duel.levelUp', { name: nameAtStage(c, from), level: lvl })]);
+    if (result.evolved) {
+      await playEvolution(game, world, { species: c.species, from, to });
+      await say(game, evolutionLines(c, from, to));
+    }
     if (result.story) await say(game, [result.story], { speaker: tr('world.storySpeaker') });
   }
 

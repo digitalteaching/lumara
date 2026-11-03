@@ -43,3 +43,21 @@ export function spriteFrom(name, lines, opts = {}) {
   if (!sprite) byName.set(name, (sprite = parseSprite(name, lines)));
   return spriteCanvas(sprite, opts);
 }
+
+// Weiße Silhouette eines Sprites für das Aufhellen bei Treffern.
+const whiteCache = new WeakMap();
+export function whiteOf(img) {
+  let c = whiteCache.get(img);
+  if (!c) {
+    c = document.createElement('canvas');
+    c.width = img.width;
+    c.height = img.height;
+    const g = c.getContext('2d');
+    g.drawImage(img, 0, 0);
+    g.globalCompositeOperation = 'source-in';
+    g.fillStyle = '#fffaf0';
+    g.fillRect(0, 0, c.width, c.height);
+    whiteCache.set(img, c);
+  }
+  return c;
+}

@@ -654,3 +654,10 @@ body:not([data-mode="walk"]) .menu-btn { display: none; }
 .creature-special { font-size: var(--text-small); }
 .xp-bar { height: 14px; border: 2px solid var(--frame-dark); border-radius: 4px; background: #fff; overflow: hidden; }
 .xp-bar > span { display: block; height: 100%; background: var(--ok); }
+
+/* Seite „Wesen“: Bild und Fähigkeiten (Plan 4b) */
+.creature-portrait { display: flex; justify-content: center; margin-bottom: 6px; }
+.creature-img { image-rendering: pixelated; image-rendering: crisp-edges; }
+.creature-abilities-title { margin: 12px 0 4px; font-size: var(--text); }
+.creature-abilities { margin: 0; padding-left: 0; list-style: none; display: grid; gap: 4px; }
+.creature-abilities .off { color: var(--frame); }

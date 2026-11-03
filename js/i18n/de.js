@@ -308,4 +308,18 @@ export const DE = {
   // Glanzform
   'duel.shinyAppears': '✦ Es schimmert in einer seltenen Farbe!',
   'duel.shinyMark': '✦ Glanzform',
+
+  // Entwicklung und Fähigkeiten
+  'ability.2.name': 'Zweite Chance',
+  'ability.2.text': 'Einmal pro Duell darfst du nach einer falschen Antwort noch einmal antworten.',
+  'ability.3.name': 'Schwung',
+  'ability.3.text': 'Ein Volltreffer kommt schon nach 2 richtigen Antworten in Folge.',
+  'ability.4.name': 'Schild',
+  'ability.4.text': 'Die erste falsche Antwort in jedem Duell kostet keine Energie.',
+  'evo.becomes': '{name} entwickelt sich zu {next}!',
+  'evo.newAbility': 'Neue Fähigkeit: {ability}!',
+  'evo.energy': '{name} hat jetzt {n} Energie mehr.',
+  'creature.abilities': 'Fähigkeiten',
+  'creature.abilityOn': '✓ {name}: {text}',
+  'creature.abilityOff': '○ Ab Level {level}: {name}',
 };

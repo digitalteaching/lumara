@@ -1,6 +1,7 @@
 // Arten der Wesen: Namen der Stufen, Beschreibungen und Besonderheiten (Design 6.1, 6.4).
 
 import { stageForLevel } from '../duel/progress.js';
+import { CONFIG } from '../config.js';
 import { language, mark, t } from '../i18n/i18n.js';
 import { EN_SPECIES } from '../i18n/en-species.js';
 
@@ -337,4 +338,39 @@ export function speciesName(speciesId, stage) {
 
 export function displayName(creature) {
   return creature.nickname || speciesName(creature.species, stageForLevel(creature.level));
+}
+
+// ---------- Entwicklung (Design 6.1, 6.2) ----------
+
+// Die Fähigkeiten der Stufen 2 bis 4. Namen und Texte in der Spielsprache.
+export const STAGE_ABILITIES = {
+  2: { nameKey: 'ability.2.name', textKey: 'ability.2.text' },
+  3: { nameKey: 'ability.3.name', textKey: 'ability.3.text' },
+  4: { nameKey: 'ability.4.name', textKey: 'ability.4.text' },
+};
+
+// Für die Seite „Wesen“: jede Fähigkeit mit dem Level, ab dem sie gilt.
+export function abilityRows(level) {
+  return [2, 3, 4].map(stage => ({
+    stage,
+    name: t(STAGE_ABILITIES[stage].nameKey),
+    text: t(STAGE_ABILITIES[stage].textKey),
+    fromLevel: CONFIG.creature.stageLevels[stage - 1],
+    unlocked: level >= CONFIG.creature.stageLevels[stage - 1],
+  }));
+}
+
+// Spitzname oder der Name der Art auf dieser Stufe. Bis die Szene vorbei ist, zeigt das Spiel so
+// noch den alten Namen.
+export const nameAtStage = (creature, stage) => creature.nickname || speciesName(creature.species, stage);
+
+// Was nach der Entwicklung gesagt wird: neuer Name, jede neue Fähigkeit, die Energie dazu.
+export function evolutionLines(creature, from, to) {
+  const lines = [t('evo.becomes', { name: nameAtStage(creature, from), next: speciesName(creature.species, to) })];
+  for (let s = from + 1; s <= to; s++) {
+    lines.push(t('evo.newAbility', { ability: t(STAGE_ABILITIES[s].nameKey) }), t(STAGE_ABILITIES[s].textKey));
+  }
+  const bonus = CONFIG.creature.stageEnergyBonus[to - 1] - CONFIG.creature.stageEnergyBonus[from - 1];
+  lines.push(t('evo.energy', { name: nameAtStage(creature, to), n: bonus }));
+  return lines;
 }

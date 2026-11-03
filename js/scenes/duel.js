@@ -5,9 +5,10 @@ import { createDuel } from '../duel/duel.js';
 import { timerFor } from '../duel/timing.js';
 import { createDeck, poolFor } from '../duel/questions.js';
 import { stageForLevel, maxEnergy } from '../duel/progress.js';
-import { speciesName, displayName, wildName, AREA_WILD, TRAINER_CREATURES } from '../data/species.js';
+import { speciesName, displayName, wildName, nameAtStage, evolutionLines, AREA_WILD, TRAINER_CREATURES } from '../data/species.js';
+import { drawEvolution, evolutionAt } from '../gfx/evolution.js';
 import { creatureRows } from '../gfx/art/creatures.js';
-import { spriteFrom } from '../gfx/canvasSprites.js';
+import { spriteFrom, whiteOf } from '../gfx/canvasSprites.js';
 import { drawArena, ARENA } from '../gfx/arena.js';
 import { createDuelPanel, watchKeyboard } from '../ui/duelPanel.js';
 import { say, choose, closeDialogs } from '../ui/dialog.js';
@@ -69,23 +70,6 @@ export function makeProbeSetup(game, number) {
   };
 }
 
-// Weiße Silhouette eines Sprites für das Aufhellen bei Treffern.
-const whiteCache = new WeakMap();
-function whiteOf(img) {
-  let c = whiteCache.get(img);
-  if (!c) {
-    c = document.createElement('canvas');
-    c.width = img.width;
-    c.height = img.height;
-    const g = c.getContext('2d');
-    g.drawImage(img, 0, 0);
-    g.globalCompositeOperation = 'source-in';
-    g.fillStyle = '#fffaf0';
-    g.fillRect(0, 0, c.width, c.height);
-    whiteCache.set(img, c);
-  }
-  return c;
-}
 
 function plate(cls) {
   const name = el('span', { class: 'plate-name' });
@@ -123,7 +107,10 @@ export function createDuelScene(game, setup, onEnd) {
   });
   const hasClock = timeFor({ form: 'choice' }) !== null;
   const foeName = speciesName(setup.foe.species, setup.foe.stage);
-  const ownRows = creatureRows(c.species, stage);
+  // Bis die Entwicklung vorbei ist, zeigen Bild, Schild und Texte die Stufe vom Duellbeginn.
+  let shownStage = stage;
+  let ownRows = creatureRows(c.species, stage);
+  let evolving = null; // { start, fromImg, toImg, resolve }
   const shiny = setup.kind === 'wild' && setup.foe.shiny === true;
   const foeRows = shiny ? shinyRows(creatureRows(setup.foe.species, setup.foe.stage), setup.foe.species) : creatureRows(setup.foe.species, setup.foe.stage);
   const foeKey = `creature:${setup.foe.species}:${setup.foe.stage}${shiny ? ':glanz' : ''}`;
@@ -140,7 +127,7 @@ export function createDuelScene(game, setup, onEnd) {
     plates.foe.lv.textContent = `Lv ${setup.foe.level}`;
     if (shiny && !plates.foe.extra.firstChild) plates.foe.extra.append(el('span', { class: 'shiny-mark' }, tr('duel.shinyMark')));
     setBar(plates.foe.bar, duel.foeEnergy, duel.foeMax);
-    plates.own.name.textContent = displayName(c);
+    plates.own.name.textContent = nameAtStage(c, shownStage);
     plates.own.lv.textContent = `Lv ${c.level}`;
     setBar(plates.own.bar, duel.playerEnergy, duel.playerMax);
     clear(plates.own.extra);
@@ -153,6 +140,25 @@ export function createDuelScene(game, setup, onEnd) {
   }
 
   let stopKeyboard = () => {};
+
+  // Die Entwicklung in der Arena (Design 6.3). Danach steht das neue Wesen auf der Plattform.
+  function evolveInArena(from, to) {
+    const fromRows = creatureRows(c.species, from);
+    const toRows = creatureRows(c.species, to);
+    return new Promise(resolve => {
+      evolving = {
+        start: t,
+        fromImg: spriteFrom(`creature:${c.species}:${fromRows.length}`, fromRows),
+        toImg: spriteFrom(`creature:${c.species}:${toRows.length}`, toRows),
+        resolve: () => {
+          shownStage = to;
+          ownRows = toRows;
+          updatePlates();
+          resolve();
+        },
+      };
+    });
+  }
 
   async function showResult(r, response, ctx) {
     if (r.correct) {
@@ -237,9 +243,13 @@ export function createDuelScene(game, setup, onEnd) {
         if (!alive) return;
         anim.sparkle = t;
         updatePlates();
-        await say(game, [tr('duel.levelUp', { name: displayName(c), level: lvl })]);
+        await say(game, [tr('duel.levelUp', { name: nameAtStage(c, shownStage), level: lvl })]);
       }
-      if (report.stageAfter > report.stageBefore) await say(game, [tr('duel.stronger', { name: displayName(c) })]);
+      if (report.stageAfter > report.stageBefore) {
+        await evolveInArena(report.stageBefore, report.stageAfter);
+        if (!alive) return;
+        await say(game, evolutionLines(c, report.stageBefore, report.stageAfter));
+      }
     }
     for (const l of report.loot) {
       if (!alive) return;
@@ -368,6 +378,11 @@ export function createDuelScene(game, setup, onEnd) {
     },
     update(dt) {
       t += dt;
+      if (evolving && evolutionAt(t - evolving.start, game.reducedMotion).done) {
+        const done = evolving.resolve;
+        evolving = null;
+        done();
+      }
       // Die Uhr läuft nur, solange die Frage zu sehen ist, nicht bei Futterauswahl, „Aufgeben?“ oder
       // Rückmeldungen. Ist die App verdeckt, steht die Spielschleife und damit auch die Uhr.
       if (!asking || !panel || duel.timeLimit == null) return;
@@ -394,7 +409,8 @@ export function createDuelScene(game, setup, onEnd) {
         }
         ctx.globalAlpha = 1;
       }
-      drawCreature(ctx, ownRows, `creature:${c.species}:${ownRows.length}`, ARENA.own, false, 'own');
+      if (evolving) drawEvolution(ctx, t - evolving.start, evolving, ARENA.own, game.reducedMotion);
+      else drawCreature(ctx, ownRows, `creature:${c.species}:${ownRows.length}`, ARENA.own, false, 'own');
       const sp = (t - anim.sparkle) / 1200;
       if (sp >= 0 && sp < 1) {
         ctx.fillStyle = '#ffe08a';

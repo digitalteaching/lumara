@@ -3,7 +3,8 @@
 
 import { el } from '../ui/dom.js';
 import { openSheet } from '../ui/sheet.js';
-import { speciesText, speciesName, displayName } from '../data/species.js';
+import { speciesText, speciesName, displayName, abilityRows } from '../data/species.js';
+import { creatureCanvas } from '../gfx/creatureImage.js';
 import { xpToNext, maxEnergy, stageForLevel } from '../duel/progress.js';
 import { settingsPage } from './settings.js';
 import { bagPage } from './bagPage.js';
@@ -22,6 +23,7 @@ export function creaturePage(game) {
       const atMax = c.level >= game.config.creature.maxLevel;
       body.append(
         el('div', { class: 'creature-card' },
+          el('div', { class: 'creature-portrait' }, creatureCanvas(c.species, stage, { scale: 2 })),
           el('p', { class: 'creature-name' }, displayName(c)),
           displayName(c) === speciesName(c.species, stage) ? null : el('p', { class: 'creature-species' }, speciesName(c.species, stage)),
           el('p', {}, t('creature.levelStage', { level: c.level, stage })),
@@ -33,6 +35,12 @@ export function creaturePage(game) {
             ],
           el('p', {}, t('common.energy', { n: c.energy, max: maxEnergy(c) })),
           el('p', { class: 'creature-special' }, el('b', {}, t('creature.specialLabel', { name: special.name })), special.text),
+          // Fähigkeiten der Stufen (Design 6.2, 13): freigeschaltet mit ✓, sonst ab welchem Level
+          el('h3', { class: 'creature-abilities-title' }, t('creature.abilities')),
+          el('ul', { class: 'creature-abilities' }, abilityRows(c.level).map(r =>
+            el('li', { class: r.unlocked ? 'on' : 'off' }, r.unlocked
+              ? t('creature.abilityOn', { name: r.name, text: r.text })
+              : t('creature.abilityOff', { level: r.fromLevel, name: r.name })))),
         ),
       );
     },

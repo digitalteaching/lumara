@@ -70,6 +70,8 @@ export const CONFIG = deepFreeze({
     rewards: { berry: 3, starfruit: 1, farsight: 2, shine: 1, life: 1 },
     rewardsTimed: { berry: 3, starfruit: 1, farsight: 2, shine: 1, life: 1, time: 2 },
   },
+  // Entwicklung (Design 6.3): Aufleuchten, Wechsel der Gestalt, Ausklingen; zusammen 3,8 s.
+  evolution: { glowMs: 900, swapMs: [450, 450, 380, 380, 340], fadeMs: 900 },
   beacons: {
     sceneMs: 2600,
     ringColors: ['#ffe08a', '#7fd17a', '#c69ae8', '#f2c26b', '#9fd8ef', '#e8a272', '#bfe9ff', '#f5f0a8'],
