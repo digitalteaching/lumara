@@ -8,12 +8,14 @@ import { playTransition, reveal } from './transition.js';
 import { createEncounterCounter } from '../world/encounters.js';
 import { trainerSees } from '../world/map.js';
 import { fogEdgeLines } from '../world/fogEdge.js';
-import { MAPS, areaConfig, areaOpen, exitAt, openGatesFor, resolveStart, whisperLine } from '../world/network.js';
+import { MAPS, areaConfig, areaOpen, exitAt, openGatesFor, resolveStart, whisperLine, beaconFront } from '../world/network.js';
+import { visitStone, travelTargets, respawnPoint, challengeMark } from '../world/beacons.js';
+import { playBeaconScene } from './beacon.js';
 import { BUCHT } from '../world/maps/bucht.js';
 import { packProgress } from '../state.js';
 import { displayName } from '../data/species.js';
 import { maxEnergy } from '../duel/progress.js';
-import { say } from '../ui/dialog.js';
+import { say, choose } from '../ui/dialog.js';
 import { el, clear } from '../ui/dom.js';
 import { openMenu } from '../menu/menu.js';
 
@@ -48,24 +50,6 @@ export function createGameWorld(game) {
   const beaten = () => packProgress(game.state, shortId()).beaten.includes(trainerNumber);
   const packTrainer = () => game.pack.data.trainers.find(t => t.number === trainerNumber);
 
-  // Nebeltore, die jetzt offen sein müssen, sofort öffnen (nach einem Sieg oder Paketwechsel).
-  function openGatesNow() {
-    const open = openGatesFor(def, game.state, game.pack.data);
-    let changed = false;
-    for (const g of def.gates ?? []) {
-      if (!open.includes(g.id)) continue;
-      for (let y = g.y; y < g.y + g.h; y++) for (let x = g.x; x < g.x + g.w; x++) {
-        if (map.tileAt(x, y) === 'fog') {
-          map.setTile(x, y, g.ground);
-          changed = true;
-        }
-      }
-    }
-    if (changed) world.refreshFog();
-    return changed;
-  }
-  world.openGatesNow = openGatesNow;
-
   // ---------- Duell starten und zurückkehren ----------
 
   function runDuel(setup, style) {
@@ -76,23 +60,27 @@ export function createGameWorld(game) {
     });
   }
 
+  // Nach einer Niederlage wacht man am zuletzt besuchten Leuchtstein auf, sonst am Leuchtturm (Design 5.1).
   async function backToWorld(report) {
-    if (report.outcome === 'lost') {
-      const r = def.respawn;
-      game.state.position = { map: def.id, x: r.x, y: r.y, dir: r.dir };
-    }
-    // Sofort speichern: Kinder schließen die App oft direkt nach einem Sieg (Design 11).
+    const lost = report.outcome === 'lost';
+    const r = lost ? respawnPoint(game.state, game.pack.data) : null;
+    if (lost) game.state.position = { ...r };
     game.save();
     await playTransition(game, 'fade', 300);
-    if (report.outcome === 'lost') {
-      const r = def.respawn;
-      player.teleport(r.x, r.y, r.dir);
+    const where = r && !samePlace(r, { map: 'bucht', ...BUCHT.respawn }) ? 'am Leuchtstein' : 'am Leuchtturm';
+    const line = `Du bist ${where} aufgewacht. ${displayName(game.state.creature)} hat sich erholt.`;
+    if (lost && r.map !== def.id) {
+      const next = createGameWorld(game);
+      game.go(next);
+      await reveal(game);
+      await next.lock(() => say(game, [line]));
+      return { left: true };
     }
+    if (lost) player.teleport(r.x, r.y, r.dir);
     game.go(world);
     await reveal(game);
-    if (report.outcome === 'lost') {
-      await say(game, [`Du bist am Leuchtturm aufgewacht. ${displayName(game.state.creature)} hat sich erholt.`]);
-    }
+    if (lost) await say(game, [line]);
+    return { left: false };
   }
 
   async function wildDuel() {
@@ -148,17 +136,43 @@ export function createGameWorld(game) {
     const report = await runDuel(makeTrainerSetup(game, trainerNumber), 'trainer');
     resetTrainer();
     await backToWorld(report);
-    if (report.outcome === 'won') await afterTrainerWin();
+    if (report.stoneLit) await afterStoneLit();
   }
 
-  // Erster Sieg mit einem Stein, der noch nicht leuchtet: der Stein leuchtet (Szene folgt mit Task 5).
-  async function afterTrainerWin() {
-    if (game.state.stones.includes(trainerNumber)) return;
-    game.state.stones = [...game.state.stones, trainerNumber].sort((a, b) => a - b);
-    game.state.lastStone = trainerNumber;
-    openGatesNow();
+  // Erster Sieg, solange der Stein noch nicht leuchtete: Leuchtstein-Szene, das Tor öffnet sich.
+  // Entzündet und gespeichert ist er da schon (applyDuelResult). Leuchtete er schon (anderes
+  // Paket), gibt es keine Szene, die XP sind trotzdem die vollen.
+  async function afterStoneLit() {
+    await playBeaconScene(game, world, trainerNumber);
+    const sign = def.objects.find(o => o.type === 'sign' && o.role === 'fogEdge');
+    const lit = `Der Leuchtstein ${def.genitive} leuchtet wieder!`;
+    if (sign && areaOpen(game.state, game.pack.data, sign.leadsTo)) {
+      await say(game, [`${lit} Der Nebel weicht.`]);
+    } else {
+      const more = sign ? fogEdgeLines(sign, { gateBeaten: true, packHasNext: game.pack.data.trainers.some(t => t.number === sign.leadsTo), builtAreas: CONFIG.world.builtAreas }) : null;
+      await say(game, [lit, ...(more ?? [])]);
+    }
+  }
+
+  // ---------- Leuchtstein ----------
+
+  async function useBeacon(o) {
+    const c = game.state.creature;
+    if (!game.state.stones.includes(o.number)) {
+      await say(game, ['Ein erloschener Leuchtstein. Seine Hüterin oder sein Hüter ist ganz in der Nähe.']);
+      return;
+    }
+    c.energy = maxEnergy(c);
+    visitStone(game.state, o.number);
     game.save();
-    await say(game, ['Der Leuchtstein leuchtet wieder!']);
+    await say(game, [`${displayName(c)} tankt neues Licht.`]);
+    const others = travelTargets(game.state, game.pack.data).filter(t => t.number !== o.number);
+    if (!others.length) return;
+    const pick = await choose(game, 'Wohin möchtest du reisen?', [...others.map(t => t.name), 'Hierbleiben']);
+    const target = others[pick];
+    if (!target) return;
+    visitStone(game.state, target.number);
+    await travelTo(game, { map: target.map, ...beaconFront(MAPS[target.map], target.number) });
   }
 
   function trainerSpotsPlayer(pos = player) {
@@ -227,6 +241,10 @@ export function createGameWorld(game) {
       }
       return true;
     }
+    if (o?.type === 'beacon') {
+      await useBeacon(o);
+      return true;
+    }
     if (o?.type === 'building' && o.onDoor === 'heal' && player.dir === 'up' && ev.y === o.y + o.h - 1) {
       const c = game.state.creature;
       c.energy = maxEnergy(c);
@@ -244,6 +262,20 @@ export function createGameWorld(game) {
     if (areaOpen(game.state, game.pack.data, sign.leadsTo)) return [t.afterWin ?? AFTER_WIN];
     return fogEdgeLines(sign, { gateBeaten: true, packHasNext: game.pack.data.trainers.some(x => x.number === sign.leadsTo), builtAreas: CONFIG.world.builtAreas }) ?? [t.afterWin ?? AFTER_WIN];
   }
+
+  // Weißer Stern über einem Trainer, dessen Stein leuchtet, der mit diesem Paket aber noch nicht
+  // besiegt ist: eine neue Herausforderung (Design 10.4).
+  world.afterRender.push((ctx, cam) => {
+    if (!trainer || bubble || !packTrainer() || !challengeMark(game.state, game.pack.data, trainerNumber)) return;
+    const p = trainer.pixel ? trainer.pixel() : { x: trainer.x * 16, y: trainer.y * 16 };
+    const x = p.x - cam.x + 7, y = p.y - cam.y - 9;
+    ctx.fillStyle = '#1b1a2e';
+    ctx.fillRect(x - 2, y - 1, 5, 3);
+    ctx.fillRect(x - 1, y - 2, 3, 5);
+    ctx.fillStyle = '#fffaf0';
+    ctx.fillRect(x - 1, y, 3, 1);
+    ctx.fillRect(x, y - 1, 1, 3);
+  });
 
   // Ausrufezeichen über der Trainerin
   world.afterRender.push((ctx, cam) => {

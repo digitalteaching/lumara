@@ -73,7 +73,18 @@ function countAnswers(stats, answers) {
   }
 }
 
-// Ergebnis eines Duells in den Spielzustand übernehmen (Design 6.3, 7.1).
+// Leuchtstein n entzünden (Design 5.1). Wahr, wenn er neu leuchtet. Der zuletzt entzündete Stein
+// ist auch der zuletzt besuchte.
+export function lightStone(state, n) {
+  if (state.stones.includes(n)) return false;
+  state.stones = [...state.stones, n].sort((a, b) => a - b);
+  state.lastStone = n;
+  return true;
+}
+
+// Ergebnis eines Duells in den Spielzustand übernehmen (Design 6.3, 7.1). Ein Trainersieg entzündet
+// den Leuchtstein gleich mit: Beides landet in derselben Speicherung, auch wenn das Kind die App
+// direkt beim Sieg schließt.
 export function applyDuelResult(state, shortId, setup, summary) {
   const progress = packProgress(state, shortId);
   for (const a of summary.answers) recordAnswer(progress.history, a.key, a.correct);
@@ -83,6 +94,7 @@ export function applyDuelResult(state, shortId, setup, summary) {
   const c = state.creature;
   const report = {
     outcome: summary.outcome,
+    stoneLit: false,
     xp: 0,
     flawless: summary.flawless,
     levelsGained: 0,
@@ -98,7 +110,10 @@ export function applyDuelResult(state, shortId, setup, summary) {
     c.xpInLevel = r.xpInLevel;
     c.energy = summary.playerEnergy;
     Object.assign(report, { levelsGained: r.levelsGained, levelAfter: r.level, stageBefore: r.stageBefore, stageAfter: r.stageAfter });
-    if (setup.kind === 'trainer' && !progress.beaten.includes(setup.trainer.number)) progress.beaten.push(setup.trainer.number);
+    if (setup.kind === 'trainer') {
+      if (!progress.beaten.includes(setup.trainer.number)) progress.beaten.push(setup.trainer.number);
+      report.stoneLit = lightStone(state, setup.trainer.number);
+    }
   } else if (summary.outcome === 'lost') {
     c.energy = maxEnergy(c);
   } else {

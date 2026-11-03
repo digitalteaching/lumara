@@ -8,6 +8,7 @@ import { spriteFrom } from '../gfx/canvasSprites.js';
 import { CHARACTERS } from '../gfx/art/characters.js';
 import { say } from '../ui/dialog.js';
 import { npcLines } from '../world/network.js';
+import { CONFIG } from '../config.js';
 
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 
@@ -291,6 +292,25 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
         grad.addColorStop(1, 'rgba(255, 224, 138, 0)');
         ctx.fillStyle = grad;
         ctx.fillRect(cx - 22, cy - 22, 44, 44);
+        // Ein farbiger Lichtring für jeden entzündeten Leuchtstein (Design 5.1), sanft pulsierend
+        const stones = game.state?.stones ?? [];
+        // Ein dunkler Schatten unter jedem Ring, damit er sich vom Lampenlicht und vom Gras abhebt.
+        stones.forEach((n, i) => {
+          const a = game.reducedMotion ? 0.85 : 0.7 + 0.25 * Math.sin(time / 900 + i);
+          const ring = dy => {
+            ctx.beginPath();
+            ctx.ellipse(cx, cy + 1 + dy, 10 + i * 3, 3 + i, 0, 0, Math.PI * 2);
+            ctx.stroke();
+          };
+          ctx.lineWidth = 1;
+          ctx.globalAlpha = 0.45;
+          ctx.strokeStyle = '#2a2140';
+          ring(1);
+          ctx.globalAlpha = a;
+          ctx.strokeStyle = CONFIG.beacons.ringColors[n - 1];
+          ring(0);
+        });
+        ctx.globalAlpha = 1;
       }
 
       drawFog(ctx, cam);

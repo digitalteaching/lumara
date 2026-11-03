@@ -158,7 +158,10 @@ export function migrateState(raw) {
   const name = typeof s.name === 'string' ? validateName(s.name) : { ok: false };
   const creature = repairCreature(s.creature);
   if (!name.ok || !creature) return { ok: false, reason: 'invalid' };
-  const stones = repairStones(s.stones);
+  const packs = repairPacks(s.packs);
+  // Ein besiegter Hüter heißt: sein Stein leuchtet (Design 10.4), egal in welchem Paket.
+  const beaten = Object.values(packs).flatMap(p => p.beaten);
+  const stones = repairStones([...(Array.isArray(s.stones) ? s.stones : []), ...beaten]);
 
   return {
     ok: true,
@@ -169,7 +172,7 @@ export function migrateState(raw) {
       creature,
       position: repairPosition(s.position),
       settings: { textSpeed: TEXT_SPEEDS.includes(s.settings?.textSpeed) ? s.settings.textSpeed : 'normal' },
-      packs: repairPacks(s.packs),
+      packs,
       playMs: count(s.playMs),
       stones,
       lastStone: stones.includes(s.lastStone) ? s.lastStone : null,

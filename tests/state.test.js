@@ -46,6 +46,17 @@ test('Makelloser Trainersieg gibt 75 XP', () => {
   assert.equal(s.creature.xpInLevel, 15);
 });
 
+test('Trainersieg entzündet den Leuchtstein im selben Schritt wie „besiegt“', () => {
+  // Wird die App beim Sieg geschlossen, darf der Stand nie „besiegt, Stein dunkel“ sein.
+  const s = newGameState({ name: 'A', species: 'funki', nickname: null });
+  assert.equal(applyDuelResult(s, 'ENQ9', T1, won()).stoneLit, true);
+  assert.deepEqual(s.stones, [1]);
+  assert.equal(s.lastStone, 1);
+  assert.equal(applyDuelResult(s, 'ENQ9', T1, won()).stoneLit, false);
+  assert.equal(applyDuelResult(s, 'ENQ9', { kind: 'wild', area: 1 }, won()).stoneLit, false);
+  assert.deepEqual(s.stones, [1]);
+});
+
 test('Niederlage: keine XP, volle Energie, Historie trotzdem', () => {
   const s = newGameState({ name: 'A', species: 'kiesel', nickname: null });
   const r = applyDuelResult(s, 'ENQ9', T1, { outcome: 'lost', playerEnergy: 0, flawless: false, answers: [{ key: 'b', correct: false }] });

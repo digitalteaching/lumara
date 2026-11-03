@@ -5,6 +5,7 @@
 export const WALD = {
   id: 'wald',
   name: 'Flüsterwald',
+  genitive: 'des Flüsterwalds',
   area: 2,
   rows: [
     'YYYYYYYYYYYYYYYYYY%%%%YYYYYYYYYYYYYYYYYY',

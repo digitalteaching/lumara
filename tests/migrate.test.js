@@ -53,6 +53,14 @@ test('Format 2: unmögliche Werte werden repariert', () => {
   assert.deepEqual(m.state.world, { bushes: { 'bucht:1,1': 5 }, notes: {}, finds: {} });
 });
 
+test('Format 2: ein besiegter Hüter in irgendeinem Paket lässt seinen Leuchtstein leuchten', () => {
+  const raw = structuredClone(SPIELSTAND_V2);
+  raw.packs.GNEP = { ...structuredClone(raw.packs.ENQ9), beaten: [2] };
+  const m = migrateState(raw);
+  assert.deepEqual(m.state.stones, [1, 2]);
+  assert.equal(m.state.lastStone, 1);
+});
+
 test('fehlende Teile werden ergänzt, unmögliche Werte begrenzt', () => {
   const m = migrateState({ version: 1, name: 'Mia', creature: { species: 'nixi', level: 7, xpInLevel: 9999, energy: 99 }, packs: { ENQ9: { beaten: [1, 1, 'x', 12] }, kaputt: 5 } });
   assert.equal(m.ok, true);

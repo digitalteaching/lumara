@@ -4,6 +4,7 @@
 export const BUCHT = {
   id: 'bucht',
   name: 'Leuchtturmbucht',
+  genitive: 'der Leuchtturmbucht',
   area: 1,
   rows: [
     'TTTTTTTTTTTTTTT%%%%%%%%%%TTTTTTTTTTTTTTT',
