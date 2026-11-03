@@ -25,7 +25,7 @@
 #             an der Datei zu einem neuen Paket.
 # FACH:       Das Fach (Pflicht).
 # ZEITDRUCK:  normal, lang oder aus (freiwillig, Standard ist normal).
-#             Ab Trainer 4 gibt es Zeitdruck. lang verdoppelt die Zeit, aus schaltet ihn ab.
+#             Zeitdruck gibt es ab Trainer 4. Mit lang gilt doppelte Zeit, mit aus nie eine Uhr.
 
 PAKET:
 KENNUNG: fach-jahrgang-name

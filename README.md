@@ -4,7 +4,7 @@
 
 Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, erkundet eine geheimnisvolle Insel unter einem Nebel des Vergessens und besteht Duelle mit Aufgaben aus dem Unterricht. Dafür bekommt es Punkte, und sein Wesen entwickelt sich weiter. Die Inhalte kommen aus einem Lernpaket, einer Textdatei, die die Lehrkraft selbst schreibt. Dadurch funktioniert das Spiel in jedem Fach. Das erste Beispielpaket ist für Jahrgang 6 Englisch.
 
-**Status:** Plan 1, Plan 2 und Plan 3a sind gebaut (Spielfassung 0.3.0).
+**Status:** Plan 1, Plan 2, Plan 3a und Plan 3b sind gebaut (Spielfassung 0.4.0).
 
 - **Plan 1**, spielbarer Kern:
   - Leuchtturmbucht, Lernpaket, fünf Startwesen
@@ -25,13 +25,20 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
   - Seltene Steine im Gras: Weitblick, Glanz und Leben
   - Zettel unter Steinen mit Aufgaben, Geschichtsstücken und einem Tagebuch
   - Möwen und Gischt in der Bucht, Glühwürmchen und Blätter im Wald
+- **Plan 3b**, Pilzmoor, Spiegeldünen und Windklippen:
+  - drei neue Gebiete mit je einer Hüterin oder einem Hüter (Hazel, Karim, Skye), Bewohnern, drei wilden Arten, eigener Arena, Teilchen und drei Geschichtsstücken
+  - Pilzmoor mit Stegen, Leuchtpilzen und der Irrlichtinsel; Spiegeldünen mit Glasstatuen und Luftspiegelungen, die wie Wege aussehen; Windklippen mit Hängebrücken und Windrädern
+  - Zeitdruck ab Trainer 4: ein Zeitbalken im Antwortfeld, beim Eintippen ×1,5, beim Satzbau ×2, Flausch +25 %. `ZEITDRUCK: lang` verdoppelt, `aus` schaltet die Uhr ab. Abgelaufene Zeit zählt als falsch.
+  - Zeitsteine (ab Gebiet 4): halten die Uhr für eine Frage an
+  - Beispielpaket mit den Themen 1 bis 5 und 21 Zetteln
 
-Hinter dem Waldläufer liegt noch Nebel. Das Pilzmoor kommt mit einem späteren Plan.
+Hinter den Windklippen liegt noch Nebel. Die Uhrwerkruinen kommen mit einem späteren Plan.
 
 - Design: [docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md](docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md)
 - Bauplan 1: [docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md](docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md)
 - Bauplan 2: [docs/superpowers/plans/2026-11-03-lumara-plan-2-spielstand-lehrkraft.md](docs/superpowers/plans/2026-11-03-lumara-plan-2-spielstand-lehrkraft.md)
 - Bauplan 3a: [docs/superpowers/plans/2026-11-03-lumara-plan-3a-welt-fluesterwald.md](docs/superpowers/plans/2026-11-03-lumara-plan-3a-welt-fluesterwald.md)
+- Bauplan 3b: [docs/superpowers/plans/2026-11-03-lumara-plan-3b-gebiete-3-bis-5.md](docs/superpowers/plans/2026-11-03-lumara-plan-3b-gebiete-3-bis-5.md)
 - Frühere Ideensammlung: [docs/2026-10-17-zwischenstand-ideensammlung.md](docs/2026-10-17-zwischenstand-ideensammlung.md)
 
 ## Für Lehrkräfte
@@ -41,7 +48,7 @@ Hinter dem Waldläufer liegt noch Nebel. Das Pilzmoor kommt mit einem späteren 
   - Lernpaket prüfen: Fehler und Hinweise mit Zeilennummern, eine Übersicht pro Trainer und Probefragen in der echten Duell-Ansicht.
 - Die Statistik steht im Spiel unter Menü → Einstellungen → Für die Lehrkraft. Sie gilt jeweils für das aktuelle Lernpaket.
 - Vorlage: [pakete/vorlage.txt](pakete/vorlage.txt)
-- Beispielpaket Englisch 6 (Trainer 1 und 2): [pakete/englisch-6-beispiel.txt](pakete/englisch-6-beispiel.txt)
+- Beispielpaket Englisch 6 (Trainer 1 bis 5): [pakete/englisch-6-beispiel.txt](pakete/englisch-6-beispiel.txt)
 
 ## Lokal starten
 
@@ -61,9 +68,10 @@ Bleibt das Bild schwarz, einfach neu laden. Der einfache Python-Server bleibt be
 |---|---|
 | `/?dev` | direkt in die Bucht, Name „Test“, Wesen Funki |
 | `/?dev&wesen=kiesel` | wie oben mit einem anderen Startwesen (`funki`, `kiesel`, `nixi`, `flausch`, `pieks`) |
+| `/?dev&gebiet=moor` | direkt am Eingang eines Gebiets (`wald`, `moor`, `duenen`, `klippen`), alle Leuchtsteine davor leuchten |
 | `/?duell=wild` | direkt ein Duell gegen ein wildes Wesen, danach das nächste |
 | `/?duell=trainer` | direkt das Duell gegen die Hüterin der Bucht |
-| `/?galerie` | alle Wesen in Originalgröße |
+| `/?galerie` | alle Wesen in Originalgröße, A blättert weiter |
 | `/?ipad` | so tun, als liefe das Spiel auf einem iPad in Safari (zeigt „Bevor es losgeht“, wenn es noch keinen Spielstand gibt) |
 | `/?sw` | Service Worker auch lokal einschalten (zum Testen von Offline und Updates) |
 
@@ -84,11 +92,17 @@ Bleibt das Bild schwarz, einfach neu laden. Der einfache Python-Server bleibt be
 
 Kinder bekommen die neue Fassung beim nächsten Öffnen. Das laufende Spiel lädt nie mitten drin neu.
 
-**Spielstände müssen ladbar bleiben.** Format 1 ist mit `tests/fixtures/spielstand-v1.txt` festgeschrieben, Format 2 (seit Spielfassung 0.3.0) mit `tests/fixtures/spielstand-v2.txt`. Diese Dateien werden nie geändert. Für jede Änderung am Format gilt:
+**Spielstände müssen ladbar bleiben.** Festgeschrieben sind:
+
+- Format 1 mit `tests/fixtures/spielstand-v1.txt`
+- Format 2 (seit Spielfassung 0.3.0) mit `tests/fixtures/spielstand-v2.txt`
+- Format 3 (seit Spielfassung 0.4.0, mit Zeitsteinen im Rucksack) mit `tests/fixtures/spielstand-v3.txt`
+
+Diese Dateien werden nie geändert. Für jede Änderung am Format gilt:
 
 - eine neue Version in `js/save/migrate.js`
 - eine Umwandlung von der alten zur neuen Version
-- eine neue Testdatei `tests/fixtures/spielstand-v3.*`
+- eine neue Testdatei `tests/fixtures/spielstand-v4.*`
 
 Auch Prüfcode, Verschleierung und Paketkennung (`hash32`, `mix32`, Salze) werden nie geändert.
 
