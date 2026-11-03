@@ -375,17 +375,14 @@ function ruinwall() {
 // Efeu ist das hohe Gras der Ruinen: dunkles Blattgrün mit türkisen Spitzen
 const ivy = lean => retint(tallGrass(lean), { l: 'F', g: 't', G: 'T', F: 'l' });
 
-const snow = speckled('w', 91, [['f', 0.12], ['A', 0.03], ['m', 0.01]]);
+const snow = speckled('w', 91, [['f', 0.06], ['A', 0.015]]);
 
-// Eis des Sees: blassblau, helle Glanzstellen und feine Risse
+// Eis des Sees: blassblau und ruhig, ein heller Glanzstreif und ein feiner Riss
 function ice() {
   const g = grid(16, 16, 'A');
-  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) {
-    const r = noise(x, y, 92);
-    if (r < 0.06) g[y][x] = 'w';
-    else if (r > 0.96) g[y][x] = 'f';
-  }
-  for (const [x, y] of [[3, 4], [4, 5], [5, 5], [6, 6], [11, 10], [12, 11], [12, 12], [13, 13]]) g[y][x] = 'L';
+  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) if (noise(x, y, 92) < 0.025) g[y][x] = 'w';
+  for (const [x, y] of [[2, 3], [3, 3], [4, 3], [3, 4]]) g[y][x] = 'w';
+  for (const [x, y] of [[10, 10], [11, 11], [12, 11]]) g[y][x] = 'L';
   return toRows(g);
 }
 

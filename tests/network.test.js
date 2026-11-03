@@ -145,3 +145,15 @@ test('Gebiet 6: Die Klippen führen nach Osten in die Ruinen und zurück', () =>
 test('In den Ruinen stehen und ein Paket mit 5 Trainern laden: Aufwachen am Stein auf den Klippen', () => {
   assert.deepEqual(resolveStart(st([1, 2, 3, 4, 5, 6], { map: 'ruinen', x: 20, y: 18, dir: 'up' }), pack(5)), { map: 'klippen', ...beaconFront(MAPS.klippen, 5) });
 });
+
+test('Gebiet 7: Die Ruinen führen nach Süden an den See und zurück', () => {
+  assert.deepEqual(exitAt(MAPS.ruinen, 19, 29), { x: 18, y: 29, w: 4, h: 1, to: 'see', at: { x: 19, y: 1, dir: 'down' } });
+  assert.deepEqual(exitAt(MAPS.see, 20, 0), { x: 18, y: 0, w: 4, h: 1, to: 'ruinen', at: { x: 19, y: 28, dir: 'up' } });
+  assert.equal(areaOpen(st([1, 2, 3, 4, 5, 6]), pack(7), 7), true);
+  assert.deepEqual(openGatesFor(MAPS.ruinen, st([1, 2, 3, 4, 5, 6]), pack(7)), ['sued']);
+  assert.deepEqual(openGatesFor(MAPS.ruinen, st([1, 2, 3, 4, 5]), pack(8)), []);
+});
+
+test('Am See stehen und ein Paket mit 6 Trainern laden: Aufwachen am Stein in den Ruinen', () => {
+  assert.deepEqual(resolveStart(st([1, 2, 3, 4, 5, 6, 7], { map: 'see', x: 20, y: 15, dir: 'up' }), pack(6)), { map: 'ruinen', ...beaconFront(MAPS.ruinen, 6) });
+});

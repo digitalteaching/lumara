@@ -62,3 +62,11 @@ test('Beispielpaket: „Preis“ (was etwas kostet) hat keine richtige Übersetz
   assert.ok(!q.wrong.includes('prize'), q.wrong.join(' | ')); // „Preis“ heißt auch „prize“ (Gewinn)
   assert.match(q.text, /kostet/);
 });
+
+test('Beispielpaket: Die Fragen der Trainer 6 bis 8 haben eigene Texte (eigene Einträge im Lernverlauf)', () => {
+  const p = parsePack(read('englisch-6-beispiel.txt')).pack;
+  const others = new Set(p.trainers.filter(t => t.number < 6).flatMap(t => t.questions.map(q => q.key)));
+  const mine = p.trainers.filter(t => t.number >= 6).flatMap(t => t.questions.map(q => q.key));
+  assert.equal(new Set(mine).size, mine.length);
+  for (const k of mine) assert.ok(!others.has(k), k);
+});

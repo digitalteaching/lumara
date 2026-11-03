@@ -32,4 +32,9 @@ export const STORY = {
     'Als der Nebel kam, liefen die Kanäle über, und die Stadt versank. Die Zahnräder drehen sich bis heute, aber niemand weiß mehr, wofür.',
     'In der alten Sternwarte zeichnete jemand eine Karte vom Berg. Darauf ist ein Tor mit acht Fassungen zu sehen, eine für jeden Leuchtstein.',
   ],
+  7: [
+    'Über dem See tanzt das Nordlicht. Die Eisfischer sagen, es sind die Lieder der Leuchtsteine, die der Himmel noch nicht vergessen hat.',
+    'Unter dem Eis liegen Wörter, die niemand mehr sagt. Wer ganz still ist, hört sie manchmal knistern wie frischen Schnee.',
+    'Das Wesen im Berg sammelt nicht aus Bosheit. Es ist so lange allein, dass es glaubt, irgendwer müsse sich an all das Vergessene erinnern.',
+  ],
 };

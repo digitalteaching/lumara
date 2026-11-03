@@ -106,9 +106,11 @@ export const RUINEN = {
       linesOpen: ['Süden: Nordlichtsee', 'Der Nebel hat sich zurückgezogen. Der Weg ist frei.'],
     },
   ],
-  // Hinter dem Tor liegt Gebiet 7; den Ausgang dorthin gibt es, sobald es gebaut ist.
   gates: [{ id: 'sued', leadsTo: 7, x: 18, y: 28, w: 4, h: 2, ground: 'cobble' }],
-  exits: [{ x: 0, y: 13, w: 1, h: 4, to: 'klippen', at: { x: 38, y: 14, dir: 'left' } }],
+  exits: [
+    { x: 0, y: 13, w: 1, h: 4, to: 'klippen', at: { x: 38, y: 14, dir: 'left' } },
+    { x: 18, y: 29, w: 4, h: 1, to: 'see', at: { x: 19, y: 1, dir: 'down' } },
+  ],
   finds: [
     { id: 'glitzer-nord', x: 12, y: 6 },
     { id: 'glitzer-west', x: 5, y: 23 },

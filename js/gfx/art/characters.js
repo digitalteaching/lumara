@@ -153,7 +153,22 @@ const OAR_SIDE = [[3, 6, 'r'], [3, 7, 'o'], [3, 8, 'o'], [3, 9, 'o'], [2, 10, 'r
 const TOYGEAR_DOWN = [[13, 10, 'h'], [12, 11, 'h'], [13, 11, 'b'], [14, 11, 'h'], [13, 12, 'h']];
 const TOYGEAR_SIDE = [[12, 10, 'h'], [11, 11, 'h'], [12, 11, 'b'], [13, 11, 'h'], [12, 12, 'h']];
 
+// Nordlichtsee (Plan 3c): Pelzbesatz, Angel, Meißel, Mütze mit Bommel
+const FURTRIM_DOWN = [[4, 9, 'w'], [11, 9, 'w'], [3, 12, 'f'], [12, 12, 'f']];
+const FURTRIM_SIDE = [[4, 9, 'w'], [4, 12, 'f']];
+const ROD_DOWN = [[13, 12, 'o'], [13, 11, 'o'], [14, 10, 'o'], [14, 9, 'o'], [15, 8, 'o'], [15, 9, 'w']];
+const ROD_SIDE = [[12, 11, 'o'], [13, 10, 'o'], [13, 9, 'o'], [14, 8, 'o'], [14, 9, 'w']];
+const CHISEL_DOWN = [[13, 10, 'm'], [13, 11, 'o'], [13, 12, 'o']];
+const CHISEL_SIDE = [[12, 10, 'm'], [12, 11, 'o']];
+const BOBBLE_DOWN = [[7, 0, 'w'], [8, 0, 'w']];
+const BOBBLE_SIDE = [[6, 0, 'w'], [7, 0, 'w']];
+
 export const CHARACTERS = {
+  // Nordlichtsee (Plan 3c): Eisfischerin im Pelzmantel mit heller Kapuze (Design 5.3) und die Bewohner
+  trainer7: character({ h: 'w', i: 'f', c: 'o', d: 'b', l: 'r', b: 'b' }, { down: [...FURTRIM_DOWN, ...ROD_DOWN], side: [...FURTRIM_SIDE, ...ROD_SIDE] }),
+  sven: character({ h: 'S', i: 'D', c: 'L', d: 'S', l: 'A', b: 'n' }, { down: BEARD_DOWN.map(([x, y]) => [x, y, 'w']), side: BEARD_SIDE.map(([x, y]) => [x, y, 'w']) }),
+  mira: character({ h: 'R', i: 'v', c: 'V', d: 'v', l: 'w', b: 'P' }, { down: CHISEL_DOWN, side: CHISEL_SIDE }),
+  ari: character({ h: 'e', i: 'b', c: 'C', d: 'e', l: 'p', b: 'b' }, { down: BOBBLE_DOWN, side: BOBBLE_SIDE }),
   // Uhrwerkruinen (Plan 3c): Erfinder mit Lupenbrille und Werkzeuggürtel (Design 5.3) und die Bewohner
   trainer6: character({ h: 'f', i: 'm', c: 'r', d: 'o', l: 'h', b: 'b' }, { down: [...LOUPE_DOWN, ...TOOLBELT_DOWN], side: [...LOUPE_SIDE, ...TOOLBELT_SIDE] }),
   greta: character({ h: 'C', i: 'e', c: 't', d: 'F', l: 'T', b: 'b' }, { down: WRENCH_DOWN, side: WRENCH_SIDE }),

@@ -580,7 +580,7 @@ ANTWORT: two days ago
 FALSCH: tomorrow | right now | every day
 FORM: auswahl
 
-FRAGE: Choose the right question.
+FRAGE: Which question is right?
 ANTWORT: Did you see the big clock?
 FALSCH: Did you saw the big clock? | Saw you the big clock? | Do you saw the big clock?
 FORM: auswahl
@@ -679,12 +679,12 @@ FRAGE: I'm sure you ___ (will / like) the northern lights.
 ANTWORT: will like
 FALSCH: will likes | will to like | are will like
 
-FRAGE: Choose the right sentence.
+FRAGE: Which sentence about tomorrow is right?
 ANTWORT: She is going to fish tomorrow.
 FALSCH: She going to fish tomorrow. | She is going fish tomorrow. | She is go to fish tomorrow.
 FORM: auswahl
 
-FRAGE: Choose the right question.
+FRAGE: Which question about the future is right?
 ANTWORT: Are you going to skate today?
 FALSCH: Do you going to skate today? | Are you go to skate today? | Is you going to skate today?
 FORM: auswahl
@@ -786,7 +786,7 @@ FRAGE: ___ old are you? – I'm twelve.
 ANTWORT: How
 FALSCH: What | Who | Which
 
-FRAGE: Choose the right sentence.
+FRAGE: Which sentence with „can“ is right?
 ANTWORT: She can see three stars.
 FALSCH: She cans see three stars. | She can sees three stars. | She can to see three stars.
 FORM: auswahl

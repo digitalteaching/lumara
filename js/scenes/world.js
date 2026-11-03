@@ -139,8 +139,10 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
     return ground;
   }
 
+  // Heller Rand an Wasserfeldern, die an Land oder Eis grenzen (Meer und Löcher im Eis).
   function drawShore(ctx, x, y, sx, sy) {
-    const land = (nx, ny) => map.inBounds(nx, ny) && map.tileAt(nx, ny) !== 'water';
+    const kind = map.tileAt(x, y);
+    const land = (nx, ny) => map.inBounds(nx, ny) && map.tileAt(nx, ny) !== kind;
     const wave = Math.floor(time / 600) % 2;
     ctx.fillStyle = '#a7dde8';
     if (land(x, y - 1)) for (let i = 0; i < 16; i += 2) ctx.fillRect(sx + i + wave, sy, 1, 1 + ((i + wave) % 4 === 0 ? 1 : 0));
@@ -436,7 +438,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
             ctx.drawImage(tileCanvas(ground, movingFrame(ground) ?? 0), sx, sy);
           }
           ctx.drawImage(tileCanvas(kind, frame), sx, sy);
-          if (kind === 'water') drawShore(ctx, x, y, sx, sy);
+          if (kind === 'water' || kind === 'icewater') drawShore(ctx, x, y, sx, sy);
           if (kind === 'cliffrock' || kind === 'windgrass') drawCliffEdge(ctx, x, y, sx, sy);
         }
       }
