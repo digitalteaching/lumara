@@ -304,4 +304,8 @@ export const EN = {
   'book.seen': '◐ Seen',
   'book.beaten': '● Beaten',
   'book.shinySeen': '✦ Shiny form seen',
+
+  // Glanzform
+  'duel.shinyAppears': '✦ It shimmers in a rare colour!',
+  'duel.shinyMark': '✦ Shiny form',
 };

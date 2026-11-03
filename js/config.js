@@ -45,6 +45,7 @@ export const CONFIG = deepFreeze({
     energyByArea: [3, 3, 4, 4, 4, 5, 5, 5],
     levelByArea: [[2, 5], [5, 9], [9, 14], [14, 19], [19, 24], [24, 29], [29, 34], [34, 40]],
     rareChance: 0.1,
+    shinyChance: 1 / 64, // Glanzform (Design 6.4)
   },
   encounter: { minSteps: 8, maxSteps: 25, curve: 1.3 },
   questionWeights: { wrongLast: 3, neverAsked: 2, normal: 1, mastered: 0.5 },

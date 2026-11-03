@@ -15,7 +15,8 @@ import { el, clear } from '../ui/dom.js';
 import { applyDuelResult, packProgress } from '../state.js';
 import { FOOD, foodCount, takeItem } from '../items/bag.js';
 import { foodEnergy } from '../items/food.js';
-import { pickWild, wildLevel } from '../world/encounters.js';
+import { pickWild, wildLevel, rollShiny } from '../world/encounters.js';
+import { shinyRows } from '../gfx/art/shiny.js';
 import { t as tr } from '../i18n/i18n.js'; // t ist hier die Zeit
 
 const FINAL = new Set(['won', 'lost', 'fled']);
@@ -32,6 +33,7 @@ export function makeWildSetup(game, area = 1) {
       stage: 1,
       level: wildLevel(area, game.rng),
       maxEnergy: CONFIG.wild.energyByArea[area - 1],
+      shiny: rollShiny(game.rng), // Glanzform (Design 6.4)
     },
     pool: poolFor(pack, { kind: 'wild', beaten }),
   };
@@ -122,18 +124,21 @@ export function createDuelScene(game, setup, onEnd) {
   const hasClock = timeFor({ form: 'choice' }) !== null;
   const foeName = speciesName(setup.foe.species, setup.foe.stage);
   const ownRows = creatureRows(c.species, stage);
-  const foeRows = creatureRows(setup.foe.species, setup.foe.stage);
+  const shiny = setup.kind === 'wild' && setup.foe.shiny === true;
+  const foeRows = shiny ? shinyRows(creatureRows(setup.foe.species, setup.foe.stage), setup.foe.species) : creatureRows(setup.foe.species, setup.foe.stage);
+  const foeKey = `creature:${setup.foe.species}:${setup.foe.stage}${shiny ? ':glanz' : ''}`;
 
   let t = 0;
   let alive = true;
   let panel = null;
   let asking = false; // eine Frage ist zu sehen: Nur dann läuft die Uhr (Design 7.4)
   const plates = { own: plate('own'), foe: plate('foe') };
-  const anim = { own: { lunge: -1e9, hit: -1e9, faint: null }, foe: { lunge: -1e9, hit: -1e9, faint: null }, sparkle: -1e9 };
+  const anim = { own: { lunge: -1e9, hit: -1e9, faint: null }, foe: { lunge: -1e9, hit: -1e9, faint: null }, sparkle: -1e9, foeSparkle: -1e9 };
 
   function updatePlates() {
     plates.foe.name.textContent = foeName;
     plates.foe.lv.textContent = `Lv ${setup.foe.level}`;
+    if (shiny && !plates.foe.extra.firstChild) plates.foe.extra.append(el('span', { class: 'shiny-mark' }, tr('duel.shinyMark')));
     setBar(plates.foe.bar, duel.foeEnergy, duel.foeMax);
     plates.own.name.textContent = displayName(c);
     plates.own.lv.textContent = `Lv ${c.level}`;
@@ -248,7 +253,9 @@ export function createDuelScene(game, setup, onEnd) {
 
   async function run() {
     if (setup.kind === 'wild') {
-      await say(game, [tr('duel.wildAppears', { wild: wildName(setup.foe.species, setup.foe.stage, 'a') })]);
+      // Eine Glanzform funkelt einmal kurz auf (nicht bei „Bewegung reduzieren“) und sagt es dazu.
+      if (shiny && !game.reducedMotion) anim.foeSparkle = t;
+      await say(game, [tr('duel.wildAppears', { wild: wildName(setup.foe.species, setup.foe.stage, 'a') }), ...(shiny ? [tr('duel.shinyAppears')] : [])]);
       if (!alive) return;
       const pick = await choose(game, tr('duel.whatDo'), [tr('duel.fight'), tr('duel.flee')]);
       if (!alive) return;
@@ -373,7 +380,20 @@ export function createDuelScene(game, setup, onEnd) {
     },
     render(ctx) {
       drawArena(ctx, setup.area, t, game.reducedMotion);
-      drawCreature(ctx, foeRows, `creature:${setup.foe.species}:${setup.foe.stage}`, ARENA.foe, true, 'foe');
+      drawCreature(ctx, foeRows, foeKey, ARENA.foe, true, 'foe');
+      const fs = (t - anim.foeSparkle) / 1200;
+      if (fs >= 0 && fs < 1) {
+        ctx.fillStyle = '#fffaf0';
+        ctx.globalAlpha = 1 - fs;
+        for (let i = 0; i < 4; i++) {
+          const ang = (i / 4) * Math.PI * 2 + 0.6;
+          const r = 14 + fs * 10;
+          const x = Math.round(ARENA.foe.x + Math.cos(ang) * r), y = Math.round(ARENA.foe.y - 18 + Math.sin(ang) * r * 0.8);
+          ctx.fillRect(x - 1, y, 3, 1);
+          ctx.fillRect(x, y - 1, 1, 3);
+        }
+        ctx.globalAlpha = 1;
+      }
       drawCreature(ctx, ownRows, `creature:${c.species}:${ownRows.length}`, ARENA.own, false, 'own');
       const sp = (t - anim.sparkle) / 1200;
       if (sp >= 0 && sp < 1) {

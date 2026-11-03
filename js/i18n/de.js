@@ -304,4 +304,8 @@ export const DE = {
   'book.seen': '◐ Gesehen',
   'book.beaten': '● Besiegt',
   'book.shinySeen': '✦ Glanzform gesehen',
+
+  // Glanzform
+  'duel.shinyAppears': '✦ Es schimmert in einer seltenen Farbe!',
+  'duel.shinyMark': '✦ Glanzform',
 };

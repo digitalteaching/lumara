@@ -22,6 +22,9 @@ export function createEncounterCounter(rng) {
   };
 }
 
+// Glanzform (Design 6.4): selten, nur bei wilden Wesen.
+export const rollShiny = rng => rng.next() < CONFIG.wild.shinyChance;
+
 export function pickWild(areaTable, rng) {
   if (rng.next() < CONFIG.wild.rareChance) return areaTable.rare;
   return rng.pick(areaTable.common);

@@ -132,6 +132,7 @@ async function devDuel(kind) {
   const again = () => {
     game.state.creature.energy = Math.max(game.state.creature.energy, 1);
     const setup = kind === 'trainer' ? makeTrainerSetup(game, 1) : makeWildSetup(game, 1);
+    if (kind !== 'trainer' && params.has('glanz')) setup.foe.shiny = true; // ?duell=wild&glanz
     game.go(createDuelScene(game, setup, again));
   };
   again();
@@ -169,7 +170,7 @@ async function probeStart() {
 }
 
 if (params.has('probe')) probeStart();
-else if (isLocal && params.has('galerie')) game.go(createGalleryScene(game));
+else if (isLocal && params.has('galerie')) game.go(createGalleryScene(game, { shiny: params.has('glanz') }));
 else if (isLocal && params.has('duell')) devDuel(params.get('duell'));
 else if (isLocal && params.has('dev')) devStart();
 else startFlow(game, game.store.load());

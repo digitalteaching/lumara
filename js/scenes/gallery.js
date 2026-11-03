@@ -2,16 +2,19 @@
 // Passen nicht alle auf ein Bild, blättert A (oder Tippen) zur nächsten Seite.
 
 import { CREATURE_ART } from '../gfx/art/creatures.js';
+import { shinyRows } from '../gfx/art/shiny.js';
 import { spriteFrom } from '../gfx/canvasSprites.js';
 import { SPECIES } from '../data/species.js';
 import { el } from '../ui/dom.js';
 import { drawBayArena } from '../gfx/arena.js';
 
-export function createGalleryScene(game) {
+// ?galerie&glanz: alle Bilder als Glanzform (Design 6.4).
+export function createGalleryScene(game, { shiny = false } = {}) {
   const entries = [];
   for (const [id, stages] of Object.entries(CREATURE_ART)) {
-    for (const [stage, rows] of Object.entries(stages)) entries.push({ id, stage: Number(stage), rows });
+    for (const [stage, rows] of Object.entries(stages)) entries.push({ id, stage: Number(stage), rows: shiny ? shinyRows(rows, id) : rows });
   }
+  const suffix = shiny ? ':glanz' : '';
 
   // Seiten: Zeilen von links nach rechts, eine neue Seite, wenn unten kein Platz mehr ist.
   function layout() {
@@ -74,7 +77,7 @@ export function createGalleryScene(game) {
       drawBayArena(ctx, t, game.reducedMotion);
       entries.forEach((e, i) => {
         const p = positions[i];
-        if (p.page === page) ctx.drawImage(spriteFrom(`creature:${e.id}:${e.stage}`, e.rows), p.x, p.y);
+        if (p.page === page) ctx.drawImage(spriteFrom(`creature:${e.id}:${e.stage}${suffix}`, e.rows), p.x, p.y);
       });
     },
   };
