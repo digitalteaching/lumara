@@ -42,8 +42,8 @@ test('Anzeigename: Spitzname oder Name der aktuellen Stufe', () => {
   assert.equal(displayName({ species: 'nixi', nickname: null, level: 20 }), 'Quellnix');
 });
 
-test('Gebiete 3 bis 5: je zwei häufige und eine seltene Art, Trainer mit Stufe 2', () => {
-  for (const a of [3, 4, 5]) {
+test('Gebiete 3 bis 8: je zwei häufige und eine seltene Art, Trainer mit Stufe 2', () => {
+  for (const a of [3, 4, 5, 6, 7, 8]) {
     const ids = [...AREA_WILD[a].common, AREA_WILD[a].rare];
     assert.equal(AREA_WILD[a].common.length, 2);
     assert.equal(SPECIES[AREA_WILD[a].rare].rarity, 'rare');
@@ -58,8 +58,22 @@ test('Gebiete 3 bis 5: je zwei häufige und eine seltene Art, Trainer mit Stufe 
   assert.deepEqual(AREA_WILD[3], { common: ['tupfling', 'irrfunke'], rare: 'nebelunke' });
   assert.deepEqual(AREA_WILD[4], { common: ['glaskaefer', 'duenenhuepfer'], rare: 'flimmerfuchs' });
   assert.deepEqual(AREA_WILD[5], { common: ['drachling', 'klippbock'], rare: 'wolkenwal' });
-  assert.deepEqual([3, 4, 5].map(n => speciesName(TRAINER_CREATURES[n].species, 2)), ['Schirmling', 'Spiegelkäfer', 'Himmelsdrachling']);
+  assert.deepEqual(AREA_WILD[6], { common: ['zahnmaus', 'dampfkobold'], rare: 'messingeule' });
+  assert.deepEqual(AREA_WILD[7], { common: ['frostrobbe', 'flockenhase'], rare: 'aurorafink' });
+  assert.deepEqual(AREA_WILD[8], { common: ['schnuppling', 'nachtschaf'], rare: 'sternhirsch' });
+  assert.deepEqual([3, 4, 5, 6, 7, 8].map(n => speciesName(TRAINER_CREATURES[n].species, 2)), ['Schirmling', 'Spiegelkäfer', 'Himmelsdrachling', 'Uhrwerkmaus', 'Gletscherrobbe', 'Kometling']);
+  assert.deepEqual([6, 7, 8].map(n => TRAINER_CREATURES[n]), [{ species: 'zahnmaus', stage: 2 }, { species: 'frostrobbe', stage: 2 }, { species: 'schnuppling', stage: 2 }]);
+  assert.equal(wildName('nachtschaf', 1, 'a'), 'Ein wildes Nachtschaf');
+  assert.equal(wildName('messingeule', 1, 'the'), 'Die wilde Messingeule');
+  assert.equal(wildName('sternhirsch', 1, 'a'), 'Ein wilder Sternhirsch');
   assert.equal(wildName('nebelunke', 1, 'a'), 'Eine wilde Nebelunke');
   assert.equal(wildName('tupfling', 1, 'the'), 'Der wilde Tupfling');
   assert.equal(wildName('glaskaefer', 1, 'a'), 'Ein wilder Glaskäfer');
+});
+
+test('Die neuen Bilder sind verschieden: jede Art hat ihre eigene Silhouette', () => {
+  const ids = [6, 7, 8].flatMap(a => [...AREA_WILD[a].common, AREA_WILD[a].rare]);
+  const shapes = ids.map(id => creatureRows(id, 1).map(r => r.replace(/[^.]/g, '#')).join('/'));
+  assert.equal(new Set(shapes).size, ids.length);
+  for (const n of [6, 7, 8]) assert.notDeepEqual(creatureRows(TRAINER_CREATURES[n].species, 2), creatureRows(TRAINER_CREATURES[n].species, 1));
 });

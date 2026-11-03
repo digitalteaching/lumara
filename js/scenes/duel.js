@@ -50,9 +50,8 @@ export function makeTrainerSetup(game, number) {
   };
 }
 
-// Probefrage für Lehrkräfte (Design 12.3): ein Trainerduell mit den Fragen eines beliebigen Trainers.
-// Wesen und Arenen gibt es für die Trainer 1 bis 5; die Trainer 6 bis 8 leihen sich bis Plan 3c
-// das Wesen von Trainer 1 und die Arena der Bucht.
+// Probefrage für Lehrkräfte (Design 12.3): ein Trainerduell mit den Fragen eines beliebigen Trainers,
+// mit dessen Wesen und Arena.
 export function makeProbeSetup(game, number) {
   const pack = game.pack.data;
   const t = pack.trainers.find(x => x.number === number) ?? pack.trainers[0];
@@ -60,7 +59,7 @@ export function makeProbeSetup(game, number) {
   return {
     kind: 'trainer',
     area: t.number,
-    foe: { ...(TRAINER_CREATURES[t.number] ?? TRAINER_CREATURES[1]), level: cfg.level, maxEnergy: cfg.energy },
+    foe: { ...TRAINER_CREATURES[t.number], level: cfg.level, maxEnergy: cfg.energy },
     trainer: { number: t.number, name: t.name, lines: { hello: t.hello, win: t.win, loss: t.loss } },
     pool: poolFor(pack, { kind: 'trainer', trainerNumber: t.number, beaten: [] }),
     time: { trainerNumber: t.number, setting: pack.timePressure },

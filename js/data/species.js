@@ -194,6 +194,93 @@ export const SPECIES = {
     names: ['Wolkenwal'],
     description: 'Ein kleiner Wal aus Wolken, der langsam unter den Hängebrücken hindurchschwimmt.',
   },
+
+  // Gebiet 6: Uhrwerkruinen
+  zahnmaus: {
+    id: 'zahnmaus',
+    kind: 'wild',
+    gender: 'f',
+    area: 6,
+    rarity: 'common',
+    names: ['Zahnmaus', 'Uhrwerkmaus'],
+    description: 'Eine Maus mit Ohren wie Zahnräder. Auf dem Rücken trägt sie einen kleinen Aufziehschlüssel.',
+  },
+  dampfkobold: {
+    id: 'dampfkobold',
+    kind: 'wild',
+    gender: 'm',
+    area: 6,
+    rarity: 'common',
+    names: ['Dampfkobold'],
+    description: 'Ein Kobold aus Kupfer, rund wie ein Teekessel. Wenn er sich freut, pfeift Dampf aus seinem Hut.',
+  },
+  messingeule: {
+    id: 'messingeule',
+    kind: 'wild',
+    gender: 'f',
+    area: 6,
+    rarity: 'rare',
+    names: ['Messingeule'],
+    description: 'Eine Eule aus Messing mit Augen wie Lupen. Sie sieht jedes Rädchen, das sich in den Ruinen dreht.',
+  },
+
+  // Gebiet 7: Nordlichtsee
+  frostrobbe: {
+    id: 'frostrobbe',
+    kind: 'wild',
+    gender: 'f',
+    area: 7,
+    rarity: 'common',
+    names: ['Frostrobbe', 'Gletscherrobbe'],
+    description: 'Eine weiße Robbe, die gern auf dem Eis rutscht. Wird sie größer, wachsen ihr Eiskristalle auf dem Rücken.',
+  },
+  flockenhase: {
+    id: 'flockenhase',
+    kind: 'wild',
+    gender: 'm',
+    area: 7,
+    rarity: 'common',
+    names: ['Flockenhase'],
+    description: 'Ein Hase mit Fell so weiß wie Neuschnee. Auf der Stirn trägt er eine Schneeflocke.',
+  },
+  aurorafink: {
+    id: 'aurorafink',
+    kind: 'wild',
+    gender: 'm',
+    area: 7,
+    rarity: 'rare',
+    names: ['Aurorafink'],
+    description: 'Ein kleiner Fink, dessen lange Schwanzfedern in den Farben des Nordlichts schimmern.',
+  },
+
+  // Gebiet 8: Sternenwiese
+  schnuppling: {
+    id: 'schnuppling',
+    kind: 'wild',
+    gender: 'm',
+    area: 8,
+    rarity: 'common',
+    names: ['Schnuppling', 'Kometling'],
+    description: 'Ein kleiner Stern, der vom Himmel gefallen ist. Hinter ihm leuchtet ein Schweif aus Sternenstaub.',
+  },
+  nachtschaf: {
+    id: 'nachtschaf',
+    kind: 'wild',
+    gender: 'n',
+    area: 8,
+    rarity: 'common',
+    names: ['Nachtschaf'],
+    description: 'Ein Schaf mit Wolle wie eine Sommernacht. In seinem Fell funkeln kleine Sterne.',
+  },
+  sternhirsch: {
+    id: 'sternhirsch',
+    kind: 'wild',
+    gender: 'm',
+    area: 8,
+    rarity: 'rare',
+    names: ['Sternhirsch'],
+    description: 'Ein Hirsch mit einem Geweih aus Sternenlicht. Man sieht ihn nur in klaren Nächten.',
+  },
 };
 
 export const AREA_WILD = {
@@ -202,6 +289,9 @@ export const AREA_WILD = {
   3: { common: ['tupfling', 'irrfunke'], rare: 'nebelunke' },
   4: { common: ['glaskaefer', 'duenenhuepfer'], rare: 'flimmerfuchs' },
   5: { common: ['drachling', 'klippbock'], rare: 'wolkenwal' },
+  6: { common: ['zahnmaus', 'dampfkobold'], rare: 'messingeule' },
+  7: { common: ['frostrobbe', 'flockenhase'], rare: 'aurorafink' },
+  8: { common: ['schnuppling', 'nachtschaf'], rare: 'sternhirsch' },
 };
 
 export const TRAINER_CREATURES = {
@@ -210,6 +300,9 @@ export const TRAINER_CREATURES = {
   3: { species: 'tupfling', stage: 2 },
   4: { species: 'glaskaefer', stage: 2 },
   5: { species: 'drachling', stage: 2 },
+  6: { species: 'zahnmaus', stage: 2 },
+  7: { species: 'frostrobbe', stage: 2 },
+  8: { species: 'schnuppling', stage: 2 },
 };
 
 // „Ein wilder Eichhuscher“, „Die wilde Glimmqualle“: mit dem Artikel, der zum Wesen passt.

@@ -510,6 +510,248 @@ function wolkenwal() {
   return done(g);
 }
 
+// ---------- Gebiet 6: Uhrwerkruinen (Messing, Kupfer, grünlicher Stein) ----------
+
+// Zähne rund um ein Zahnrad (für Ohren und kleine Räder)
+function gearTeeth(g, cx, cy, r, n, ch) {
+  for (let i = 0; i < n; i++) {
+    const a = (i * Math.PI * 2) / n;
+    put(g, Math.round(cx - 0.5 + Math.cos(a) * (r + 0.9)), Math.round(cy - 0.5 + Math.sin(a) * (r + 0.9)), ch);
+  }
+}
+
+// Aufziehschlüssel: Schaft und zwei runde Griffe
+function windKey(g, x, y, s) {
+  ellipse(g, x, y + 2 * s, 0.8 * s, 2.2 * s, ['H', 'h', 'r']);
+  ellipse(g, x - 2 * s, y - 0.5 * s, 1.8 * s, 1.8 * s, ['H', 'h', 'r']);
+  ellipse(g, x + 2 * s, y - 0.5 * s, 1.8 * s, 1.8 * s, ['H', 'h', 'r']);
+}
+
+function zahnmaus() {
+  const g = canvas(32);
+  poly(g, [[9, 23], [2, 19], [2, 17], [10, 21]], ['p', 'r', 'o']); // Schwanz
+  ellipse(g, 12, 28, 2.5, 1.5, ['m', 's', 'd']); // Füße
+  ellipse(g, 20, 28, 2.5, 1.5, ['m', 's', 'd']);
+  windKey(g, 10, 11, 1);
+  ellipse(g, 15, 21, 8, 6.5, ['f', 'm', 's']); // Körper
+  ellipse(g, 17, 23, 4, 3, ['w', 'f', 'm']); // Bauch
+  ellipse(g, 19, 10, 3, 3, ['H', 'h', 'r']); // Zahnrad-Ohren
+  ellipse(g, 27, 9, 2.6, 2.6, ['H', 'h', 'r']);
+  gearTeeth(g, 19, 10, 3, 6, 'h');
+  gearTeeth(g, 27, 9, 2.6, 6, 'h');
+  ellipse(g, 23, 17, 5.5, 5, ['f', 'm', 's']); // Kopf
+  poly(g, [[26, 15], [31, 19], [26, 21]], ['f', 'm', 's']); // Schnauze
+  outline(g);
+  dots(g, [[18, 9, 'b'], [26, 8, 'b'], [30, 19, 'R'], [27, 21, 'd'], [28, 22, 'd'], [12, 19, 's'], [10, 22, 's']]);
+  eye(g, 24, 15, 2, 2);
+  return done(g);
+}
+
+// Uhrwerkmaus: größer, mit Zifferblatt auf dem Bauch und großem Schlüssel
+function uhrwerkmaus() {
+  const g = canvas(40);
+  poly(g, [[11, 30], [2, 24], [3, 21], [12, 27]], ['p', 'r', 'o']);
+  ellipse(g, 3, 22, 2, 2, ['H', 'h', 'r']); // kleines Rad an der Schwanzspitze
+  ellipse(g, 15, 36, 3, 2, ['m', 's', 'd']);
+  ellipse(g, 25, 36, 3, 2, ['m', 's', 'd']);
+  windKey(g, 11, 13, 1.4);
+  ellipse(g, 19, 27, 10, 8.5, ['f', 'm', 's']);
+  ellipse(g, 21, 29, 5, 5, ['w', 'c', 'Y']); // Zifferblatt
+  ellipse(g, 25, 12, 5, 5, ['H', 'h', 'r']);
+  ellipse(g, 33, 12, 4, 4, ['H', 'h', 'r']);
+  gearTeeth(g, 25, 12, 5, 8, 'h');
+  gearTeeth(g, 33, 12, 4, 7, 'h');
+  ellipse(g, 29, 21, 6.5, 6, ['f', 'm', 's']);
+  poly(g, [[33, 19], [39, 23], [33, 26]], ['f', 'm', 's']);
+  outline(g);
+  dots(g, [[25, 12, 'b'], [24, 12, 'b'], [33, 12, 'b'], [38, 23, 'R'], [34, 26, 'd'], [35, 27, 'd'],
+    [20, 25, 'h'], [25, 29, 'h'], [20, 33, 'h'], [16, 29, 'h'], // Ziffern
+    [20, 29, 'k'], [20, 28, 'k'], [20, 27, 'k'], [21, 29, 'k'], [22, 29, 'k'], [13, 24, 's'], [11, 28, 's']]);
+  eye(g, 30, 19, 2, 3);
+  return done(g);
+}
+
+function dampfkobold() {
+  const g = canvas(32);
+  ellipse(g, 11, 29, 2.5, 1.5, ['r', 'o', 'b']); // Füße
+  ellipse(g, 19, 29, 2.5, 1.5, ['r', 'o', 'b']);
+  ellipse(g, 5, 20, 3, 4, ['r', 'o', 'b']); // Henkel
+  ellipse(g, 5, 20, 1.2, 2.2, ['.', '.', '.']);
+  poly(g, [[21, 22], [29, 15], [31, 17], [24, 25]], ['p', 'r', 'o']); // Tülle
+  ellipse(g, 15, 21, 9, 7.5, ['p', 'r', 'o']); // Kesselkörper
+  ellipse(g, 15, 13, 6, 2, ['p', 'r', 'o']); // Deckelhut
+  ellipse(g, 15, 10, 1.5, 1.5, ['H', 'h', 'r']); // Knauf
+  outline(g);
+  for (let x = 7; x <= 23; x++) if (g[24][x] !== 'k' && g[24][x] !== '.') g[24][x] = 'o'; // Naht
+  dots(g, [[9, 17, 'b'], [21, 17, 'b'], [9, 23, 'h'], [12, 25, 'h'], [18, 25, 'h'], [12, 20, 'R'], [21, 20, 'R'],
+    [14, 6, 'f'], [15, 5, 'w'], [16, 6, 'f'], [17, 4, 'f'], [18, 3, 'w'], [13, 4, 'w'], [12, 3, 'f'], [30, 14, 'f'], [31, 13, 'w']]); // Dampf
+  eye(g, 14, 18, 2, 2);
+  eye(g, 18, 18, 2, 2);
+  dots(g, [[16, 21, 'k'], [17, 21, 'k']]);
+  return done(g);
+}
+
+function messingeule() {
+  const g = canvas(32);
+  poly(g, [[8, 10], [8, 3], [13, 9]], ['H', 'h', 'r']); // Federohren
+  poly(g, [[19, 9], [23, 3], [24, 10]], ['H', 'h', 'r']);
+  ellipse(g, 13, 30, 2, 1, ['r', 'o', 'b']); // Füße
+  ellipse(g, 19, 30, 2, 1, ['r', 'o', 'b']);
+  ellipse(g, 16, 19, 9, 10, ['H', 'h', 'r']); // Körper
+  ellipse(g, 11, 21, 4.5, 7, ['h', 'r', 'o']); // Flügel
+  ellipse(g, 18, 23, 4, 5, ['c', 'Y', 'y']); // Brustplatte
+  outline(g);
+  // Augen wie Lupen
+  for (const [cx, cy] of [[14, 13], [20, 13]]) {
+    ellipse(g, cx, cy, 3.4, 3.4, ['k', 'k', 'k']);
+    ellipse(g, cx, cy, 2.4, 2.4, ['w', 'A', 'L']);
+    dots(g, [[cx, cy, 'k'], [cx - 1, cy, 'k'], [cx, cy - 1, 'k'], [cx - 1, cy - 1, 'k'], [cx - 2, cy - 2, 'w']]);
+  }
+  dots(g, [[17, 16, 'H'], [16, 16, 'H'], [16, 17, 'r'], [17, 17, 'r'], [16, 18, 'r'], // Schnabel
+    [9, 18, 'b'], [10, 22, 'b'], [11, 26, 'b'], [17, 21, 'r'], [19, 23, 'r'], [17, 25, 'r'], [19, 27, 'r']]); // Nieten und Federn
+  return done(g);
+}
+
+// ---------- Gebiet 7: Nordlichtsee (Weiß, Eisblau, Tannengrün, Nordlicht) ----------
+
+function frostrobbe() {
+  const g = canvas(32);
+  ellipse(g, 4, 24, 3, 2, ['f', 'm', 's']); // Schwanzflossen
+  ellipse(g, 5, 28, 3, 1.5, ['f', 'm', 's']);
+  ellipse(g, 14, 24, 11, 5.5, ['w', 'f', 'm']); // Körper
+  ellipse(g, 23, 17, 5.5, 5, ['w', 'f', 'm']); // Kopf
+  poly(g, [[16, 26], [22, 30], [14, 30]], ['f', 'm', 's']); // Vorderflosse
+  outline(g, 'S');
+  dots(g, [[28, 18, 'k'], [26, 20, 'm'], [27, 21, 'm'], [25, 21, 'm'], [9, 22, 'A'], [13, 21, 'A'], [17, 22, 'A'], [11, 25, 'A'], [6, 24, 'A']]);
+  eye(g, 24, 15, 2, 3);
+  return done(g);
+}
+
+// Gletscherrobbe: größer, mit Eiskristallen auf dem Rücken
+function gletscherrobbe() {
+  const g = canvas(40);
+  ellipse(g, 5, 30, 3.5, 2.5, ['f', 'm', 's']);
+  ellipse(g, 6, 35, 3.5, 2, ['f', 'm', 's']);
+  poly(g, [[8, 27], [10, 17], [14, 26]], ['w', 'A', 'L']); // Eiskristalle
+  poly(g, [[13, 26], [17, 12], [21, 25]], ['w', 'A', 'L']);
+  poly(g, [[20, 25], [23, 17], [25, 25]], ['w', 'A', 'L']);
+  ellipse(g, 18, 30, 14, 7, ['w', 'f', 'm']);
+  ellipse(g, 30, 21, 7, 6, ['w', 'f', 'm']);
+  poly(g, [[21, 33], [28, 38], [19, 38]], ['f', 'm', 's']);
+  outline(g, 'S');
+  dots(g, [[36, 22, 'k'], [37, 22, 'k'], [33, 25, 'm'], [34, 26, 'm'], [32, 26, 'm'], [11, 29, 'A'], [16, 28, 'A'], [21, 30, 'A'], [13, 33, 'A'],
+    [8, 30, 'A'], [16, 15, 'w'], [9, 19, 'w'], [22, 19, 'w']]);
+  eye(g, 31, 19, 2, 3);
+  return done(g);
+}
+
+function flockenhase() {
+  const g = canvas(32);
+  ellipse(g, 12, 28, 5, 2, ['w', 'f', 'm']); // Hinterpfote
+  ellipse(g, 5, 22, 2.5, 2.5, ['w', 'w', 'f']); // Stummelschwanz
+  ellipse(g, 14, 22, 8, 6.5, ['w', 'f', 'm']); // Körper
+  poly(g, [[17, 12], [16, 2], [19, 1], [20, 12]], ['w', 'f', 'm']); // lange Ohren
+  poly(g, [[21, 12], [22, 1], [25, 2], [24, 12]], ['w', 'f', 'm']);
+  ellipse(g, 22, 15, 5, 4.5, ['w', 'f', 'm']); // Kopf
+  ellipse(g, 21, 28, 2, 1.5, ['w', 'f', 'm']); // Vorderpfote
+  outline(g, 'S');
+  dots(g, [[18, 4, 'R'], [18, 5, 'R'], [18, 6, 'R'], [23, 3, 'R'], [23, 4, 'R'], [23, 5, 'R'], [26, 16, 'R'],
+    [21, 11, 'L'], [20, 11, 'A'], [22, 11, 'A'], [21, 10, 'A'], [21, 12, 'A'], // Schneeflocke
+    [10, 20, 'f'], [13, 18, 'f'], [16, 24, 'f']]);
+  eye(g, 23, 13, 2, 2);
+  return done(g);
+}
+
+function aurorafink() {
+  const g = canvas(32);
+  poly(g, [[10, 21], [0, 30], [3, 30], [12, 23]], ['V', 'v', 'P']); // Schwanzfedern in Nordlichtfarben
+  poly(g, [[10, 20], [1, 25], [2, 27], [11, 22]], ['T', 'g', 'l']);
+  poly(g, [[11, 19], [2, 21], [2, 23], [11, 21]], ['A', 'L', 'S']);
+  poly(g, [[19, 10], [18, 5], [22, 9]], ['V', 'v', 'P']); // Schopf
+  ellipse(g, 16, 19, 7, 6, ['T', 't', 'F']); // Körper
+  ellipse(g, 18, 22, 3.5, 3, ['w', 'c', 'Y']); // Bauch
+  ellipse(g, 13, 18, 4.5, 3.5, ['V', 'v', 'P']); // Flügel
+  ellipse(g, 22, 13, 4.5, 4.5, ['T', 't', 'F']); // Kopf
+  poly(g, [[25, 12], [29, 14], [25, 15]], ['H', 'h', 'r']); // Schnabel
+  outline(g);
+  dots(g, [[15, 26, 'h'], [15, 27, 'h'], [18, 26, 'h'], [18, 27, 'h'], [11, 17, 'V'], [14, 19, 'P'], [4, 24, 'T'], [3, 28, 'V']]);
+  eye(g, 23, 11, 2, 2);
+  return done(g);
+}
+
+// ---------- Gebiet 8: Sternenwiese (Nachtblau, Sternengold, dunkles Wiesengrün) ----------
+
+// Fünfzackiger Stern als Punktliste
+function starPoints(cx, cy, R, r) {
+  return Array.from({ length: 10 }, (_, i) => {
+    const a = -Math.PI / 2 + (i * Math.PI) / 5;
+    const d = i % 2 ? r : R;
+    return [cx + Math.cos(a) * d, cy + Math.sin(a) * d];
+  });
+}
+
+function schnuppling() {
+  const g = canvas(32);
+  poly(g, [[13, 15], [1, 22], [3, 27], [15, 21]], ['V', 'v', 'P']); // Schweif
+  poly(g, [[14, 16], [4, 22], [5, 24], [15, 20]], ['w', 'V', 'v']);
+  poly(g, starPoints(19, 15, 11.5, 5.5), ['H', 'h', 'r']); // Sternkörper
+  outline(g);
+  dots(g, [[19, 17, 'k'], [20, 18, 'k'], [21, 18, 'k'], [22, 17, 'k'], [16, 16, 'R'], [25, 16, 'R'],
+    [5, 26, 'H'], [8, 25, 'w'], [2, 20, 'H'], [10, 27, 'H']]); // Mund, Wangen, Sternenstaub
+  eye(g, 18, 13, 2, 2);
+  eye(g, 22, 13, 2, 2);
+  return done(g);
+}
+
+// Kometling: runder Kometenkopf mit langem, wehendem Schweif
+function kometling() {
+  const g = canvas(40);
+  poly(g, [[18, 17], [1, 30], [3, 36], [20, 27]], ['V', 'v', 'P']);
+  poly(g, [[18, 20], [4, 30], [6, 33], [19, 25]], ['A', 'L', 'S']);
+  poly(g, [[19, 21], [8, 28], [9, 30], [20, 24]], ['w', 'f', 'A']);
+  poly(g, [[24, 10], [26, 3], [29, 10]], ['H', 'h', 'r']); // Zacken
+  poly(g, [[30, 11], [35, 6], [34, 13]], ['H', 'h', 'r']);
+  poly(g, [[33, 16], [39, 15], [34, 20]], ['H', 'h', 'r']);
+  ellipse(g, 26, 20, 10, 10, ['H', 'h', 'r']);
+  outline(g);
+  dots(g, [[27, 24, 'k'], [28, 25, 'k'], [29, 25, 'k'], [30, 24, 'k'], [23, 23, 'R'], [34, 22, 'R'], [21, 15, 'w'], [20, 16, 'w'],
+    [6, 34, 'H'], [10, 31, 'w'], [3, 31, 'H'], [13, 29, 'H'], [15, 25, 'w']]);
+  eye(g, 26, 18, 2, 3);
+  eye(g, 31, 18, 2, 3);
+  return done(g);
+}
+
+function nachtschaf() {
+  const g = canvas(32);
+  for (const x of [10, 14, 19, 23]) ellipse(g, x, 28, 1.2, 2.5, ['d', 'n', 'n']); // Beine
+  ellipse(g, 15, 21, 10, 6.5, ['V', 'm', 's']); // Wollkörper
+  for (const [x, y, r] of [[8, 14, 3.8], [14, 12, 4.2], [20, 13.5, 3.8], [5, 20, 3.5]]) ellipse(g, x, y, r, r, ['V', 'V', 'm']); // Wollbäusche
+  ellipse(g, 23, 14, 2.5, 1.5, ['s', 'd', 'n']); // Ohr
+  ellipse(g, 25, 18, 4.5, 4.5, ['m', 's', 'd']); // Gesicht
+  ellipse(g, 25, 13, 3, 2, ['V', 'm', 's']); // Wolllocke
+  outline(g);
+  dots(g, [[26, 17, 'w'], [27, 17, 'k'], [26, 18, 'w'], [27, 18, 'k'], [29, 20, 'm'], [27, 21, 's'],
+    [9, 15, 'H'], [14, 12, 'H'], [19, 19, 'H'], [11, 22, 'H'], [21, 14, 'H'], [6, 20, 'h'], [16, 24, 'h']]); // Sterne in der Wolle
+  return done(g);
+}
+
+function sternhirsch() {
+  const g = canvas(32);
+  for (const x of [10, 13, 19, 22]) ellipse(g, x, 27, 1.2, 3.5, ['v', 'P', 'n']); // Beine
+  ellipse(g, 7, 17, 1.5, 2, ['w', 'f', 'm']); // Schwanz
+  ellipse(g, 15, 20, 8, 5, ['V', 'v', 'P']); // Körper
+  poly(g, [[19, 19], [22, 10], [26, 12], [23, 21]], ['V', 'v', 'P']); // Hals
+  ellipse(g, 25, 11, 3.5, 3, ['V', 'v', 'P']); // Kopf
+  poly(g, [[26, 10], [31, 12], [27, 14]], ['V', 'v', 'P']); // Schnauze
+  // Geweih aus Sternenlicht: vor dem Umriss, damit es einen dunklen Rand bekommt
+  dots(g, [[23, 8, 'h'], [23, 7, 'H'], [22, 6, 'H'], [22, 5, 'h'], [21, 4, 'H'], [20, 3, 'w'], [23, 5, 'H'], [24, 4, 'H'], [25, 3, 'w'],
+    [26, 8, 'h'], [26, 7, 'H'], [27, 6, 'H'], [28, 5, 'h'], [29, 4, 'H'], [30, 3, 'w'], [27, 4, 'H'], [27, 3, 'w']]);
+  outline(g);
+  dots(g, [[30, 12, 'k'], [11, 18, 'w'], [14, 17, 'w'], [17, 18, 'w'], [12, 21, 'w']]);
+  eye(g, 24, 10, 2, 2);
+  return done(g);
+}
+
 export const CREATURE_ART = {
   tupfling: { 1: tupfling(), 2: schirmling() },
   irrfunke: { 1: irrfunke() },
@@ -520,6 +762,15 @@ export const CREATURE_ART = {
   drachling: { 1: drachling(), 2: himmelsdrachling() },
   klippbock: { 1: klippbock() },
   wolkenwal: { 1: wolkenwal() },
+  zahnmaus: { 1: zahnmaus(), 2: uhrwerkmaus() },
+  dampfkobold: { 1: dampfkobold() },
+  messingeule: { 1: messingeule() },
+  frostrobbe: { 1: frostrobbe(), 2: gletscherrobbe() },
+  flockenhase: { 1: flockenhase() },
+  aurorafink: { 1: aurorafink() },
+  schnuppling: { 1: schnuppling(), 2: kometling() },
+  nachtschaf: { 1: nachtschaf() },
+  sternhirsch: { 1: sternhirsch() },
   moosling: { 1: moosling() },
   eichhuscher: { 1: eichhuscher1(), 2: eichhuscher2() },
   rindenwicht: { 1: rindenwicht() },

@@ -1,4 +1,5 @@
-// Duell-Hintergründe (Design 7.1): Leuchtturmbucht, Flüsterwald, Pilzmoor, Spiegeldünen, Windklippen.
+// Duell-Hintergründe (Design 7.1): Leuchtturmbucht, Flüsterwald, Pilzmoor, Spiegeldünen, Windklippen,
+// Uhrwerkruinen, Nordlichtsee und Sternenwiese.
 
 export const ARENA = {
   own: { x: 56, y: 80 }, // Mitte der eigenen Plattform (Füße), über dem Antwort-Panel
@@ -184,9 +185,164 @@ function drawCliffArena(ctx, t = 0, reducedMotion = false) {
   ctx.fillRect(ARENA.own.x + 10, ARENA.own.y - 6, 10, 1);
 }
 
+// Großes Zahnrad im Hintergrund der Ruinen
+function bigGear(ctx, cx, cy, r, teeth, angle, fill, hole) {
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(angle);
+  ctx.fillStyle = fill;
+  for (let i = 0; i < teeth; i++) {
+    ctx.rotate((Math.PI * 2) / teeth);
+    ctx.fillRect(-2, -r - 3, 4, 5);
+  }
+  ctx.beginPath();
+  ctx.arc(0, 0, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = hole;
+  ctx.beginPath();
+  ctx.arc(0, 0, r * 0.35, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+// Uhrwerkruinen: Mauer aus grünlichem Stein, große Zahnräder, die sich langsam drehen, ein dunkler
+// Kanal zwischen den Plattformen aus Pflaster.
+function drawRuinArena(ctx, t = 0, reducedMotion = false) {
+  const tt = reducedMotion ? 0 : t;
+  ctx.fillStyle = '#56706a';
+  ctx.fillRect(0, 0, 240, 56);
+  ctx.fillStyle = '#46596a';
+  for (let y = 6; y < 56; y += 8) {
+    ctx.fillRect(0, y, 240, 1);
+    for (let x = (y / 8) % 2 ? 0 : 10; x < 240; x += 20) ctx.fillRect(x, y - 7, 1, 7);
+  }
+  bigGear(ctx, 40, 22, 16, 10, tt / 3000, '#a8743a', '#46596a');
+  bigGear(ctx, 70, 40, 9, 7, -tt / 1700, '#7a5236', '#46596a');
+  bigGear(ctx, 200, 18, 12, 8, -tt / 2300, '#a8743a', '#46596a');
+  // Pflasterboden
+  ctx.fillStyle = '#a3a7c4';
+  ctx.fillRect(0, 50, 240, 110);
+  ctx.fillStyle = '#6b6f94';
+  for (let y = 54; y < 160; y += 6) {
+    ctx.fillRect(0, y, 240, 1);
+    for (let x = (y / 6) % 2 ? 3 : 0; x < 240; x += 9) ctx.fillRect(x, y - 5, 1, 5);
+  }
+  // Kanal zwischen den Plattformen
+  ctx.fillStyle = '#1f3f66';
+  ctx.fillRect(0, 64, 240, 8);
+  ctx.fillStyle = '#3f8f86';
+  const shift = Math.floor(tt / 500) % 5;
+  for (let x = shift - 5; x < 240; x += 15) ctx.fillRect(x, 67, 5, 1);
+  ctx.fillStyle = '#46496e';
+  ctx.fillRect(0, 63, 240, 1);
+  ctx.fillRect(0, 72, 240, 1);
+  for (const [p, rx, ry] of [[ARENA.foe, 30, 6], [ARENA.own, 34, 7]]) {
+    oval(ctx, p.x, p.y, rx, ry, '#d4d6e6', '#46496e');
+    ctx.fillStyle = '#a3a7c4';
+    for (let dx = -rx + 7; dx < rx - 4; dx += 8) ctx.fillRect(p.x + dx, p.y - ry + 2, 1, ry * 2 - 3);
+  }
+}
+
+// Nordlichtsee: dunkler Himmel mit Nordlicht in Grün und Violett, verschneite Tannen am Ufer,
+// eine Eisfläche mit Rissen, Plattformen aus Schnee.
+function drawLakeArena(ctx, t = 0, reducedMotion = false) {
+  const tt = reducedMotion ? 0 : t;
+  const sky = ctx.createLinearGradient(0, 0, 0, 46);
+  sky.addColorStop(0, '#1b2a4a');
+  sky.addColorStop(1, '#46496e');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, 240, 46);
+  // Nordlicht: zwei weiche Bänder, die sich langsam wellen
+  for (const [base, color, phase] of [[10, 'rgba(127, 224, 168, 0.35)', 0], [20, 'rgba(196, 154, 217, 0.28)', 2]]) {
+    ctx.fillStyle = color;
+    for (let x = 0; x < 240; x += 2) {
+      const y = base + Math.sin(x / 28 + phase + tt / 2200) * 4;
+      ctx.fillRect(x, Math.round(y), 2, 8);
+    }
+  }
+  ctx.fillStyle = '#fffaf0';
+  for (const [x, y] of [[14, 6], [60, 3], [112, 8], [170, 4], [222, 9]]) ctx.fillRect(x, y, 1, 1);
+  // verschneite Tannen am Ufer
+  for (const x of [6, 24, 44, 96, 140, 158, 214, 232]) {
+    ctx.fillStyle = '#24493d';
+    ctx.beginPath();
+    ctx.moveTo(x - 7, 48);
+    ctx.lineTo(x, 30);
+    ctx.lineTo(x + 7, 48);
+    ctx.fill();
+    ctx.fillStyle = '#fffaf0';
+    ctx.fillRect(x - 1, 31, 2, 2);
+    ctx.fillRect(x - 3, 38, 6, 1);
+  }
+  // Eisfläche
+  ctx.fillStyle = '#a7dde8';
+  ctx.fillRect(0, 47, 240, 113);
+  ctx.fillStyle = '#fffaf0';
+  for (let i = 0; i < 30; i++) ctx.fillRect((i * 67) % 240, 52 + ((i * 31) % 104), 3, 1);
+  ctx.fillStyle = '#4fa3c4';
+  for (const [x, y] of [[30, 100], [120, 66], [200, 120], [90, 140]]) {
+    ctx.fillRect(x, y, 6, 1);
+    ctx.fillRect(x + 6, y + 1, 5, 1);
+    ctx.fillRect(x + 11, y + 2, 3, 1);
+  }
+  oval(ctx, ARENA.foe.x, ARENA.foe.y, 30, 6, '#fffaf0', '#a3a7c4');
+  oval(ctx, ARENA.own.x, ARENA.own.y, 34, 7, '#fffaf0', '#a3a7c4');
+}
+
+// Sternenwiese: Nachthimmel mit Mond und Sternen, dunkle Hügel, eine dunkle Wiese mit
+// Sternengras, Plattformen aus Gras.
+function drawMeadowArena(ctx, t = 0, reducedMotion = false) {
+  const tt = reducedMotion ? 0 : t;
+  const sky = ctx.createLinearGradient(0, 0, 0, 50);
+  sky.addColorStop(0, '#1b1a2e');
+  sky.addColorStop(1, '#2b2d4a');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, 240, 50);
+  // Mond als Sichel
+  ctx.fillStyle = '#ffe08a';
+  ctx.beginPath();
+  ctx.arc(42, 17, 9, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#1e1d33';
+  ctx.beginPath();
+  ctx.arc(46, 14, 8, 0, Math.PI * 2);
+  ctx.fill();
+  // Sterne; ein paar leuchten langsam auf und ab (höchstens einmal in vier Sekunden)
+  const glow = reducedMotion ? 0.8 : 0.55 + 0.35 * Math.sin(tt / 700);
+  ctx.fillStyle = '#fffaf0';
+  for (const [x, y] of [[80, 6], [104, 20], [130, 9], [160, 26], [188, 5], [214, 16], [232, 30], [70, 30], [16, 34], [150, 40]]) ctx.fillRect(x, y, 1, 1);
+  ctx.fillStyle = `rgba(255, 224, 138, ${glow})`;
+  for (const [x, y] of [[118, 14], [200, 30], [92, 38]]) {
+    ctx.fillRect(x - 1, y, 3, 1);
+    ctx.fillRect(x, y - 1, 1, 3);
+  }
+  // dunkle Hügel
+  ctx.fillStyle = '#1f3a33';
+  for (const [x, rx] of [[30, 60], [140, 70], [230, 50]]) {
+    ctx.beginPath();
+    ctx.ellipse(x, 50, rx, 12, 0, Math.PI, 0);
+    ctx.fill();
+  }
+  // Wiese mit Sternengras
+  ctx.fillStyle = '#24493d';
+  ctx.fillRect(0, 48, 240, 112);
+  ctx.fillStyle = '#3d7a55';
+  for (let i = 0; i < 60; i++) ctx.fillRect((i * 53) % 240, 52 + ((i * 29) % 106), 1, 2);
+  ctx.fillStyle = '#e8b64a';
+  for (let i = 0; i < 16; i++) ctx.fillRect((i * 71 + 9) % 240, 54 + ((i * 41) % 102), 1, 1);
+  oval(ctx, ARENA.foe.x, ARENA.foe.y, 30, 6, '#3d7a55', '#1b1a2e');
+  oval(ctx, ARENA.own.x, ARENA.own.y, 34, 7, '#3d7a55', '#1b1a2e');
+  ctx.fillStyle = '#ffe08a';
+  ctx.fillRect(ARENA.foe.x - 16, ARENA.foe.y - 4, 1, 1);
+  ctx.fillRect(ARENA.own.x + 12, ARENA.own.y - 5, 1, 1);
+}
+
 // Hintergrund passend zum Gebiet (Design 7.1). Gebiete ohne eigene Arena nehmen die Bucht.
 // Bei „Bewegung reduzieren“ steht jede Arena still.
-export const ARENAS = { 2: drawForestArena, 3: drawMoorArena, 4: drawDuneArena, 5: drawCliffArena };
+export const ARENAS = {
+  2: drawForestArena, 3: drawMoorArena, 4: drawDuneArena, 5: drawCliffArena,
+  6: drawRuinArena, 7: drawLakeArena, 8: drawMeadowArena,
+};
 export function drawArena(ctx, area, t = 0, reducedMotion = false) {
   (ARENAS[area] ?? drawBayArena)(ctx, t, reducedMotion);
 }
