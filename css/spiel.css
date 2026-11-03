@@ -346,17 +346,23 @@ body[data-mode="duel"] #panel { background: var(--ink); border-radius: 8px 8px 0
   background: repeating-linear-gradient(-45deg, #e2553f 0 6px, #b8321f 6px 12px);
 }
 .timebar.frozen .timebar-fill { background: #5a9fd6; }
+/* Eigener dunkler Hintergrund: auf jeder Füllung gut lesbar (tests/contrast.test.js) */
 .timebar-label {
   position: absolute;
-  inset: 0 8px 0 auto;
+  top: 2px;
+  right: 6px;
+  bottom: 2px;
   display: flex;
   align-items: center;
+  padding: 0 5px;
+  border-radius: 3px;
+  background: rgba(29, 43, 58, 0.88);
   font-size: 13px;
   font-weight: 700;
+  line-height: 1;
   color: var(--cream);
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
 }
-.timebar.frozen .timebar-label { inset: 0; justify-content: center; }
+.timebar.frozen .timebar-label { right: 50%; transform: translateX(50%); }
 .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .btn.answer { display: flex; align-items: center; gap: 10px; text-align: left; min-height: 56px; font-weight: 600; }
 .answer-key {
