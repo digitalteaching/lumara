@@ -1,5 +1,5 @@
 // Geschichtsstücke unter den Zetteln (Design 5.4, 5.5): je Gebiet drei, in fester Reihenfolge.
-// Der Name dessen, der im Berg lebt, kommt erst in späteren Gebieten vor.
+// Der Name dessen, der im Berg lebt, kommt genau einmal vor: im letzten Stück der Sternenwiese.
 
 export const STORY = {
   1: [
@@ -36,5 +36,10 @@ export const STORY = {
     'Über dem See tanzt das Nordlicht. Die Eisfischer sagen, es sind die Lieder der Leuchtsteine, die der Himmel noch nicht vergessen hat.',
     'Unter dem Eis liegen Wörter, die niemand mehr sagt. Wer ganz still ist, hört sie manchmal knistern wie frischen Schnee.',
     'Das Wesen im Berg sammelt nicht aus Bosheit. Es ist so lange allein, dass es glaubt, irgendwer müsse sich an all das Vergessene erinnern.',
+  ],
+  8: [
+    'Auf der Sternenwiese ist immer Nacht. Fällt ein Stern ins Gras, wünschen sich die Leute, dass nie wieder jemand vergessen wird.',
+    'Am Rand der Wiese liegt das Tor zur Höhle im Berg. Es öffnet sich erst, wenn alle acht Leuchtsteine wieder leuchten.',
+    'Das kleine Wesen im Berg hat einen Namen, den alle vergessen haben: Morrow. Wer ihn ausspricht, erinnert sich, und Morrow ist nicht mehr allein.',
   ],
 };

@@ -8,6 +8,7 @@ import { playTransition, reveal } from './transition.js';
 import { createEncounterCounter } from '../world/encounters.js';
 import { trainerSees } from '../world/map.js';
 import { fogEdgeLines, fogSignLines, fogSignFor } from '../world/fogEdge.js';
+import { caveGateLines, caveSocketLights } from '../world/caveGate.js';
 import { MAPS, areaConfig, areaOpen, exitAt, openGatesFor, resolveStart, whisperLine, beaconFront, packWorldKey } from '../world/network.js';
 import { visitStone, travelTargets, respawnPoint, challengeMark } from '../world/beacons.js';
 import { playBeaconScene } from './beacon.js';
@@ -303,6 +304,30 @@ export function createGameWorld(game) {
     for (let lvl = levelBefore + 1; lvl <= c.level; lvl++) await say(game, [`${displayName(c)} erreicht Level ${lvl}!`]);
     if (result.evolved) await say(game, [`${displayName(c)} wird stärker!`]);
     if (result.story) await say(game, [result.story], { speaker: 'Ein Stück Geschichte' });
+  }
+
+  // ---------- Höhlentor (Design 5.2) ----------
+  // Vor dem allgemeinen Gebäude-Handler: Das Tor sagt, wie viele Fassungen leuchten. Über das Torbild
+  // kommen die Fassungen der entzündeten Steine in den Farben ihrer Ringe.
+  const caveGate = def.objects.find(o => o.type === 'building' && o.sprite === 'cavegate');
+  if (caveGate) {
+    world.onInteract.unshift(async ev => {
+      if (ev.target !== caveGate || player.dir !== 'up' || ev.y !== caveGate.y + caveGate.h - 1) return false;
+      await say(game, caveGateLines(Math.min(8, game.state.stones.length)));
+      return true;
+    });
+    world.afterRender.push((ctx, cam) => {
+      const bx = caveGate.x * 16 - cam.x, by = caveGate.y * 16 - cam.y;
+      for (const s of caveSocketLights(game.state.stones)) {
+        ctx.globalAlpha = 0.35;
+        ctx.fillStyle = s.color;
+        ctx.fillRect(bx + s.x - 2, by + s.y - 2, 5, 5);
+        ctx.globalAlpha = 1;
+        ctx.fillRect(bx + s.x - 1, by + s.y - 1, 3, 3);
+        ctx.fillStyle = '#fffaf0';
+        ctx.fillRect(bx + s.x, by + s.y, 1, 1);
+      }
+    });
   }
 
   // Schild am Nebelrand: vor dem Standard-Schild, weil der Text vom Stand abhängt (Design 10.4).

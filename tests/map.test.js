@@ -57,7 +57,7 @@ test('Ein Zierobjekt blockiert sein Feld', () => {
 
 test('Begehbar, blockiert und hohes Gras der Kacheln 6 bis 8', () => {
   for (const k of ['cobble', 'snow', 'ice', 'nightgrass']) assert.ok(WALKABLE.has(k), k);
-  for (const k of ['canal', 'ruinwall', 'icewater', 'snowpine', 'nightrock', 'nightcliff']) assert.ok(BLOCKED.has(k), k);
+  for (const k of ['canal', 'ruinwall', 'icewater', 'snowpine', 'nightrock', 'nightcliff', 'nightstone']) assert.ok(BLOCKED.has(k), k);
   for (const k of ['ivy', 'snowgrass', 'startall']) {
     assert.ok(TALL_GRASS.has(k), k);
     assert.ok(WALKABLE.has(k), k);

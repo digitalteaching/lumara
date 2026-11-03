@@ -157,3 +157,33 @@ test('Gebiet 7: Die Ruinen führen nach Süden an den See und zurück', () => {
 test('Am See stehen und ein Paket mit 6 Trainern laden: Aufwachen am Stein in den Ruinen', () => {
   assert.deepEqual(resolveStart(st([1, 2, 3, 4, 5, 6, 7], { map: 'see', x: 20, y: 15, dir: 'up' }), pack(6)), { map: 'ruinen', ...beaconFront(MAPS.ruinen, 6) });
 });
+
+test('Gebiet 8: Der See führt nach Süden auf die Sternenwiese und zurück', () => {
+  assert.deepEqual(exitAt(MAPS.see, 19, 29), { x: 18, y: 29, w: 4, h: 1, to: 'wiese', at: { x: 19, y: 1, dir: 'down' } });
+  assert.deepEqual(exitAt(MAPS.wiese, 20, 0), { x: 18, y: 0, w: 4, h: 1, to: 'see', at: { x: 19, y: 28, dir: 'up' } });
+  assert.deepEqual(openGatesFor(MAPS.see, st([1, 2, 3, 4, 5, 6, 7]), pack(8)), ['sued']);
+});
+
+test('Der Ring schließt sich: Pfad zwischen Sternenwiese und Bucht erst nach Stein 8 und nur mit 8 Trainern', () => {
+  const all = st([1, 2, 3, 4, 5, 6, 7, 8]);
+  assert.deepEqual(openGatesFor(MAPS.bucht, all, pack(8)), ['nord', 'ost']);
+  assert.equal(openGatesFor(MAPS.wiese, all, pack(8)).includes('bucht'), true);
+  assert.equal(openGatesFor(MAPS.wiese, st([1, 2, 3, 4, 5, 6, 7]), pack(8)).includes('bucht'), false);
+  assert.deepEqual(openGatesFor(MAPS.bucht, st([1, 2, 3, 4, 5, 6, 7]), pack(8)), ['nord']);
+  assert.deepEqual(openGatesFor(MAPS.bucht, all, pack(7)), ['nord']);
+  assert.deepEqual(exitAt(MAPS.bucht, 39, 6), { x: 39, y: 5, w: 1, h: 4, to: 'wiese', at: { x: 1, y: 21, dir: 'right' } });
+  assert.deepEqual(exitAt(MAPS.wiese, 0, 21), { x: 0, y: 20, w: 1, h: 4, to: 'bucht', at: { x: 38, y: 6, dir: 'left' } });
+  // Die Ankunftsfelder liegen jeweils im offenen Tor
+  assert.ok(createMap(MAPS.bucht, { openGates: ['nord', 'ost'] }).canEnter(38, 6));
+  assert.ok(createMap(MAPS.wiese, { openGates: ['bucht'] }).canEnter(1, 21));
+});
+
+test('Auf dem Pfad der Bucht stehen und ein Paket mit 7 Trainern laden: nicht im Nebel festsitzen', () => {
+  const r = resolveStart(st([1, 2, 3, 4, 5, 6, 7, 8], { map: 'bucht', x: 38, y: 6, dir: 'right' }), pack(7));
+  assert.notDeepEqual([r.map, r.x, r.y], ['bucht', 38, 6]);
+  assert.deepEqual(resolveStart(st([1, 2, 3, 4, 5, 6, 7, 8], { map: 'bucht', x: 38, y: 6, dir: 'left' }), pack(8)), { map: 'bucht', x: 38, y: 6, dir: 'left' });
+});
+
+test('Auf der Wiese stehen und ein Paket mit 7 Trainern laden: Aufwachen am Stein des Sees', () => {
+  assert.deepEqual(resolveStart(st([1, 2, 3, 4, 5, 6, 7, 8], { map: 'wiese', x: 20, y: 10, dir: 'up' }), pack(7)), { map: 'see', ...beaconFront(MAPS.see, 7) });
+});

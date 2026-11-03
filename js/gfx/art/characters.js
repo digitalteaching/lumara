@@ -163,7 +163,20 @@ const CHISEL_SIDE = [[12, 10, 'm'], [12, 11, 'o']];
 const BOBBLE_DOWN = [[7, 0, 'w'], [8, 0, 'w']];
 const BOBBLE_SIDE = [[6, 0, 'w'], [7, 0, 'w']];
 
+// Sternenwiese (Plan 3c): Fernrohr, Sterne auf dem Umhang, Hirtenstab
+const SCOPE_DOWN = [[13, 11, 'h'], [14, 10, 'h'], [15, 9, 'r'], [12, 12, 'b']];
+const SCOPE_SIDE = [[12, 10, 'h'], [13, 9, 'h'], [14, 8, 'r']];
+const STARS_DOWN = [[5, 11, 'H'], [10, 10, 'H'], [8, 12, 'H']];
+const STARS_SIDE = [[6, 11, 'H'], [8, 10, 'H']];
+const STARS_UP = [[5, 10, 'H'], [9, 11, 'H'], [7, 12, 'H']];
+const CROOK_DOWN = [[0, 4, 'o'], [1, 4, 'o'], [0, 5, 'o'], [1, 6, 'o'], [1, 7, 'o'], [1, 8, 'o'], [1, 9, 'o'], [1, 10, 'o'], [1, 11, 'o'], [1, 12, 'o']];
+const CROOK_SIDE = [[2, 4, 'o'], [3, 4, 'o'], [2, 5, 'o'], [3, 6, 'o'], [3, 7, 'o'], [3, 8, 'o'], [3, 9, 'o'], [3, 10, 'o'], [3, 11, 'o']];
+
 export const CHARACTERS = {
+  // Sternenwiese (Plan 3c): Sternendeuterin mit Fernrohr und Sternenumhang (Design 5.3) und die Bewohner
+  trainer8: character({ h: 'v', i: 'P', c: 'D', d: 'n', l: 'S', b: 'n' }, { down: [...SCOPE_DOWN, ...STARS_DOWN], up: STARS_UP, side: [...SCOPE_SIDE, ...STARS_SIDE] }),
+  selma: character({ h: 'h', i: 'r', c: 'P', d: 'n', l: 'V', b: 'b' }, { down: JAR_DOWN, side: JAR_SIDE }),
+  kai: character({ h: 'o', i: 'b', c: 'g', d: 'l', l: 'c', b: 'b' }, { down: CROOK_DOWN, side: CROOK_SIDE }),
   // Nordlichtsee (Plan 3c): Eisfischerin im Pelzmantel mit heller Kapuze (Design 5.3) und die Bewohner
   trainer7: character({ h: 'w', i: 'f', c: 'o', d: 'b', l: 'r', b: 'b' }, { down: [...FURTRIM_DOWN, ...ROD_DOWN], side: [...FURTRIM_SIDE, ...ROD_SIDE] }),
   sven: character({ h: 'S', i: 'D', c: 'L', d: 'S', l: 'A', b: 'n' }, { down: BEARD_DOWN.map(([x, y]) => [x, y, 'w']), side: BEARD_SIDE.map(([x, y]) => [x, y, 'w']) }),

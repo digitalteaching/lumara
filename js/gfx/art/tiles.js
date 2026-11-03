@@ -421,6 +421,9 @@ const nightrock = retint(rock, { m: 's', f: 'm', s: 'd', d: 'n' });
 // Felskante der Sternenwiese: oben Nachtwiese, darunter dunkler Fels, ganz unten Nacht
 const nightcliff = retint(cliff(), { G: 'l', g: 'F', s: 'd', m: 's', n: 'n', d: 'n', A: 'n', L: 'd' });
 
+// Fels des Bergs bei Nacht: dunkler, massiver Stein, in den das Höhlentor gehauen ist
+const nightstone = speckled('d', 95, [['s', 0.12], ['n', 0.1], ['m', 0.02]]);
+
 // Sternengras: Halme mit goldenen Spitzen
 const startall = lean => retint(tallGrass(lean), { l: 'F', g: 'l', G: 'H', F: 'n' });
 
@@ -490,6 +493,7 @@ export const TILES = {
   nightrock: [nightrock],
   nightcliff: [nightcliff],
   startall: [startall(false), startall(true)],
+  nightstone: [nightstone],
 };
 
 // ---------- Gebäude ----------

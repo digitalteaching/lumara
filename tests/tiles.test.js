@@ -54,7 +54,7 @@ test('Kacheln der Gebiete 3 bis 5: 16 × 16, bekannte Farben, richtige Bildzahl'
 });
 
 test('Kacheln der Gebiete 6 bis 8: 16 × 16, bekannte Farben, richtige Bildzahl', () => {
-  const frames = { cobble: 1, canal: 2, ruinwall: 1, ivy: 2, snow: 1, ice: 1, icewater: 2, snowpine: 1, snowgrass: 2, nightgrass: 1, nightrock: 1, nightcliff: 1, startall: 2 };
+  const frames = { cobble: 1, canal: 2, ruinwall: 1, ivy: 2, snow: 1, ice: 1, icewater: 2, snowpine: 1, snowgrass: 2, nightgrass: 1, nightrock: 1, nightcliff: 1, startall: 2, nightstone: 1 };
   for (const [k, n] of Object.entries(frames)) {
     assert.equal(TILES[k]?.length, n, k);
     TILES[k].forEach((f, i) => {

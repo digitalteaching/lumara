@@ -101,9 +101,11 @@ export const SEE = {
       linesOpen: ['Süden: Sternenwiese', 'Der Nebel hat sich zurückgezogen. Der Weg ist frei.'],
     },
   ],
-  // Hinter dem Tor liegt Gebiet 8; den Ausgang dorthin gibt es, sobald es gebaut ist.
   gates: [{ id: 'sued', leadsTo: 8, x: 18, y: 28, w: 4, h: 2, ground: 'snow' }],
-  exits: [{ x: 18, y: 0, w: 4, h: 1, to: 'ruinen', at: { x: 19, y: 28, dir: 'up' } }],
+  exits: [
+    { x: 18, y: 0, w: 4, h: 1, to: 'ruinen', at: { x: 19, y: 28, dir: 'up' } },
+    { x: 18, y: 29, w: 4, h: 1, to: 'wiese', at: { x: 19, y: 1, dir: 'down' } },
+  ],
   finds: [
     { id: 'glitzer-west', x: 3, y: 14 },
     { id: 'glitzer-sued', x: 30, y: 25 },

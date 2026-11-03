@@ -2,16 +2,18 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { STORY } from '../js/data/story.js';
 
-test('Geschichte: Gebiet 1 bis 7 haben je 3 Stücke, jedes 60 bis 240 Zeichen', () => {
-  assert.deepEqual(Object.keys(STORY), ['1', '2', '3', '4', '5', '6', '7']);
+test('Geschichte: Gebiet 1 bis 8 haben je 3 Stücke, jedes 60 bis 240 Zeichen', () => {
+  assert.deepEqual(Object.keys(STORY), ['1', '2', '3', '4', '5', '6', '7', '8']);
   for (const pieces of Object.values(STORY)) {
     assert.equal(pieces.length, 3);
     for (const t of pieces) assert.ok(t.length >= 60 && t.length <= 240, t);
   }
 });
 
-test('Morrows Name kommt erst später vor', () => {
-  for (const t of Object.values(STORY).flat()) assert.equal(/morrow/i.test(t), false, t);
+test('Morrows Name steht genau einmal, im letzten Stück der Sternenwiese', () => {
+  const all = Object.values(STORY).flat();
+  assert.deepEqual(all.filter(t => /morrow/i.test(t)), [STORY[8][2]]);
+  assert.equal((STORY[8][2].match(/morrow/gi) ?? []).length, 2); // „…: Morrow. … und Morrow ist nicht mehr allein.“
 });
 
 test('Das erste Stück der Bucht steht genau so da', () => {
@@ -36,4 +38,8 @@ test('Das erste Stück der Uhrwerkruinen steht genau so da', () => {
 
 test('Das erste Stück des Nordlichtsees steht genau so da', () => {
   assert.equal(STORY[7][0], 'Über dem See tanzt das Nordlicht. Die Eisfischer sagen, es sind die Lieder der Leuchtsteine, die der Himmel noch nicht vergessen hat.');
+});
+
+test('Das erste Stück der Sternenwiese steht genau so da', () => {
+  assert.equal(STORY[8][0], 'Auf der Sternenwiese ist immer Nacht. Fällt ein Stern ins Gras, wünschen sich die Leute, dass nie wieder jemand vergessen wird.');
 });

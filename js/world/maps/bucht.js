@@ -131,10 +131,14 @@ export const BUCHT = {
   // Nebeltor über dem Nordweg: weicht, wenn Stein 1 leuchtet und das Paket Thema 2 hat
   gates: [
     { id: 'nord', leadsTo: 2, x: 18, y: 0, w: 4, h: 3, ground: 'path' },
-    // Der steile Pfad hinauf zur Sternenwiese: erst nach dem Sieg über Trainer 8 (Design 5.2).
+    // Der steile Pfad hinauf zur Sternenwiese: erst nach dem Sieg über Trainer 8 (Design 5.2). Damit
+    // ist der Ring der Insel geschlossen.
     { id: 'ost', leadsTo: 8, afterStone: 8, x: 38, y: 5, w: 2, h: 4, ground: 'path' },
   ],
-  exits: [{ x: 18, y: 0, w: 4, h: 1, to: 'wald', at: { x: 19, y: 28, dir: 'up' } }],
+  exits: [
+    { x: 18, y: 0, w: 4, h: 1, to: 'wald', at: { x: 19, y: 28, dir: 'up' } },
+    { x: 39, y: 5, w: 1, h: 4, to: 'wiese', at: { x: 1, y: 21, dir: 'right' } },
+  ],
   finds: [
     { id: 'glitzer-west', x: 5, y: 7 },
     { id: 'glitzer-ost', x: 32, y: 5 },
