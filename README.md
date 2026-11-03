@@ -4,7 +4,7 @@
 
 Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, erkundet eine geheimnisvolle Insel unter einem Nebel des Vergessens und besteht Duelle mit Aufgaben aus dem Unterricht. Dafür bekommt es Punkte, und sein Wesen entwickelt sich weiter. Die Inhalte kommen aus einem Lernpaket, einer Textdatei, die die Lehrkraft selbst schreibt. Dadurch funktioniert das Spiel in jedem Fach. Das erste Beispielpaket ist für Jahrgang 6 Englisch.
 
-**Status:** Plan 1 und Plan 2 sind gebaut (Spielfassung 0.2.0).
+**Status:** Plan 1, Plan 2 und Plan 3a sind gebaut (Spielfassung 0.3.0).
 
 - **Plan 1**, spielbarer Kern:
   - Leuchtturmbucht, Lernpaket, fünf Startwesen
@@ -18,12 +18,20 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
   - Statistik mit Prüfcode und die Seite für Lehrkräfte
   - „Erst installieren“ auf iPad und iPhone
   - offline spielbar, Updates werden beim nächsten Start aktiv
+- **Plan 3a**, Welt und Flüsterwald:
+  - Der Flüsterwald als zweites Gebiet, mit eigenen wilden Wesen, dem Waldläufer, Bewohnern und flüsternden Bäumen
+  - Leuchtsteine: Ein Sieg über eine Hüterin oder einen Hüter entzündet den Stein, der Nebel weicht. Am Leuchtturm erscheint ein farbiger Ring. Zwischen leuchtenden Steinen kann man reisen, und nach einer Niederlage wacht man am zuletzt besuchten Stein auf.
+  - Futter: Beeren an Sträuchern, Sternfrüchte, Füttern im Duell und im Rucksack. Pieks hat den Grünen Daumen.
+  - Seltene Steine im Gras: Weitblick, Glanz und Leben
+  - Zettel unter Steinen mit Aufgaben, Geschichtsstücken und einem Tagebuch
+  - Möwen und Gischt in der Bucht, Glühwürmchen und Blätter im Wald
 
-Hinter der Hüterin liegt noch Nebel. Der Flüsterwald kommt mit Plan 3.
+Hinter dem Waldläufer liegt noch Nebel. Das Pilzmoor kommt mit einem späteren Plan.
 
 - Design: [docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md](docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md)
 - Bauplan 1: [docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md](docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md)
 - Bauplan 2: [docs/superpowers/plans/2026-11-03-lumara-plan-2-spielstand-lehrkraft.md](docs/superpowers/plans/2026-11-03-lumara-plan-2-spielstand-lehrkraft.md)
+- Bauplan 3a: [docs/superpowers/plans/2026-11-03-lumara-plan-3a-welt-fluesterwald.md](docs/superpowers/plans/2026-11-03-lumara-plan-3a-welt-fluesterwald.md)
 - Frühere Ideensammlung: [docs/2026-10-17-zwischenstand-ideensammlung.md](docs/2026-10-17-zwischenstand-ideensammlung.md)
 
 ## Für Lehrkräfte
@@ -76,11 +84,11 @@ Bleibt das Bild schwarz, einfach neu laden. Der einfache Python-Server bleibt be
 
 Kinder bekommen die neue Fassung beim nächsten Öffnen. Das laufende Spiel lädt nie mitten drin neu.
 
-**Spielstände müssen ladbar bleiben.** Format 1 ist mit `tests/fixtures/spielstand-v1.txt` festgeschrieben. Diese Datei wird nie geändert. Für jede Änderung am Format gilt:
+**Spielstände müssen ladbar bleiben.** Format 1 ist mit `tests/fixtures/spielstand-v1.txt` festgeschrieben, Format 2 (seit Spielfassung 0.3.0) mit `tests/fixtures/spielstand-v2.txt`. Diese Dateien werden nie geändert. Für jede Änderung am Format gilt:
 
 - eine neue Version in `js/save/migrate.js`
 - eine Umwandlung von der alten zur neuen Version
-- eine neue Testdatei `tests/fixtures/spielstand-v2.*`
+- eine neue Testdatei `tests/fixtures/spielstand-v3.*`
 
 Auch Prüfcode, Verschleierung und Paketkennung (`hash32`, `mix32`, Salze) werden nie geändert.
 

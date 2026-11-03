@@ -1,3 +1,3 @@
 // Spielfassung. Bei jeder Veröffentlichung hier, in version.json und in sw.js gleich erhöhen
 // (tests/sw.test.js prüft das).
-export const APP_VERSION = '0.2.0';
+export const APP_VERSION = '0.3.0';
