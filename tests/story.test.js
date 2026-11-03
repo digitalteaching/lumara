@@ -1,6 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { STORY } from '../js/data/story.js';
+import { STORY, storyPieces } from '../js/data/story.js';
+import { EN_STORY } from '../js/i18n/en-story.js';
+import { setLanguage } from '../js/i18n/i18n.js';
 
 test('Geschichte: Gebiet 1 bis 8 haben je 3 Stücke, jedes 60 bis 240 Zeichen', () => {
   assert.deepEqual(Object.keys(STORY), ['1', '2', '3', '4', '5', '6', '7', '8']);
@@ -42,4 +44,19 @@ test('Das erste Stück des Nordlichtsees steht genau so da', () => {
 
 test('Das erste Stück der Sternenwiese steht genau so da', () => {
   assert.equal(STORY[8][0], 'Auf der Sternenwiese ist immer Nacht. Fällt ein Stern ins Gras, wünschen sich die Leute, dass nie wieder jemand vergessen wird.');
+});
+
+test('Die Geschichte gibt es Stück für Stück auf Englisch, Morrow nur im letzten', () => {
+  for (const a of Object.keys(STORY)) assert.equal(EN_STORY[a]?.length, STORY[a].length, a);
+  const all = Object.values(EN_STORY).flat();
+  assert.equal(all.filter(s => s.includes('Morrow')).length, 1);
+  assert.ok(EN_STORY[8][2].includes('Morrow'));
+  assert.ok(all.every(s => s.length <= 260));
+  setLanguage('en');
+  try {
+    assert.equal(storyPieces(3)[1], EN_STORY[3][1]);
+  } finally {
+    setLanguage('de');
+  }
+  assert.equal(storyPieces(3)[1], STORY[3][1]);
 });

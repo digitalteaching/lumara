@@ -7,7 +7,7 @@ import { addXp } from '../duel/progress.js';
 import { poolFor } from '../duel/questions.js';
 import { addItem } from '../items/bag.js';
 import { timedArea } from '../items/stones.js';
-import { STORY } from '../data/story.js';
+import { storyPieces } from '../data/story.js';
 
 // Fragen aus dem Abschnitt ZETTEL; ohne ihn dieselben wie bei wilden Wesen.
 export const notePool = (pack, beaten) => poolFor(pack, { kind: 'note', beaten });
@@ -54,7 +54,7 @@ export function solveNote(state, key, area, correct, rng, timePressure = 'normal
   }
 
   let story = null;
-  const pieces = STORY[area] ?? [];
+  const pieces = storyPieces(area);
   const found = state.story[area] ?? 0;
   if (found < pieces.length) {
     story = pieces[found];
@@ -70,7 +70,7 @@ export function storyFound(state) {
   const out = [];
   const areas = Object.keys(state.story).map(Number).sort((a, b) => a - b);
   for (const area of areas) {
-    const pieces = STORY[area] ?? [];
+    const pieces = storyPieces(area);
     for (let index = 0; index < Math.min(state.story[area], pieces.length); index++) out.push({ area, index, text: pieces[index] });
   }
   return out;

@@ -1,5 +1,9 @@
 // Geschichtsstücke unter den Zetteln (Design 5.4, 5.5): je Gebiet drei, in fester Reihenfolge.
 // Der Name dessen, der im Berg lebt, kommt genau einmal vor: im letzten Stück der Sternenwiese.
+// Andere Sprachen stehen in js/i18n/<sprache>-story.js (Design 10.6).
+
+import { language, mark } from '../i18n/i18n.js';
+import { EN_STORY } from '../i18n/en-story.js';
 
 export const STORY = {
   1: [
@@ -43,3 +47,8 @@ export const STORY = {
     'Das kleine Wesen im Berg hat einen Namen, den alle vergessen haben: Morrow. Wer ihn ausspricht, erinnert sich, und Morrow ist nicht mehr allein.',
   ],
 };
+
+const LOCAL_STORY = { en: EN_STORY };
+
+// Die Stücke eines Gebiets in der Spielsprache. Gespeichert wird nur, wie viele gefunden sind.
+export const storyPieces = area => ((LOCAL_STORY[language()] ?? STORY)[area] ?? STORY[area] ?? []).map(mark);

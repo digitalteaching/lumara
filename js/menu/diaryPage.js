@@ -2,7 +2,7 @@
 // Fehlende Stücke stehen als „Noch nicht gefunden“ da. Aufträge kommen mit Plan 4.
 
 import { el } from '../ui/dom.js';
-import { STORY } from '../data/story.js';
+import { STORY, storyPieces } from '../data/story.js';
 import { MAPS, mapOfArea, areaName as nameOf } from '../world/network.js';
 import { t } from '../i18n/i18n.js';
 
@@ -20,7 +20,7 @@ export function diaryPage(game) {
           areas.map(area =>
             el('div', { class: 'diary-area' },
               el('h4', {}, areaName(area)),
-              STORY[area].map((text, i) =>
+              storyPieces(area).map((text, i) =>
                 i < (found[area] ?? 0)
                   ? el('p', { class: 'diary-piece' }, text)
                   : el('p', { class: 'diary-piece missing' }, t('diary.missing'))),
