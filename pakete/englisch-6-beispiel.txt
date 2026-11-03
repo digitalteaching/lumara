@@ -1,5 +1,5 @@
 # Lumara – Beispielpaket Englisch Jahrgang 6
-# Erste Fassung mit zwei Themen. Weitere Trainer folgen in späteren Fassungen.
+# Fassung mit fünf Themen. Die Trainer 6 bis 8 folgen in späteren Fassungen.
 # Die KENNUNG bitte nie ändern, sonst gilt die Datei als neues Paket.
 
 PAKET: Englisch Jahrgang 6 – Beispielpaket
@@ -216,6 +216,317 @@ FRAGE: The ferry ___ (leave) at 9 o'clock every morning.
 ANTWORT: leaves
 FALSCH: is leaving | leave | leafs
 
+=== TRAINER 3 ===
+# Pilzmoor – Pilzsammlerin mit großem Korb und Pilzhut
+NAME: Hazel
+THEMA: Essen und Einkaufen, some und any
+HALLO: Hello there! I'm Hazel. I pick mushrooms in the moor.
+HALLO: My basket is still empty. Have you got any good answers for me?
+HALLO: Let's see what you know about food and shopping!
+SIEG: Wonderful! You can come shopping with me any time.
+NIEDERLAGE: Oh dear, no mushrooms for you today. Come back soon!
+REVANCHE: Hello again! I've got some new questions in my basket.
+
+FRAGE: There is ___ milk in the fridge.
+ANTWORT: some
+FALSCH: any | a | many
+
+FRAGE: There isn't ___ bread on the table.
+ANTWORT: any
+FALSCH: some | a | many
+
+FRAGE: We need ___ eggs for the cake.
+ANTWORT: some
+FALSCH: any | a | an
+
+FRAGE: I haven't got ___ money with me.
+ANTWORT: any
+FALSCH: some | a | an
+
+FRAGE: Can I have ___ water, please?
+ANTWORT: some
+FALSCH: any | a | an
+
+FRAGE: There aren't ___ tomatoes in the shop today.
+ANTWORT: any
+FALSCH: some | a | much
+
+FRAGE: There are ___ carrots in my basket.
+ANTWORT: some
+FALSCH: any | a | much
+
+FRAGE: Which word means „Pilz“?
+ANTWORT: mushroom
+FALSCH: mouse | muffin | melon
+
+FRAGE: Which word means „Preis“?
+ANTWORT: price
+FALSCH: prize | rice | piece
+
+FRAGE: Choose the right sentence.
+ANTWORT: There isn't any juice left.
+FALSCH: There isn't some juice left. | There is any juice left. | There not is any juice left.
+FORM: auswahl
+
+FRAGE: Which food is a fruit?
+ANTWORT: banana
+FALSCH: potato | onion | carrot
+FORM: auswahl
+
+FRAGE: What do you say in a shop?
+ANTWORT: How much is it?
+FALSCH: How many is it? | How much it is? | What much is it?
+FORM: auswahl
+
+FRAGE: Wie heißt „Käse“ auf Englisch?
+ANTWORT: cheese
+
+FRAGE: Wie heißt „Erdbeere“ auf Englisch?
+ANTWORT: strawberry
+
+FRAGE: Wie heißt „Einkaufsliste“ auf Englisch?
+ANTWORT: shopping list
+
+FRAGE: Wie heißt „Supermarkt“ auf Englisch?
+ANTWORT: supermarket
+
+FRAGE: Are there ___ biscuits in the tin? – No, there aren't.
+ANTWORT: any
+
+FRAGE: Bilde den Satz: „Wir brauchen etwas Butter.“
+SATZ: We need some butter.
+EXTRA: any | needs
+
+FRAGE: Bilde den Satz: „Es gibt keine Bananen.“
+SATZ: There aren't any bananas.
+EXTRA: some | isn't
+
+FRAGE: Bilde die Frage: „Hast du Zucker?“
+SATZ: Have you got any sugar?
+EXTRA: some | has
+
+FRAGE: Bilde den Satz: „Ich hätte gern etwas Suppe, bitte.“
+SATZ: I would like some soup, please.
+EXTRA: any | likes
+
+FRAGE: Bilde die Frage: „Wie viel kostet der Käse?“
+SATZ: How much is the cheese?
+EXTRA: many | are
+
+FRAGE: Bilde den Satz: „Hazel kauft ein paar Pilze.“
+SATZ: Hazel buys some mushrooms.
+EXTRA: any | buy
+
+FRAGE: Bilde den Satz: „Wir haben keine Milch.“
+SATZ: We haven't got any milk.
+EXTRA: some | hasn't
+
+=== TRAINER 4 ===
+# Spiegeldünen – Karawanenführer mit Turban und Spiegel
+NAME: Karim
+THEMA: Steigerung von Adjektiven
+HALLO: Welcome, traveller! I'm Karim. I lead the caravans through the dunes.
+HALLO: The sun is hot, the sand is hotter – and my questions are the hottest!
+HALLO: Be quick! In the dunes, time runs fast.
+SIEG: Excellent! You are faster than the desert wind.
+NIEDERLAGE: Too slow, my friend. The dunes are patient. Come back later.
+REVANCHE: You again? Good! This time I'm even quicker.
+
+FRAGE: My camel is ___ (fast) than your horse.
+ANTWORT: faster
+FALSCH: more fast | fastest | fastter
+
+FRAGE: This is the ___ (hot) day of the year.
+ANTWORT: hottest
+FALSCH: hotest | most hot | hotter
+
+FRAGE: A mountain is ___ (big) than a hill.
+ANTWORT: bigger
+FALSCH: biger | more big | biggest
+
+FRAGE: This book is ___ (interesting) than that film.
+ANTWORT: more interesting
+FALSCH: interestinger | most interesting | more interestinger
+
+FRAGE: Karim is the ___ (good) guide in the desert.
+ANTWORT: best
+FALSCH: goodest | better | most good
+
+FRAGE: Today the weather is ___ (bad) than yesterday.
+ANTWORT: worse
+FALSCH: badder | worst | more bad
+
+FRAGE: The dunes are ___ (beautiful) in the evening than at noon.
+ANTWORT: more beautiful
+FALSCH: beautifuller | most beautiful | beautifulest
+
+FRAGE: My bag is ___ (heavy) than yours.
+ANTWORT: heavier
+FALSCH: heavyer | more heavy | heaviest
+
+FRAGE: This is the ___ (happy) day of my life.
+ANTWORT: happiest
+FALSCH: happyest | most happy | happier
+
+FRAGE: Choose the right sentence.
+ANTWORT: The glass tower is taller than the statue.
+FALSCH: The glass tower is more tall than the statue. | The glass tower is taller as the statue. | The glass tower is tallest than the statue.
+FORM: auswahl
+
+FRAGE: Which word is the superlative of „good“?
+ANTWORT: best
+FALSCH: better | goodest | well
+FORM: auswahl
+
+FRAGE: Which sentence is right?
+ANTWORT: My tent is as big as your tent.
+FALSCH: My tent is as bigger as your tent. | My tent is so big than your tent. | My tent is as big than your tent.
+FORM: auswahl
+
+FRAGE: Wie heißt „kleiner“ auf Englisch?
+ANTWORT: smaller
+
+FRAGE: Wie heißt „am längsten“ auf Englisch?
+ANTWORT: longest
+AUCH RICHTIG: the longest
+
+FRAGE: Wie heißt „besser“ auf Englisch?
+ANTWORT: better
+
+FRAGE: A cheetah is ___ (quick) than a camel.
+ANTWORT: quicker
+
+FRAGE: Bilde den Satz: „Der Sand ist heute heißer als gestern.“
+SATZ: The sand is hotter today than yesterday.
+EXTRA: hottest | then
+
+FRAGE: Bilde den Satz: „Dieser Spiegel ist der größte.“
+SATZ: This mirror is the biggest.
+EXTRA: bigger | most
+
+FRAGE: Bilde den Satz: „Glas ist schöner als Stein.“
+SATZ: Glass is more beautiful than stone.
+EXTRA: most | then
+
+FRAGE: Bilde den Satz: „Mein Kamel ist das beste.“
+SATZ: My camel is the best.
+EXTRA: good | better
+
+FRAGE: Bilde den Satz: „Heute ist das Wetter schlechter.“
+SATZ: The weather is worse today.
+EXTRA: badder | worst
+
+FRAGE: Bilde die Frage: „Wer ist am schnellsten?“
+SATZ: Who is the fastest?
+EXTRA: faster | most
+
+FRAGE: Bilde den Satz: „Karim ist älter als Samir.“
+SATZ: Karim is older than Samir.
+EXTRA: oldest | as
+
+=== TRAINER 5 ===
+# Windklippen – Drachenfliegerin mit Schutzbrille
+NAME: Skye
+THEMA: Simple past der regelmäßigen Verben
+HALLO: Hey, up here! I'm Skye. I fly my kite above the cliffs.
+HALLO: Yesterday I climbed the highest rock and watched the clouds.
+HALLO: Now tell me what happened – in the simple past!
+SIEG: Amazing! You answered like a real cloud pilot.
+NIEDERLAGE: Oops! The wind carried your answers away. Try again!
+REVANCHE: You're back! Great, I practised a lot, too.
+
+FRAGE: Yesterday we ___ (play) on the cliffs.
+ANTWORT: played
+FALSCH: plaied | plays | playd
+
+FRAGE: She ___ (carry) the kite up the hill.
+ANTWORT: carried
+FALSCH: carryed | carries | carred
+
+FRAGE: The bus ___ (stop) at the bridge.
+ANTWORT: stopped
+FALSCH: stoped | stops | stopt
+
+FRAGE: I ___ (study) for my test last night.
+ANTWORT: studied
+FALSCH: studyed | studdied | studies
+
+FRAGE: We ___ (watch) the clouds for an hour.
+ANTWORT: watched
+FALSCH: watcht | watches | watchd
+
+FRAGE: The baby ___ (cry) all night.
+ANTWORT: cried
+FALSCH: cryed | cries | cryied
+
+FRAGE: Tom ___ (plan) a trip to the windmills.
+ANTWORT: planned
+FALSCH: planed | plans | plannd
+
+FRAGE: They ___ (stay) at the windmill.
+ANTWORT: stayed
+FALSCH: staied | stays | stayd
+
+FRAGE: I ___ (not / like) the cold wind.
+ANTWORT: didn't like
+AUCH RICHTIG: did not like
+FALSCH: didn't liked | not liked | don't liked
+
+FRAGE: Which signal word goes with the simple past?
+ANTWORT: yesterday
+FALSCH: now | every day | at the moment
+FORM: auswahl
+
+FRAGE: Choose the right question.
+ANTWORT: Did you visit the cliffs last week?
+FALSCH: Did you visited the cliffs last week? | Visited you the cliffs last week? | Do you visited the cliffs last week?
+FORM: auswahl
+
+FRAGE: Which spelling is right?
+ANTWORT: hurried
+FALSCH: hurryed | hurred | hurryied
+FORM: auswahl
+
+FRAGE: Wie heißt „letzte Woche“ auf Englisch?
+ANTWORT: last week
+
+FRAGE: The wind ___ (move) the clouds.
+ANTWORT: moved
+
+FRAGE: Ina ___ (drop) her map.
+ANTWORT: dropped
+
+FRAGE: My dad ___ (try) to fly my kite.
+ANTWORT: tried
+
+FRAGE: Bilde den Satz: „Wir besuchten gestern die Klippen.“
+SATZ: We visited the cliffs yesterday.
+EXTRA: visit | did
+
+FRAGE: Bilde den Satz: „Skye lächelte und winkte.“
+SATZ: Skye smiled and waved.
+EXTRA: smile | waves
+
+FRAGE: Bilde die Frage: „Hast du gestern deine Oma angerufen?“
+SATZ: Did you call your grandma yesterday?
+EXTRA: called | Do
+
+FRAGE: Bilde den Satz: „Er weinte nicht.“
+SATZ: He didn't cry.
+EXTRA: cried | don't
+
+FRAGE: Bilde den Satz: „Der Wind drehte die Windräder.“
+SATZ: The wind turned the windmills.
+EXTRA: turns | did
+
+FRAGE: Bilde den Satz: „Sie trug die Kiste nach Hause.“
+SATZ: She carried the box home.
+EXTRA: carryed | carries
+
+FRAGE: Bilde den Satz: „Wir warteten auf den Bus.“
+SATZ: We waited for the bus.
+EXTRA: wait | did
+
 === ENDGEGNER ===
 HALLO: Who are you? Nobody comes down here any more.
 HALLO: I keep all the forgotten words. Do you still remember them?
@@ -264,3 +575,42 @@ EXTRA: here | hears
 FRAGE: Which word means „Netz“?
 ANTWORT: net
 FALSCH: nest | nut | neck
+
+FRAGE: She ___ (like) mushrooms.
+ANTWORT: likes
+FALSCH: like | liking | is like
+
+FRAGE: Look! Hazel ___ (pick) mushrooms.
+ANTWORT: is picking
+FALSCH: picks | pick | is pickking
+
+FRAGE: We haven't got ___ sugar.
+ANTWORT: any
+FALSCH: some | a | many
+
+FRAGE: Wie heißt „Spiegel“ auf Englisch?
+ANTWORT: mirror
+
+FRAGE: The tower is ___ (high) than the statue.
+ANTWORT: higher
+FALSCH: more high | highest | hiher
+
+FRAGE: Which word means „Wolke“?
+ANTWORT: cloud
+FALSCH: clown | crowd | cloth
+
+FRAGE: Wie heißt „Windrad“ auf Englisch?
+ANTWORT: windmill
+AUCH RICHTIG: wind turbine
+
+FRAGE: Last night the wind ___ (stop).
+ANTWORT: stopped
+FALSCH: stoped | stops | stopping
+
+FRAGE: Bilde den Satz: „Die Brücke ist länger als der Steg.“
+SATZ: The bridge is longer than the pier.
+EXTRA: longest | then
+
+FRAGE: Bilde den Satz: „Wir sammelten gestern Beeren.“
+SATZ: We collected berries yesterday.
+EXTRA: collect | did

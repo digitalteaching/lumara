@@ -8,7 +8,7 @@ const read = f => readFileSync(new URL(`../pakete/${f}`, import.meta.url), 'utf8
 test('Beispielpaket lädt ohne Fehler, nur mit dem Teilpaket-Hinweis', () => {
   const r = parsePack(read('englisch-6-beispiel.txt'));
   assert.deepEqual(r.errors, []);
-  assert.deepEqual(r.warnings.map(w => w.message), ['Das Paket enthält nur Trainer 1 bis 2. Die Wege ab Gebiet 3 bleiben im Nebel.']);
+  assert.deepEqual(r.warnings.map(w => w.message), ['Das Paket enthält nur Trainer 1 bis 5. Die Wege ab Gebiet 6 bleiben im Nebel.']);
   assert.equal(r.pack.kennung, 'englisch6-beispiel');
 });
 
@@ -24,9 +24,20 @@ test('je Trainer mindestens 20 Fragen und jede Form mindestens 5-mal', () => {
   }
 });
 
-test('mindestens 10 Zettel und ein ENDGEGNER-Abschnitt', () => {
+test('Beispielpaket: Trainer 1 bis 5 mit den Themen aus Design 10.5', () => {
   const p = parsePack(read('englisch-6-beispiel.txt')).pack;
-  assert.ok(p.notes.length >= 10);
+  assert.deepEqual(p.trainers.map(t => [t.number, t.name]), [[1, 'Maren'], [2, 'Rowan'], [3, 'Hazel'], [4, 'Karim'], [5, 'Skye']]);
+  for (const t of p.trainers.filter(t => t.number >= 3)) {
+    assert.ok(t.questions.length >= 22, `${t.number}`);
+    for (const f of ['choice', 'typing', 'tiles']) assert.ok(t.questions.filter(q => q.forms.includes(f)).length >= 6, `${t.number} ${f}`);
+    assert.ok(t.hello.length >= 2 && t.hello.length <= 3, `${t.number} HALLO`);
+    assert.ok(t.win && t.loss && t.rematch, `${t.number} SIEG/NIEDERLAGE/REVANCHE`);
+  }
+});
+
+test('mindestens 20 Zettel und ein ENDGEGNER-Abschnitt', () => {
+  const p = parsePack(read('englisch-6-beispiel.txt')).pack;
+  assert.ok(p.notes.length >= 20);
   assert.ok(p.boss.hello.length >= 1);
 });
 
