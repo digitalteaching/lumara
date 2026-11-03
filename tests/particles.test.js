@@ -86,3 +86,15 @@ test('shore bleibt die Kurzform für die Anker der Gischt', () => {
   assert.ok(count(p) > 0);
   p.each(q => assert.ok(Math.abs(q.x - 30) <= 8));
 });
+
+test('Bei „Bewegung reduzieren“ ziehen die Wolken nicht', () => {
+  const p = createParticles(['cloud'], { rng: createRng(9), reducedMotion: true });
+  for (let i = 0; i < 400; i++) p.update(16, { x: 0, y: 0 });
+  const before = [];
+  p.each(q => before.push(q.x));
+  assert.ok(before.length > 0);
+  for (let i = 0; i < 120; i++) p.update(16, { x: 0, y: 0 });
+  const after = [];
+  p.each(q => after.push(q.x));
+  assert.deepEqual(after.slice(0, before.length), before);
+});

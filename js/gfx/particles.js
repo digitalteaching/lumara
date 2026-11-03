@@ -133,7 +133,7 @@ export function createParticles(kinds, { rng, reducedMotion = false, width = 240
       return f < 1;
     }
     if (p.kind === 'cloud') {
-      p.x += p.vx * s * slow;
+      if (!still) p.x += p.vx * s; // bei „Bewegung reduzieren“ stehen die Wolken (Plan 3b)
       p.alpha = 0.35 * Math.max(0, Math.min(1, p.age / 2000, (p.life - p.age) / 2000));
       return p.age < p.life && p.x > -14;
     }
