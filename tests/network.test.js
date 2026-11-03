@@ -1,7 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { MAPS, areaOpen, openGatesFor, exitAt, resolveStart, beaconFront } from '../js/world/network.js';
+import { MAPS, areaOpen, openGatesFor, exitAt, resolveStart, beaconFront, packWorldKey } from '../js/world/network.js';
 import { createMap } from '../js/world/map.js';
+import { parsePack } from '../js/pack/parser.js';
+import { makePackText } from './helpers/fixtures.js';
 import { BUCHT } from '../js/world/maps/bucht.js';
 import { newGameState } from '../js/state.js';
 
@@ -59,4 +61,12 @@ test('Startposition auf einem Nebeltor, das wieder zu ist: nicht im Nebel festst
   const onGate = { map: 'bucht', x: 19, y: 1, dir: 'down' };
   assert.deepEqual(resolveStart(st([1], onGate), pack(2)), onGate);
   assert.deepEqual(resolveStart(st([1], onGate), pack(1)), { map: 'bucht', ...beaconFront(BUCHT, 1) });
+});
+
+test('neue Fassung desselben Pakets (gleiche KENNUNG) mit einem Thema mehr: Die Welt wird neu gebaut', () => {
+  const one = parsePack(makePackText({ trainers: 1 })).pack;
+  const two = parsePack(makePackText({ trainers: 2 })).pack;
+  assert.equal(one.shortId, two.shortId); // dieselbe KENNUNG, dieselbe Kurzform
+  assert.notEqual(packWorldKey(one), packWorldKey(two));
+  assert.equal(packWorldKey(two), packWorldKey(parsePack(makePackText({ trainers: 2 })).pack));
 });

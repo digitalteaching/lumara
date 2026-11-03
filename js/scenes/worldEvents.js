@@ -7,8 +7,8 @@ import { createDuelScene, makeWildSetup, makeTrainerSetup } from './duel.js';
 import { playTransition, reveal } from './transition.js';
 import { createEncounterCounter } from '../world/encounters.js';
 import { trainerSees } from '../world/map.js';
-import { fogEdgeLines } from '../world/fogEdge.js';
-import { MAPS, areaConfig, areaOpen, exitAt, openGatesFor, resolveStart, whisperLine, beaconFront } from '../world/network.js';
+import { fogEdgeLines, fogSignLines } from '../world/fogEdge.js';
+import { MAPS, areaConfig, areaOpen, exitAt, openGatesFor, resolveStart, whisperLine, beaconFront, packWorldKey } from '../world/network.js';
 import { visitStone, travelTargets, respawnPoint, challengeMark } from '../world/beacons.js';
 import { playBeaconScene } from './beacon.js';
 import { bushKey, bushReady, harvest } from '../items/food.js';
@@ -303,18 +303,18 @@ export function createGameWorld(game) {
     const o = ev.target;
     if (o?.type !== 'sign' || o.role !== 'fogEdge') return false;
     // Ob der Stein leuchtet, entscheidet über das Tor (auch mit einem anderen Paket entzündet).
-    const lines = fogEdgeLines(o, {
+    await say(game, fogSignLines(o, {
       gateBeaten: game.state.stones.includes(o.gate),
       packHasNext: game.pack.data.trainers.some(t => t.number === o.leadsTo),
       builtAreas: CONFIG.world.builtAreas,
-    });
-    await say(game, lines ?? o.lines);
+    }));
     return true;
   });
 
   world.onInteract.push(async ev => {
     const o = ev.target;
-    if (o?.type === 'trainer' && o.number === trainerNumber) {
+    // Ein Trainer, den das Paket nicht hat, fordert nicht heraus (sein Gebiet liegt im Nebel).
+    if (o?.type === 'trainer' && o.number === trainerNumber && packTrainer()) {
       if (beaten()) {
         world.turnToward(o, OPPOSITE[player.dir]);
         await say(game, afterWinLines(o), { speaker: packTrainer()?.name });
@@ -404,9 +404,10 @@ export function createGameWorld(game) {
   function showMenu() {
     if (game.mode !== 'walk' || world.locked) return;
     world.lock(async () => {
-      const packBefore = game.pack.data.shortId;
+      // Auch eine neue Fassung desselben Pakets (gleiche KENNUNG) kann Tore öffnen oder schließen.
+      const packBefore = packWorldKey(game.pack.data);
       await openMenu(game);
-      if (game.pack.data.shortId !== packBefore) await afterPackSwitch();
+      if (packWorldKey(game.pack.data) !== packBefore) await afterPackSwitch();
     });
   }
 

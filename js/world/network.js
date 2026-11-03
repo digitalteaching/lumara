@@ -58,6 +58,11 @@ export function mapOfBeacon(number) {
   return Object.values(MAPS).find(d => beaconOf(d, number)) ?? null;
 }
 
+// Alles, was die Welt beim Aufbau aus dem Paket liest: die Kurzform (Fortschritt) und welche
+// Trainer es gibt (offene Gebiete und Tore). Eine neue Fassung desselben Pakets (gleiche KENNUNG)
+// mit einem Thema mehr hat dieselbe Kurzform, aber einen anderen Schlüssel (Design 10.4).
+export const packWorldKey = pack => `${pack.shortId}|${pack.trainers.map(t => t.number).sort((a, b) => a - b).join(',')}`;
+
 // Gilt die gespeicherte Position noch? Sonst der höchste entzündete Stein in einem offenen Gebiet,
 // sonst der Leuchtturm.
 export function resolveStart(state, pack) {

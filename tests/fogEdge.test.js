@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fogEdgeLines } from '../js/world/fogEdge.js';
+import { fogEdgeLines, fogSignLines } from '../js/world/fogEdge.js';
 import { BUCHT } from '../js/world/maps/bucht.js';
+import { WALD } from '../js/world/maps/wald.js';
 
 const sign = { role: 'fogEdge', gate: 1, leadsTo: 2, leadsToName: 'der Flüsterwald', lines: ['Der Nebel ist hier zu dicht.'] };
 
@@ -30,4 +31,15 @@ test('die Bucht hat genau ein Nebelschild, und es führt zum Flüsterwald', () =
   assert.equal(s[0].gate, 1);
   assert.equal(s[0].leadsTo, 2);
   assert.equal(s[0].leadsToName, 'der Flüsterwald');
+});
+
+test('Weg offen: Das Schild sagt nicht mehr, der Nebel sei zu dicht', () => {
+  for (const def of [BUCHT, WALD]) {
+    const s = def.objects.find(o => o.role === 'fogEdge');
+    const open = fogSignLines(s, { gateBeaten: true, packHasNext: true, builtAreas: s.leadsTo });
+    assert.notDeepEqual(open, s.lines, def.id);
+    assert.ok(open.some(l => l.includes(s.leadsToName.replace(/^(der|die|das) /, ''))), def.id);
+  }
+  const s = BUCHT.objects.find(o => o.role === 'fogEdge');
+  assert.deepEqual(fogSignLines(s, { gateBeaten: false, packHasNext: true, builtAreas: 2 }), s.lines);
 });

@@ -99,6 +99,7 @@ export const WALD = {
       // Nebelrand zum Pilzmoor (Design 10.4): Der Text hängt vom Stand ab, siehe world/fogEdge.js.
       type: 'sign', role: 'fogEdge', x: 17, y: 2, gate: 2, leadsTo: 3, leadsToName: 'das Pilzmoor',
       lines: ['Der Nebel ist hier zu dicht.', 'Vielleicht weicht er, wenn der Leuchtstein des Waldes wieder leuchtet.'],
+      linesOpen: ['Norden: Pilzmoor', 'Der Nebel hat sich zurückgezogen. Der Weg ist frei.'],
     },
   ],
   gates: [{ id: 'nord', leadsTo: 3, x: 18, y: 0, w: 4, h: 2, ground: 'path' }],
