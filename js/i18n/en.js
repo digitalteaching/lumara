@@ -322,4 +322,16 @@ export const EN = {
   'creature.abilities': 'Abilities',
   'creature.abilityOn': '✓ {name}: {text}',
   'creature.abilityOff': '○ From level {level}: {name}',
+
+  // Wesen-Buch im Menü
+  'menu.book': 'Creature Book',
+  'book.counts': 'Seen: {seen} of {total} · Beaten: {beaten}',
+  'book.no': 'No. {n}',
+  'book.unknownAria': 'No. {n}: unknown',
+  'book.entryTitle': 'No. {n} · {name}',
+  'book.place': 'Found in: {place}',
+  'book.beatToLearn': 'Beat it once to learn more.',
+
+  // Wesen-Buch: Bildschirmleser
+  'book.cellAria': 'No. {n}: {name}, {labels}',
 };

@@ -1,5 +1,4 @@
-// Menü (Design 13): „Wesen“, „Rucksack“, „Karte“, „Tagebuch“ und „Einstellungen“; das Wesen-Buch
-// kommt mit dem Plan, der es füllt.
+// Menü (Design 13): Wesen, Rucksack, Wesen-Buch, Karte, Tagebuch und Einstellungen (js/menu/items.js).
 
 import { el } from '../ui/dom.js';
 import { openSheet } from '../ui/sheet.js';
@@ -10,6 +9,8 @@ import { settingsPage } from './settings.js';
 import { bagPage } from './bagPage.js';
 import { diaryPage } from './diaryPage.js';
 import { mapPage } from './mapPage.js';
+import { bookPage } from './bookPage.js';
+import { MENU_ITEMS } from './items.js';
 import { t } from '../i18n/i18n.js';
 
 export function creaturePage(game) {
@@ -47,17 +48,22 @@ export function creaturePage(game) {
   };
 }
 
+const PAGES = {
+  'menu.creature': creaturePage,
+  'menu.bag': bagPage,
+  'menu.book': bookPage,
+  'menu.map': mapPage,
+  'menu.diary': diaryPage,
+  'menu.settings': settingsPage,
+};
+
 function menuPage(game) {
   return {
     title: t('menu.title'),
     render(body, nav) {
       body.append(
         el('div', { class: 'sheet-list' },
-          el('button', { class: 'btn', type: 'button', onclick: () => nav.push(creaturePage(game)) }, t('menu.creature')),
-          el('button', { class: 'btn', type: 'button', onclick: () => nav.push(bagPage(game)) }, t('menu.bag')),
-          el('button', { class: 'btn', type: 'button', onclick: () => nav.push(mapPage(game)) }, t('menu.map')),
-          el('button', { class: 'btn', type: 'button', onclick: () => nav.push(diaryPage(game)) }, t('menu.diary')),
-          el('button', { class: 'btn', type: 'button', onclick: () => nav.push(settingsPage(game)) }, t('menu.settings')),
+          MENU_ITEMS.map(key => el('button', { class: 'btn', type: 'button', onclick: () => nav.push(PAGES[key](game)) }, t(key))),
           el('button', { class: 'btn primary', type: 'button', onclick: () => nav.close() }, t('menu.backToGame')),
         ),
       );

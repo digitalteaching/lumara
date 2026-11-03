@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import { BOOK_SIZE, BOOK_SLOTS, recordSighting, bookView, bookLabels } from '../js/data/book.js';
 import { AREA_WILD, SPECIES } from '../js/data/species.js';
 import { newGameState } from '../js/state.js';
-import { setLanguage } from '../js/i18n/i18n.js';
+import { setLanguage, t } from '../js/i18n/i18n.js';
+import { MENU_ITEMS } from '../js/menu/items.js';
 
 test('Das Buch hat 33 Plätze: 1 bis 24 die wilden Arten nach Gebiet, 25 bis 33 kommen später', () => {
   assert.equal(BOOK_SIZE, 33);
@@ -48,6 +49,16 @@ test('Jeder Eintrag sagt seinen Zustand mit Text, nicht nur mit Farbe', () => {
   setLanguage('en');
   try {
     assert.deepEqual(bookLabels({ status: 'beaten', shiny: true }), ['● Beaten', '✦ Shiny form seen']);
+  } finally {
+    setLanguage('de');
+  }
+});
+
+test('Menü in der Reihenfolge aus Design 13, mit dem Wesen-Buch', () => {
+  assert.deepEqual(MENU_ITEMS.map(k => t(k)), ['Wesen', 'Rucksack', 'Wesen-Buch', 'Karte', 'Tagebuch', 'Einstellungen']);
+  setLanguage('en');
+  try {
+    assert.deepEqual(MENU_ITEMS.map(k => t(k)), ['Creature', 'Backpack', 'Creature Book', 'Map', 'Diary', 'Settings']);
   } finally {
     setLanguage('de');
   }
