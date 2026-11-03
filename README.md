@@ -4,7 +4,7 @@
 
 Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, erkundet eine geheimnisvolle Insel unter einem Nebel des Vergessens und besteht Duelle mit Aufgaben aus dem Unterricht. Dafür bekommt es Punkte, und sein Wesen entwickelt sich weiter. Die Inhalte kommen aus einem Lernpaket, einer Textdatei, die die Lehrkraft selbst schreibt. Dadurch funktioniert das Spiel in jedem Fach. Das erste Beispielpaket ist für Jahrgang 6 Englisch.
 
-**Status:** Plan 1, Plan 2, Plan 3a und Plan 3b sind gebaut (Spielfassung 0.4.0).
+**Status:** Plan 1, Plan 2, Plan 3a, Plan 3b und Plan 3c sind gebaut (Spielfassung 0.5.0).
 
 - **Plan 1**, spielbarer Kern:
   - Leuchtturmbucht, Lernpaket, fünf Startwesen
@@ -31,14 +31,24 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
   - Zeitdruck ab Trainer 4: ein Zeitbalken im Antwortfeld, beim Eintippen ×1,5, beim Satzbau ×2, Flausch +25 %. `ZEITDRUCK: lang` verdoppelt, `aus` schaltet die Uhr ab. Abgelaufene Zeit zählt als falsch.
   - Zeitsteine (ab Gebiet 4): halten die Uhr für eine Frage an
   - Beispielpaket mit den Themen 1 bis 5 und 21 Zetteln
+- **Plan 3c**, Uhrwerkruinen, Nordlichtsee und Sternenwiese:
+  - drei neue Gebiete mit Otto (30 s pro Frage), Freya (25 s) und Luna (20 s), Bewohnern, je drei wilden Arten, eigener Arena, Teilchen und drei Geschichtsstücken. Das letzte Stück verrät Morrows Namen.
+  - Uhrwerkruinen mit Kanälen, Brücken und Zahnrädern, die Funken sprühen; Nordlichtsee mit Eis, Löchern im Eis, Schnee und Nordlicht; Sternenwiese mit Sternengras und Sternschnuppen
+  - Sternwarte und Eisgrotte sind schon zu sehen, aber noch nicht erreichbar (Platz für Plan 4).
+  - Das Höhlentor am Berg: Seine acht Fassungen leuchten mit den Leuchtsteinen in den Farben der Ringe. Die Höhle selbst bleibt bis zum Finale zu.
+  - Nach dem Sieg über Luna führt ein Pfad von der Sternenwiese hinunter in die Bucht: Der Ring der Insel ist geschlossen.
+  - Karte der Insel im Menü: Gebiete im Nebel grau und mit „Im Nebel“, dazu „Du bist hier“. Das Reisemenü zeigt viele Ziele in zwei Spalten.
+  - Beispielpaket mit allen acht Themen und 27 Zetteln
+  - Mit `ZEITDRUCK: aus` gibt es keine Zeitsteine, und nach einem Zeitstein ist Füttern gesperrt.
 
-Hinter den Windklippen liegt noch Nebel. Die Uhrwerkruinen kommen mit einem späteren Plan.
+Die Höhle im Berg, Aufträge und geheime Orte kommen mit späteren Plänen.
 
 - Design: [docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md](docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md)
 - Bauplan 1: [docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md](docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md)
 - Bauplan 2: [docs/superpowers/plans/2026-11-03-lumara-plan-2-spielstand-lehrkraft.md](docs/superpowers/plans/2026-11-03-lumara-plan-2-spielstand-lehrkraft.md)
 - Bauplan 3a: [docs/superpowers/plans/2026-11-03-lumara-plan-3a-welt-fluesterwald.md](docs/superpowers/plans/2026-11-03-lumara-plan-3a-welt-fluesterwald.md)
 - Bauplan 3b: [docs/superpowers/plans/2026-11-03-lumara-plan-3b-gebiete-3-bis-5.md](docs/superpowers/plans/2026-11-03-lumara-plan-3b-gebiete-3-bis-5.md)
+- Bauplan 3c: [docs/superpowers/plans/2026-11-03-lumara-plan-3c-gebiete-6-bis-8.md](docs/superpowers/plans/2026-11-03-lumara-plan-3c-gebiete-6-bis-8.md)
 - Frühere Ideensammlung: [docs/2026-10-17-zwischenstand-ideensammlung.md](docs/2026-10-17-zwischenstand-ideensammlung.md)
 
 ## Für Lehrkräfte
@@ -48,7 +58,7 @@ Hinter den Windklippen liegt noch Nebel. Die Uhrwerkruinen kommen mit einem spä
   - Lernpaket prüfen: Fehler und Hinweise mit Zeilennummern, eine Übersicht pro Trainer und Probefragen in der echten Duell-Ansicht.
 - Die Statistik steht im Spiel unter Menü → Einstellungen → Für die Lehrkraft. Sie gilt jeweils für das aktuelle Lernpaket.
 - Vorlage: [pakete/vorlage.txt](pakete/vorlage.txt)
-- Beispielpaket Englisch 6 (Trainer 1 bis 5): [pakete/englisch-6-beispiel.txt](pakete/englisch-6-beispiel.txt)
+- Beispielpaket Englisch 6 (Trainer 1 bis 8): [pakete/englisch-6-beispiel.txt](pakete/englisch-6-beispiel.txt)
 
 ## Lokal starten
 
@@ -68,7 +78,7 @@ Bleibt das Bild schwarz, einfach neu laden. Der einfache Python-Server bleibt be
 |---|---|
 | `/?dev` | direkt in die Bucht, Name „Test“, Wesen Funki |
 | `/?dev&wesen=kiesel` | wie oben mit einem anderen Startwesen (`funki`, `kiesel`, `nixi`, `flausch`, `pieks`) |
-| `/?dev&gebiet=moor` | direkt am Eingang eines Gebiets (`wald`, `moor`, `duenen`, `klippen`), alle Leuchtsteine davor leuchten |
+| `/?dev&gebiet=moor` | direkt am Eingang eines Gebiets (`wald`, `moor`, `duenen`, `klippen`, `ruinen`, `see`, `wiese`), alle Leuchtsteine davor leuchten |
 | `/?duell=wild` | direkt ein Duell gegen ein wildes Wesen, danach das nächste |
 | `/?duell=trainer` | direkt das Duell gegen die Hüterin der Bucht |
 | `/?galerie` | alle Wesen in Originalgröße, A blättert weiter |
