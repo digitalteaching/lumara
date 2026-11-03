@@ -107,16 +107,109 @@ export const SPECIES = {
     names: ['Rindenwicht'],
     description: 'Ein kleiner Geist aus Rinde. Seine Augen leuchten wie zwei Laternen im dunklen Wald.',
   },
+
+  // Gebiet 3: Pilzmoor
+  tupfling: {
+    id: 'tupfling',
+    kind: 'wild',
+    gender: 'm',
+    area: 3,
+    rarity: 'common',
+    names: ['Tupfling', 'Schirmling'],
+    description: 'Ein kleiner Pilz mit leuchtenden Tupfen, der beim Hüpfen Sporen wie Glitzer verstreut.',
+  },
+  irrfunke: {
+    id: 'irrfunke',
+    kind: 'wild',
+    gender: 'm',
+    area: 3,
+    rarity: 'common',
+    names: ['Irrfunke'],
+    description: 'Ein Funke aus grünem Licht, der über dem Moor tanzt und allen den Weg zeigen will.',
+  },
+  nebelunke: {
+    id: 'nebelunke',
+    kind: 'wild',
+    gender: 'f',
+    area: 3,
+    rarity: 'rare',
+    names: ['Nebelunke'],
+    description: 'Eine scheue Unke mit Haut wie Morgennebel, die nur ruft, wenn es ganz still ist.',
+  },
+
+  // Gebiet 4: Spiegeldünen
+  glaskaefer: {
+    id: 'glaskaefer',
+    kind: 'wild',
+    gender: 'm',
+    area: 4,
+    rarity: 'common',
+    names: ['Glaskäfer', 'Spiegelkäfer'],
+    description: 'Ein Käfer mit Flügeldecken aus Glas, in denen sich die Mittagssonne spiegelt.',
+  },
+  duenenhuepfer: {
+    id: 'duenenhuepfer',
+    kind: 'wild',
+    gender: 'm',
+    area: 4,
+    rarity: 'common',
+    names: ['Dünenhüpfer'],
+    description: 'Ein flinker Hüpfer mit riesigen Ohren, der auf heißem Sand nie lange stehen bleibt.',
+  },
+  flimmerfuchs: {
+    id: 'flimmerfuchs',
+    kind: 'wild',
+    gender: 'm',
+    area: 4,
+    rarity: 'rare',
+    names: ['Flimmerfuchs'],
+    description: 'Ein Fuchs aus flimmernder Luft, den man nur sieht, wenn man nicht zu genau hinschaut.',
+  },
+
+  // Gebiet 5: Windklippen
+  drachling: {
+    id: 'drachling',
+    kind: 'wild',
+    gender: 'm',
+    area: 5,
+    rarity: 'common',
+    names: ['Drachling', 'Himmelsdrachling'],
+    description: 'Ein kleiner Drache mit Flügeln wie Papierdrachen, der am liebsten gegen den Wind fliegt.',
+  },
+  klippbock: {
+    id: 'klippbock',
+    kind: 'wild',
+    gender: 'm',
+    area: 5,
+    rarity: 'common',
+    names: ['Klippbock'],
+    description: 'Ein Bergbock mit eingerollten Hörnern, der auf den schmalsten Felsen balanciert.',
+  },
+  wolkenwal: {
+    id: 'wolkenwal',
+    kind: 'wild',
+    gender: 'm',
+    area: 5,
+    rarity: 'rare',
+    names: ['Wolkenwal'],
+    description: 'Ein kleiner Wal aus Wolken, der langsam unter den Hängebrücken hindurchschwimmt.',
+  },
 };
 
 export const AREA_WILD = {
   1: { common: ['gischtling', 'haeuschel'], rare: 'glimmqualle' },
   2: { common: ['moosling', 'eichhuscher'], rare: 'rindenwicht' },
+  3: { common: ['tupfling', 'irrfunke'], rare: 'nebelunke' },
+  4: { common: ['glaskaefer', 'duenenhuepfer'], rare: 'flimmerfuchs' },
+  5: { common: ['drachling', 'klippbock'], rare: 'wolkenwal' },
 };
 
 export const TRAINER_CREATURES = {
   1: { species: 'haeuschel', stage: 2 },
   2: { species: 'eichhuscher', stage: 2 },
+  3: { species: 'tupfling', stage: 2 },
+  4: { species: 'glaskaefer', stage: 2 },
+  5: { species: 'drachling', stage: 2 },
 };
 
 // „Ein wilder Eichhuscher“, „Die wilde Glimmqualle“: mit dem Artikel, der zum Wesen passt.

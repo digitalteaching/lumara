@@ -51,7 +51,8 @@ export function makeTrainerSetup(game, number) {
 }
 
 // Probefrage für Lehrkräfte (Design 12.3): ein Trainerduell mit den Fragen eines beliebigen Trainers.
-// Wesen gibt es bisher nur für Trainer 1, die anderen leihen sich das von Trainer 1 (bis Plan 3).
+// Wesen und Arenen gibt es für die Trainer 1 bis 5; die Trainer 6 bis 8 leihen sich bis Plan 3c
+// das Wesen von Trainer 1 und die Arena der Bucht.
 export function makeProbeSetup(game, number) {
   const pack = game.pack.data;
   const t = pack.trainers.find(x => x.number === number) ?? pack.trainers[0];

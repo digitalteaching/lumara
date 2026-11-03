@@ -53,3 +53,30 @@ export function q(overrides = {}) {
     ...(overrides.text ? { key: text.trim().replace(/\s+/g, ' ').toLowerCase() } : {}),
   };
 }
+
+// Ein Zeichenkontext ohne Canvas: Jede Methode tut nichts und wird in calls vermerkt, Verläufe
+// haben addColorStop. Damit lassen sich Arenen in Node zeichnen und vergleichen.
+export function stubContext() {
+  const calls = [];
+  const gradient = { addColorStop: (...a) => calls.push(['addColorStop', ...a]) };
+  const target = { calls };
+  return new Proxy(target, {
+    get(t, k) {
+      if (k in t) return t[k];
+      if (k === 'createRadialGradient' || k === 'createLinearGradient') {
+        return (...a) => {
+          calls.push([k, ...a]);
+          return gradient;
+        };
+      }
+      return (...a) => {
+        calls.push([k, ...a]);
+      };
+    },
+    set(t, k, v) {
+      calls.push(['set', k, v === gradient ? 'gradient' : v]);
+      t[k] = v;
+      return true;
+    },
+  });
+}
