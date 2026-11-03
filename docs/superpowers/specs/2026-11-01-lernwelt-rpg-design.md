@@ -1,6 +1,7 @@
 # Lumara – Das Land unter dem Nebel · Design
 
 Stand: 01.11.2026 · **Von Stefan freigegeben am 01.11.2026.** Nächster Schritt: Bauplan.
+Ergänzt am 03.11.2026: Spielsprache (10.6), auf Wunsch von Stefan: „Wenn das Lehrerpack für eine Sprache ist, soll das ganze Spiel in der Sprache sein. Sonst Deutsch.“
 Arbeitstitel des Repos: Lernwelt RPG (`classtiles-labs/lernwelt-rpg`)
 Grundlage: `docs/2026-10-17-zwischenstand-ideensammlung.md` und die Ideensammlung vom 01.11.2026.
 
@@ -129,14 +130,14 @@ Die Lehrkraft gibt den Trainern im Lernpaket Namen und Dialoge. Das Aussehen der
 - Es gibt **30 Geschichtsstücke**: 3 pro Gebiet, insgesamt 24 auf Zetteln unter Steinen, dazu je eines an den 6 geheimen Orten.
 - Die Zettelstücke kommen pro Gebiet in fester Reihenfolge. Das nächste Stück erscheint, sobald man im Gebiet einen Zettel löst.
 - Alle gefundenen Stücke stehen im **Tagebuch**.
-- Die Geschichtstexte gehören zum Spiel und sind immer auf Deutsch. Sie kommen nicht aus dem Lernpaket.
+- Die Geschichtstexte gehören zum Spiel und kommen nicht aus dem Lernpaket. Sie erscheinen in der Spielsprache (10.6).
 
 ### 5.6 Bewohner und Aufträge
 
 - **(Claude)** In jedem Gebiet leben 2 bis 4 Bewohner. Sie geben Hinweise, kommentieren den Fortschritt und reagieren darauf, ob der Stein schon leuchtet.
 - In jedem Gebiet gibt es **einen Auftrag**, insgesamt also 8. Arten von Aufträgen: etwas Verlorenes finden, etwas zu jemandem in einem anderen Gebiet bringen oder jemanden suchen. Der Auftrag kann erst nach dem Gebietstrainer abgeschlossen werden, angenommen werden kann er vorher.
 - Belohnung: 50 XP und ein Gegenstand (Tabelle unten).
-- Bewohnertexte gehören zum Spiel und sind auf Deutsch.
+- Bewohnertexte gehören zum Spiel und erscheinen in der Spielsprache (10.6).
 
 ### 5.7 Geheime Orte und Schlüsselgegenstände
 
@@ -418,6 +419,7 @@ ANTWORT: …
 - `KENNUNG:` ein kurzer, frei gewählter Name für dieses Paket, zum Beispiel `englisch6-unit1-4`. Er ist freiwillig, wird aber in der Vorlage empfohlen und dort schon vorausgefüllt. Solange die Kennung gleich bleibt, gilt eine überarbeitete oder erweiterte Datei als dasselbe Paket (10.4).
 - `FACH:` Fach (Pflicht)
 - `ZEITDRUCK:` `normal`, `lang` oder `aus` (freiwillig, Standard ist `normal`)
+- `SPIELSPRACHE:` `deutsch`, `englisch`, `französisch` oder `spanisch` (freiwillig, siehe 10.6)
 
 **Trainerabschnitte** `=== TRAINER 1 ===` bis `=== TRAINER 8 ===`. **(Claude)** Mindestens Trainer 1 ist Pflicht. Die vorhandenen Trainer müssen ohne Lücke ab 1 durchnummeriert sein: 1 bis 3 ist erlaubt, 1, 2 und 4 nicht. So kann eine Lehrkraft während einer Unterrichtsreihe Thema für Thema freigeben (10.4).
 - `NAME:` und `THEMA:` sind Pflicht.
@@ -481,6 +483,40 @@ ANTWORT: …
 
 - `pakete/KI-PROMPT-Lernpaket.md`: **(Claude)** ein Prompt, mit dem Lehrkräfte von einer KI ein gültiges Lernpaket für ihr Fach, ihren Jahrgang und ihre 8 Themen erstellen lassen können, nach dem Muster des Schwesterprojekts `Lernspiele/PROMPT-Lernspiel-Generator.md`.
 - `ANLEITUNG-LEHRKRAEFTE.md` (oder als Seite): eine kurze Anleitung zum Erstellen, Prüfen und Verteilen eines Pakets und zum Prüfen von Statistiken.
+
+### 10.6 Spielsprache (Ergänzung vom 03.11.2026)
+
+Stefan: Ist das Lernpaket für eine Sprache, ist das ganze Spiel in dieser Sprache, sonst auf Deutsch. So wird schon das Herumlaufen zum Sprachbad. Der Rest dieses Abschnitts ist **(Claude)**.
+
+- **Welche Sprache:**
+  - Steht im Kopf des Pakets `SPIELSPRACHE:`, gilt sie.
+  - Sonst entscheidet `FACH:`. Nennt das Fach eine Sprache, die das Spiel kann, läuft es in dieser Sprache, sonst auf Deutsch.
+  - Groß- und Kleinschreibung sind egal. Erkannt werden auch die englischen und eigenen Namen der Sprachen, zum Beispiel „English“, „français“ oder „español“, und die Kürzel `de`, `en`, `fr`, `es`.
+- **Sprachen des Spiels:** Deutsch, Englisch, Französisch und Spanisch, die häufigsten Fremdsprachen der Sekundarstufe 1.
+- **Andere Fächer:**
+  - Andere Sprachfächer, etwa Latein, Italienisch oder Niederländisch, laufen auf Deutsch.
+  - Die Prüfung des Pakets zeigt dann einen Hinweis, zum Beispiel: „Das Spiel gibt es noch nicht auf Italienisch. Es läuft auf Deutsch.“
+  - Eine unbekannte `SPIELSPRACHE` ist ein Hinweis mit Zeilennummer. Dann entscheidet `FACH`.
+- **Was übersetzt ist:** alles, was das Kind nach dem Laden des Pakets sieht:
+  - Oberfläche, Menüs und Duelle
+  - Bewohner, Schilder und die Geschichte
+  - die Namen der Gebiete und der Wesen. Jede Sprache bekommt eigene, kindgerechte Namen, so wie die deutschen.
+  - die Standardtexte der Trainer, wenn das Paket keine eigenen hat
+- **Was nicht übersetzt wird:**
+  - Eigennamen der Bewohner und Morrow
+  - der Name des Kindes und der Spitzname seines Wesens
+  - alles aus dem Paket selbst
+- **Was auf Deutsch bleibt:**
+  - alles für die Lehrkraft: `lehrkraft.html`, die Seite „Für die Lehrkraft“ im Spiel mit dem Prüfcode, die Fehlerliste beim Laden eines Pakets, Vorlage und Anleitung
+  - alles, bevor ein Paket geladen ist: Titel, Hinweis zum Home-Bildschirm und der Knopf „Lernpaket laden“
+- **Sprachniveau:**
+  - Englisch auf A1 bis A2 für Jahrgang 6
+  - Französisch und Spanisch auf A1, weil diese Sprachen meist später beginnen
+  - kurze Sätze, häufige Wörter, dieselbe Geschichte und derselbe Ton wie im Deutschen
+- **Paketwechsel:** Wechselt mit dem Paket die Sprache, ist das Spiel danach in der neuen Sprache. Der Spielstand hängt nicht an der Sprache.
+- **Reihenfolge beim Bauen:**
+  - Deutsch und Englisch kommen zuerst, Französisch und Spanisch, sobald alle Inhalte stehen.
+  - Bis dahin läuft ein Paket für Französisch oder Spanisch auf Deutsch, und die Prüfung sagt das.
 
 ---
 
