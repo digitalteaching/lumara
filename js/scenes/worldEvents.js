@@ -14,7 +14,9 @@ import { playBeaconScene } from './beacon.js';
 import { bushKey, bushReady, harvest } from '../items/food.js';
 import { findKey, findReady, takeFind, stepFind, STONE_LINES } from '../items/stones.js';
 import { BUCHT } from '../world/maps/bucht.js';
-import { packProgress } from '../state.js';
+import { packProgress, recordNoteAnswer } from '../state.js';
+import { notePool, noteKey, noteReady, solveNote } from '../world/notes.js';
+import { playNote } from './note.js';
 import { displayName } from '../data/species.js';
 import { maxEnergy } from '../duel/progress.js';
 import { say, choose } from '../ui/dialog.js';
@@ -271,6 +273,31 @@ export function createGameWorld(game) {
   // Sträucher (Design 8): voll mit roten Beeren oder nur Blätter, bis die Spielzeit sie nachwachsen lässt.
   world.propVariant.bush = o => (bushReady(game.state, bushKey(def.id, o)) ? 'bush' : 'bushEmpty');
 
+  // Zettelsteine (Design 5.4): mit hellem Zeichen, solange ein Zettel darunter liegt, sonst grau.
+  world.propVariant.notestone = o => (noteReady(game.state, noteKey(def.id, o)) ? 'noteStone' : 'noteStoneDone');
+
+  async function useNoteStone(o) {
+    const key = noteKey(def.id, o);
+    if (!noteReady(game.state, key)) {
+      await say(game, ['Ein grauer Stein. Gerade liegt kein Zettel darunter.']);
+      return;
+    }
+    const pick = await choose(game, 'Unter dem Stein liegt ein Zettel. Möchtest du die Aufgabe lösen?', ['Ja', 'Später'], { cancelIndex: 1 });
+    if (pick !== 0) return;
+    const c = game.state.creature;
+    const levelBefore = c.level;
+    const beatenNow = packProgress(game.state, shortId()).beaten;
+    const result = await playNote(game, notePool(game.pack.data, beatenNow), answer => {
+      recordNoteAnswer(game.state, shortId(), answer);
+      const out = solveNote(game.state, key, def.area, answer.correct, game.rng);
+      game.save();
+      return out;
+    });
+    if (!result) return;
+    for (let lvl = levelBefore + 1; lvl <= c.level; lvl++) await say(game, [`${displayName(c)} erreicht Level ${lvl}!`]);
+    if (result.story) await say(game, [result.story], { speaker: 'Ein Stück Geschichte' });
+  }
+
   // Schild am Nebelrand: vor dem Standard-Schild, weil der Text vom Stand abhängt (Design 10.4).
   world.onInteract.unshift(async ev => {
     const o = ev.target;
@@ -299,6 +326,10 @@ export function createGameWorld(game) {
     }
     if (o?.type === 'beacon') {
       await useBeacon(o);
+      return true;
+    }
+    if (o?.type === 'notestone') {
+      await useNoteStone(o);
       return true;
     }
     if (o?.type === 'bush') {

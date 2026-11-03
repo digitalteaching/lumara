@@ -27,6 +27,7 @@ const FILES = [
   "js/core/loop.js",
   "js/core/rng.js",
   "js/data/species.js",
+  "js/data/story.js",
   "js/data/texts.js",
   "js/duel/answers.js",
   "js/duel/duel.js",
@@ -47,6 +48,7 @@ const FILES = [
   "js/main.js",
   "js/menu/backupPages.js",
   "js/menu/bagPage.js",
+  "js/menu/diaryPage.js",
   "js/menu/homePage.js",
   "js/menu/menu.js",
   "js/menu/packPage.js",
@@ -70,6 +72,7 @@ const FILES = [
   "js/scenes/install.js",
   "js/scenes/intro.js",
   "js/scenes/name.js",
+  "js/scenes/note.js",
   "js/scenes/pack.js",
   "js/scenes/recover.js",
   "js/scenes/start.js",
@@ -100,6 +103,7 @@ const FILES = [
   "js/world/maps/bucht.js",
   "js/world/maps/wald.js",
   "js/world/network.js",
+  "js/world/notes.js",
   "js/world/player.js"
 ];
 

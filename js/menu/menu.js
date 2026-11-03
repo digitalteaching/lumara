@@ -1,4 +1,4 @@
-// Menü (Design 13): „Wesen“, „Rucksack“ und „Einstellungen“; Tagebuch, Wesen-Buch und Karte
+// Menü (Design 13): „Wesen“, „Rucksack“, „Tagebuch“ und „Einstellungen“; Wesen-Buch und Karte
 // kommen mit den Plänen, die sie füllen.
 
 import { el } from '../ui/dom.js';
@@ -7,6 +7,7 @@ import { SPECIES, speciesName, displayName } from '../data/species.js';
 import { xpToNext, maxEnergy, stageForLevel } from '../duel/progress.js';
 import { settingsPage } from './settings.js';
 import { bagPage } from './bagPage.js';
+import { diaryPage } from './diaryPage.js';
 
 export function creaturePage(game) {
   return {
@@ -44,6 +45,7 @@ function menuPage(game) {
         el('div', { class: 'sheet-list' },
           el('button', { class: 'btn', type: 'button', onclick: () => nav.push(creaturePage(game)) }, 'Wesen'),
           el('button', { class: 'btn', type: 'button', onclick: () => nav.push(bagPage(game)) }, 'Rucksack'),
+          el('button', { class: 'btn', type: 'button', onclick: () => nav.push(diaryPage(game)) }, 'Tagebuch'),
           el('button', { class: 'btn', type: 'button', onclick: () => nav.push(settingsPage(game)) }, 'Einstellungen'),
           el('button', { class: 'btn primary', type: 'button', onclick: () => nav.close() }, 'Zurück zum Spiel'),
         ),

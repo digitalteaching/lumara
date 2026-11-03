@@ -118,6 +118,25 @@ function tilesForm(p, onSubmit) {
   };
 }
 
+// Bildschirmtastatur (iPad): Das Panel rückt über die Tastatur, solange sie offen ist.
+// Gibt eine Funktion zurück, die das Beobachten beendet.
+export function watchKeyboard() {
+  const vv = window.visualViewport;
+  if (!vv) return () => {};
+  const onViewport = () => {
+    document.body.classList.toggle('kbd', vv.height < window.innerHeight * 0.75);
+    document.documentElement.style.setProperty('--vv-top', `${vv.offsetTop}px`);
+    document.documentElement.style.setProperty('--vv-height', `${vv.height}px`);
+  };
+  vv.addEventListener('resize', onViewport);
+  vv.addEventListener('scroll', onViewport);
+  return () => {
+    vv.removeEventListener('resize', onViewport);
+    vv.removeEventListener('scroll', onViewport);
+    document.body.classList.remove('kbd');
+  };
+}
+
 export function createDuelPanel(game) {
   const root = el('div', { class: 'duel-panel' });
   game.panel.append(root);
@@ -135,6 +154,7 @@ export function createDuelPanel(game) {
 
   // Zeigt die aktuelle Frage.
   // Ergebnis: { type: 'answer', response } | { type: 'feed' } | { type: 'flee' } | { type: 'surrender' }
+  //   | { type: 'later' } (nur bei einem Zettel)
   // feed: { show, enabled } – „Füttern“ steht das ganze Duell an seinem Platz, wenn zu Beginn
   // Futter im Rucksack war, und ist gesperrt, wenn gerade nicht gefüttert werden kann.
   // farsight: { label(), enabled(), use() → hint | null } – Weitblickstein, wirkt wie die Erleuchtung.
@@ -153,7 +173,10 @@ export function createDuelPanel(game) {
         resolve(value);
       }
 
-      const offB = game.input.on('b', () => finish({ type: duel.kind === 'wild' ? 'flee' : 'surrender' }));
+      // Ein Zettel (kind 'note') ist kein Duell: keine Fähigkeiten, „Später“ statt Fliehen.
+      const note = duel.kind === 'note';
+      const leave = { wild: 'flee', trainer: 'surrender', note: 'later' }[duel.kind] ?? 'surrender';
+      const offB = game.input.on('b', () => finish({ type: leave }));
 
       function render() {
         reset();
@@ -177,7 +200,7 @@ export function createDuelPanel(game) {
             farBtn.textContent = farsight.label();
           }
         };
-        if (species === 'funki') {
+        if (species === 'funki' && !note) {
           jokerBtn = el('button', {
             class: 'btn side',
             type: 'button',
@@ -190,7 +213,7 @@ export function createDuelPanel(game) {
           }, '✦ Erleuchtung');
           side.append(jokerBtn);
         }
-        if (farsight) {
+        if (farsight && !note) {
           farBtn = el('button', {
             class: 'btn side',
             type: 'button',
@@ -203,7 +226,7 @@ export function createDuelPanel(game) {
           }, farsight.label());
           side.append(farBtn);
         }
-        if (species === 'flausch') {
+        if (species === 'flausch' && !note) {
           side.append(el('button', {
             class: 'btn side',
             type: 'button',
@@ -215,14 +238,11 @@ export function createDuelPanel(game) {
             },
           }, '↻ Rückenwind'));
         }
-        if (feed?.show) {
+        if (feed?.show && !note) {
           side.append(el('button', { class: 'btn side', type: 'button', disabled: !feed.enabled, onclick: () => finish({ type: 'feed' }) }, 'Füttern'));
         }
-        side.append(
-          duel.kind === 'wild'
-            ? el('button', { class: 'btn side', type: 'button', onclick: () => finish({ type: 'flee' }) }, 'Fliehen')
-            : el('button', { class: 'btn side', type: 'button', onclick: () => finish({ type: 'surrender' }) }, 'Aufgeben'),
-        );
+        const leaveLabel = { flee: 'Fliehen', surrender: 'Aufgeben', later: 'Später' }[leave];
+        side.append(el('button', { class: 'btn side', type: 'button', onclick: () => finish({ type: leave }) }, leaveLabel));
 
         if (notice) root.append(el('p', { class: 'duel-notice' }, notice));
         root.append(el('div', { class: 'duel-top' }, el('div', { class: 'box duel-question' }, p.question.text), side), form.node);

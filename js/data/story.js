@@ -1,0 +1,15 @@
+// Geschichtsstücke unter den Zetteln (Design 5.4, 5.5): je Gebiet drei, in fester Reihenfolge.
+// Der Name dessen, der im Berg lebt, kommt erst in späteren Gebieten vor.
+
+export const STORY = {
+  1: [
+    'Vor langer Zeit trugen die Menschen von Lumara alles, was sie lernten, zu den acht Leuchtsteinen. Je mehr sie wussten, desto heller leuchteten die Steine.',
+    'Jeder Stein hatte eine Hüterin oder einen Hüter. Sie kannten jeden Weg der Insel und luden alle ein, ihr Wissen mit ihnen zu teilen.',
+    'Eines Winters wurden die Steine trüb. Ein feiner Nebel zog vom Berg herab, und die Leute vergaßen erst kleine Dinge, dann ganze Lieder.',
+  ],
+  2: [
+    'Die alten Bäume im Flüsterwald erinnern sich noch. Sie flüstern Wörter, die niemand mehr sagt, damit sie nicht ganz verloren gehen.',
+    'Die Hüterinnen und Hüter zogen sich in ihre Gebiete zurück. Sie warten darauf, dass jemand kommt und ihnen zeigt, was er gelernt hat.',
+    'Manche sagen, der Nebel komme aus einer Höhle tief im Berg. Wer dort lebt, weiß niemand mehr. Vielleicht hat man es einfach vergessen.',
+  ],
+};

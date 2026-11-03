@@ -548,6 +548,9 @@ body:not([data-mode="walk"]) .menu-btn { display: none; }
 .bag-message { min-height: 1.4em; font-weight: 700; }
 .bag-note { display: block; font-size: var(--text-small); color: var(--frame-dark); }
 .bag-shine { font-weight: 700; color: var(--frame-dark); }
+.diary .diary-area h4 { margin: 8px 0 4px; }
+.diary .diary-piece { margin: 0 0 8px; line-height: 1.45; }
+.diary-piece.missing { color: var(--frame-dark); font-style: italic; opacity: 0.75; }
 .sheet-section { display: flex; flex-direction: column; gap: 8px; }
 .sheet-section h3 { margin: 0; font-size: var(--text-small); text-transform: uppercase; letter-spacing: 0.05em; color: var(--frame-dark); }
 .sheet-section p { margin: 0; }

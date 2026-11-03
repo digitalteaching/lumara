@@ -8,7 +8,7 @@ import { speciesName, displayName, wildName, AREA_WILD, TRAINER_CREATURES } from
 import { creatureRows } from '../gfx/art/creatures.js';
 import { spriteFrom } from '../gfx/canvasSprites.js';
 import { drawArena, ARENA } from '../gfx/arena.js';
-import { createDuelPanel } from '../ui/duelPanel.js';
+import { createDuelPanel, watchKeyboard } from '../ui/duelPanel.js';
 import { say, choose, closeDialogs } from '../ui/dialog.js';
 import { el, clear } from '../ui/dom.js';
 import { applyDuelResult, packProgress } from '../state.js';
@@ -139,13 +139,7 @@ export function createDuelScene(game, setup, onEnd) {
     if (filled === n - 1) plates.own.extra.append(el('span', { class: 'ready' }, 'Volltreffer bereit!'));
   }
 
-  function onViewport() {
-    const vv = window.visualViewport;
-    if (!vv) return;
-    document.body.classList.toggle('kbd', vv.height < window.innerHeight * 0.75);
-    document.documentElement.style.setProperty('--vv-top', `${vv.offsetTop}px`);
-    document.documentElement.style.setProperty('--vv-height', `${vv.height}px`);
-  }
+  let stopKeyboard = () => {};
 
   async function showResult(r, response, ctx) {
     if (r.correct) {
@@ -331,8 +325,7 @@ export function createDuelScene(game, setup, onEnd) {
       game.mode = 'duel';
       game.ui.append(plates.foe.node, plates.own.node);
       updatePlates();
-      window.visualViewport?.addEventListener('resize', onViewport);
-      window.visualViewport?.addEventListener('scroll', onViewport);
+      stopKeyboard = watchKeyboard();
       run();
     },
     exit() {
@@ -341,9 +334,7 @@ export function createDuelScene(game, setup, onEnd) {
       panel?.remove();
       plates.foe.node.remove();
       plates.own.node.remove();
-      window.visualViewport?.removeEventListener('resize', onViewport);
-      window.visualViewport?.removeEventListener('scroll', onViewport);
-      document.body.classList.remove('kbd');
+      stopKeyboard();
     },
     update(dt) {
       t += dt;

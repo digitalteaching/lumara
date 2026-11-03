@@ -74,6 +74,14 @@ function countAnswers(stats, answers) {
   }
 }
 
+// Eine Antwort auf einen Zettel zählt in Statistik und Fragenhistorie wie im Duell, aber nicht
+// als Sieg (Design 12.1). answer = { key, correct, trainer }
+export function recordNoteAnswer(state, shortId, answer) {
+  const progress = packProgress(state, shortId);
+  recordAnswer(progress.history, answer.key, answer.correct);
+  countAnswers(progress.stats, [answer]);
+}
+
 // Leuchtstein n entzünden (Design 5.1). Wahr, wenn er neu leuchtet. Der zuletzt entzündete Stein
 // ist auch der zuletzt besuchte.
 export function lightStone(state, n) {
