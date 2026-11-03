@@ -34,7 +34,7 @@ test('creatureRows fällt auf die höchste vorhandene Stufe zurück', () => {
   assert.equal(creatureRows('haeuschel', 4), CREATURE_ART.haeuschel[2]);
 });
 
-const STAGES = [1, 2, 3];
+const STAGES = [1, 2, 3, 4];
 const mainColor = rows => {
   const n = {};
   for (const ch of rows.join('')) if (ch !== '.' && ch !== 'k') n[ch] = (n[ch] ?? 0) + 1;

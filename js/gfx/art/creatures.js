@@ -403,6 +403,137 @@ function bluetenigel() {
   return done(g);
 }
 
+// ---------- Startwesen, Stufe 4 (64 px) ----------
+
+function nordlichtfalter() {
+  const g = canvas(64);
+  ellipse(g, 20, 21, 19, 16, ['w', 'V', 'v']); // weit ausgebreitete Oberflügel
+  ellipse(g, 17, 42, 14, 9, ['V', 'v', 'P']); // Unterflügel
+  ellipse(g, 22, 47, 7, 6, ['w', 'H', 'h']); // leuchtender Hinterleib
+  ellipse(g, 41, 31, 13, 12, ['w', 'c', 'Y']); // Körper
+  outline(g);
+  // Nordlichtbänder in den Flügeln: Mint, Lagune, Flieder
+  for (const [dy, ch] of [[-9, 'T'], [-4, 'L'], [1, 'T'], [6, 'A']]) {
+    for (let x = 5; x <= 34; x++) {
+      const y = Math.round(21 + dy + Math.sin(x / 4) * 2);
+      if (g[y]?.[x] && g[y][x] !== '.' && g[y][x] !== 'k') put(g, x, y, ch);
+    }
+  }
+  for (let x = 6; x <= 28; x++) {
+    const y = Math.round(42 + Math.sin(x / 3) * 1.5);
+    if (g[y]?.[x] && g[y][x] !== '.' && g[y][x] !== 'k') put(g, x, y, 'T');
+  }
+  eye(g, 40, 27, 3, 4);
+  eye(g, 47, 27, 3, 4);
+  dots(g, [[42, 35, 'R'], [51, 34, 'R'], [44, 35, 'k'], [45, 36, 'k'], [46, 35, 'k']]);
+  // lange Fühler und eine kleine Krone aus Licht
+  line(g, 39, 19, 42, 6, 'k');
+  line(g, 47, 20, 55, 8, 'k');
+  dots(g, [[42, 5, 'H'], [42, 4, 'H'], [43, 4, 'w'], [56, 7, 'H'], [57, 7, 'H'], [56, 6, 'w']]);
+  dots(g, [[41, 18, 'H'], [43, 17, 'H'], [45, 16, 'w'], [47, 17, 'H'], [49, 18, 'H'], [45, 17, 'H']]);
+  dots(g, [[10, 61, 'H'], [30, 62, 'H'], [6, 54, 'H'], [36, 57, 'H']]);
+  return done(g);
+}
+
+function bergherz() {
+  const g = canvas(64);
+  ellipse(g, 20, 58, 8, 3.5, ['s', 'd', 'n']); // Füße
+  ellipse(g, 42, 58, 8, 3.5, ['s', 'd', 'n']);
+  poly(g, [[6, 55], [18, 14], [30, 5], [44, 12], [58, 55]], ['m', 's', 'd']); // kleiner Berg
+  poly(g, [[22, 12], [30, 5], [40, 10], [36, 15], [30, 12], [25, 16]], ['w', 'w', 'f']); // Schneekappe
+  ellipse(g, 56, 38, 4, 6, ['m', 's', 'd']); // Arm
+  outline(g);
+  // zwei Bäumchen auf den Schultern
+  for (const [tx, ty] of [[13, 30], [50, 31]]) {
+    line(g, tx, ty, tx, ty - 4, 'o');
+    dots(g, [[tx - 2, ty - 5, 'g'], [tx - 1, ty - 5, 'g'], [tx, ty - 5, 'G'], [tx + 1, ty - 5, 'g'], [tx + 2, ty - 5, 'g'],
+      [tx - 1, ty - 6, 'g'], [tx, ty - 6, 'G'], [tx + 1, ty - 6, 'g'], [tx, ty - 7, 'G'], [tx - 1, ty - 4, 'l'], [tx + 1, ty - 4, 'l']]);
+  }
+  eye(g, 33, 26, 3, 4);
+  eye(g, 41, 26, 3, 4);
+  dots(g, [[35, 34, 'k'], [36, 35, 'k'], [37, 35, 'k'], [38, 35, 'k'], [39, 34, 'k'], [31, 32, 'R'], [45, 32, 'R']]);
+  // glühende Ader in der Brust
+  line(g, 30, 40, 34, 45, 'h');
+  line(g, 34, 45, 31, 50, 'h');
+  line(g, 34, 45, 38, 48, 'h');
+  dots(g, [[34, 44, 'H'], [33, 45, 'H'], [35, 45, 'H'], [34, 46, 'H']]);
+  dots(g, [[16, 44, 'd'], [17, 45, 'd'], [17, 46, 'd'], [46, 47, 'd'], [47, 48, 'd'], [24, 24, 'f'], [27, 20, 'm']]);
+  return done(g);
+}
+
+function gezeitennix() {
+  const g = canvas(64);
+  poly(g, [[2, 30], [18, 34], [18, 48], [3, 52]], ['V', 'v', 'P']); // Wellenflosse am Schwanz
+  poly(g, [[10, 34], [30, 27], [31, 31], [12, 39]], ['V', 'v', 'P']); // Rückenflosse
+  ellipse(g, 26, 41, 14, 8, ['w', 'R', 'C']); // langer Körper
+  ellipse(g, 43, 29, 14, 12, ['w', 'R', 'C']); // großer Kopf
+  ellipse(g, 20, 50, 3.5, 3.5, ['R', 'R', 'C']); // Beine
+  ellipse(g, 33, 50, 3.5, 3.5, ['R', 'R', 'C']);
+  // Kiemen wie Wellen
+  poly(g, [[36, 19], [24, 6], [29, 11], [25, 3], [39, 17]], ['p', 'C', 'e']);
+  poly(g, [[34, 24], [18, 16], [24, 19], [18, 13], [35, 27]], ['p', 'C', 'e']);
+  poly(g, [[34, 30], [19, 30], [24, 33], [20, 36], [35, 34]], ['p', 'C', 'e']);
+  // Muschelkrone
+  poly(g, [[38, 18], [42, 11], [46, 17], [50, 11], [53, 18]], ['Y', 'y', 'r']);
+  outline(g);
+  // Wellenlinien in der Schwanzflosse
+  line(g, 4, 37, 16, 38, 'A');
+  line(g, 4, 44, 16, 44, 'A');
+  // Mondzeichen auf der Stirn
+  dots(g, [[45, 21, 'H'], [44, 22, 'H'], [44, 23, 'H'], [45, 24, 'H'], [46, 22, 'Y']]);
+  eye(g, 44, 27, 3, 3);
+  eye(g, 51, 27, 3, 3);
+  dots(g, [[46, 33, 'k'], [47, 34, 'k'], [48, 34, 'k'], [49, 34, 'k'], [50, 33, 'k'], [42, 32, 'p'], [54, 32, 'p'],
+    [57, 11, 'A'], [58, 11, 'A'], [57, 10, 'w'], [52, 6, 'A'], [24, 39, 'w'], [30, 37, 'w'], [25, 3, 'A']]);
+  return done(g);
+}
+
+function himmelsuhu() {
+  const g = canvas(64);
+  poly(g, [[2, 26], [20, 18], [24, 50], [1, 54]], ['n', 'd', 'P']); // weite Schwingen mit Sternenhimmel
+  poly(g, [[62, 26], [44, 18], [40, 50], [63, 54]], ['n', 'd', 'P']);
+  ellipse(g, 32, 38, 17, 18, ['w', 'f', 'm']); // Körper
+  ellipse(g, 22, 14, 4, 6, ['v', 'P', 'n']); // Federohren
+  ellipse(g, 42, 14, 4, 6, ['v', 'P', 'n']);
+  ellipse(g, 34, 30, 12, 9, ['w', 'c', 'Y']); // Gesicht
+  ellipse(g, 23, 59, 6, 3, ['w', 'f', 'm']); // Füße
+  ellipse(g, 41, 59, 6, 3, ['w', 'f', 'm']);
+  outline(g);
+  // Sterne im Gefieder der Schwingen
+  dots(g, [[6, 30, 'w'], [12, 26, 'H'], [9, 38, 'w'], [16, 33, 'H'], [6, 46, 'H'], [14, 44, 'w'], [19, 39, 'w'],
+    [56, 30, 'w'], [51, 27, 'H'], [55, 38, 'w'], [48, 34, 'H'], [57, 46, 'H'], [50, 44, 'w'], [45, 40, 'w']]);
+  for (const ex of [27, 37]) {
+    dots(g, [[ex, 26, 'h'], [ex + 1, 26, 'h'], [ex + 2, 26, 'h'], [ex + 3, 26, 'h'], [ex, 27, 'h'], [ex, 28, 'h'], [ex, 29, 'h'],
+      [ex + 3, 27, 'h'], [ex + 3, 28, 'h'], [ex + 3, 29, 'h'], [ex, 30, 'h'], [ex + 1, 30, 'h'], [ex + 2, 30, 'h'], [ex + 3, 30, 'h']]);
+    dots(g, [[ex + 1, 27, 'w'], [ex + 2, 27, 'k'], [ex + 1, 28, 'k'], [ex + 2, 28, 'k'], [ex + 1, 29, 'k'], [ex + 2, 29, 'k']]);
+  }
+  dots(g, [[33, 33, 'r'], [34, 33, 'r'], [33, 34, 'o'], [34, 34, 'o'], [33, 35, 'o']]);
+  dots(g, [[28, 44, 'm'], [33, 47, 'm'], [38, 44, 'm'], [30, 51, 'm'], [36, 51, 'm'], [19, 9, 'H'], [45, 9, 'H']]);
+  return done(g);
+}
+
+function waldhueter() {
+  const g = canvas(64);
+  const leaves = [[9, 30, 4], [13, 23, 4], [20, 18, 4], [7, 38, 4], [8, 46, 3.8], [48, 22, 3.5]];
+  for (const [x, y, r] of leaves) ellipse(g, x, y, r, r * 1.5, ['G', 'g', 'l']);
+  ellipse(g, 29, 42, 21, 15, ['r', 'o', 'b']); // großer Körper
+  ellipse(g, 46, 44, 9, 8, ['w', 'Y', 'y']); // Schnauze und Bauch
+  ellipse(g, 21, 57, 5, 3, ['o', 'b', 'b']); // Füße
+  ellipse(g, 38, 57, 5, 3, ['o', 'b', 'b']);
+  // kleiner Baum auf dem Rücken: Stamm und Krone
+  poly(g, [[28, 27], [32, 27], [33, 16], [27, 16]], ['o', 'b', 'b']);
+  ellipse(g, 30, 10, 11, 8, ['G', 'g', 'l']);
+  ellipse(g, 22, 14, 5, 4, ['G', 'g', 'l']);
+  ellipse(g, 38, 14, 5, 4, ['G', 'g', 'l']);
+  // Bart aus Moos
+  ellipse(g, 48, 51, 6, 4, ['G', 'g', 'l']);
+  outline(g);
+  eye(g, 45, 37, 3, 3);
+  dots(g, [[55, 43, 'k'], [54, 43, 'k'], [55, 44, 'k'], [43, 41, 'R'], [24, 7, 'H'], [33, 5, 'R'], [37, 11, 'R'], [27, 12, 'H'],
+    [20, 34, 'b'], [25, 31, 'b'], [16, 43, 'b'], [27, 49, 'b'], [35, 35, 'o'], [46, 53, 'l'], [49, 54, 'l'], [51, 52, 'l']]);
+  return done(g);
+}
+
 // ---------- Gebiet 1 ----------
 
 function gischtling() {
@@ -1007,17 +1138,17 @@ export const CREATURE_ART = {
   moosling: { 1: moosling() },
   eichhuscher: { 1: eichhuscher1(), 2: eichhuscher2() },
   rindenwicht: { 1: rindenwicht() },
-  funki: { 1: funki(), 2: funkelflug(), 3: laternenfalter() },
-  kiesel: { 1: kiesel(), 2: findling(), 3: felsenwaechter() },
-  nixi: { 1: nixi(), 2: quellnix(), 3: strudelnix() },
-  flausch: { 1: flausch(), 2: wolkenkauz(), 3: sturmeule() },
-  pieks: { 1: pieks(), 2: dornigel(), 3: bluetenigel() },
+  funki: { 1: funki(), 2: funkelflug(), 3: laternenfalter(), 4: nordlichtfalter() },
+  kiesel: { 1: kiesel(), 2: findling(), 3: felsenwaechter(), 4: bergherz() },
+  nixi: { 1: nixi(), 2: quellnix(), 3: strudelnix(), 4: gezeitennix() },
+  flausch: { 1: flausch(), 2: wolkenkauz(), 3: sturmeule(), 4: himmelsuhu() },
+  pieks: { 1: pieks(), 2: dornigel(), 3: bluetenigel(), 4: waldhueter() },
   gischtling: { 1: gischtling() },
   haeuschel: { 1: haeuschel1(), 2: haeuschel2() },
   glimmqualle: { 1: glimmqualle() },
 };
 
-// Höchste vorhandene Stufe ≤ der gewünschten. Bei den Startwesen fehlt nur noch Stufe 4 (Plan 4b, Task 4).
+// Höchste vorhandene Stufe ≤ der gewünschten: Wilde Arten haben ein oder zwei Stufen.
 export function creatureRows(speciesId, stage) {
   const art = CREATURE_ART[speciesId];
   for (let s = stage; s >= 1; s--) if (art?.[s]) return art[s];
