@@ -9,6 +9,7 @@ import { createEncounterCounter } from '../world/encounters.js';
 import { trainerSees } from '../world/map.js';
 import { fogEdgeLines, fogSignLines, fogSignFor } from '../world/fogEdge.js';
 import { caveGateLines, caveSocketLights } from '../world/caveGate.js';
+import { breakName } from '../world/islandMap.js';
 import { MAPS, areaConfig, areaOpen, exitAt, openGatesFor, resolveStart, whisperLine, beaconFront, packWorldKey } from '../world/network.js';
 import { visitStone, travelTargets, respawnPoint, challengeMark } from '../world/beacons.js';
 import { playBeaconScene } from './beacon.js';
@@ -173,7 +174,7 @@ export function createGameWorld(game) {
     await say(game, [`${displayName(c)} tankt neues Licht.`]);
     const others = travelTargets(game.state, game.pack.data).filter(t => t.number !== o.number);
     if (!others.length) return;
-    const pick = await choose(game, 'Wohin möchtest du reisen?', [...others.map(t => t.name), 'Hierbleiben']);
+    const pick = await choose(game, 'Wohin möchtest du reisen?', [...others.map(t => breakName(t.name)), 'Hierbleiben']);
     const target = others[pick];
     if (!target) return;
     visitStone(game.state, target.number);

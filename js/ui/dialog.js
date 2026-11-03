@@ -117,7 +117,8 @@ export function choose(game, prompt, options, { cancelIndex = options.length - 1
       'div',
       { class: 'box dialog choice-box' },
       prompt ? el('div', { class: 'dialog-text' }, prompt) : null,
-      el('div', { class: 'choice' }, buttons),
+      // Viele Einträge (etwa acht Reiseziele) stehen in zwei Spalten, der letzte über beide.
+      el('div', { class: options.length > 5 ? 'choice many' : 'choice' }, buttons),
     );
     game.panel.append(box);
     guardClicks(box, fresh);
