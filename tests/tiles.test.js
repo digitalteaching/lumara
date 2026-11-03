@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parseSprite } from '../js/gfx/sprites.js';
-import { TILES, BUILDINGS, PROPS } from '../js/gfx/art/tiles.js';
+import { TILES, BUILDINGS, PROPS, CAVE_SOCKETS, OVERLAY_TILES } from '../js/gfx/art/tiles.js';
 import { WALKABLE, BLOCKED } from '../js/world/map.js';
 
 test('jede Kachelart hat Bilder zu 16 × 16', () => {
@@ -51,4 +51,30 @@ test('Kacheln der Gebiete 3 bis 5: 16 × 16, bekannte Farben, richtige Bildzahl'
     assert.equal(s.h, h, k);
   }
   assert.notDeepEqual(PROPS.windmill0, PROPS.windmill1); // die Flügel stehen anders
+});
+
+test('Kacheln der Gebiete 6 bis 8: 16 × 16, bekannte Farben, richtige Bildzahl', () => {
+  const frames = { cobble: 1, canal: 2, ruinwall: 1, ivy: 2, snow: 1, ice: 1, icewater: 2, snowpine: 1, snowgrass: 2, nightgrass: 1, nightrock: 1, nightcliff: 1, startall: 2 };
+  for (const [k, n] of Object.entries(frames)) {
+    assert.equal(TILES[k]?.length, n, k);
+    TILES[k].forEach((f, i) => {
+      const s = parseSprite(`${k}.${i}`, f); // wirft bei unbekannten Farben
+      assert.equal(s.w, 16, k);
+      assert.equal(s.h, 16, k);
+    });
+  }
+  for (const k of ['canal', 'icewater', 'ivy', 'snowgrass', 'startall']) assert.notDeepEqual(TILES[k][0], TILES[k][1], k);
+  for (const k of ['snowpine', 'nightrock']) assert.ok(OVERLAY_TILES.has(k), k);
+  for (const [k, h] of Object.entries({ gear0: 32, gear1: 32, observatory: 48, icecave: 32, tent: 32 })) {
+    const s = parseSprite(k, PROPS[k]);
+    assert.equal(s.w, 16, k);
+    assert.equal(s.h, h, k);
+  }
+  assert.notDeepEqual(PROPS.gear0, PROPS.gear1); // das Zahnrad steht anders
+  const gate = parseSprite('cavegate', BUILDINGS.cavegate);
+  assert.equal(gate.w, 48);
+  assert.equal(gate.h, 48);
+  assert.equal(CAVE_SOCKETS.length, 8);
+  assert.ok(CAVE_SOCKETS.every(([x, y]) => x >= 0 && x < 48 && y >= 0 && y < 48));
+  assert.equal(new Set(CAVE_SOCKETS.map(p => p.join(','))).size, 8); // acht verschiedene Fassungen
 });

@@ -14,7 +14,7 @@ const count = (p, k) => {
 };
 
 test('Grenzen je Art', () => {
-  assert.deepEqual(PARTICLE_LIMITS, { gull: 2, spray: 12, firefly: 14, leaf: 10, spore: 14, bubble: 8, wisp: 3, sand: 12, glint: 10, windstreak: 8, cloud: 4 });
+  assert.deepEqual(PARTICLE_LIMITS, { gull: 2, spray: 12, firefly: 14, leaf: 10, spore: 14, bubble: 8, wisp: 3, sand: 12, glint: 10, windstreak: 8, cloud: 4, spark: 10, steam: 6, snow: 16, aurora: 3, fallingstar: 2, glimmer: 12 });
 });
 
 test('nie mehr Teilchen als erlaubt, bei Bewegung reduzieren höchstens ein Viertel', () => {
@@ -97,4 +97,49 @@ test('Bei „Bewegung reduzieren“ ziehen die Wolken nicht', () => {
   const after = [];
   p.each(q => after.push(q.x));
   assert.deepEqual(after.slice(0, before.length), before);
+});
+
+test('Teilchen 6 bis 8: Grenzen, ein Viertel, still und ohne Sternschnuppen bei Bewegung reduzieren', () => {
+  for (const k of ['steam', 'snow', 'aurora', 'fallingstar', 'glimmer']) {
+    const p = createParticles([k], { rng: createRng(5), reducedMotion: false });
+    for (let i = 0; i < 900; i++) p.update(16, { x: 0, y: 0 });
+    let most = 0;
+    for (let i = 0; i < 600; i++) {
+      p.update(16, { x: 0, y: 0 });
+      most = Math.max(most, count(p));
+    }
+    assert.ok(most > 0 && most <= PARTICLE_LIMITS[k], k);
+    const r = createParticles([k], { rng: createRng(5), reducedMotion: true });
+    for (let i = 0; i < 900; i++) r.update(16, { x: 0, y: 0 });
+    assert.ok(count(r) <= Math.ceil(PARTICLE_LIMITS[k] / 4), `${k} reduziert`);
+  }
+  const f = createParticles(['fallingstar'], { rng: createRng(3), reducedMotion: true });
+  for (let i = 0; i < 900; i++) f.update(16, { x: 0, y: 0 });
+  assert.equal(count(f), 0);
+  const s = createParticles(['spark'], { rng: createRng(4), reducedMotion: false, anchors: { spark: [[40, 40]] } });
+  for (let i = 0; i < 300; i++) s.update(16, { x: 0, y: 0 });
+  assert.ok(count(s) > 0);
+  s.each(q => assert.ok(Math.abs(q.x - 40) <= 8 && q.y <= 48, `${q.x},${q.y}`));
+  const none = createParticles(['spark'], { rng: createRng(4), reducedMotion: false });
+  for (let i = 0; i < 300; i++) none.update(16, { x: 0, y: 0 });
+  assert.equal(count(none), 0); // ohne Zahnräder keine Funken
+  for (const k of ['aurora', 'steam']) {
+    const a = createParticles([k], { rng: createRng(5), reducedMotion: true });
+    for (let i = 0; i < 400; i++) a.update(16, { x: 0, y: 0 });
+    const before = [];
+    a.each(q => before.push([q.x, q.y, q.phase]));
+    assert.ok(before.length > 0, k);
+    for (let i = 0; i < 100; i++) a.update(16, { x: 0, y: 0 });
+    const after = [];
+    a.each(q => after.push([q.x, q.y, q.phase]));
+    assert.deepEqual(after.slice(0, before.length), before, k);
+  }
+  const g = createParticles(['glimmer', 'spark'], { rng: createRng(6), reducedMotion: false, anchors: { spark: [[40, 40]] } });
+  for (let i = 0; i < 300; i++) g.update(16, { x: 0, y: 0 });
+  let n = 0;
+  g.each(q => {
+    n++;
+    assert.ok((q.blinkHz ?? 0) <= 1, q.kind);
+  });
+  assert.ok(n > 0);
 });

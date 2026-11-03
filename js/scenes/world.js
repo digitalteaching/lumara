@@ -117,7 +117,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
   // Boden unter Steinen: der häufigste flache Boden der Nachbarfelder. Ohne einen solchen
   // (etwa eine Felsnadel mitten in den Wolken) die häufigste Nachbarkachel, die selbst Boden hat,
   // sonst der Grundboden der Karte (def.ground, etwa Torf im Moor).
-  const GROUNDS = new Set(['grass', 'sand', 'path', 'flowers', 'moss', 'peat', 'glasssand', 'cliffrock']);
+  const GROUNDS = new Set(['grass', 'sand', 'path', 'flowers', 'moss', 'peat', 'glasssand', 'cliffrock', 'cobble', 'snow', 'ice', 'nightgrass']);
   // Eine Felsnadel ragt immer aus den Wolken.
   const FIXED_GROUND = { spire: 'clouds' };
   function groundAt(x, y) {
@@ -183,13 +183,15 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
   if (def.particles?.includes('bubble')) {
     for (let y = 0; y < map.height; y++) for (let x = 0; x < map.width; x++) if (map.tileAt(x, y) === 'bog') bubbles.push([x * T + 8, y * T + 8]);
   }
+  // Funken sprühen an den Zahnrädern der Ruinen (Mitte des Rads, oben auf dem Pfosten).
+  const sparks = def.objects.filter(o => o.type === 'deco' && o.prop === 'gear').map(o => [o.x * T + 8, o.y * T - 8]);
   const particles = def.particles?.length
     ? createParticles(def.particles, {
       rng: createRng((Math.random() * 2 ** 32) >>> 0),
       reducedMotion: () => game.reducedMotion,
       width: SCREEN_W,
       height: SCREEN_H,
-      anchors: { spray: shore, bubble: bubbles },
+      anchors: { spray: shore, bubble: bubbles, spark: sparks },
     })
     : null;
 
@@ -249,6 +251,46 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
         ctx.fillRect(x + 2, y, 6, 1);
         ctx.fillRect(x, y + 1, 10, 2);
         ctx.fillRect(x + 2, y + 3, 6, 1);
+      } else if (p.kind === 'spark') {
+        // heller Punkt mit schwachem Schein
+        ctx.fillStyle = p.color;
+        ctx.fillRect(x, y, 1, 1);
+        ctx.globalAlpha = p.alpha * 0.35;
+        ctx.fillRect(x - 1, y, 3, 1);
+        ctx.fillRect(x, y - 1, 1, 3);
+      } else if (p.kind === 'steam') {
+        // blasses rundes Wölkchen
+        ctx.fillStyle = p.color;
+        ctx.fillRect(x - 1, y - 1, 3, 3);
+        ctx.globalAlpha = p.alpha * 0.5;
+        ctx.fillRect(x - 2, y, 5, 1);
+        ctx.fillRect(x, y - 2, 1, 5);
+      } else if (p.kind === 'aurora') {
+        // langes weiches Band, das sich wellt
+        ctx.fillStyle = p.color;
+        for (let i = 0; i < p.len; i += 2) {
+          const yy = y + Math.round(Math.sin((i / p.len) * Math.PI * 3 + p.phase) * 3);
+          const edge = Math.min(1, i / 16, (p.len - i) / 16);
+          ctx.globalAlpha = p.alpha * edge * 0.55;
+          ctx.fillRect(x + i, yy, 2, 9);
+          ctx.globalAlpha = p.alpha * edge;
+          ctx.fillRect(x + i, yy + 1, 2, 3);
+        }
+      } else if (p.kind === 'fallingstar') {
+        // kurzer schräger Strich, der Schweif wird blasser
+        ctx.fillStyle = p.color;
+        for (let i = 0; i < p.size; i++) {
+          ctx.globalAlpha = p.alpha * (1 - i / p.size);
+          ctx.fillRect(x + i * 2, y - i, 2, 1);
+        }
+      } else if (p.kind === 'snow') {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(x, y, p.size, p.size);
+      } else if (p.kind === 'glimmer') {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(x, y, 1, 1);
+        ctx.globalAlpha = p.alpha * 0.25;
+        ctx.fillRect(x - 1, y - 1, 3, 3);
       } else if (p.kind === 'sand' || p.kind === 'windstreak') {
         // waagrechte Striche
         ctx.fillStyle = p.color;
@@ -376,7 +418,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
       // Bewegte Kacheln wechseln wie Wasser alle 600 ms das Bild; Wolken und Luftspiegelungen
       // stehen bei „Bewegung reduzieren“ still.
       const movingFrame = kind => {
-        if (kind === 'water' || kind === 'bog') return waterFrame;
+        if (kind === 'water' || kind === 'bog' || kind === 'canal' || kind === 'icewater') return waterFrame;
         if (kind === 'clouds' || kind === 'mirage') return game.reducedMotion ? 0 : waterFrame;
         return null;
       };

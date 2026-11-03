@@ -328,8 +328,107 @@ const spire = [
   '................',
 ];
 
+// ---------- Uhrwerkruinen, Nordlichtsee, Sternenwiese (Plan 3c) ----------
+// Farbstimmung (Design 5.3): Ruinen Messing und Kupfer, grünlicher Stein, dunkles Kanalwasser;
+// See Weiß, Eisblau, Tannengrün; Wiese Nachtblau, Sternengold, dunkles Wiesengrün.
+
+// Pflaster: helle Steine in versetzten Reihen, dazwischen Fugen mit etwas Moos
+function cobble() {
+  const g = grid(16, 16, 'm');
+  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) {
+    const row = Math.floor(y / 4), off = row % 2 ? 3 : 0;
+    const joint = y % 4 === 3 || (x + off) % 6 === 5;
+    const r = noise(x, y, 81);
+    if (joint) g[y][x] = r < 0.18 ? 't' : 's';
+    else if (y % 4 === 0 && (x + off) % 6 < 2) g[y][x] = 'f';
+    else if (r < 0.06) g[y][x] = 's';
+  }
+  return toRows(g);
+}
+
+// Kanalwasser: dunkel, mit langen ruhigen Linien, die sich zwischen zwei Bildern verschieben
+function canal(shift) {
+  const g = grid(16, 16, 'D');
+  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) if (noise(x, y, 82) < 0.05) g[y][x] = 'n';
+  for (const [cx, cy] of [[1, 3], [9, 7], [4, 12]]) {
+    const x = (cx + shift) % 16;
+    for (let i = 0; i < 5; i++) g[cy][(x + i) % 16] = i === 0 || i === 4 ? 't' : 'S';
+  }
+  return toRows(g);
+}
+
+// Mauerrest: Ziegel aus grünlichem Stein, oben eine helle Kante, ein wenig Efeu
+function ruinwall() {
+  const g = grid(16, 16, 's');
+  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) {
+    const off = Math.floor((y - 2) / 4) % 2 ? 4 : 0;
+    if (y < 2) g[y][x] = y === 0 ? 'k' : 'm';
+    else if ((y - 2) % 4 === 3 || (x + off) % 8 === 7) g[y][x] = 'd';
+    else if ((y - 2) % 4 === 0) g[y][x] = noise(x, y, 83) < 0.5 ? 'm' : 's';
+    else if (noise(x, y, 84) < 0.08) g[y][x] = 't';
+    if (y === 15) g[y][x] = 'k';
+  }
+  for (const [x, y] of [[2, 2], [3, 3], [2, 4], [3, 5], [12, 2], [13, 3], [12, 4], [11, 3]]) g[y][x] = y % 2 ? 'F' : 'l';
+  return toRows(g);
+}
+
+// Efeu ist das hohe Gras der Ruinen: dunkles Blattgrün mit türkisen Spitzen
+const ivy = lean => retint(tallGrass(lean), { l: 'F', g: 't', G: 'T', F: 'l' });
+
+const snow = speckled('w', 91, [['f', 0.12], ['A', 0.03], ['m', 0.01]]);
+
+// Eis des Sees: blassblau, helle Glanzstellen und feine Risse
+function ice() {
+  const g = grid(16, 16, 'A');
+  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) {
+    const r = noise(x, y, 92);
+    if (r < 0.06) g[y][x] = 'w';
+    else if (r > 0.96) g[y][x] = 'f';
+  }
+  for (const [x, y] of [[3, 4], [4, 5], [5, 5], [6, 6], [11, 10], [12, 11], [12, 12], [13, 13]]) g[y][x] = 'L';
+  return toRows(g);
+}
+
+// Offenes Wasser im Eis: tiefblau, dunkler als das Meer
+const icewater = shift => retint(water(shift), { S: 'D', L: 'S', A: 'L', D: 'n' });
+
+// Verschneite Tanne (ohne Boden)
+const snowpine = [
+  '.......kk.......',
+  '......kwwk......',
+  '.....kwFlwk.....',
+  '.....kFllFk.....',
+  '....kwwFlwwk....',
+  '....kFlllFFk....',
+  '...kwwwFlwwwk...',
+  '...kFllllllFk...',
+  '..kFFlllllFFFk..',
+  '..kwwwwFlwwwwk..',
+  '.kFlllllllllFFk.',
+  '.kFFlllllllFFFk.',
+  '.kkkkkkbbkkkkkk.',
+  '.......bo.......',
+  '......kbok......',
+  '................',
+];
+
+// Schneegras: grüne Halme mit mintfarbenem Reif auf weißem Grund
+const snowgrass = lean => retint(tallGrass(lean), { l: 'f', g: 'l', G: 'T', F: 'm' });
+
+// Nachtwiese: dunkles Wiesengrün
+const nightgrass = retint(grass, { g: 'F', G: 'l', l: 'd' });
+
+// Felsblock bei Nacht (ohne Boden)
+const nightrock = retint(rock, { m: 's', f: 'm', s: 'd', d: 'n' });
+
+// Felskante der Sternenwiese: oben Nachtwiese, darunter dunkler Fels, ganz unten Nacht
+const nightcliff = retint(cliff(), { G: 'l', g: 'F', s: 'd', m: 's', n: 'n', d: 'n', A: 'n', L: 'd' });
+
+// Sternengras: Halme mit goldenen Spitzen
+const startall = lean => retint(tallGrass(lean), { l: 'F', g: 'l', G: 'H', F: 'n' });
+
 // Felder ohne eigenen Boden, unter die der Boden der Umgebung gezeichnet wird
-export const OVERLAY_TILES = new Set(['rock', 'fortree', 'mushroom', 'glowshroom', 'spire']);
+export const OVERLAY_TILES = new Set(['rock', 'fortree', 'mushroom', 'glowshroom', 'spire', 'snowpine', 'nightrock']);
 
 const fence = [
   'gggggggggggggggg',
@@ -381,6 +480,19 @@ export const TILES = {
   bridge: [bridge()],
   bridgev: [transpose(bridge())],
   spire: [spire],
+  cobble: [cobble()],
+  canal: [canal(0), canal(5)],
+  ruinwall: [ruinwall()],
+  ivy: [ivy(false), ivy(true)],
+  snow: [snow],
+  ice: [ice()],
+  icewater: [icewater(0), icewater(6)],
+  snowpine: [snowpine],
+  snowgrass: [snowgrass(false), snowgrass(true)],
+  nightgrass: [nightgrass],
+  nightrock: [nightrock],
+  nightcliff: [nightcliff],
+  startall: [startall(false), startall(true)],
 };
 
 // ---------- Gebäude ----------
@@ -517,12 +629,150 @@ function boat() {
   return toRows(g);
 }
 
+// Umriss: Jedes Pixel der Form, das an Leeres grenzt, wird dunkel.
+function outline(g, ch = 'k') {
+  const h = g.length, w = g[0].length;
+  const empty = (x, y) => x < 0 || y < 0 || x >= w || y >= h || g[y][x] === '.';
+  const edge = [];
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    if (g[y][x] !== '.' && (empty(x - 1, y) || empty(x + 1, y) || empty(x, y - 1) || empty(x, y + 1))) edge.push([x, y]);
+  }
+  for (const [x, y] of edge) g[y][x] = ch;
+  return g;
+}
+
+// Umriss außen herum: Leere Pixel neben der Form werden dunkel (für feine Formen wie Zahnräder).
+function outlineOutside(g, ch = 'k') {
+  const h = g.length, w = g[0].length;
+  const solid = (x, y) => x >= 0 && y >= 0 && x < w && y < h && g[y][x] !== '.' && g[y][x] !== '#';
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    if (g[y][x] === '.' && (solid(x - 1, y) || solid(x + 1, y) || solid(x, y - 1) || solid(x, y + 1))) g[y][x] = '#';
+  }
+  for (const row of g) row.forEach((c, x) => { if (c === '#') row[x] = ch; });
+  return g;
+}
+
+// Zahnrad der Uhrwerkruinen auf einem Pfosten (16 × 32): sechs Zähne, zwei Stellungen, um einen
+// halben Zahnabstand gedreht. Abwechselnd gezeigt, dreht es sich.
+function gear(frame) {
+  const g = grid(16, 32, '.');
+  const rot = (frame * Math.PI) / 6;
+  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) {
+    const dx = x - 7.5, dy = y - 7.5;
+    const r = Math.hypot(dx, dy), a = Math.atan2(dy, dx) - rot;
+    const tooth = r <= 7.2 && Math.cos(a * 6) > 0.35;
+    if (!(r <= 4.7 || tooth)) continue;
+    let ch = dx + dy > 2.5 ? 'r' : dx + dy < -5 ? 'H' : 'h';
+    if (r < 3.2 && r >= 1.5 && Math.cos(a * 4) < 0.5) ch = 'b'; // Löcher zwischen den Speichen
+    if (r < 1.5) ch = 'k'; // Achse
+    g[y][x] = ch;
+  }
+  outlineOutside(g);
+  // Pfosten aus dunklem Metall hinter dem Zahnrad, auf einem Steinsockel
+  for (let y = 12; y < 29; y++) for (let x = 6; x <= 9; x++) {
+    if (g[y][x] !== '.') continue;
+    g[y][x] = x === 6 || x === 9 ? 'k' : x === 7 ? 's' : 'd';
+  }
+  for (let y = 28; y < 32; y++) for (let x = 3; x <= 12; x++) g[y][x] = y === 28 || y === 31 || x === 3 || x === 12 ? 'k' : y === 29 ? 'm' : 's';
+  return toRows(g);
+}
+
+// Sternwarte (16 × 48): runder Turm mit Kupferkuppel und Spalt, aus dem ein Fernrohr schaut.
+function observatory() {
+  const g = grid(16, 48, '.');
+  for (let y = 4; y < 16; y++) for (let x = 0; x < 16; x++) {
+    const dx = (x - 7.5) / 7.5, dy = (y - 15.5) / 11.5;
+    if (dx * dx + dy * dy > 1) continue;
+    g[y][x] = x >= 7 && x <= 8 ? 'k' : x < 5 && y < 11 ? 'T' : 't';
+  }
+  outline(g);
+  // Fernrohr aus dem Spalt
+  for (const [x, y] of [[9, 4], [10, 3], [11, 2], [12, 1]]) g[y][x] = 'h';
+  for (const [x, y] of [[10, 4], [11, 3], [12, 2], [13, 1]]) g[y][x] = 'r';
+  for (let y = 16; y < 46; y++) for (let x = 2; x <= 13; x++) {
+    let ch = x <= 4 ? 'f' : x >= 11 ? 's' : 'm';
+    if ((y - 16) % 5 === 4) ch = 's';
+    if (x === 2 || x === 13) ch = 'k';
+    g[y][x] = ch;
+  }
+  for (const wy of [20, 31]) for (let y = wy; y < wy + 4; y++) for (let x = 7; x <= 8; x++) g[y][x] = y === wy ? 'k' : x === 7 && y === wy + 1 ? 'L' : 'D';
+  for (let y = 40; y < 46; y++) for (let x = 6; x <= 9; x++) g[y][x] = x === 6 || x === 9 || y === 40 ? 'k' : 'b';
+  for (let y = 46; y < 48; y++) for (let x = 1; x <= 14; x++) g[y][x] = y === 47 || x === 1 || x === 14 ? 'k' : 'd';
+  return toRows(g);
+}
+
+// Eingang der Eisgrotte (16 × 32): ein Hügel aus Eis mit dunkler Öffnung und Eiszapfen.
+function iceCave() {
+  const g = grid(16, 32, '.');
+  for (let y = 8; y < 32; y++) for (let x = 0; x < 16; x++) {
+    const dx = (x - 7.5) / 8, dy = (y - 31.5) / 23.5;
+    if (dx * dx + dy * dy > 1) continue;
+    const r = noise(x, y, 93);
+    g[y][x] = x < 6 && r < 0.6 ? 'w' : r < 0.12 ? 'L' : 'A';
+  }
+  outline(g, 'S');
+  for (let y = 18; y < 32; y++) for (let x = 4; x <= 11; x++) {
+    const dx = (x - 7.5) / 4, dy = (y - 31.5) / 13.5;
+    if (dx * dx + dy * dy <= 1) g[y][x] = dx * dx + dy * dy > 0.7 ? 'D' : 'n';
+  }
+  for (const [x, len] of [[5, 2], [7, 3], [9, 2], [10, 1]]) for (let i = 0; i < len; i++) g[19 + i][x] = 'w';
+  return toRows(g);
+}
+
+// Fischerzelt am See (16 × 32): rotes Zelt mit Eingang, oben ein kleiner Wimpel.
+function tent() {
+  const g = grid(16, 32, '.');
+  for (let y = 12; y < 32; y++) {
+    const half = Math.floor((y - 12) * 0.4) + 1;
+    for (let x = 8 - half; x < 8 + half; x++) g[y][x] = x === 8 - half || x === 7 + half || y === 31 ? 'k' : x < 8 ? 'C' : 'e';
+  }
+  for (let y = 22; y < 31; y++) {
+    const half = Math.floor((y - 22) * 0.4) + 1;
+    for (let x = 8 - half; x < 8 + half; x++) g[y][x] = 'b';
+  }
+  for (let y = 5; y < 12; y++) g[y][7] = 'o';
+  for (const [x, y] of [[8, 5], [9, 5], [10, 6], [8, 6], [9, 6], [8, 7]]) g[y][x] = 'h';
+  return toRows(g);
+}
+
+// Höhlentor am Berg (48 × 48): ein verschlossenes Steintor im Fels, darüber acht Fassungen in einem
+// Bogen. Hier leer gezeichnet; die Welt lässt die Fassungen der entzündeten Steine leuchten.
+export const CAVE_SOCKETS = Array.from({ length: 8 }, (_, i) => {
+  const a = Math.PI + (i * Math.PI) / 7;
+  return [Math.round(23.5 + 18 * Math.cos(a)), Math.round(28 + 18 * Math.sin(a))];
+});
+
+function caveGate() {
+  const W = 48, H = 48;
+  const g = grid(W, H, '.');
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const top = 2 + Math.round(((x - 23.5) / 23.5) ** 2 * 12);
+    if (y < top) continue;
+    const r = noise(x, y, 94);
+    g[y][x] = r < 0.12 ? 'm' : r > 0.85 ? 'd' : 's';
+  }
+  outline(g);
+  // Tor: Bogen aus hellem Stein, darin eine dunkle Tür aus Steinplatten
+  const inDoor = (x, y, grow) => (y >= 30 && x >= 16 - grow && x <= 31 + grow) || (x - 23.5) ** 2 + (y - 30) ** 2 <= (7.5 + grow) ** 2;
+  for (let y = 18; y < H; y++) for (let x = 12; x < 36; x++) {
+    if (inDoor(x, y, 0)) g[y][x] = (x - 16) % 4 === 3 || (y - 30) % 6 === 5 ? 'd' : 'n';
+    else if (inDoor(x, y, 2)) g[y][x] = y % 3 === 0 ? 'f' : 'm';
+  }
+  for (let x = 14; x <= 33; x++) g[H - 1][x] = 'k';
+  // Leere Fassungen: ein dunkler Ring um eine kleine Mulde
+  for (const [cx, cy] of CAVE_SOCKETS) {
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) g[cy + dy][cx + dx] = dx === 0 && dy === 0 ? 'd' : 'k';
+  }
+  return toRows(g);
+}
+
 export const BUILDINGS = {
   lighthouse: lighthouse(),
   house: house({ base: 'C', dark: 'e', light: 'p' }),
   houseTeal: house({ base: 't', dark: 'F', light: 'T' }),
   housePlum: house({ base: 'v', dark: 'P', light: 'V' }),
   boat: boat(),
+  cavegate: caveGate(),
 };
 
 // ---------- Gegenstände ----------
@@ -682,6 +932,11 @@ export const PROPS = {
   glasstower: glassTower(),
   windmill0: windmill(0),
   windmill1: windmill(1),
+  gear0: gear(0),
+  gear1: gear(1),
+  observatory: observatory(),
+  icecave: iceCave(),
+  tent: tent(),
   bush,
   bushEmpty: retint(bush, { e: 'l' }),
   noteStone: marked(rock, [[7, 6], [6, 7], [7, 7], [8, 7], [7, 8]], 'H'),

@@ -54,3 +54,12 @@ test('Ein Zierobjekt blockiert sein Feld', () => {
   assert.equal(m.canEnter(1, 1), false);
   assert.equal(m.objectAt(1, 1).prop, 'statue');
 });
+
+test('Begehbar, blockiert und hohes Gras der Kacheln 6 bis 8', () => {
+  for (const k of ['cobble', 'snow', 'ice', 'nightgrass']) assert.ok(WALKABLE.has(k), k);
+  for (const k of ['canal', 'ruinwall', 'icewater', 'snowpine', 'nightrock', 'nightcliff']) assert.ok(BLOCKED.has(k), k);
+  for (const k of ['ivy', 'snowgrass', 'startall']) {
+    assert.ok(TALL_GRASS.has(k), k);
+    assert.ok(WALKABLE.has(k), k);
+  }
+});
