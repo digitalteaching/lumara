@@ -30,5 +30,34 @@ test('Größe passt zur Stufe, Bild ist ausgefüllt und bunt genug', () => {
 });
 
 test('creatureRows fällt auf die höchste vorhandene Stufe zurück', () => {
-  assert.equal(creatureRows('funki', 3), CREATURE_ART.funki[1]);
+  assert.equal(creatureRows('gischtling', 3), CREATURE_ART.gischtling[1]);
+  assert.equal(creatureRows('haeuschel', 4), CREATURE_ART.haeuschel[2]);
+});
+
+const STAGES = [1, 2, 3];
+const mainColor = rows => {
+  const n = {};
+  for (const ch of rows.join('')) if (ch !== '.' && ch !== 'k') n[ch] = (n[ch] ?? 0) + 1;
+  return Object.entries(n).sort((a, b) => b[1] - a[1])[0][0];
+};
+
+test('Jedes Startwesen hat Bilder für seine Stufen in der richtigen Größe', () => {
+  for (const id of STARTERS) for (const s of STAGES) assert.equal(CREATURE_ART[id]?.[s]?.length, STAGE_SIZE[s], `${id}.${s}`);
+});
+
+test('Die Startwesen einer Stufe haben verschiedene Silhouetten', () => {
+  for (const s of STAGES.slice(1)) {
+    const shapes = STARTERS.map(id => CREATURE_ART[id][s].map(r => r.replace(/[^.]/g, '#')).join('/'));
+    assert.equal(new Set(shapes).size, STARTERS.length, `Stufe ${s}`);
+  }
+});
+
+test('Jede Stufe trägt die Hauptfarbe ihres Startwesens', () => {
+  for (const id of STARTERS) {
+    const main = mainColor(CREATURE_ART[id][1]);
+    for (const s of STAGES.slice(1)) {
+      const px = CREATURE_ART[id][s].join('').replace(/[.k]/g, '');
+      assert.ok([...px].filter(c => c === main).length / px.length >= 0.08, `${id}.${s} ohne ${main}`);
+    }
+  }
 });

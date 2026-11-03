@@ -112,10 +112,19 @@ async function devPack() {
 }
 
 // Die Abkürzungen speichern nie, damit der echte Spielstand auf dem Rechner bleibt.
+
+// &level=n: das Wesen gleich auf Level n (1 bis 100), mit voller Energie.
+function devLevel(state) {
+  const n = Number(params.get('level'));
+  if (!Number.isInteger(n) || n < 1) return;
+  state.creature.level = Math.min(n, CONFIG.creature.maxLevel);
+  state.creature.energy = maxEnergy(state.creature);
+}
 async function devStart() {
   setGamePack(game, await devPack());
   const species = STARTERS.includes(params.get('wesen')) ? params.get('wesen') : 'funki';
   game.state = newGameState({ name: 'Test', species, nickname: null });
+  devLevel(game.state);
   // ?dev&gebiet=wald (moor, …): gleich am Eingang des Gebiets, alle Steine davor leuchten
   const def = MAPS[params.get('gebiet')];
   if (def && def.area > 1) {
@@ -129,6 +138,7 @@ async function devDuel(kind) {
   setGamePack(game, await devPack());
   const species = STARTERS.includes(params.get('wesen')) ? params.get('wesen') : 'funki';
   game.state = newGameState({ name: 'Test', species, nickname: null });
+  devLevel(game.state);
   const again = () => {
     game.state.creature.energy = Math.max(game.state.creature.energy, 1);
     const setup = kind === 'trainer' ? makeTrainerSetup(game, 1) : makeWildSetup(game, 1);
