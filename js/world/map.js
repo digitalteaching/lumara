@@ -1,7 +1,9 @@
 // Karten: Kacheln, Objekte, Kollision, Trainerblick, Erreichbarkeit. DOM-frei.
 
-export const WALKABLE = new Set(['grass', 'tallgrass', 'path', 'sand', 'flowers', 'pier']);
-export const BLOCKED = new Set(['water', 'tree', 'rock', 'fence', 'fog', 'cliff']);
+export const WALKABLE = new Set(['grass', 'tallgrass', 'path', 'sand', 'flowers', 'pier', 'moss', 'fern']);
+export const BLOCKED = new Set(['water', 'tree', 'rock', 'fence', 'fog', 'cliff', 'fortree', 'mushroom']);
+// Hohes Gras, in dem wilde Wesen und Steine warten (Farn ist das hohe Gras des Waldes).
+export const TALL_GRASS = new Set(['tallgrass', 'fern']);
 
 const DELTA = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 
@@ -12,7 +14,8 @@ export function step({ x, y }, dir) {
   return { x: x + dx, y: y + dy };
 }
 
-export function createMap(def) {
+// openGates: IDs der Nebeltore (def.gates), deren Felder statt Nebel ihren Boden bekommen.
+export function createMap(def, { openGates = [] } = {}) {
   const height = def.rows.length;
   const width = height ? def.rows[0].length : 0;
   const tiles = [];
@@ -29,6 +32,11 @@ export function createMap(def) {
       tiles.push(kind);
     }
   });
+
+  for (const g of def.gates ?? []) {
+    if (!openGates.includes(g.id)) continue;
+    for (let y = g.y; y < g.y + g.h; y++) for (let x = g.x; x < g.x + g.w; x++) tiles[y * width + x] = g.ground;
+  }
 
   // Jede Zelle, die ein Objekt belegt (Gebäude belegen ihre ganze Fläche).
   const occupant = new Map();
@@ -49,7 +57,10 @@ export function createMap(def) {
     height,
     inBounds,
     tileAt,
-    isTallGrass: (x, y) => tileAt(x, y) === 'tallgrass',
+    setTile(x, y, kind) {
+      if (inBounds(x, y)) tiles[y * width + x] = kind;
+    },
+    isTallGrass: (x, y) => TALL_GRASS.has(tileAt(x, y)),
     objectAt: (x, y) => occupant.get(cellKey(x, y)) ?? null,
     doorAt(x, y) {
       const o = occupant.get(cellKey(x, y));

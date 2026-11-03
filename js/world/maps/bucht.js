@@ -99,6 +99,20 @@ export const BUCHT = {
       lines: ['Der Nebel ist hier zu dicht.', 'Vielleicht weicht er, wenn der Leuchtstein der Bucht wieder leuchtet.'],
     },
     { type: 'sign', x: 22, y: 13, lines: ['Leuchtturmbucht', 'Norden: Flüsterwald · Osten: Leuchtturm'] },
+
+    // Leuchtstein der Bucht, neben dem Nordweg und außerhalb des Blicks der Trainerin
+    { type: 'beacon', number: 1, x: 24, y: 4 },
+    { type: 'bush', id: 'strauch-dorf', x: 6, y: 13 },
+    { type: 'notestone', id: 'zettel-wiese', x: 4, y: 16 },
+    { type: 'notestone', id: 'zettel-ost', x: 31, y: 9 },
+    { type: 'notestone', id: 'zettel-strand', x: 12, y: 21 },
+  ],
+  // Nebeltor über dem Nordweg: weicht, wenn Stein 1 leuchtet und das Paket Thema 2 hat
+  gates: [{ id: 'nord', leadsTo: 2, x: 18, y: 0, w: 4, h: 3, ground: 'path' }],
+  exits: [{ x: 18, y: 0, w: 4, h: 1, to: 'wald', at: { x: 19, y: 28, dir: 'up' } }],
+  finds: [
+    { id: 'glitzer-west', x: 5, y: 7 },
+    { id: 'glitzer-ost', x: 32, y: 5 },
   ],
   spawn: { x: 19, y: 24, dir: 'up' },
   respawn: { x: 34, y: 16, dir: 'down' },

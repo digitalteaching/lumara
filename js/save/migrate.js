@@ -9,6 +9,7 @@ import { STARTERS } from '../data/species.js';
 import { xpToNext, maxEnergy } from '../duel/progress.js';
 import { createMap } from '../world/map.js';
 import { BUCHT } from '../world/maps/bucht.js';
+import { MAPS as WORLD_MAPS } from '../world/network.js';
 import { validateName, emptyPackProgress, emptyWorld } from '../state.js';
 import { emptyBag, BAG_ITEMS } from '../items/bag.js';
 
@@ -25,7 +26,7 @@ const MIGRATIONS = {
   },
 };
 
-const MAPS = { bucht: BUCHT };
+const MAPS = WORLD_MAPS;
 const DIRS = ['up', 'down', 'left', 'right'];
 const TEXT_SPEEDS = ['slow', 'normal', 'fast'];
 const SHORT_ID = /^[2-9A-HJKMNP-Z]{4}$/;
@@ -40,7 +41,8 @@ function canStand(mapId, x, y) {
   const def = MAPS[mapId];
   if (!def || !isInt(x) || !isInt(y)) return false;
   mapCache ??= new Map();
-  if (!mapCache.has(mapId)) mapCache.set(mapId, createMap(def));
+  // Alle Tore offen: Ob das Feld wirklich frei ist, entscheidet beim Start resolveStart mit dem Paket.
+  if (!mapCache.has(mapId)) mapCache.set(mapId, createMap(def, { openGates: (def.gates ?? []).map(g => g.id) }));
   return mapCache.get(mapId).canEnter(x, y);
 }
 

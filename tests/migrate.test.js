@@ -28,7 +28,7 @@ test('Spielstand der Fassung 1 bleibt für immer ladbar und wird zu Format 2', (
   assert.deepEqual(world, { bushes: {}, notes: {}, finds: {} });
 });
 
-test('Spielstand der Fassung 2 bleibt für immer ladbar', { todo: 'Fixture ab Task 2' }, () => {
+test('Spielstand der Fassung 2 bleibt für immer ladbar', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v2.txt', import.meta.url), 'utf8'));
   assert.deepEqual(migrateState(d.value), { ok: true, state: SPIELSTAND_V2 });
 });

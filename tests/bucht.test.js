@@ -31,6 +31,27 @@ test('Nebel schließt den Weg nach Norden, davor steht ein Schild', () => {
   assert.ok(BUCHT.objects.some(o => o.type === 'sign' && r.has(cellKey(o.x, o.y + 1)) && m.tileAt(o.x, o.y - 1) === 'fog'));
 });
 
+test('Bucht: Leuchtstein 1, Nebeltor nach Norden, Ausgang in den Wald, Strauch, Zettelsteine und Fundstellen', () => {
+  const m = createMap(BUCHT, { openGates: ['nord'] });
+  const r = reachable(m, BUCHT.spawn);
+  const nextTo = (x, y) => [[0, 1], [0, -1], [1, 0], [-1, 0]].some(([dx, dy]) => r.has(cellKey(x + dx, y + dy)));
+  assert.ok(BUCHT.objects.some(o => o.type === 'beacon' && o.number === 1));
+  assert.deepEqual(BUCHT.gates.map(g => [g.id, g.leadsTo]), [['nord', 2]]);
+  assert.ok(BUCHT.exits.some(e => e.to === 'wald' && r.has(cellKey(e.x, e.y))));
+  assert.ok(BUCHT.objects.some(o => o.type === 'bush'));
+  assert.ok(BUCHT.objects.filter(o => o.type === 'notestone').length >= 3);
+  assert.ok(BUCHT.finds.length >= 2);
+  for (const o of BUCHT.objects.filter(o => ['beacon', 'bush', 'notestone'].includes(o.type))) assert.ok(nextTo(o.x, o.y), `${o.type} ${o.id ?? o.number}`);
+  for (const f of BUCHT.finds) assert.ok(r.has(cellKey(f.x, f.y)) && m.isTallGrass(f.x, f.y), `Fundstelle ${f.id}`);
+  const t = BUCHT.objects.find(o => o.type === 'trainer');
+  const b = BUCHT.objects.find(o => o.type === 'beacon');
+  let p = { x: t.x, y: t.y };
+  for (let i = 0; i < t.sight; i++) {
+    p = step(p, t.dir);
+    assert.ok(!(p.x === b.x && p.y === b.y + 1), 'Leuchtstein im Blickfeld der Trainerin');
+  }
+});
+
 test('Trainerin 1 blickt über mindestens 2 begehbare Felder', () => {
   const m = createMap(BUCHT), t = BUCHT.objects.find(o => o.type === 'trainer');
   let p = { x: t.x, y: t.y }, n = 0;

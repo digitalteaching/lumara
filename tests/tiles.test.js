@@ -24,3 +24,13 @@ test('Gebäude und Gegenstände haben ihre Größe', () => {
   }
   assert.equal(parseSprite('sign', PROPS.sign).w, 16);
 });
+
+test('Gegenstände der Welt aus Plan 3a haben ihre Größe', () => {
+  const size = { bush: [16, 16], bushEmpty: [16, 16], noteStone: [16, 16], noteStoneDone: [16, 16], beaconDark: [16, 32], beaconLit: [16, 32], oldtree: [16, 32] };
+  for (const [id, [w, h]] of Object.entries(size)) {
+    const s = parseSprite(id, PROPS[id]);
+    assert.equal(s.w, w, id);
+    assert.equal(s.h, h, id);
+  }
+  assert.equal(TILES.fern.length, 2);
+});

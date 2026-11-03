@@ -93,6 +93,8 @@ const FILES = [
   "js/world/fogEdge.js",
   "js/world/map.js",
   "js/world/maps/bucht.js",
+  "js/world/maps/wald.js",
+  "js/world/network.js",
   "js/world/player.js"
 ];
 

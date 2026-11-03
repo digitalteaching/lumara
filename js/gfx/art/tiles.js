@@ -173,8 +173,39 @@ const rock = [
   '................',
 ];
 
+// ---------- Flüsterwald (Plan 3a) ----------
+
+const retint = (rows, map) => rows.map(r => [...r].map(c => map[c] ?? c).join(''));
+
+const moss = speckled('l', 31, [['F', 0.1], ['g', 0.06], ['b', 0.012]]);
+
+// Farn ist das hohe Gras des Waldes: dunkler Grund, hellere Wedel
+const fern = lean => retint(tallGrass(lean), { l: 'F', g: 'l' });
+
+// Waldbaum ohne eigenen Boden: Die Welt zeichnet den Waldboden darunter.
+const fortree = retint(tree, { g: '.' });
+
+const mushroom = [
+  '................',
+  '................',
+  '......kkkk......',
+  '....kkeeeekk....',
+  '...keewweeeek...',
+  '..keeeeeewweek..',
+  '..kewweeeeeeek..',
+  '..kkkkkkkkkkkk..',
+  '.....kccwck.....',
+  '.....kcccck.....',
+  '.....kcccck.....',
+  '....kkcccckk....',
+  '....kkkkkkkk....',
+  '................',
+  '................',
+  '................',
+];
+
 // Felder ohne eigenen Boden, unter die der Boden der Umgebung gezeichnet wird
-export const OVERLAY_TILES = new Set(['rock']);
+export const OVERLAY_TILES = new Set(['rock', 'fortree', 'mushroom']);
 
 const fence = [
   'gggggggggggggggg',
@@ -208,6 +239,10 @@ export const TILES = {
   fence: [fence],
   fog: [fog],
   cliff: [cliff()],
+  moss: [moss],
+  fern: [fern(false), fern(true)],
+  fortree: [fortree],
+  mushroom: [mushroom],
 };
 
 // ---------- Gebäude ----------
@@ -354,7 +389,70 @@ export const BUILDINGS = {
 
 // ---------- Gegenstände ----------
 
+const bush = [
+  '................',
+  '................',
+  '.....kkkkkk.....',
+  '...kkFllllFkk...',
+  '..kFllGlllllFk..',
+  '.kFlleelGllllFk.',
+  '.kllleellllellk.',
+  'kFlGllllleelllFk',
+  'kllllellleellllk',
+  'kFllleelllllGlFk',
+  '.kFllllllelllFk.',
+  '.kkFFllllllFFkk.',
+  '...kkFFFFFFkk...',
+  '.....kkkkkk.....',
+  '................',
+  '................',
+];
+
+// Zettelstein: ein Stein mit hellem Zeichen. Gelöst ist es ein gewöhnlicher Stein.
+function marked(rows, cells, ch) {
+  const g = rows.map(r => [...r]);
+  for (const [x, y] of cells) g[y][x] = ch;
+  return toRows(g);
+}
+
+// Leuchtstein: eine Säule auf einem Sockel mit einem Kristall, dunkel oder leuchtend (16 × 32).
+function beacon(lit) {
+  const g = grid(16, 32, '.');
+  for (let y = 25; y < 31; y++) for (let x = 2; x < 14; x++) g[y][x] = y === 25 || y === 30 || x === 2 || x === 13 ? 'k' : y < 27 ? 'm' : 's';
+  for (let y = 6; y < 25; y++) {
+    const half = y < 9 ? y - 5 : 3;
+    for (let x = 7 - half; x <= 8 + half; x++) g[y][x] = x === 7 - half || x === 8 + half ? 'k' : x < 8 ? 'd' : 's';
+  }
+  g[5][7] = 'k';
+  g[5][8] = 'k';
+  const glow = lit ? ['w', 'H', 'h'] : ['V', 'v', 'P'];
+  for (const [x, y, i] of [[7, 11, 0], [8, 11, 1], [7, 12, 1], [8, 12, 2], [6, 13, 1], [7, 13, 0], [8, 13, 1], [9, 13, 2], [7, 14, 1], [8, 14, 2], [7, 15, 2], [8, 15, 1]]) g[y][x] = glow[i];
+  return toRows(g);
+}
+
+// Altbaum im Flüsterwald mit freundlichem Rindengesicht (16 × 32, steht auf einem Feld).
+function oldTree() {
+  const g = grid(16, 32, '.');
+  for (let y = 0; y < 18; y++) for (let x = 0; x < 16; x++) {
+    const dx = (x - 7.5) / 8, dy = (y - 8.5) / 9;
+    const d = dx * dx + dy * dy;
+    if (d <= 1) g[y][x] = d > 0.8 ? 'k' : noise(x, y, 41) < 0.3 ? 'F' : noise(x, y, 42) < 0.25 ? 'g' : 'l';
+  }
+  for (let y = 15; y < 31; y++) for (let x = 4; x < 12; x++) g[y][x] = x === 4 || x === 11 ? 'k' : (x + y) % 5 === 0 ? 'b' : 'o';
+  for (const [x, y] of [[3, 29], [2, 30], [12, 29], [13, 30], [4, 31], [5, 31], [10, 31], [11, 31]]) g[y][x] = 'k';
+  for (const [x, y] of [[6, 20], [9, 20], [6, 21], [9, 21]]) g[y][x] = 'k';
+  for (const [x, y] of [[6, 24], [7, 25], [8, 25], [9, 24]]) g[y][x] = 'b';
+  return toRows(g);
+}
+
 export const PROPS = {
+  bush,
+  bushEmpty: retint(bush, { e: 'l' }),
+  noteStone: marked(rock, [[7, 6], [6, 7], [7, 7], [8, 7], [7, 8]], 'H'),
+  noteStoneDone: rock,
+  beaconDark: beacon(false),
+  beaconLit: beacon(true),
+  oldtree: oldTree(),
   sign: [
     '................',
     '................',
