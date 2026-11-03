@@ -14,6 +14,13 @@ export const CONVERTED = [
   'js/scenes/recover.js',
   'js/scenes/install.js',
   'js/scenes/start.js',
+  'js/scenes/duel.js',
+  'js/scenes/note.js',
+  'js/ui/duelPanel.js',
+  'js/duel/answers.js',
+  'js/items/stones.js',
+  'js/items/food.js',
+  'js/data/texts.js',
 ];
 
 const GERMAN = /[äöüÄÖÜß]|\b(der|die|das|und|nicht|du|dein|deine|ist|mit|noch|Zurück|Ja|Nein)\b/;

@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import { setLanguage, setPseudo, t, tl, language } from '../js/i18n/i18n.js';
 import { DE } from '../js/i18n/de.js';
 import { EN } from '../js/i18n/en.js';
+import { STONE_LINES } from '../js/items/stones.js';
+import { defaultLines } from '../js/data/texts.js';
 
 test.afterEach(() => {
   setLanguage('de');
@@ -45,4 +47,15 @@ test('Englische Texte sind nicht leer und je Zeile höchstens etwa 90 Zeichen la
       assert.ok(line.length <= 110, `${k}: ${line.length} Zeichen`);
     }
   }
+});
+
+test('Duell auf Englisch: Knöpfe und Rückmeldungen', () => {
+  setLanguage('en');
+  assert.equal(t('duel.check'), 'Check');
+  assert.equal(t('duel.flee'), 'Run');
+  assert.equal(t('feedback.almost'), 'Almost! Check your spelling.');
+  assert.equal(STONE_LINES.farsight(), 'You find a farsight stone!');
+  assert.equal(STONE_LINES.life('Nixi'), 'A life stone! Nixi now has 1 more energy for good.');
+  assert.equal(defaultLines('en').win, 'Well done! You won.');
+  assert.equal(defaultLines('de').loss, 'Diesmal nicht. Übe noch ein bisschen und komm wieder!');
 });

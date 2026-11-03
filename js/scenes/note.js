@@ -7,14 +7,15 @@ import { createDeck } from '../duel/questions.js';
 import { createDuelPanel, watchKeyboard } from '../ui/duelPanel.js';
 import { packProgress } from '../state.js';
 import { displayName } from '../data/species.js';
+import { t } from '../i18n/i18n.js';
 
 const FOUND = {
-  berry: 'eine Beere',
-  starfruit: 'eine Sternfrucht',
-  farsight: 'einen Weitblickstein',
-  shine: 'einen Glanzstein',
-  life: 'einen Lebensstein',
-  time: 'einen Zeitstein',
+  berry: 'item.aBerry',
+  starfruit: 'item.aStarfruit',
+  farsight: 'item.aFarsight',
+  shine: 'item.aShine',
+  life: 'item.aLife',
+  time: 'item.aTime',
 };
 
 // settle(answer) wird nach der Antwort genau einmal gerufen (answer = { key, correct, trainer })
@@ -45,15 +46,15 @@ export async function playNote(game, pool, settle) {
     const out = settle(duel.summary().answers[0]);
     if (r.correct) {
       const lines = [];
-      if (out.item) lines.push(`Du findest außerdem ${FOUND[out.item]}.`);
-      if (out.item === 'life') lines.push(`${displayName(c)} hat jetzt dauerhaft 1 Energie mehr.`);
-      if (out.lost) lines.push(`Du findest außerdem ${FOUND[out.lost]}. Dein Rucksack ist voll.`);
-      await panel.feedback({ ok: true, title: `Richtig! +${out.xp} XP`, lines, minMs: 600 });
+      if (out.item) lines.push(t('note.alsoFound', { item: t(FOUND[out.item]) }));
+      if (out.item === 'life') lines.push(t('note.lifeStone', { name: displayName(c) }));
+      if (out.lost) lines.push(t('note.alsoFoundFull', { item: t(FOUND[out.lost]) }));
+      await panel.feedback({ ok: true, title: t('note.right', { xp: out.xp }), lines, minMs: 600 });
     } else {
       await panel.feedback({
         ok: false,
-        title: r.almost ? 'Fast! Achte auf die Schreibweise.' : 'Leider falsch.',
-        lines: [`Richtig ist: ${r.correctText}`, 'Der Zettel bleibt hier liegen.'],
+        title: r.almost ? t('feedback.almost') : t('feedback.wrong'),
+        lines: [t('duel.correctIs', { answer: r.correctText }), t('note.stays')],
         minMs: CONFIG.duel.wrongMinMs,
       });
     }

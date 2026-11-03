@@ -41,6 +41,15 @@ export function t(key, params = {}) {
   return mark(fill(Array.isArray(v) ? v.join(' ') : v, params));
 }
 
+// Ein Text in einer bestimmten Sprache, unabhängig von der aktiven (etwa für Standardtexte eines
+// Pakets beim Einlesen). Nicht fertige Sprachen geben Deutsch, ohne Prüfmodus-Markierung.
+export function textIn(lang, key, params = {}) {
+  const table = READY.includes(lang) && TABLES[lang] ? TABLES[lang] : DE;
+  const v = table[key] ?? DE[key];
+  if (v === undefined) throw new Error(`Text fehlt: ${key}`);
+  return fill(Array.isArray(v) ? v.join(' ') : v, params);
+}
+
 // Zeilenlisten (etwa mehrere Sprechblasen nacheinander).
 export function tl(key, params = {}) {
   const v = lookup(key);

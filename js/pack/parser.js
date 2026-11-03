@@ -2,7 +2,7 @@
 // Fehler verhindern das Laden, Hinweise nicht. Jede Meldung nennt, wo möglich, die Zeile.
 
 import { CONFIG } from '../config.js';
-import { DEFAULT_LINES } from '../data/texts.js';
+import { defaultLines } from '../data/texts.js';
 import { packIdentity, shortId } from './packId.js';
 import { normalizeTyped } from '../duel/answers.js';
 import { packLanguage } from './language.js';
@@ -296,6 +296,7 @@ export function parsePack(input) {
   if (errors.length) return result();
 
   const identity = packIdentity(text, header.kennung);
+  const DEFAULT_LINES = defaultLines(language.language);
   pack = {
     title: header.title,
     subject: header.subject,

@@ -3,12 +3,13 @@
 
 import { CONFIG } from '../config.js';
 import { addItem, takeItem } from './bag.js';
+import { t } from '../i18n/i18n.js';
 
 export const STONE_LINES = {
-  farsight: () => 'Du findest einen Weitblickstein!',
-  shine: () => 'Du findest einen Glanzstein!',
-  time: () => 'Du findest einen Zeitstein!',
-  life: name => `Ein Lebensstein! ${name} hat jetzt dauerhaft 1 Energie mehr.`,
+  farsight: () => t('stone.farsight'),
+  shine: () => t('stone.shine'),
+  time: () => t('stone.time'),
+  life: name => t('stone.life', { name }),
 };
 
 // Zeitsteine nur dort, wo Trainer eine Uhr haben: ab Gebiet time.fromArea und nicht bei ZEITDRUCK: aus.

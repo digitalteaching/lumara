@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parsePack } from '../js/pack/parser.js';
-import { DEFAULT_LINES } from '../js/data/texts.js';
+import { defaultLines } from '../js/data/texts.js';
 import { makePackText, fillerQuestions } from './helpers/fixtures.js';
 
 const EXAMPLE = `# Kommentar
@@ -42,7 +42,7 @@ test('liest das Beispiel aus dem Design', () => {
   assert.equal(t.name, 'Captain Maren');
   assert.equal(t.topic, 'Simple present');
   assert.equal(t.hello.length, 2);
-  assert.equal(t.loss, DEFAULT_LINES.loss);
+  assert.equal(t.loss, defaultLines('en').loss); // FACH: Englisch, also englische Standardtexte
   assert.deepEqual(t.questions.slice(0, 4).map(q => q.forms), [['choice', 'typing'], ['typing'], ['tiles'], ['choice']]);
   assert.deepEqual(t.questions[0].wrong, ['play', 'playing', 'played']);
   assert.deepEqual(t.questions[2].extra, ['walk', 'always']);
@@ -150,4 +150,12 @@ test('jede Frage kennt ihren Trainer, Zettel haben keinen', () => {
   assert.equal(r.pack.trainers[0].questions[0].trainer, 1);
   assert.equal(r.pack.trainers[1].questions[0].trainer, 2);
   assert.equal(r.pack.notes[0].trainer, null);
+});
+
+test('Ohne eigene Zeilen sprechen die Trainer in der Sprache des Pakets', () => {
+  const de = parsePack(makePackText().replace('FACH: Englisch', 'FACH: Mathe')).pack.trainers[0];
+  assert.equal(de.win, 'Gut gemacht! Du hast gewonnen.');
+  const en = parsePack(makePackText()).pack.trainers[0];
+  assert.equal(en.win, 'Well done! You won.');
+  assert.equal(en.rematch, 'You are back? This time I am ready!');
 });
