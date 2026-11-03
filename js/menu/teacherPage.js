@@ -18,11 +18,13 @@ export function teacherStatsPage(game) {
     render(body) {
       const t = buildTeacherStats(game.state, game.pack.data);
       const row = (label, value) => [el('dt', {}, label), el('dd', {}, value)];
+      // Ohne Spitznamen heißt das Wesen wie seine Art, dann nicht doppelt nennen.
+      const wesen = t.creature.name === t.creature.species ? t.creature.name : `${t.creature.name} (${t.creature.species})`;
       body.append(
         el('div', { class: 'teacher' },
           el('dl', { class: 'teacher-values' },
             row('Name', t.name),
-            row('Wesen', `${t.creature.name} (${t.creature.species}) · Level ${t.creature.level} · Stufe ${t.creature.stage}`),
+            row('Wesen', `${wesen} · Level ${t.creature.level} · Stufe ${t.creature.stage}`),
             row('Lernpaket', `${t.pack.title} · Kennung ${t.pack.shortId}`),
             row('Gewonnene Duelle', String(t.wins)),
             row('Trefferquote', `${t.accuracy} %`),

@@ -19,7 +19,7 @@ export function creaturePage(game) {
       body.append(
         el('div', { class: 'creature-card' },
           el('p', { class: 'creature-name' }, displayName(c)),
-          el('p', { class: 'creature-species' }, speciesName(c.species, stage)),
+          displayName(c) === speciesName(c.species, stage) ? null : el('p', { class: 'creature-species' }, speciesName(c.species, stage)),
           el('p', {}, `Level ${c.level} · Stufe ${stage}`),
           atMax
             ? el('p', {}, 'Höchstes Level erreicht.')
