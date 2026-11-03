@@ -5,10 +5,10 @@ import { parsePack } from '../js/pack/parser.js';
 
 const read = f => readFileSync(new URL(`../pakete/${f}`, import.meta.url), 'utf8');
 
-test('Beispielpaket lädt ohne Fehler, nur mit dem Teilpaket-Hinweis', () => {
+test('Beispielpaket lädt ohne Fehler und ohne Hinweis', () => {
   const r = parsePack(read('englisch-6-beispiel.txt'));
   assert.deepEqual(r.errors, []);
-  assert.deepEqual(r.warnings.map(w => w.message), ['Das Paket enthält nur Trainer 1 bis 5. Die Wege ab Gebiet 6 bleiben im Nebel.']);
+  assert.deepEqual(r.warnings.map(w => w.message), []);
   assert.equal(r.pack.kennung, 'englisch6-beispiel');
 });
 
@@ -24,9 +24,10 @@ test('je Trainer mindestens 20 Fragen und jede Form mindestens 5-mal', () => {
   }
 });
 
-test('Beispielpaket: Trainer 1 bis 5 mit den Themen aus Design 10.5', () => {
+test('Beispielpaket: Trainer 1 bis 8 mit den Themen aus Design 10.5', () => {
   const p = parsePack(read('englisch-6-beispiel.txt')).pack;
-  assert.deepEqual(p.trainers.map(t => [t.number, t.name]), [[1, 'Maren'], [2, 'Rowan'], [3, 'Hazel'], [4, 'Karim'], [5, 'Skye']]);
+  assert.deepEqual(p.trainers.map(t => t.name), ['Maren', 'Rowan', 'Hazel', 'Karim', 'Skye', 'Otto', 'Freya', 'Luna']);
+  assert.ok(p.notes.length >= 24);
   for (const t of p.trainers.filter(t => t.number >= 3)) {
     assert.ok(t.questions.length >= 22, `${t.number}`);
     for (const f of ['choice', 'typing', 'tiles']) assert.ok(t.questions.filter(q => q.forms.includes(f)).length >= 6, `${t.number} ${f}`);

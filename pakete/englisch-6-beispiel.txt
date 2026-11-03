@@ -1,5 +1,5 @@
 # Lumara – Beispielpaket Englisch Jahrgang 6
-# Fassung mit fünf Themen. Die Trainer 6 bis 8 folgen in späteren Fassungen.
+# Fassung mit allen acht Themen.
 # Die KENNUNG bitte nie ändern, sonst gilt die Datei als neues Paket.
 
 PAKET: Englisch Jahrgang 6 – Beispielpaket
@@ -527,6 +527,321 @@ FRAGE: Bilde den Satz: „Wir warteten auf den Bus.“
 SATZ: We waited for the bus.
 EXTRA: wait | did
 
+=== TRAINER 6 ===
+# Uhrwerkruinen – Erfinder mit Lupenbrille und Werkzeuggürtel
+NAME: Otto
+THEMA: Simple past der unregelmäßigen Verben und Zeitangaben
+HALLO: Hello there! I'm Otto. I built all these clocks myself.
+HALLO: Last week a gear broke, and I found a new one in the ruins.
+HALLO: Now tell me what happened – in the simple past!
+SIEG: Brilliant! Your answers ran like clockwork.
+NIEDERLAGE: Tick, tock ... not quite yet. Come back when you're ready!
+REVANCHE: You came back! I fixed my clocks, and I'm ready, too.
+
+FRAGE: Yesterday I ___ (go) to the old tower.
+ANTWORT: went
+FALSCH: goed | gone | go
+
+FRAGE: Otto ___ (find) a golden gear last week.
+ANTWORT: found
+FALSCH: finded | finds | find
+
+FRAGE: We ___ (see) a cloud of steam two hours ago.
+ANTWORT: saw
+FALSCH: seed | seen | see
+
+FRAGE: She ___ (make) a clock for her grandpa last year.
+ANTWORT: made
+FALSCH: maked | makes | make
+
+FRAGE: The children ___ (eat) pancakes yesterday morning.
+ANTWORT: ate
+FALSCH: eated | eats | eat
+
+FRAGE: I ___ (write) a letter to Otto last Sunday.
+ANTWORT: wrote
+FALSCH: writed | writes | written
+
+FRAGE: My friends ___ (come) to the ruins three days ago.
+ANTWORT: came
+FALSCH: comed | come | comes
+
+FRAGE: He ___ (buy) new tools last month.
+ANTWORT: bought
+FALSCH: buyed | buys | brought
+
+FRAGE: We ___ (not / have) time for lunch yesterday.
+ANTWORT: didn't have
+AUCH RICHTIG: did not have
+FALSCH: didn't had | not had | don't have
+
+FRAGE: Which time expression goes with the simple past?
+ANTWORT: two days ago
+FALSCH: tomorrow | right now | every day
+FORM: auswahl
+
+FRAGE: Choose the right question.
+ANTWORT: Did you see the big clock?
+FALSCH: Did you saw the big clock? | Saw you the big clock? | Do you saw the big clock?
+FORM: auswahl
+
+FRAGE: What is the simple past of „think“?
+ANTWORT: thought
+FALSCH: thinked | taught | thank
+FORM: auswahl
+
+FRAGE: Wie heißt „vor zwei Tagen“ auf Englisch?
+ANTWORT: two days ago
+
+FRAGE: Wie heißt „gestern“ auf Englisch?
+ANTWORT: yesterday
+
+FRAGE: Last night I ___ (sleep) very well.
+ANTWORT: slept
+
+FRAGE: Yesterday Otto ___ (give) me a little key.
+ANTWORT: gave
+
+FRAGE: Bilde den Satz: „Ich ging gestern in die Ruinen.“
+SATZ: I went to the ruins yesterday.
+EXTRA: go | goed
+
+FRAGE: Bilde den Satz: „Otto fand vor einer Woche ein Zahnrad.“
+SATZ: Otto found a gear a week ago.
+EXTRA: finded | before
+
+FRAGE: Bilde die Frage: „Hast du die Dampfwolke gesehen?“
+SATZ: Did you see the steam cloud?
+EXTRA: saw | Do
+
+FRAGE: Bilde den Satz: „Wir aßen letzte Woche Kuchen.“
+SATZ: We ate cake last week.
+EXTRA: eated | did
+
+FRAGE: Bilde den Satz: „Sie kam gestern nicht.“
+SATZ: She didn't come yesterday.
+EXTRA: came | don't
+
+FRAGE: Bilde den Satz: „Die Uhr machte ein lautes Geräusch.“
+SATZ: The clock made a loud noise.
+EXTRA: maked | makes
+
+FRAGE: Bilde den Satz: „Er schrieb vor drei Tagen einen Brief.“
+SATZ: He wrote a letter three days ago.
+EXTRA: writed | before
+
+=== TRAINER 7 ===
+# Nordlichtsee – Eisfischerin im Pelzmantel
+NAME: Freya
+THEMA: Zukunft mit going to und will
+HALLO: Brr! Hello! I'm Freya. I fish on the frozen lake.
+HALLO: Tonight the northern lights will dance in the sky.
+HALLO: And you're going to answer my questions about the future!
+SIEG: Wonderful! Your answers shine like the northern lights.
+NIEDERLAGE: Too cold today? Warm up and try again!
+REVANCHE: Welcome back! I'm going to win this time – I think.
+
+FRAGE: Look at the dark clouds! It ___ (going to / snow).
+ANTWORT: is going to snow
+FALSCH: are going to snow | is going snow | is go to snow
+
+FRAGE: Freya ___ (going to / catch) a big fish today.
+ANTWORT: is going to catch
+FALSCH: are going to catch | is going catch | going to catches
+
+FRAGE: I'm cold. I think I ___ (will / make) some hot tea.
+ANTWORT: will make
+FALSCH: will to make | will makes | wills make
+
+FRAGE: Tomorrow we ___ (going to / visit) the ice cave.
+ANTWORT: are going to visit
+FALSCH: is going to visit | are going visit | are go to visit
+
+FRAGE: Maybe it ___ (will / be) sunny tomorrow.
+ANTWORT: will be
+FALSCH: will is | will being | wills be
+
+FRAGE: They ___ (not / going to / swim) in the icy lake.
+ANTWORT: aren't going to swim
+AUCH RICHTIG: are not going to swim
+FALSCH: don't going to swim | aren't going swim | isn't going to swim
+
+FRAGE: Don't worry, I ___ (will not / forget) you.
+ANTWORT: won't forget
+AUCH RICHTIG: will not forget
+FALSCH: won't forgets | willn't forget | don't will forget
+
+FRAGE: The ice is very thin. You ___ (going to / fall) in!
+ANTWORT: are going to fall
+FALSCH: is going to fall | are going fall | are going to falls
+
+FRAGE: I'm sure you ___ (will / like) the northern lights.
+ANTWORT: will like
+FALSCH: will likes | will to like | are will like
+
+FRAGE: Choose the right sentence.
+ANTWORT: She is going to fish tomorrow.
+FALSCH: She going to fish tomorrow. | She is going fish tomorrow. | She is go to fish tomorrow.
+FORM: auswahl
+
+FRAGE: Choose the right question.
+ANTWORT: Are you going to skate today?
+FALSCH: Do you going to skate today? | Are you go to skate today? | Is you going to skate today?
+FORM: auswahl
+
+FRAGE: Which word is the short form of „will not“?
+ANTWORT: won't
+FALSCH: willn't | wont't | wo'nt
+FORM: auswahl
+
+FRAGE: Wie heißt „morgen“ auf Englisch?
+ANTWORT: tomorrow
+
+FRAGE: Wie heißt „nächste Woche“ auf Englisch?
+ANTWORT: next week
+
+FRAGE: Wie heißt „vielleicht“ auf Englisch?
+ANTWORT: maybe
+AUCH RICHTIG: perhaps
+
+FRAGE: It's late. I ___ (will / go) home now.
+ANTWORT: will go
+
+FRAGE: Bilde den Satz: „Ich habe vor, morgen zu angeln.“
+SATZ: I am going to fish tomorrow.
+EXTRA: goes | is
+
+FRAGE: Bilde den Satz: „Ich bin sicher, dass es schneien wird.“
+SATZ: I'm sure it will snow.
+EXTRA: snows | wills
+
+FRAGE: Bilde den Satz: „Wir haben vor, nächste Woche Schlittschuh zu laufen.“
+SATZ: We are going to skate next week.
+EXTRA: goes | skates
+
+FRAGE: Bilde den Satz: „Freya wird uns helfen.“
+SATZ: Freya will help us.
+EXTRA: helps | wills
+
+FRAGE: Bilde die Frage: „Wirst du morgen kommen?“
+SATZ: Will you come tomorrow?
+EXTRA: comes | Do
+
+FRAGE: Bilde den Satz: „Ich werde den Fisch nicht essen.“
+SATZ: I won't eat the fish.
+EXTRA: eats | don't
+
+FRAGE: Bilde die Frage: „Hast du vor, heute Abend Schlittschuh zu laufen?“
+SATZ: Are you going to skate tonight?
+EXTRA: Do | skates
+
+=== TRAINER 8 ===
+# Sternenwiese – Sternendeuterin mit Fernrohr
+NAME: Luna
+THEMA: Modalverben (can, must, mustn't, needn't) und Fragewörter
+HALLO: Good evening! I'm Luna. I read the stars.
+HALLO: You can see every star from this meadow – but you mustn't make a noise.
+HALLO: Who are you, and what do you know? Let's find out!
+SIEG: The stars were right about you. Well done!
+NIEDERLAGE: The stars say: not today. But you can try again!
+REVANCHE: You're here again! What will the stars say this time?
+
+FRAGE: You ___ be quiet here. Everybody is sleeping. (müssen)
+ANTWORT: must
+AUCH RICHTIG: have to
+FALSCH: mustn't | needn't | can
+
+FRAGE: You ___ touch the telescope. It's very old. (nicht dürfen)
+ANTWORT: mustn't
+AUCH RICHTIG: must not | can't | cannot
+FALSCH: needn't | must | can
+
+FRAGE: You ___ bring a torch. The stars are bright tonight. (nicht müssen)
+ANTWORT: needn't
+AUCH RICHTIG: need not | don't have to | do not have to
+FALSCH: mustn't | must | can't
+
+FRAGE: Luna ___ see the moon with her telescope. (können)
+ANTWORT: can
+AUCH RICHTIG: is able to
+FALSCH: cans | can to | must
+
+FRAGE: ___ do you live? – I live near the lighthouse.
+ANTWORT: Where
+FALSCH: When | Who | Why
+
+FRAGE: ___ is your birthday? – In May.
+ANTWORT: When
+FALSCH: Where | Who | Which
+
+FRAGE: ___ is that girl? – That's my sister.
+ANTWORT: Who
+FALSCH: What | Where | How
+
+FRAGE: ___ are you sad? – Because I lost my kite.
+ANTWORT: Why
+FALSCH: Who | When | Where
+
+FRAGE: ___ old are you? – I'm twelve.
+ANTWORT: How
+FALSCH: What | Who | Which
+
+FRAGE: Choose the right sentence.
+ANTWORT: She can see three stars.
+FALSCH: She cans see three stars. | She can sees three stars. | She can to see three stars.
+FORM: auswahl
+
+FRAGE: Which question word asks for a time?
+ANTWORT: When
+FALSCH: Where | Who | Whose
+FORM: auswahl
+
+FRAGE: „Du musst das nicht tun.“ Which sentence is right?
+ANTWORT: You needn't do that.
+FALSCH: You mustn't do that. | You must do that. | You can't do that.
+FORM: auswahl
+
+FRAGE: Wie heißt „Fernrohr“ auf Englisch?
+ANTWORT: telescope
+
+FRAGE: Wie heißt „warum“ auf Englisch?
+ANTWORT: why
+
+FRAGE: Wie heißt „Sternschnuppe“ auf Englisch?
+ANTWORT: shooting star
+AUCH RICHTIG: falling star
+
+FRAGE: ___ much is the map? – It's two pounds.
+ANTWORT: How
+
+FRAGE: Bilde den Satz: „Ich kann die Sterne sehen.“
+SATZ: I can see the stars.
+EXTRA: cans | sees
+
+FRAGE: Bilde den Satz: „Du darfst hier keinen Lärm machen.“
+SATZ: You mustn't make a noise here.
+EXTRA: needn't | makes
+
+FRAGE: Bilde die Frage: „Wo ist das Fernrohr?“
+SATZ: Where is the telescope?
+EXTRA: Who | are
+
+FRAGE: Bilde die Frage: „Warum ist der Himmel dunkel?“
+SATZ: Why is the sky dark?
+EXTRA: When | are
+
+FRAGE: Bilde den Satz: „Wir müssen heute früh schlafen gehen.“
+SATZ: We must go to bed early today.
+EXTRA: musts | goes
+
+FRAGE: Bilde die Frage: „Kannst du mir helfen?“
+SATZ: Can you help me?
+EXTRA: Do | helps
+
+FRAGE: Bilde den Satz: „Du musst nicht warten.“
+SATZ: You needn't wait.
+EXTRA: mustn't | waits
+
 === ENDGEGNER ===
 HALLO: Who are you? Nobody comes down here any more.
 HALLO: I keep all the forgotten words. Do you still remember them?
@@ -614,3 +929,26 @@ EXTRA: longest | then
 FRAGE: Bilde den Satz: „Wir sammelten gestern Beeren.“
 SATZ: We collected berries yesterday.
 EXTRA: collect | did
+
+FRAGE: Wie heißt „Zahnrad“ auf Englisch?
+ANTWORT: gear
+AUCH RICHTIG: cog
+
+FRAGE: Yesterday Otto ___ (build) a new clock.
+ANTWORT: built
+FALSCH: builded | builds | build
+
+FRAGE: Which word means „Eis“ (gefrorenes Wasser)?
+ANTWORT: ice
+FALSCH: eye | rice | nice
+
+FRAGE: Look at the ice! It ___ (going to / break).
+ANTWORT: is going to break
+FALSCH: are going to break | is going break | is go to break
+
+FRAGE: Wie heißt „Stern“ auf Englisch?
+ANTWORT: star
+
+FRAGE: Bilde die Frage: „Wann können wir die Sterne sehen?“
+SATZ: When can we see the stars?
+EXTRA: Where | cans
