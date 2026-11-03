@@ -37,6 +37,13 @@ export function beaconFront(def, number) {
   return { x: b.x, y: b.y + 1, dir: 'up' };
 }
 
+// Jede Karte ist ein Gebiet mit genau einem Trainer und einem Leuchtstein.
+export function areaConfig(def) {
+  const trainer = def.objects.find(o => o.type === 'trainer');
+  const beacon = def.objects.find(o => o.type === 'beacon');
+  return { area: def.area, trainerNumber: trainer?.number ?? null, beacon: beacon?.number ?? null };
+}
+
 export function mapOfBeacon(number) {
   return Object.values(MAPS).find(d => beaconOf(d, number)) ?? null;
 }

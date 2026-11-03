@@ -1,5 +1,5 @@
-// Duelle in der Welt (Design 6.4, 7.1): wilde Wesen im hohen Gras, die Hüterin der Bucht,
-// Aufwachen am Leuchtturm nach einer Niederlage und das Licht des Leuchtturms.
+// Die Welt eines Gebiets (Design 5, 6.4, 7.1): wilde Wesen im hohen Gras, der Trainer des Gebiets,
+// Wege in andere Gebiete, Nebeltore, Aufwachen nach einer Niederlage und das Licht des Leuchtturms.
 
 import { CONFIG } from '../config.js';
 import { createWorldScene } from './world.js';
@@ -8,6 +8,8 @@ import { playTransition, reveal } from './transition.js';
 import { createEncounterCounter } from '../world/encounters.js';
 import { trainerSees } from '../world/map.js';
 import { fogEdgeLines } from '../world/fogEdge.js';
+import { MAPS, areaConfig, exitAt, openGatesFor, resolveStart } from '../world/network.js';
+import { BUCHT } from '../world/maps/bucht.js';
 import { packProgress } from '../state.js';
 import { displayName } from '../data/species.js';
 import { maxEnergy } from '../duel/progress.js';
@@ -18,18 +20,51 @@ import { openMenu } from '../menu/menu.js';
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 const DELTA = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 const AFTER_WIN = 'Der Leuchtstein der Bucht wartet darauf, wieder zu leuchten. Bald ist es so weit.';
+export const RELOCATED = 'Der Nebel ist zurückgekommen. Ich habe dich hierher gebracht.';
+
+// In ein anderes Gebiet (oder an einen anderen Ort) wechseln: überblenden, speichern, neue Welt.
+export async function travelTo(game, pos, style = 'fade') {
+  await playTransition(game, style, 300);
+  game.state.position = { map: pos.map, x: pos.x, y: pos.y, dir: pos.dir };
+  game.save();
+  const world = createGameWorld(game);
+  game.go(world);
+  await reveal(game);
+  return world;
+}
+
+const samePlace = (a, b) => a.map === b.map && a.x === b.x && a.y === b.y;
 
 export function createGameWorld(game) {
-  const world = createWorldScene(game);
+  const def = MAPS[game.state.position.map] ?? BUCHT;
+  const world = createWorldScene(game, def, { openGates: openGatesFor(def, game.state, game.pack.data) });
   const { map, player } = world;
-  const def = map.def;
+  const { trainerNumber } = areaConfig(def);
   const counter = createEncounterCounter(game.rng);
-  const trainer = def.objects.find(o => o.type === 'trainer' && o.number === 1);
+  const trainer = def.objects.find(o => o.type === 'trainer');
   let bubble = null;
 
   const shortId = () => game.pack.data.shortId;
-  const beaten = () => packProgress(game.state, shortId()).beaten.includes(1);
-  const packTrainer = () => game.pack.data.trainers.find(t => t.number === 1);
+  const beaten = () => packProgress(game.state, shortId()).beaten.includes(trainerNumber);
+  const packTrainer = () => game.pack.data.trainers.find(t => t.number === trainerNumber);
+
+  // Nebeltore, die jetzt offen sein müssen, sofort öffnen (nach einem Sieg oder Paketwechsel).
+  function openGatesNow() {
+    const open = openGatesFor(def, game.state, game.pack.data);
+    let changed = false;
+    for (const g of def.gates ?? []) {
+      if (!open.includes(g.id)) continue;
+      for (let y = g.y; y < g.y + g.h; y++) for (let x = g.x; x < g.x + g.w; x++) {
+        if (map.tileAt(x, y) === 'fog') {
+          map.setTile(x, y, g.ground);
+          changed = true;
+        }
+      }
+    }
+    if (changed) world.refreshFog();
+    return changed;
+  }
+  world.openGatesNow = openGatesNow;
 
   // ---------- Duell starten und zurückkehren ----------
 
@@ -110,9 +145,20 @@ export function createGameWorld(game) {
       world.turnToward(trainer, OPPOSITE[player.dir]);
     }
     await say(game, t.hello, { speaker: t.name });
-    const report = await runDuel(makeTrainerSetup(game, 1), 'trainer');
+    const report = await runDuel(makeTrainerSetup(game, trainerNumber), 'trainer');
     resetTrainer();
     await backToWorld(report);
+    if (report.outcome === 'won') await afterTrainerWin();
+  }
+
+  // Erster Sieg mit einem Stein, der noch nicht leuchtet: der Stein leuchtet (Szene folgt mit Task 5).
+  async function afterTrainerWin() {
+    if (game.state.stones.includes(trainerNumber)) return;
+    game.state.stones = [...game.state.stones, trainerNumber].sort((a, b) => a - b);
+    game.state.lastStone = trainerNumber;
+    openGatesNow();
+    game.save();
+    await say(game, ['Der Leuchtstein leuchtet wieder!']);
   }
 
   function trainerSpotsPlayer(pos = player) {
@@ -123,6 +169,9 @@ export function createGameWorld(game) {
   // ---------- Ereignisse ----------
 
   world.onStepped.push((x, y) => {
+    // Ausgang in ein anderes Gebiet zählt vor allem anderen.
+    const exit = exitAt(def, x, y);
+    if (exit) return () => travelTo(game, { map: exit.to, ...exit.at });
     if (trainerSpotsPlayer({ x, y })) return () => trainerDuel({ spotted: true });
     if (counter.onStep(map.isTallGrass(x, y))) return () => wildDuel();
     return null;
@@ -143,7 +192,7 @@ export function createGameWorld(game) {
 
   world.onInteract.push(async ev => {
     const o = ev.target;
-    if (o?.type === 'trainer' && o.number === 1) {
+    if (o?.type === 'trainer' && o.number === trainerNumber) {
       if (beaten()) {
         world.turnToward(o, OPPOSITE[player.dir]);
         await say(game, [AFTER_WIN], { speaker: packTrainer()?.name });
@@ -195,7 +244,20 @@ export function createGameWorld(game) {
   // Menüknopf oben rechts und Taste M (Design 13)
   function showMenu() {
     if (game.mode !== 'walk' || world.locked) return;
-    world.lock(() => openMenu(game));
+    world.lock(async () => {
+      const packBefore = game.pack.data.shortId;
+      await openMenu(game);
+      if (game.pack.data.shortId !== packBefore) await afterPackSwitch();
+    });
+  }
+
+  // Nach einem Paketwechsel (Design 10.4): Tore neu bestimmen; liegt dieser Ort jetzt im Nebel,
+  // bringt Ilvy das Kind zum offenen Leuchtstein oder Leuchtturm.
+  async function afterPackSwitch() {
+    const here = { map: def.id, x: player.x, y: player.y, dir: player.dir };
+    const target = resolveStart({ ...game.state, position: here }, game.pack.data);
+    const next = await travelTo(game, samePlace(here, target) ? here : target);
+    if (!samePlace(here, target)) await next.lock(() => say(game, [RELOCATED], { speaker: 'Ilvy' }));
   }
   const menuBtn = el('button', { class: 'menu-btn', type: 'button', 'aria-label': 'Menü', onclick: showMenu }, '☰');
   let offMenu = null;

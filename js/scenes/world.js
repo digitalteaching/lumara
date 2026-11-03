@@ -44,9 +44,10 @@ function getFogTexture() {
 
 // opts.hidePlayer, opts.hiddenIds und opts.passive braucht das Intro
 // (Boot legt an, noch keine Spielfigur, Tasten bewegen nichts).
+// opts.openGates: offene Nebeltore dieser Karte (Plan 3a).
 export function createWorldScene(game, def = BUCHT, opts = {}) {
   const hiddenIds = new Set(opts.hiddenIds ?? []);
-  const map = createMap(def);
+  const map = createMap(def, { openGates: opts.openGates ?? [] });
   const start = game.state?.position?.map === def.id ? game.state.position : def.spawn;
   const player = createPlayer(start);
   const onStepped = [];
@@ -58,8 +59,22 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
   let locked = 0;
   let time = 0;
 
-  const fogCells = [];
-  for (let y = 0; y < map.height; y++) for (let x = 0; x < map.width; x++) if (map.tileAt(x, y) === 'fog') fogCells.push([x, y]);
+  // Nebelfelder; neu berechnet, wenn sich ein Tor öffnet. fogAlpha: einzelne Felder, die gerade weichen.
+  let fogCells = [];
+  const fogAlpha = new Map();
+  function refreshFog() {
+    fogCells = [];
+    for (let y = 0; y < map.height; y++) for (let x = 0; x < map.width; x++) if (map.tileAt(x, y) === 'fog') fogCells.push([x, y]);
+  }
+  refreshFog();
+
+  // Welches Bild ein Objekt der Welt gerade zeigt. worldEvents ersetzt die Einträge (Sträucher, Zettel).
+  const propVariant = {
+    beacon: o => (game.state?.stones?.includes(o.number) ? 'beaconLit' : 'beaconDark'),
+    bush: () => 'bush',
+    notestone: () => 'noteStone',
+    whisper: () => 'oldtree',
+  };
 
   async function lock(fn) {
     locked++;
@@ -89,7 +104,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
   }
 
   // Boden unter Steinen: der häufigste flache Boden der Nachbarfelder.
-  const GROUNDS = new Set(['grass', 'sand', 'path', 'flowers']);
+  const GROUNDS = new Set(['grass', 'sand', 'path', 'flowers', 'moss']);
   function groundAt(x, y) {
     const counts = {};
     for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
@@ -113,7 +128,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
     if (!fogCells.length) return;
     ctx.save();
     ctx.beginPath();
-    for (const [x, y] of fogCells) ctx.rect(x * T - cam.x, y * T - cam.y, T, T + 6);
+    for (const [x, y] of fogCells) if (!fogAlpha.has(cellKey(x, y))) ctx.rect(x * T - cam.x, y * T - cam.y, T, T + 6);
     ctx.clip();
     const tex = getFogTexture();
     const still = game.reducedMotion;
@@ -144,6 +159,9 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
     afterRender,
     lock,
     camera,
+    refreshFog,
+    fogAlpha,
+    propVariant,
     get time() {
       return time;
     },
@@ -216,7 +234,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
         for (let x = x0; x <= x0 + 15 && x < map.width; x++) {
           const kind = map.tileAt(x, y);
           const sx = x * T - cam.x, sy = y * T - cam.y;
-          const frame = kind === 'water' ? waterFrame : kind === 'tallgrass' && rustle.has(cellKey(x, y)) ? 1 : 0;
+          const frame = kind === 'water' ? waterFrame : map.isTallGrass(x, y) && rustle.has(cellKey(x, y)) ? 1 : 0;
           if (OVERLAY_TILES.has(kind)) ctx.drawImage(tileCanvas(groundAt(x, y)), sx, sy);
           ctx.drawImage(tileCanvas(kind, frame), sx, sy);
           if (kind === 'water') drawShore(ctx, x, y, sx, sy);
@@ -231,6 +249,11 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
           const img = spriteFrom(`building:${o.sprite}`, BUILDINGS[o.sprite]);
           const bx = o.x * T - cam.x, by = (o.y + o.h) * T - img.height - cam.y;
           drawables.push({ z: o.y + o.h - 1, draw: () => ctx.drawImage(img, bx, by) });
+        } else if (propVariant[o.type]) {
+          // Leuchtsteine, Sträucher, Zettelsteine, Altbäume: unten auf ihrem Feld, hohe Bilder ragen nach oben
+          const img = spriteFrom(`prop:${propVariant[o.type](o)}`, PROPS[propVariant[o.type](o)]);
+          const px = o.x * T - cam.x, py = (o.y + 1) * T - img.height - cam.y;
+          drawables.push({ z: o.y, draw: () => ctx.drawImage(img, px, py) });
         } else if (o.type === 'sign') {
           drawables.push({ z: o.y, draw: () => ctx.drawImage(spriteFrom('prop:sign', PROPS.sign), o.x * T - cam.x, o.y * T - cam.y) });
         } else if (o.type === 'npc' || o.type === 'trainer') {
@@ -249,7 +272,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
           // Hohes Gras verdeckt die Füße
           const onGrass = map.isTallGrass(player.x, player.y) && (!player.moving || player.progress > 0.5);
           if (onGrass) {
-            const img = tileCanvas('tallgrass', rustle.has(cellKey(player.x, player.y)) ? 1 : 0);
+            const img = tileCanvas(map.tileAt(player.x, player.y), rustle.has(cellKey(player.x, player.y)) ? 1 : 0);
             ctx.drawImage(img, 0, 10, 16, 6, player.x * T - cam.x, player.y * T - cam.y + 10, 16, 6);
           }
         },

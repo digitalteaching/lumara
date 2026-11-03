@@ -16,6 +16,12 @@ function oval(ctx, cx, cy, rx, ry, fill, rim) {
   ctx.fill();
 }
 
+// Hintergrund passend zum Gebiet (Design 7.1). Gebiete ohne eigene Arena nehmen die Bucht.
+const ARENAS = {};
+export function drawArena(ctx, area, t = 0, reducedMotion = false) {
+  (ARENAS[area] ?? drawBayArena)(ctx, t, reducedMotion);
+}
+
 export function drawBayArena(ctx, t = 0) {
   const sky = ctx.createLinearGradient(0, 0, 0, 40);
   sky.addColorStop(0, '#4fa3c4');

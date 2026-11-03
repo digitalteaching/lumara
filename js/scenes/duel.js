@@ -7,7 +7,7 @@ import { stageForLevel, maxEnergy } from '../duel/progress.js';
 import { speciesName, displayName, AREA_WILD, TRAINER_CREATURES } from '../data/species.js';
 import { creatureRows } from '../gfx/art/creatures.js';
 import { spriteFrom } from '../gfx/canvasSprites.js';
-import { drawBayArena, ARENA } from '../gfx/arena.js';
+import { drawArena, ARENA } from '../gfx/arena.js';
 import { createDuelPanel } from '../ui/duelPanel.js';
 import { say, choose, closeDialogs } from '../ui/dialog.js';
 import { el, clear } from '../ui/dom.js';
@@ -301,7 +301,7 @@ export function createDuelScene(game, setup, onEnd) {
       t += dt;
     },
     render(ctx) {
-      drawBayArena(ctx, t);
+      drawArena(ctx, setup.area, t, game.reducedMotion);
       drawCreature(ctx, foeRows, `creature:${setup.foe.species}:${setup.foe.stage}`, ARENA.foe, true, 'foe');
       drawCreature(ctx, ownRows, `creature:${c.species}:${ownRows.length}`, ARENA.own, false, 'own');
       const sp = (t - anim.sparkle) / 1200;
