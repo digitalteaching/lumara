@@ -32,3 +32,10 @@ test('Gegenstand nehmen', () => {
   assert.equal(takeItem(s, 'berry'), false);
   assert.equal(s.bag.berry, 0);
 });
+
+test('Zeitsteine: unbegrenzt, kein Futter', () => {
+  const s = newGameState({ name: 'A', species: 'nixi', nickname: null });
+  assert.equal(addItem(s, 'time', 25), 25);
+  assert.equal(foodCount(s.bag), 0);
+  assert.equal(s.bag.time, 25);
+});

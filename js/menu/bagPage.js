@@ -1,5 +1,5 @@
 // Rucksack-Seite (Design 8, 13): Futter, Steine und die Lebenssteine im Wesen.
-// Weitblicksteine wirken im Duell, Glanzsteine werden hier eingesetzt.
+// Weitblick- und Zeitsteine wirken im Duell, Glanzsteine werden hier eingesetzt.
 
 import { el } from '../ui/dom.js';
 import { CONFIG } from '../config.js';
@@ -9,7 +9,7 @@ import { useShine } from '../items/stones.js';
 import { displayName } from '../data/species.js';
 import { maxEnergy } from '../duel/progress.js';
 
-const NAMES = { berry: 'Beeren', starfruit: 'Sternfrüchte', farsight: 'Weitblicksteine', shine: 'Glanzsteine' };
+const NAMES = { berry: 'Beeren', starfruit: 'Sternfrüchte', farsight: 'Weitblicksteine', shine: 'Glanzsteine', time: 'Zeitsteine' };
 const EATS = { berry: 'eine Beere', starfruit: 'eine Sternfrucht' };
 
 export function bagPage(game) {
@@ -57,6 +57,7 @@ export function bagPage(game) {
           row('starfruit', feedButton('starfruit')),
           row('farsight', null, 'Im Duell: zeigt einen Hinweis.'),
           row('shine', shineButton),
+          row('time', null, 'Im Duell mit Zeitdruck: hält die Zeit für eine Frage an.'),
         ),
         s.shineActive ? el('p', { class: 'bag-shine' }, 'Glanzstein leuchtet: doppelte XP beim nächsten Sieg.') : null,
         el('p', {}, `Lebenssteine im Wesen: ${c.lifeStones} von ${CONFIG.creature.maxLifeStones}`),

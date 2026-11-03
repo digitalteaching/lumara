@@ -65,6 +65,7 @@ test('Glanzstein einsetzen: nur einer zugleich, nur wenn einer im Rucksack ist',
 test('Meldungen zu den Funden', () => {
   assert.equal(STONE_LINES.farsight('Nixi'), 'Du findest einen Weitblickstein!');
   assert.equal(STONE_LINES.shine('Nixi'), 'Du findest einen Glanzstein!');
+  assert.equal(STONE_LINES.time('Nixi'), 'Du findest einen Zeitstein!');
   assert.equal(STONE_LINES.life('Nixi'), 'Ein Lebensstein! Nixi hat jetzt dauerhaft 1 Energie mehr.');
 });
 

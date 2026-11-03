@@ -7,6 +7,7 @@ import { addItem, takeItem } from './bag.js';
 export const STONE_LINES = {
   farsight: () => 'Du findest einen Weitblickstein!',
   shine: () => 'Du findest einen Glanzstein!',
+  time: () => 'Du findest einen Zeitstein!',
   life: name => `Ein Lebensstein! ${name} hat jetzt dauerhaft 1 Energie mehr.`,
 };
 

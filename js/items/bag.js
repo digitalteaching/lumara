@@ -4,12 +4,12 @@
 import { CONFIG } from '../config.js';
 
 export const FOOD = ['berry', 'starfruit'];
-export const BAG_ITEMS = ['berry', 'starfruit', 'farsight', 'shine'];
+export const BAG_ITEMS = ['berry', 'starfruit', 'farsight', 'shine', 'time'];
 
 export const foodCount = bag => FOOD.reduce((n, k) => n + (bag[k] ?? 0), 0);
 
 export function emptyBag() {
-  return { berry: 0, starfruit: 0, farsight: 0, shine: 0 };
+  return { berry: 0, starfruit: 0, farsight: 0, shine: 0, time: 0 };
 }
 
 // Gibt zurück, wie viele wirklich dazukamen.

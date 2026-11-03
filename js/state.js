@@ -18,7 +18,7 @@ export function newGameState({ name, species, nickname }) {
   const creature = { species, nickname: nickname || null, level: 1, xpInLevel: 0, energy: 0, lifeStones: 0 };
   creature.energy = maxEnergy(creature);
   return {
-    version: 2,
+    version: 3,
     savedAt: 0,
     name,
     creature,

@@ -13,7 +13,7 @@ import { MAPS as WORLD_MAPS } from '../world/network.js';
 import { validateName, emptyPackProgress, emptyWorld } from '../state.js';
 import { emptyBag, BAG_ITEMS } from '../items/bag.js';
 
-export const CURRENT_VERSION = 2;
+export const CURRENT_VERSION = 3;
 
 const MIGRATIONS = {
   // 1 → 2 (Plan 3a): Leuchtsteine, Rucksack, Geschichte, Uhren für das Nachwachsen, gesamte Spielzeit.
@@ -24,6 +24,8 @@ const MIGRATIONS = {
     const playMs = packs.reduce((sum, p) => sum + count(p?.stats?.playMs), 0);
     return { ...s, version: 2, playMs, stones: beaten, lastStone: null, bag: emptyBag(), shineActive: false, story: {}, world: emptyWorld() };
   },
+  // 2 → 3 (Plan 3b): Der Rucksack bekommt Zeitsteine.
+  2: s => ({ ...s, version: 3, bag: { ...s.bag, time: 0 } }),
 };
 
 const MAPS = WORLD_MAPS;
