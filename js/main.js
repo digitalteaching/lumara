@@ -25,6 +25,8 @@ import { createDuelScene, makeWildSetup, makeTrainerSetup, makeProbeSetup } from
 import { maxEnergy } from './duel/progress.js';
 import { MAPS } from './world/network.js';
 import { el } from './ui/dom.js';
+import { setGamePack } from './app/gamePack.js';
+import { setPseudo } from './i18n/i18n.js';
 
 const screen = createScreen(document.getElementById('screen'), document.getElementById('stage'));
 const input = createInput();
@@ -96,6 +98,8 @@ window.addEventListener('pointerdown', markActivity, { capture: true });
 // Entwickler-Abkürzungen nur auf dem eigenen Rechner.
 const params = new URLSearchParams(location.search);
 const isLocal = ['localhost', '127.0.0.1'].includes(location.hostname);
+// Prüfmodus der Spielsprache (Design 10.6): jeder übersetzte Text steht in ⟦ ⟧.
+if (isLocal && params.get('sprache') === 'xx') setPseudo(true);
 if (isLocal) window.lumara = game;
 
 // Paket aus dem Speicher, sonst das Beispielpaket (nur für Entwickler-Abkürzungen).
@@ -109,7 +113,7 @@ async function devPack() {
 
 // Die Abkürzungen speichern nie, damit der echte Spielstand auf dem Rechner bleibt.
 async function devStart() {
-  game.pack = await devPack();
+  setGamePack(game, await devPack());
   const species = STARTERS.includes(params.get('wesen')) ? params.get('wesen') : 'funki';
   game.state = newGameState({ name: 'Test', species, nickname: null });
   // ?dev&gebiet=wald (moor, …): gleich am Eingang des Gebiets, alle Steine davor leuchten
@@ -122,7 +126,7 @@ async function devStart() {
 }
 
 async function devDuel(kind) {
-  game.pack = await devPack();
+  setGamePack(game, await devPack());
   const species = STARTERS.includes(params.get('wesen')) ? params.get('wesen') : 'funki';
   game.state = newGameState({ name: 'Test', species, nickname: null });
   const again = () => {
@@ -154,7 +158,7 @@ async function probeStart() {
     game.panel.append(el('div', { class: 'box screen-card' }, el('p', {}, 'Dieses Lernpaket hat Fehler. Prüfe es zuerst auf der Seite.')));
     return;
   }
-  game.pack = { text, data: r.pack };
+  setGamePack(game, { text, data: r.pack });
   game.state = newGameState({ name: 'Probe', species: 'kiesel', nickname: null });
   const trainer = Number(msg.trainer) || 1;
   const again = () => {

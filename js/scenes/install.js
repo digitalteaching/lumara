@@ -5,6 +5,7 @@ import { el } from '../ui/dom.js';
 import { createFreshGuard, guardClicks } from '../ui/freshGuard.js';
 import { installSteps } from '../menu/homePage.js';
 import { drawTitleArt } from './title.js';
+import { t } from '../i18n/i18n.js';
 
 export function createInstallScene(game, next) {
   let card = null;
@@ -14,10 +15,10 @@ export function createInstallScene(game, next) {
       card = el(
         'div',
         { class: 'box screen-card install' },
-        el('p', { class: 'recover-title' }, 'Bevor es losgeht'),
-        el('p', {}, 'Leg Lumara auf deinen Home-Bildschirm. Dann bleibt dein Spielstand sicher gespeichert.'),
+        el('p', { class: 'recover-title' }, t('install.title')),
+        el('p', {}, t('install.text')),
         installSteps(),
-        el('button', { class: 'btn link', type: 'button', onclick: () => next() }, 'Trotzdem im Browser spielen'),
+        el('button', { class: 'btn link', type: 'button', onclick: () => next() }, t('install.browser')),
       );
       game.panel.append(card);
       guardClicks(card, createFreshGuard());

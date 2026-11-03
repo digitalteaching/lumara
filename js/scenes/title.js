@@ -3,6 +3,7 @@
 import { BUILDINGS } from '../gfx/art/tiles.js';
 import { spriteFrom } from '../gfx/canvasSprites.js';
 import { el } from '../ui/dom.js';
+import { t as tr } from '../i18n/i18n.js';
 
 const STARS = Array.from({ length: 46 }, (_, i) => {
   const h = Math.imul(i + 11, 2654435761) >>> 0;
@@ -122,7 +123,7 @@ export function drawTitleArt(ctx, t, reducedMotion) {
   }
 }
 
-export function createTitleScene(game, next, { hint = 'Tippe, um zu beginnen' } = {}) {
+export function createTitleScene(game, next, { hint = tr('title.tapStart') } = {}) {
   let root = null;
   let offA = null;
   let done = false;
@@ -145,7 +146,7 @@ export function createTitleScene(game, next, { hint = 'Tippe, um zu beginnen' } 
         'div',
         { class: 'title-screen passive' },
         el('h1', { class: 'title-logo' }, 'Lumara'),
-        el('p', { class: 'title-sub' }, 'Das Land unter dem Nebel'),
+        el('p', { class: 'title-sub' }, tr('title.sub')),
         el('p', { class: 'title-tap' }, hint),
       );
       game.ui.append(root);

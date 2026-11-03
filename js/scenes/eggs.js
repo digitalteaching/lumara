@@ -9,6 +9,7 @@ import { say, choose, closeDialogs } from '../ui/dialog.js';
 import { el, clear } from '../ui/dom.js';
 import { createFreshGuard, guardClicks } from '../ui/freshGuard.js';
 import { askName } from './name.js';
+import { t, tl } from '../i18n/i18n.js';
 
 const EGG_Y = 50;
 const eggX = i => 24 + i * 42;
@@ -49,13 +50,13 @@ export function createEggScene(game, playerName, next) {
     info.append(
       el('h3', { class: 'egg-name' }, sp.names[0]),
       el('p', {}, sp.description),
-      el('p', { class: 'egg-special' }, el('b', {}, `Besonderheit: ${sp.special.name}. `), sp.special.text),
+      el('p', { class: 'egg-special' }, el('b', {}, t('creature.specialLabel', { name: sp.special.name })), sp.special.text),
       el(
         'div',
         { class: 'row' },
-        el('button', { class: 'btn', type: 'button', 'aria-label': 'Voriges Ei', onclick: () => move(-1) }, '◀'),
-        el('button', { class: 'btn primary', type: 'button', onclick: confirm }, 'Dieses Ei wählen'),
-        el('button', { class: 'btn', type: 'button', 'aria-label': 'Nächstes Ei', onclick: () => move(1) }, '▶'),
+        el('button', { class: 'btn', type: 'button', 'aria-label': t('eggs.prev'), onclick: () => move(-1) }, '◀'),
+        el('button', { class: 'btn primary', type: 'button', onclick: confirm }, t('eggs.choose')),
+        el('button', { class: 'btn', type: 'button', 'aria-label': t('eggs.next'), onclick: () => move(1) }, '▶'),
       ),
     );
   }
@@ -76,7 +77,7 @@ export function createEggScene(game, playerName, next) {
     if (phase !== 'pick') return;
     phase = 'confirm';
     info.remove();
-    const yes = (await choose(game, 'Bist du sicher?', ['Ja', 'Nein'])) === 0;
+    const yes = (await choose(game, t('eggs.sure'), [t('common.yes'), t('common.no')])) === 0;
     if (!active) return;
     if (!yes) {
       phase = 'pick';
@@ -89,22 +90,18 @@ export function createEggScene(game, playerName, next) {
     if (!active) return;
     const species = STARTERS[selected];
     const name = SPECIES[species].names[0];
-    await say(game, [`${name} ist geschlüpft!`, `${name} schaut dich neugierig an.`]);
+    await say(game, tl('eggs.hatched', { name }));
     if (!active) return;
-    const wants = (await choose(game, `Möchtest du ${name} einen Spitznamen geben?`, ['Ja', 'Nein'])) === 0;
+    const wants = (await choose(game, t('eggs.askNickname', { name }), [t('common.yes'), t('common.no')])) === 0;
     let nickname = null;
-    if (wants && active) nickname = await askName(game, { prompt: 'Spitzname', allowEmpty: true, skipLabel: 'Ohne Spitznamen' });
+    if (wants && active) nickname = await askName(game, { prompt: t('eggs.nickname'), allowEmpty: true, skipLabel: t('eggs.noNickname') });
     if (!active) return;
     phase = 'done';
     next(species, nickname);
   }
 
   async function intro() {
-    await say(game, [
-      `Schön, dich kennenzulernen, ${playerName}!`,
-      'Heute Morgen hat das Meer fünf leuchtende Eier an den Strand gespült.',
-      'Eines davon gehört zu dir. Such dir eins aus!',
-    ], { speaker: 'Ilvy' });
+    await say(game, tl('eggs.welcome', { name: playerName }), { speaker: 'Ilvy' });
     if (!active) return;
     phase = 'pick';
     info = el('div', { class: 'box egg-info' });

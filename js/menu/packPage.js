@@ -4,6 +4,7 @@
 import { el, clear } from '../ui/dom.js';
 import { parsePack } from '../pack/parser.js';
 import { readPackFile } from '../pack/readFile.js';
+import { setGamePack } from '../app/gamePack.js';
 
 const EXAMPLE_URL = 'pakete/englisch-6-beispiel.txt';
 
@@ -16,7 +17,7 @@ export function packSwitchPage(game) {
 
       function done(text, data) {
         const same = data.shortId === game.pack?.data.shortId;
-        game.pack = { text, data };
+        setGamePack(game, { text, data });
         game.packStore.save(text);
         game.save();
         clear(msg);

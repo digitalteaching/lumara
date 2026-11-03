@@ -9,6 +9,7 @@ import { createFreshGuard, guardClicks } from '../ui/freshGuard.js';
 import { drawTitleArt } from './title.js';
 import { openSheet } from '../ui/sheet.js';
 import { loadBackupPage } from '../menu/backupPages.js';
+import { setGamePack } from '../app/gamePack.js';
 
 const EXAMPLE_URL = 'pakete/englisch-6-beispiel.txt';
 
@@ -46,7 +47,7 @@ export function createPackScene(game, next, { offerRestore = false } = {}) {
   function accept(text) {
     const r = parsePack(text);
     if (!r.ok) return showErrors(r.errors.map(e => e.message));
-    game.pack = { text, data: r.pack };
+    setGamePack(game, { text, data: r.pack });
     if (store.save(text)) return next();
     clear(message);
     message.append(
@@ -96,7 +97,7 @@ export function createPackScene(game, next, { offerRestore = false } = {}) {
           class: 'btn primary big',
           type: 'button',
           onclick: () => {
-            game.pack = { text: storedText, data: stored.pack };
+            setGamePack(game, { text: storedText, data: stored.pack });
             next();
           },
         }, 'Los geht’s'),

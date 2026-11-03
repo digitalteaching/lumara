@@ -3,6 +3,7 @@
 import { validateName } from '../state.js';
 import { el } from '../ui/dom.js';
 import { drawTitleArt } from './title.js';
+import { t } from '../i18n/i18n.js';
 
 // Fragt einen Namen ab. Mit allowEmpty darf das Feld leer bleiben (Ergebnis null).
 export function askName(game, { prompt, allowEmpty = false, skipLabel = null }) {
@@ -29,7 +30,7 @@ export function askName(game, { prompt, allowEmpty = false, skipLabel = null }) 
         'div',
         { class: 'row' },
         skipLabel ? el('button', { class: 'btn', type: 'button', onclick: () => done(null) }, skipLabel) : null,
-        el('button', { class: 'btn primary', type: 'submit' }, 'Weiter'),
+        el('button', { class: 'btn primary', type: 'submit' }, t('common.next')),
       ),
     );
     form.addEventListener('submit', e => {
@@ -63,7 +64,7 @@ export function createNameScene(game, next) {
   return {
     enter() {
       game.mode = 'screen';
-      askName(game, { prompt: 'Wie heißt du?' }).then(name => {
+      askName(game, { prompt: t('name.ask') }).then(name => {
         if (active) next(name);
       });
     },

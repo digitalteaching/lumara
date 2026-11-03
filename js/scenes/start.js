@@ -18,6 +18,8 @@ import { say } from '../ui/dialog.js';
 import { el } from '../ui/dom.js';
 import { openSheet } from '../ui/sheet.js';
 import { loadBackupPage } from '../menu/backupPages.js';
+import { setGamePack, applyLanguage } from '../app/gamePack.js';
+import { t } from '../i18n/i18n.js';
 
 function storedPack(game) {
   const text = game.packStore.load();
@@ -48,7 +50,7 @@ export function startFlow(game, loaded) {
     if (fromBackup) game.save();
     const pack = storedPack(game);
     if (pack) {
-      game.pack = pack;
+      setGamePack(game, pack);
       return enterWorldSafely();
     }
     game.go(createPackScene(game, enterWorldSafely));
@@ -85,13 +87,15 @@ export function startFlow(game, loaded) {
           newGame();
         },
         extraButtons: () => loaded.status === 'newer' ? [] : [
-          el('button', { class: 'btn', type: 'button', onclick: () => openSheet(game, loadBackupPage(game)) }, 'Spielstand-Datei laden'),
+          el('button', { class: 'btn', type: 'button', onclick: () => openSheet(game, loadBackupPage(game)) }, t('start.loadBackupFile')),
         ],
       }));
     }
     newGame();
   }
 
-  const hint = loaded.status === 'ok' ? 'Tippe, um weiterzuspielen' : 'Tippe, um zu beginnen';
+  // Liegt schon ein Paket auf dem Gerät, spricht der Titel seine Sprache (Design 10.6).
+  applyLanguage(storedPack(game)?.data.language ?? 'de');
+  const hint = loaded.status === 'ok' ? t('title.tapContinue') : t('title.tapStart');
   game.go(createTitleScene(game, afterTitle, { hint }));
 }

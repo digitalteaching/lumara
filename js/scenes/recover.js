@@ -6,11 +6,12 @@ import { choose } from '../ui/dialog.js';
 import { createFreshGuard, guardClicks } from '../ui/freshGuard.js';
 import { formatDateTime } from '../ui/format.js';
 import { drawTitleArt } from './title.js';
+import { t } from '../i18n/i18n.js';
 
 export async function confirmNewGame(game) {
-  const first = await choose(game, 'Neues Spiel beginnen? Dein bisheriges Spiel ist dann weg.', ['Nein', 'Ja'], { cancelIndex: 0 });
+  const first = await choose(game, t('recover.newGameAsk'), [t('common.no'), t('common.yes')], { cancelIndex: 0 });
   if (first !== 1) return false;
-  const second = await choose(game, 'Wirklich? Das lässt sich nicht rückgängig machen.', ['Nein', 'Ja, neu beginnen'], { cancelIndex: 0 });
+  const second = await choose(game, t('recover.newGameSure'), [t('common.no'), t('recover.yesNew')], { cancelIndex: 0 });
   return second === 1;
 }
 
@@ -36,25 +37,25 @@ export function createRecoverScene(game, { loaded, onUseBackup, onNewGame, extra
     const parts = [];
     if (loaded.status === 'newer') {
       parts.push(
-        el('p', { class: 'recover-title' }, 'Dieser Spielstand stammt aus einer neueren Fassung von Lumara.'),
-        el('p', {}, 'Lade die Seite neu, dann geht es weiter.'),
-        el('button', { class: 'btn primary big', type: 'button', onclick: () => location.reload() }, 'Neu laden'),
+        el('p', { class: 'recover-title' }, t('recover.newer')),
+        el('p', {}, t('recover.reloadHint')),
+        el('button', { class: 'btn primary big', type: 'button', onclick: () => location.reload() }, t('recover.reload')),
       );
     } else if (loaded.status === 'backup') {
       const s = loaded.state;
       parts.push(
-        el('p', { class: 'recover-title' }, 'Dein Spielstand ist beschädigt.'),
-        el('p', {}, `Auf diesem Gerät gibt es noch eine Sicherung: ${s.name}, Level ${s.creature.level}, gespeichert am ${formatDateTime(s.savedAt)}.`),
-        el('button', { class: 'btn primary big', type: 'button', onclick: () => onUseBackup(s) }, 'Sicherung laden'),
+        el('p', { class: 'recover-title' }, t('recover.damaged')),
+        el('p', {}, t('recover.backupInfo', { name: s.name, level: s.creature.level, date: formatDateTime(s.savedAt) })),
+        el('button', { class: 'btn primary big', type: 'button', onclick: () => onUseBackup(s) }, t('recover.useBackup')),
         ...extraButtons(),
-        el('button', { class: 'btn link', type: 'button', onclick: newGame }, 'Neues Spiel beginnen'),
+        el('button', { class: 'btn link', type: 'button', onclick: newGame }, t('recover.newGame')),
       );
     } else {
       parts.push(
-        el('p', { class: 'recover-title' }, 'Dein Spielstand ist beschädigt und lässt sich nicht laden.'),
-        el('p', {}, 'Wenn du eine Sicherungsdatei hast, kannst du sie laden.'),
+        el('p', { class: 'recover-title' }, t('recover.broken')),
+        el('p', {}, t('recover.fileHint')),
         ...extraButtons(),
-        el('button', { class: 'btn link', type: 'button', onclick: newGame }, 'Neues Spiel beginnen'),
+        el('button', { class: 'btn link', type: 'button', onclick: newGame }, t('recover.newGame')),
       );
     }
     card = el('div', { class: 'box screen-card recover', role: 'alert' }, parts);

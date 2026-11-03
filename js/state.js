@@ -9,6 +9,7 @@ import { recordAnswer } from './duel/questions.js';
 import { BUCHT } from './world/maps/bucht.js';
 import { emptyBag, addItem } from './items/bag.js';
 import { lootRolls } from './items/food.js';
+import { t } from './i18n/i18n.js';
 
 export function emptyWorld() {
   return { bushes: {}, notes: {}, finds: {} };
@@ -46,8 +47,8 @@ export function emptyPackProgress() {
 
 export function validateName(raw) {
   const value = raw.normalize('NFC').trim().replace(/\s+/g, ' ');
-  if (!value) return { ok: false, message: 'Bitte gib einen Namen ein.' };
-  if ([...value].length > CONFIG.names.maxLength) return { ok: false, message: `Höchstens ${CONFIG.names.maxLength} Zeichen.` };
+  if (!value) return { ok: false, message: t('name.empty') };
+  if ([...value].length > CONFIG.names.maxLength) return { ok: false, message: t('name.tooLong', { max: CONFIG.names.maxLength }) };
   return { ok: true, value };
 }
 
