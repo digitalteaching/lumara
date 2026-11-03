@@ -54,7 +54,7 @@ export function backupFileName(name, ms) {
     .replace(/[\\/:*?"<>|\u0000-\u001f\u007f]/g, '')
     .replace(/\s+/g, '-')
     .replace(/^-+|-+$/g, '');
-  return `Lumara-${safe || 'Spielstand'}-${isoDate(ms)}.txt`;
+  return `Lumara-${safe || 'Spielstand'}-${isoDate(ms)}.txt`; // i18n-ok: Dateiname nach Design 11
 }
 
 // Warnung vor einer älteren Sicherung (Design 11.4): beide Daten und Level nennen.

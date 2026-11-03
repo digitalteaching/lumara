@@ -144,7 +144,7 @@ export function createDuelScene(game, setup, onEnd) {
     const pips = el('span', { class: 'pips', 'aria-label': tr('duel.streakAria', { n: duel.streak }) });
     for (let i = 0; i < n; i++) pips.append(el('span', { class: `pip${i < filled ? ' on' : ''}` }));
     plates.own.extra.append(pips);
-    if (filled === n - 1) plates.own.extra.append(el('span', { class: 'ready' }, 'Volltreffer bereit!'));
+    if (filled === n - 1) plates.own.extra.append(el('span', { class: 'ready' }, tr('duel.critReady')));
   }
 
   let stopKeyboard = () => {};

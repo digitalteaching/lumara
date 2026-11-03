@@ -16,7 +16,8 @@ export const CONVERTED = [
   'js/save/backup.js',
 ].filter(f => !SKIP.has(f));
 
-const GERMAN = /[äöüÄÖÜß]|\b(der|die|das|und|nicht|du|dein|deine|ist|mit|noch|Zurück|Ja|Nein)\b/;
+// Deutsche Merkmale: Umlaute, häufige Wörter und typische Wörter der Oberfläche ohne Umlaut.
+const GERMAN = /[äöüÄÖÜß]|\b(der|die|das|und|nicht|du|dein|deine|ist|mit|noch|Zurück|Ja|Nein|Weiter|Volltreffer|bereit|Duell|Fliehen|Aufgeben|Laden|Einsetzen|Spielstand|Wesen|Rucksack|Karte|Tagebuch|Einstellungen|Leuchtstein|Zettel|Beere|Energie|Stufe|Frage|Antwort|Richtig|Falsch|Zeit|Sicherung|Lernpaket|Neues|Spiel)\b/;
 
 // Zeichenketten außerhalb von Kommentaren. Schlüssel von t()/tl() und import-Pfade zählen nicht.
 function literals(source) {
@@ -54,7 +55,12 @@ test('Kein eigener Name t verdeckt die Textfunktion t()', () => {
   for (const file of files) {
     const src = readFileSync(new URL(`../${file}`, import.meta.url), 'utf8');
     const spec = src.match(/import\s*\{([^}]*)\}\s*from\s*'[^']*i18n\/i18n\.js'/)?.[1] ?? '';
-    if (!spec.split(',').some(x => x.trim() === 't')) continue; // „t as tr“ verdeckt nichts
+    // Mit „t as tr“ gibt es t() dort nicht: Jeder Aufruf t(…) wäre ein Fehler zur Laufzeit.
+    if (spec.split(',').some(x => /^t\s+as\s+\w+$/.test(x.trim()))) {
+      const calls = src.split('\n').map((l, i) => [i + 1, l.trim()]).filter(([, l]) => !l.startsWith('//') && /(^|[^\w.])t\(/.test(l));
+      assert.deepEqual(calls, [], `${file}: t() aufgerufen, aber als tr importiert`);
+    }
+    if (!spec.split(',').some(x => x.trim() === 't')) continue;
     const bad = src.split('\n').map((l, i) => [i + 1, l.trim()]).filter(([, l]) => !l.startsWith('//') && shadow.test(l.replace(/\bt\(/g, 'T(')));
     assert.deepEqual(bad, [], file);
   }

@@ -2,6 +2,8 @@
 // (In Dateien sichern, AirDrop), am PC als Download. (Claude) Am Mac kann das Teilen-Menü keine
 // Datei ablegen, deshalb gibt es dort immer den Download.
 
+import { t } from '../i18n/i18n.js';
+
 export async function shareOrDownload(fileName, text) {
   const file = new File([text], fileName, { type: 'text/plain' });
   const coarse = matchMedia('(pointer: coarse)').matches;
@@ -13,7 +15,7 @@ export async function shareOrDownload(fileName, text) {
   }
   if (canShare) {
     try {
-      await navigator.share({ files: [file], title: 'Lumara-Spielstand' });
+      await navigator.share({ files: [file], title: t('backup.shareTitle') });
       return 'shared';
     } catch (e) {
       if (e?.name === 'AbortError') return 'cancelled';

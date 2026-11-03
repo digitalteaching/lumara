@@ -291,4 +291,11 @@ export const DE = {
   // Duell: Bildschirmleser
   'duel.streakAria': 'Serie {n}',
   'duel.sentenceAria': 'Dein Satz',
+
+  // Duell: Hinweise
+  'duel.critReady': 'Volltreffer bereit!',
+  'duel.more': 'Weiter ▼',
+
+  // Teilen
+  'backup.shareTitle': 'Lumara-Spielstand',
 };

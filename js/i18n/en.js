@@ -291,4 +291,11 @@ export const EN = {
   // Duell: Bildschirmleser
   'duel.streakAria': 'Streak {n}',
   'duel.sentenceAria': 'Your sentence',
+
+  // Duell: Hinweise
+  'duel.critReady': 'Power hit ready!',
+  'duel.more': 'Next ▼',
+
+  // Teilen
+  'backup.shareTitle': 'Lumara saved game',
 };

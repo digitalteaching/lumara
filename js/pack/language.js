@@ -34,11 +34,16 @@ const plain = s => String(s ?? '').normalize('NFD').replace(/\p{M}/gu, '').repla
 const words = s => plain(s).split(/[^a-z]+/).filter(Boolean);
 const codeOf = word => LANGUAGES.find(l => WORDS[l].includes(word)) ?? null;
 
+// Im Fach zählen ganze Sprachnamen. Ein Kürzel wie „de“ oder „en“ zählt nur, wenn es das ganze Fach
+// ist, sonst würde „Englisch Vokabeln DE-EN“ deutsch. Nur „Deutsch“ geht vor, damit „Deutsch als
+// Zweitsprache“ deutsch bleibt; sonst gilt die erste Sprache im Fach.
+const nameOf = w => (w.length > 2 ? codeOf(w) : null);
 function fromSubject(subject) {
   const list = words(subject);
-  if (list.some(w => WORDS.de.includes(w))) return { code: 'de', unsupported: null };
+  if (list.includes('deutsch')) return { code: 'de', unsupported: null };
+  if (list.length === 1 && codeOf(list[0])) return { code: codeOf(list[0]), unsupported: null };
   for (const w of list) {
-    const code = codeOf(w);
+    const code = nameOf(w);
     if (code) return { code, unsupported: null };
   }
   const other = list.find(w => UNSUPPORTED[w]);

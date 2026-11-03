@@ -321,7 +321,7 @@ export function createDuelPanel(game) {
         { class: `box duel-feedback ${ok ? 'ok' : 'bad'}`, role: 'status' },
         el('p', { class: 'feedback-title' }, el('span', { class: 'feedback-icon', 'aria-hidden': 'true' }, ok ? '✓' : '✗'), ` ${title}`),
         lines.map(l => el('p', { class: 'feedback-line' }, l)),
-        el('p', { class: 'feedback-more' }, 'Weiter ▼'),
+        el('p', { class: 'feedback-more' }, tr('duel.more')),
       );
       root.append(box);
       const start = performance.now();

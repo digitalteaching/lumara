@@ -26,3 +26,11 @@ test('Französisch und Spanisch werden erkannt, laufen aber noch auf Deutsch; La
   assert.deepEqual(lang('Italian').hints.map(h => h.message), ['Das Spiel gibt es noch nicht auf Italienisch. Es läuft auf Deutsch.']);
   assert.equal(lang(null).language, 'de');
 });
+
+test('Ein kurzes Kürzel oder ein englischer Sprachname im Fach überstimmt die Fachsprache nicht', () => {
+  for (const s of ['Englisch Vokabeln DE-EN', 'Englisch (DE → EN)', 'Englisch Unit 2 – German food', 'EN']) assert.equal(lang(s).language, 'en', s);
+  assert.equal(lang('Französisch: Cours de français').requested, 'fr');
+  assert.equal(lang('Les verbes en -er').language, 'de');
+  assert.equal(lang('Deutsch als Zweitsprache').language, 'de');
+  assert.equal(lang('German').language, 'de');
+});

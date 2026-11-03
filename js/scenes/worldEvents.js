@@ -74,7 +74,7 @@ export function createGameWorld(game) {
     game.save();
     await playTransition(game, 'fade', 300);
     const atBeacon = r && !samePlace(r, { map: 'bucht', ...BUCHT.respawn });
-    const line = t(atBeacon ? 'world.wokeAtBeacon' : 'world.wokeAtLighthouse', { name: displayName(game.state.creature) });
+    const line = tr(atBeacon ? 'world.wokeAtBeacon' : 'world.wokeAtLighthouse', { name: displayName(game.state.creature) });
     if (lost && r.map !== def.id) {
       const next = createGameWorld(game);
       game.go(next);
