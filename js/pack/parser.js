@@ -122,7 +122,7 @@ export function parsePack(input) {
     if (seenKeys.has(key)) warn(cq.line, `Diese Frage gibt es schon in Zeile ${seenKeys.get(key)}.`);
     else seenKeys.set(key, cq.line);
 
-    cq.target.push({ key, text: cq.text, line: cq.line, answer, sentence, alsoCorrect, wrong, extra, forms });
+    cq.target.push({ key, text: cq.text, line: cq.line, answer, sentence, alsoCorrect, wrong, extra, forms, trainer: cq.trainer });
   }
 
   function startSection(raw, n) {
@@ -222,7 +222,8 @@ export function parsePack(input) {
       }
       const target = section.kind === 'trainer' ? section.trainer.questions : notes;
       const keys = section.kind === 'trainer' ? section.trainer.keys : notesKeys;
-      current = { line: n, text: value, fields: {}, target, keys };
+      const trainer = section.kind === 'trainer' ? section.trainer.number : null;
+      current = { line: n, text: value, fields: {}, target, keys, trainer };
       return;
     }
 

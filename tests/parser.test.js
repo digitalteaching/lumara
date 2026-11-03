@@ -134,3 +134,10 @@ test('Endgegner und Zettel werden gelesen', () => {
   assert.deepEqual(r.pack.boss.hello, ['Wer bist du?']);
   assert.equal(r.pack.notes.length, 3);
 });
+
+test('jede Frage kennt ihren Trainer, Zettel haben keinen', () => {
+  const r = parsePack(makePackText({ trainers: 2 }) + '=== ZETTEL ===\n' + fillerQuestions(2, 'Z'));
+  assert.equal(r.pack.trainers[0].questions[0].trainer, 1);
+  assert.equal(r.pack.trainers[1].questions[0].trainer, 2);
+  assert.equal(r.pack.notes[0].trainer, null);
+});

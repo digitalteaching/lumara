@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { newGameState, validateName, packProgress, applyDuelResult } from '../js/state.js';
+import { newGameState, validateName, packProgress, applyDuelResult, emptyPackProgress } from '../js/state.js';
 import { BUCHT } from '../js/world/maps/bucht.js';
 
 test('neues Spiel: Level 1, volle Energie, Start am Steg', () => {
@@ -53,6 +53,56 @@ test('Flucht: keine XP, Energie wie im Duell', () => {
   applyDuelResult(s, 'ENQ9', { ...T1, kind: 'wild' }, { outcome: 'fled', playerEnergy: 1, flawless: true, answers: [] });
   assert.equal(s.creature.energy, 1);
   assert.equal(s.creature.level, 1);
+});
+
+const EMPTY = { beaten: [], boss: false, history: {}, stats: { wins: 0, right: 0, total: 0, playMs: 0, topics: {}, floor: 0 } };
+
+test('neuer Spielstand hat Version, Einstellungen und leeren Fortschritt', () => {
+  const s = newGameState({ name: 'Mia', species: 'nixi', nickname: null });
+  assert.equal(s.version, 1);
+  assert.equal(s.savedAt, 0);
+  assert.deepEqual(s.settings, { textSpeed: 'normal' });
+  assert.deepEqual(packProgress(s, 'ENQ9'), EMPTY);
+  assert.deepEqual(emptyPackProgress(), EMPTY);
+});
+
+test('Duell zählt Siege, Antworten und Trefferquote je Thema', () => {
+  const s = newGameState({ name: 'Mia', species: 'nixi', nickname: null });
+  const answers = [{ key: 'a', correct: true, trainer: 1 }, { key: 'b', correct: false, trainer: 2 }, { key: 'c', correct: true, trainer: 1 }];
+  applyDuelResult(s, 'ENQ9', { kind: 'wild', area: 1 }, { outcome: 'won', playerEnergy: 3, flawless: false, answers });
+  applyDuelResult(s, 'ENQ9', { kind: 'wild', area: 1 }, { outcome: 'lost', playerEnergy: 0, flawless: false, answers: [{ key: 'a', correct: false, trainer: 1 }] });
+  const st = packProgress(s, 'ENQ9').stats;
+  assert.equal(st.wins, 1);
+  assert.equal(st.right, 2);
+  assert.equal(st.total, 4);
+  assert.deepEqual(st.topics, { 1: { right: 2, total: 3 }, 2: { right: 0, total: 1 } });
+});
+
+test('Antworten ohne Thema (Zettel) zählen nur in der Summe', () => {
+  const s = newGameState({ name: 'Mia', species: 'nixi', nickname: null });
+  applyDuelResult(s, 'ENQ9', { kind: 'wild', area: 1 }, { outcome: 'fled', playerEnergy: 3, flawless: true, answers: [{ key: 'z', correct: true, trainer: null }] });
+  const st = packProgress(s, 'ENQ9').stats;
+  assert.equal(st.total, 1);
+  assert.deepEqual(st.topics, {});
+});
+
+test('Paket wechseln und zurück: Fortschritt hängt an der Kurzform, das Wesen bleibt', () => {
+  const s = newGameState({ name: 'Mia', species: 'nixi', nickname: null });
+  const w = { outcome: 'won', playerEnergy: 3, flawless: true, answers: [{ key: 'a', correct: true, trainer: 1 }] };
+  applyDuelResult(s, 'ENQ9', { kind: 'trainer', area: 1, trainer: { number: 1 } }, w);
+  const level = s.creature.level;
+  applyDuelResult(s, 'GNEP', { kind: 'wild', area: 1 }, w);
+  assert.deepEqual(packProgress(s, 'GNEP').beaten, []);
+  assert.equal(packProgress(s, 'GNEP').stats.wins, 1);
+  assert.deepEqual(packProgress(s, 'ENQ9').beaten, [1]);
+  assert.equal(packProgress(s, 'ENQ9').stats.wins, 1);
+  assert.ok(s.creature.level >= level);
+});
+
+test('packProgress ergänzt fehlende Teile eines alten Eintrags', () => {
+  const s = newGameState({ name: 'Mia', species: 'nixi', nickname: null });
+  s.packs.ENQ9 = { beaten: [1], history: {} };
+  assert.deepEqual(packProgress(s, 'ENQ9'), { ...EMPTY, beaten: [1] });
 });
 
 test('Fortschritt wird pro Paket angelegt und wiedergefunden', () => {

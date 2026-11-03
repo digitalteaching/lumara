@@ -1,5 +1,6 @@
-// Spielzustand im Speicher. Ab Plan 2 wird er gespeichert, deshalb schon jetzt mit Versionsnummer
-// und mit dem Fortschritt pro Lernpaket (Design 10.4, 11).
+// Spielzustand im Speicher, Format Version 1 (Design 10.4, 11). Was dem Kind gehört (Name, Wesen,
+// Position, Einstellungen), liegt oben; was zum Lernpaket gehört, liegt in packs[Kurzform].
+// Änderungen am Format brauchen eine Umwandlung in js/save/migrate.js.
 
 import { CONFIG } from './config.js';
 import { maxEnergy, addXp, xpForWin } from './duel/progress.js';
@@ -11,11 +12,17 @@ export function newGameState({ name, species, nickname }) {
   creature.energy = maxEnergy(creature);
   return {
     version: 1,
+    savedAt: 0,
     name,
     creature,
     position: { map: 'bucht', ...BUCHT.spawn },
+    settings: { textSpeed: 'normal' },
     packs: {},
   };
+}
+
+export function emptyPackProgress() {
+  return { beaten: [], boss: false, history: {}, stats: { wins: 0, right: 0, total: 0, playMs: 0, topics: {}, floor: 0 } };
 }
 
 export function validateName(raw) {
@@ -26,14 +33,34 @@ export function validateName(raw) {
 }
 
 export function packProgress(state, shortId) {
-  state.packs[shortId] ??= { beaten: [], history: {} };
-  return state.packs[shortId];
+  const empty = emptyPackProgress();
+  const p = (state.packs[shortId] ??= empty);
+  p.beaten ??= empty.beaten;
+  p.boss ??= empty.boss;
+  p.history ??= empty.history;
+  p.stats ??= empty.stats;
+  for (const [k, v] of Object.entries(empty.stats)) p.stats[k] ??= v;
+  return p;
+}
+
+// Statistik für die Lehrkraft (Design 12.1): jede Antwort zählt, je Thema nach Trainernummer.
+function countAnswers(stats, answers) {
+  for (const a of answers) {
+    stats.total++;
+    if (a.correct) stats.right++;
+    if (a.trainer == null) continue;
+    const t = (stats.topics[a.trainer] ??= { right: 0, total: 0 });
+    t.total++;
+    if (a.correct) t.right++;
+  }
 }
 
 // Ergebnis eines Duells in den Spielzustand übernehmen (Design 6.3, 7.1).
 export function applyDuelResult(state, shortId, setup, summary) {
   const progress = packProgress(state, shortId);
   for (const a of summary.answers) recordAnswer(progress.history, a.key, a.correct);
+  countAnswers(progress.stats, summary.answers);
+  if (summary.outcome === 'won') progress.stats.wins++;
 
   const c = state.creature;
   const report = {

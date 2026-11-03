@@ -42,6 +42,7 @@ export function q(overrides = {}) {
     wrong: ['play', 'playing', 'played'],
     extra: [],
     forms: ['choice', 'typing'],
+    trainer: 1,
     ...overrides,
     ...(overrides.text ? { key: text.trim().replace(/\s+/g, ' ').toLowerCase() } : {}),
   };

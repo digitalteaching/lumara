@@ -69,7 +69,7 @@ export function createDuel({ kind, player, foe, deck, rng }) {
     if (form === 'choice') correct = response.index === d.current.choices.correctIndex;
     else if (form === 'typing') ({ correct, almost } = checkTyped(response.text ?? '', acceptedAnswers(question), question.wrong));
     else correct = checkTiles(response.tokens ?? [], acceptedAnswers(question));
-    answers.push({ key: question.key, correct });
+    answers.push({ key: question.key, correct, trainer: question.trainer ?? null });
 
     const r = {
       correct,

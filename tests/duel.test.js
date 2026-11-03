@@ -139,6 +139,19 @@ test('Makellos nur ohne jede falsche Antwort, summary listet jeden Versuch', () 
     outcome: 'won',
     playerEnergy: 4,
     flawless: false,
-    answers: [{ key: 'a', correct: false }, { key: 'a', correct: true }],
+    answers: [{ key: 'a', correct: false, trainer: 1 }, { key: 'a', correct: true, trainer: 1 }],
   });
+});
+
+test('die Zusammenfassung nennt das Thema jeder Antwort', () => {
+  const d = createDuel({
+    kind: 'wild',
+    rng: createRng(1),
+    player: { species: 'kiesel', stage: 1, energy: 4, maxEnergy: 4 },
+    foe: { maxEnergy: 5 },
+    deck: deckOf([q({ text: 'Z', forms: ['typing'], trainer: 3 })]),
+  });
+  d.ask();
+  reply(d, true);
+  assert.equal(d.summary().answers[0].trainer, 3);
 });
