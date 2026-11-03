@@ -74,6 +74,12 @@ export const DUENEN = {
         'Ein Zeitstein hält die Uhr für eine Frage an. Manchmal glitzert einer im Gras.',
         'Den Glasturm im Nordwesten kenne ich nur von weitem. Er ist zu hoch zum Klettern.',
       ],
+      // Mit ZEITDRUCK: aus läuft bei Karim keine Uhr.
+      linesNoClock: [
+        'Ich zeichne Karten von den Dünen. Sie sehen jeden Tag ein bisschen anders aus.',
+        'Karim wartet im Osten. Er ist schnell und kennt viele Wörter!',
+        'Den Glasturm im Nordwesten kenne ich nur von weitem. Er ist zu hoch zum Klettern.',
+      ],
       linesLit: ['Du hast Karim besiegt! Das trage ich gleich in meine Karte ein.'],
       linesOpen: [
         'Du hast Karim besiegt! Das trage ich gleich in meine Karte ein.',

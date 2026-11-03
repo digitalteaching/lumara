@@ -119,3 +119,7 @@ test('Zettel ab Gebiet 4 können einen Zeitstein bringen', () => {
   assert.equal(s.bag.time, 1);
   assert.equal(solveNote(s0(), 'moor:1,1', 3, true, seq(0, 0.95)).item, 'life'); // in Gebiet 3 noch die alte Tabelle
 });
+
+test('Zettel mit ZEITDRUCK: aus bringen keinen Zeitstein', () => {
+  assert.equal(solveNote(s0(), 'duenen:1,1', 4, true, seq(0, 0.95), 'aus').item, 'life');
+});

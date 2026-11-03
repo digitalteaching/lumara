@@ -88,8 +88,9 @@ export function createDuel({ kind, player, foe, deck, rng, timeFor = () => null 
   };
 
   // Füttern statt antworten (Design 8): kostet den Zug, aber niemand verliert Energie.
-  // amount ist eine Zahl oder 'full'. Gibt zurück, wie viel Energie dazukam.
-  d.canFeed = () => d.state === 'question' && feeds < CONFIG.food.maxFeedPerDuel;
+  // amount ist eine Zahl oder 'full'. Gibt zurück, wie viel Energie dazukam. Wirkt schon ein
+  // Zeitstein, bleibt es bei der Antwort, sonst ginge der Stein verloren.
+  d.canFeed = () => d.state === 'question' && !d.frozen && feeds < CONFIG.food.maxFeedPerDuel;
   d.feed = amount => {
     if (!d.canFeed()) return 0;
     feeds++;

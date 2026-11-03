@@ -6,6 +6,7 @@ import { CONFIG } from '../config.js';
 import { addXp } from '../duel/progress.js';
 import { poolFor } from '../duel/questions.js';
 import { addItem } from '../items/bag.js';
+import { timedArea } from '../items/stones.js';
 import { STORY } from '../data/story.js';
 
 // Fragen aus dem Abschnitt ZETTEL; ohne ihn dieselben wie bei wilden Wesen.
@@ -15,8 +16,8 @@ export const noteKey = (mapId, o) => `${mapId}:${o.x},${o.y}`;
 
 export const noteReady = (state, key) => (state.world.notes[key] ?? 0) <= state.playMs;
 
-function pickReward(state, rng, area) {
-  const table = Object.entries(area >= CONFIG.time.fromArea ? CONFIG.notes.rewardsTimed : CONFIG.notes.rewards);
+function pickReward(state, rng, area, timePressure) {
+  const table = Object.entries(timedArea(area, timePressure) ? CONFIG.notes.rewardsTimed : CONFIG.notes.rewards);
   const total = table.reduce((n, [, w]) => n + w, 0);
   let r = rng.next() * total;
   let item = table.at(-1)[0];
@@ -36,7 +37,7 @@ const NOTHING = () => ({ xp: 0, item: null, lost: null, story: null, evolved: fa
 // Falsch: nichts, der Zettel bleibt. Richtig: XP, mit rewardChance ein Gegenstand (passt er nicht
 // mehr in den Rucksack, steht er in lost), das nächste Geschichtsstück und ein neuer Zettel erst
 // später. Liegt gerade kein Zettel unter dem Stein (etwa bei einem Doppeltipp), passiert nichts.
-export function solveNote(state, key, area, correct, rng) {
+export function solveNote(state, key, area, correct, rng, timePressure = 'normal') {
   if (!correct || !noteReady(state, key)) return NOTHING();
   const c = state.creature;
   const xp = CONFIG.notes.xp;
@@ -47,7 +48,7 @@ export function solveNote(state, key, area, correct, rng) {
   let item = null;
   let lost = null;
   if (rng.next() < CONFIG.notes.rewardChance) {
-    const reward = pickReward(state, rng, area);
+    const reward = pickReward(state, rng, area, timePressure);
     if (addItem(state, reward) > 0) item = reward;
     else lost = reward;
   }

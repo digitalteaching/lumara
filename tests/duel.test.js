@@ -324,3 +324,12 @@ test('Ohne Zeitdruck keine Uhr', () => {
   assert.equal(d.tick(1e9), null);
   assert.equal(d.canFreeze(), false);
 });
+
+test('Solange ein Zeitstein wirkt, wird nicht gefüttert', () => {
+  const d = timed();
+  d.ask();
+  d.freezeTime();
+  assert.equal(d.canFeed(), false);
+  assert.equal(d.feed(2), 0);
+  assert.equal(d.state, 'question');
+});

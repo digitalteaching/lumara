@@ -187,8 +187,9 @@ export function createDuelPanel(game) {
   // Zeigt die aktuelle Frage.
   // Ergebnis: { type: 'answer', response } | { type: 'feed' } | { type: 'flee' } | { type: 'surrender' }
   //   | { type: 'later' } (nur bei einem Zettel)
-  // feed: { show, enabled } – „Füttern“ steht das ganze Duell an seinem Platz, wenn zu Beginn
-  // Futter im Rucksack war, und ist gesperrt, wenn gerade nicht gefüttert werden kann.
+  // feed: { show, enabled() } – „Füttern“ steht das ganze Duell an seinem Platz, wenn zu Beginn
+  // Futter im Rucksack war, und ist gesperrt, wenn gerade nicht gefüttert werden kann (auch nach
+  // einem Zeitstein: Dann bleibt es bei der Antwort).
   // farsight: { label(), enabled(), use() → hint | null } – Weitblickstein, wirkt wie die Erleuchtung.
   // time: { label(), enabled(), use() → boolean } – Zeitstein, hält die Uhr für diese Frage an.
   //   Ein Zeitablauf beendet ask über interrupt({ type: 'timeout', result }).
@@ -274,6 +275,7 @@ export function createDuelPanel(game) {
             },
           }, '↻ Rückenwind'));
         }
+        let feedBtn = null;
         if (time && !note) {
           const timeBtn = el('button', {
             class: 'btn side',
@@ -283,13 +285,15 @@ export function createDuelPanel(game) {
               time.use();
               timeBtn.disabled = !time.enabled();
               timeBtn.textContent = time.label();
+              if (feedBtn) feedBtn.disabled = !feed.enabled();
               bar?.set(duel.timeLeft, duel.timeLimit, duel.frozen);
             },
           }, time.label());
           side.append(timeBtn);
         }
         if (feed?.show && !note) {
-          side.append(el('button', { class: 'btn side', type: 'button', disabled: !feed.enabled, onclick: () => finish({ type: 'feed' }) }, 'Füttern'));
+          feedBtn = el('button', { class: 'btn side', type: 'button', disabled: !feed.enabled(), onclick: () => finish({ type: 'feed' }) }, 'Füttern');
+          side.append(feedBtn);
         }
         const leaveLabel = { flee: 'Fliehen', surrender: 'Aufgeben', later: 'Später' }[leave];
         side.append(el('button', { class: 'btn side', type: 'button', onclick: () => finish({ type: leave }) }, leaveLabel));

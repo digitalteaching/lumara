@@ -112,3 +112,10 @@ test('Gebiet 5: Die Dünen führen nach Osten in die Klippen und zurück', () =>
 test('Auf den Klippen stehen und ein Paket mit 4 Trainern laden: Aufwachen am Stein in den Dünen', () => {
   assert.deepEqual(resolveStart(st([1, 2, 3, 4, 5], { map: 'klippen', x: 20, y: 18, dir: 'up' }), pack(4)), { map: 'duenen', ...beaconFront(MAPS.duenen, 4) });
 });
+
+test('Bewohner ohne Uhr: linesNoClock bei ZEITDRUCK: aus', () => {
+  const o = { lines: ['Uhr!'], linesNoClock: ['ohne Uhr'], linesLit: ['lit'] };
+  assert.deepEqual(npcLines(o, st([]), 4, { ...pack(5), timePressure: 'aus' }), ['ohne Uhr']);
+  assert.deepEqual(npcLines(o, st([]), 4, { ...pack(5), timePressure: 'normal' }), ['Uhr!']);
+  assert.deepEqual(npcLines(o, st([4]), 4, { ...pack(4), timePressure: 'aus' }), ['lit']);
+});

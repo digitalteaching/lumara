@@ -56,7 +56,9 @@ export function whisperLine(o, passCount) {
 // Gebiet wirklich offen ist, sonst sobald der Stein ihres Gebiets leuchtet.
 export function npcLines(o, state, area, pack) {
   if (o.linesOpen && pack && areaOpen(state, pack, area + 1)) return o.linesOpen;
-  return o.linesLit && state.stones.includes(area) ? o.linesLit : o.lines;
+  if (o.linesLit && state.stones.includes(area)) return o.linesLit;
+  // Bewohner, die von der Uhr erzählen, schweigen davon, wenn das Paket keine Uhr hat.
+  return o.linesNoClock && pack?.timePressure === 'aus' ? o.linesNoClock : o.lines;
 }
 
 export function mapOfBeacon(number) {

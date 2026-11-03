@@ -340,7 +340,17 @@ body[data-mode="duel"] #panel { background: var(--ink); border-radius: 8px 8px 0
 .btn.side { font-size: var(--text-small); padding: 6px 12px; white-space: nowrap; }
 .duel-notice { margin: 0; color: #ffb4a8; font-weight: 700; }
 /* Zeitbalken (Design 7.4): blinkt nie; knapp = Farbe und Streifen, angehalten = blau mit Text. */
-.timebar { position: relative; height: 18px; border-radius: 4px; background: rgba(243, 236, 210, 0.16); overflow: hidden; }
+/* sticky: Scrollt das Panel bei offener iPad-Tastatur, bleibt der Balken oben sichtbar. Der Grund ist
+   deckend (dieselbe Farbe wie vorher über --ink), damit nichts darunter durchscheint. */
+.timebar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 18px;
+  border-radius: 4px;
+  background: linear-gradient(rgba(243, 236, 210, 0.16), rgba(243, 236, 210, 0.16)), var(--ink);
+  overflow: hidden;
+}
 .timebar-fill { position: absolute; inset: 0 auto 0 0; background: #e0b34a; }
 .timebar.low .timebar-fill {
   background: repeating-linear-gradient(-45deg, #e2553f 0 6px, #b8321f 6px 12px);

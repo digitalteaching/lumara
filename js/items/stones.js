@@ -11,10 +11,12 @@ export const STONE_LINES = {
   life: name => `Ein Lebensstein! ${name} hat jetzt dauerhaft 1 Energie mehr.`,
 };
 
-// Aus der Fundtabelle des Gebiets (Zeitsteine erst dort, wo es Zeitdruck gibt). Wirken schon alle
-// Lebenssteine, wird aus „Leben“ ein Weitblickstein.
-export function rollStone(state, rng, area = 1) {
-  const table = Object.entries(area >= CONFIG.time.fromArea ? CONFIG.finds.tableTimed : CONFIG.finds.table);
+// Zeitsteine nur dort, wo Trainer eine Uhr haben: ab Gebiet time.fromArea und nicht bei ZEITDRUCK: aus.
+export const timedArea = (area, timePressure = 'normal') => area >= CONFIG.time.fromArea && timePressure !== 'aus';
+
+// Aus der Fundtabelle des Gebiets. Wirken schon alle Lebenssteine, wird aus „Leben“ ein Weitblickstein.
+export function rollStone(state, rng, area = 1, timePressure = 'normal') {
+  const table = Object.entries(timedArea(area, timePressure) ? CONFIG.finds.tableTimed : CONFIG.finds.table);
   const total = table.reduce((n, [, w]) => n + w, 0);
   let r = rng.next() * total;
   let item = table.at(-1)[0];
@@ -34,9 +36,9 @@ export const findKey = (mapId, f) => `${mapId}:${f.x},${f.y}`;
 export const findReady = (state, key) => (state.world.finds[key] ?? 0) <= state.playMs;
 
 // Glitzert die Fundstelle gerade nicht (etwa bei einem Doppeltipp), gibt es nichts.
-export function takeFind(state, key, rng, area = 1) {
+export function takeFind(state, key, rng, area = 1, timePressure = 'normal') {
   if (!findReady(state, key)) return { item: null, added: 0 };
-  const item = rollStone(state, rng, area);
+  const item = rollStone(state, rng, area, timePressure);
   const added = addItem(state, item);
   state.world.finds[key] = state.playMs + CONFIG.finds.respawnMs;
   return { item, added };
@@ -50,9 +52,9 @@ export function useShine(state) {
 }
 
 // Bei jedem Schritt im hohen Gras: selten ein Stein, gleich im Rucksack (oder im Wesen).
-export function stepFind(state, rng, area = 1) {
+export function stepFind(state, rng, area = 1, timePressure = 'normal') {
   if (!(rng.next() < CONFIG.finds.stepChance)) return null;
-  const item = rollStone(state, rng, area);
+  const item = rollStone(state, rng, area, timePressure);
   addItem(state, item);
   return item;
 }

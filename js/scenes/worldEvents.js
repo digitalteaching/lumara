@@ -50,6 +50,7 @@ export function createGameWorld(game) {
   let bubble = null;
 
   const shortId = () => game.pack.data.shortId;
+  const timePressure = () => game.pack.data.timePressure;
   const beaten = () => packProgress(game.state, shortId()).beaten.includes(trainerNumber);
   const packTrainer = () => game.pack.data.trainers.find(t => t.number === trainerNumber);
 
@@ -221,7 +222,7 @@ export function createGameWorld(game) {
     if (trainerSpotsPlayer({ x, y })) return () => trainerDuel({ spotted: true });
     // Ein Stein im Gras zählt vor der Begegnung: Dann gibt es in diesem Schritt kein Duell.
     if (map.isTallGrass(x, y)) {
-      const item = stepFind(game.state, game.rng, def.area);
+      const item = stepFind(game.state, game.rng, def.area, timePressure());
       if (item) return () => foundStone(item);
     }
     if (counter.onStep(map.isTallGrass(x, y))) return () => wildDuel();
@@ -231,6 +232,7 @@ export function createGameWorld(game) {
   // ---------- Seltene Steine (Design 8.2) ----------
 
   async function foundStone(item) {
+    if (item == null) return; // eine leere Fundstelle bringt nichts
     game.save();
     await say(game, [STONE_LINES[item](displayName(game.state.creature))]);
   }
@@ -269,7 +271,7 @@ export function createGameWorld(game) {
     if (ev.target) return false;
     const f = findAt(ev.x, ev.y);
     if (!f) return false;
-    const { item } = takeFind(game.state, findKey(def.id, f), game.rng, def.area);
+    const { item } = takeFind(game.state, findKey(def.id, f), game.rng, def.area, timePressure());
     await foundStone(item);
     return true;
   });
@@ -293,7 +295,7 @@ export function createGameWorld(game) {
     const beatenNow = packProgress(game.state, shortId()).beaten;
     const result = await playNote(game, notePool(game.pack.data, beatenNow), answer => {
       recordNoteAnswer(game.state, shortId(), answer);
-      const out = solveNote(game.state, key, def.area, answer.correct, game.rng);
+      const out = solveNote(game.state, key, def.area, answer.correct, game.rng, timePressure());
       game.save();
       return out;
     });

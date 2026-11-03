@@ -280,7 +280,7 @@ export function createDuelScene(game, setup, onEnd) {
       if (duel.state === 'ready') duel.ask();
       ctx.feed = {
         show: hadFood,
-        enabled: duel.canFeed() && foodCount(game.state.bag) > 0 && duel.playerEnergy < duel.playerMax,
+        enabled: () => duel.canFeed() && foodCount(game.state.bag) > 0 && duel.playerEnergy < duel.playerMax,
       };
       asking = true;
       const action = await panel.ask(duel, ctx);

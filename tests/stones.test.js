@@ -85,3 +85,10 @@ test('Zeitsteine gibt es erst ab Gebiet 4, wo Trainer Zeitdruck haben', () => {
   assert.equal(s.bag.time, 1);
   assert.equal(stepFind(s0(), seq(0, 0.95), 5), 'time');
 });
+
+test('Mit ZEITDRUCK: aus gibt es keine Zeitsteine, mit lang schon', () => {
+  assert.equal(rollStone(s0(), seq(0.95), 4, 'aus'), 'life');
+  assert.equal(rollStone(s0(), seq(0.95), 4, 'lang'), 'time');
+  assert.equal(stepFind(s0(), seq(0, 0.95), 5, 'aus'), 'life');
+  assert.deepEqual(takeFind(s0(), 'duenen:5,6', seq(0.95), 4, 'aus'), { item: 'life', added: 1 });
+});
