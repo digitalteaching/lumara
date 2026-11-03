@@ -184,6 +184,10 @@ export function createDuelScene(game, setup, onEnd) {
     panel = null;
     const s = duel.summary();
     const own = displayName(c);
+    // Sofort übernehmen und speichern, noch vor den Dialogen: Kinder schließen die App oft genau
+    // beim Sieg (Design 11). Sonst speichert das Schließen den Stand ohne Sieg und XP.
+    const report = applyDuelResult(game.state, game.pack.data.shortId, setup, s);
+    game.save?.();
     if (s.outcome === 'won') {
       anim.foe.faint = t;
       if (setup.trainer) await say(game, [setup.trainer.lines.win], { speaker: setup.trainer.name });
@@ -196,7 +200,6 @@ export function createDuelScene(game, setup, onEnd) {
       await say(game, ['Du bist sicher entkommen.']);
     }
     if (!alive) return;
-    const report = applyDuelResult(game.state, game.pack.data.shortId, setup, s);
     if (report.xp) {
       await say(game, [`${own} bekommt ${report.xp} XP.${report.flawless ? ' Makellos! +25 %' : ''}`]);
       for (let lvl = report.levelAfter - report.levelsGained + 1; lvl <= report.levelAfter; lvl++) {
