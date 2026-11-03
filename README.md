@@ -4,7 +4,7 @@
 
 Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, erkundet eine geheimnisvolle Insel unter einem Nebel des Vergessens und besteht Duelle mit Aufgaben aus dem Unterricht. Dafür bekommt es Punkte, und sein Wesen entwickelt sich weiter. Die Inhalte kommen aus einem Lernpaket, einer Textdatei, die die Lehrkraft selbst schreibt. Dadurch funktioniert das Spiel in jedem Fach. Das erste Beispielpaket ist für Jahrgang 6 Englisch.
 
-**Status:** Plan 1, Plan 2, Plan 3a, Plan 3b, Plan 3c und Plan 4a sind gebaut (Spielfassung 0.6.0).
+**Status:** Plan 1, Plan 2, Plan 3a, Plan 3b, Plan 3c, Plan 4a und Plan 4b sind gebaut (Spielfassung 0.7.0).
 
 - **Plan 1**, spielbarer Kern:
   - Leuchtturmbucht, Lernpaket, fünf Startwesen
@@ -44,6 +44,13 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
   - Ist das Lernpaket für Englisch, ist das ganze Spiel auf Englisch: Oberfläche, Duelle, Bewohner, Schilder, Geschichte und die Namen der Gebiete und Wesen. Jedes andere Paket läuft auf Deutsch.
   - Die Sprache kommt aus `SPIELSPRACHE:` oder, ohne diese Zeile, aus `FACH:`. Französisch und Spanisch erkennt das Spiel schon; sie kommen in einem späteren Plan und laufen bis dahin auf Deutsch.
   - Auf Deutsch bleibt alles für die Lehrkraft: `lehrkraft.html`, die Seite „Für die Lehrkraft“ im Spiel und die Fehlerliste beim Laden eines Pakets.
+- **Plan 4b**, Entwicklungen und Wesen-Buch:
+  - Die fünf Startwesen haben Bilder für alle vier Stufen (32, 40, 48 und 64 Pixel).
+  - Erreicht das Wesen Stufe 2, 3 oder 4, leuchtet es auf, wechselt die Gestalt und zeigt den neuen Namen und die neue Fähigkeit, im Duell und nach einem Zettel. Die neuen Energiefelder sind gleich gefüllt.
+  - Die Seite „Wesen“ zeigt das Bild und die Fähigkeiten mit dem Level, ab dem sie gelten.
+  - Das Wesen-Buch im Menü: 33 Einträge, gesehen mit Silhouette und Fundort, besiegt mit Bild und Beschreibung. Die Plätze 25 bis 33 füllen die geheimen Orte und das Finale.
+  - Glanzform: Ein wildes Wesen erscheint mit 1 zu 64 in einer seltenen Farbe und bekommt im Buch einen Stern.
+  - Spielstand-Format 4 (`book`); ältere Stände bekommen die Wesen ihrer besiegten Trainer ins Buch.
 
 Die Höhle im Berg, Aufträge und geheime Orte kommen mit späteren Plänen.
 
@@ -54,6 +61,7 @@ Die Höhle im Berg, Aufträge und geheime Orte kommen mit späteren Plänen.
 - Bauplan 3b: [docs/superpowers/plans/2026-11-03-lumara-plan-3b-gebiete-3-bis-5.md](docs/superpowers/plans/2026-11-03-lumara-plan-3b-gebiete-3-bis-5.md)
 - Bauplan 3c: [docs/superpowers/plans/2026-11-03-lumara-plan-3c-gebiete-6-bis-8.md](docs/superpowers/plans/2026-11-03-lumara-plan-3c-gebiete-6-bis-8.md)
 - Bauplan 4a: [docs/superpowers/plans/2026-11-03-lumara-plan-4a-spielsprache.md](docs/superpowers/plans/2026-11-03-lumara-plan-4a-spielsprache.md)
+- Bauplan 4b: [docs/superpowers/plans/2026-11-03-lumara-plan-4b-entwicklungen-wesen-buch.md](docs/superpowers/plans/2026-11-03-lumara-plan-4b-entwicklungen-wesen-buch.md)
 - Frühere Ideensammlung: [docs/2026-10-17-zwischenstand-ideensammlung.md](docs/2026-10-17-zwischenstand-ideensammlung.md)
 
 ## Für Lehrkräfte
@@ -87,7 +95,10 @@ Bleibt das Bild schwarz, einfach neu laden. Der einfache Python-Server bleibt be
 | `/?dev&gebiet=moor` | direkt am Eingang eines Gebiets (`wald`, `moor`, `duenen`, `klippen`, `ruinen`, `see`, `wiese`), alle Leuchtsteine davor leuchten |
 | `/?duell=wild` | direkt ein Duell gegen ein wildes Wesen, danach das nächste |
 | `/?duell=trainer` | direkt das Duell gegen die Hüterin der Bucht |
+| `/?duell=wild&glanz` | jedes wilde Wesen als Glanzform |
+| `&level=40` | zu `?dev` oder `?duell`: das Wesen gleich auf diesem Level (Stufen und Entwicklung testen) |
 | `/?galerie` | alle Wesen in Originalgröße, A blättert weiter |
+| `/?galerie&glanz` | alle Wesen als Glanzform |
 | `/?ipad` | so tun, als liefe das Spiel auf einem iPad in Safari (zeigt „Bevor es losgeht“, wenn es noch keinen Spielstand gibt) |
 | `/?sprache=xx` | Prüfmodus der Spielsprache: Jeder übersetzte Text steht in ⟦ ⟧, vergessene Texte fallen so sofort auf |
 | `/?sw` | Service Worker auch lokal einschalten (zum Testen von Offline und Updates) |
