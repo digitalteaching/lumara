@@ -102,9 +102,12 @@ export const DUENEN = {
       linesOpen: ['Osten: Windklippen', 'Der Nebel hat sich zurückgezogen. Der Weg ist frei.'],
     },
   ],
-  // Der Ausgang hinter dem Tor kommt mit den Windklippen (Plan 3b, Task 11).
   gates: [{ id: 'ost', leadsTo: 5, x: 38, y: 13, w: 2, h: 4, ground: 'glasssand' }],
-  exits: [{ x: 18, y: 29, w: 4, h: 1, to: 'moor', at: { x: 19, y: 1, dir: 'down' } }],
+  exits: [
+    { x: 18, y: 29, w: 4, h: 1, to: 'moor', at: { x: 19, y: 1, dir: 'down' } },
+    // Hinter dem Tor im Osten, nur begehbar, wenn es offen ist
+    { x: 39, y: 13, w: 1, h: 4, to: 'klippen', at: { x: 1, y: 14, dir: 'right' } },
+  ],
   finds: [
     { id: 'glitzer-suedwest', x: 8, y: 23 },
     { id: 'glitzer-nord', x: 30, y: 6 },

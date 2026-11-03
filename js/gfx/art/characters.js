@@ -129,7 +129,24 @@ const PIPE_SIDE = [[12, 9, 'r'], [12, 10, 'r'], [12, 11, 'A']];
 const SCROLL_DOWN = [[12, 11, 'c'], [13, 11, 'w'], [14, 11, 'k'], [12, 12, 'Y']];
 const SCROLL_SIDE = [[11, 11, 'c'], [12, 11, 'w'], [11, 12, 'Y']];
 
+// Schutzbrille auf der Stirn und flatternder Schal (Drachenfliegerin)
+const GOGGLES_DOWN = [[4, 3, 'k'], [5, 3, 'A'], [6, 3, 'k'], [9, 3, 'k'], [10, 3, 'A'], [11, 3, 'k'], [7, 3, 'k'], [8, 3, 'k']];
+const GOGGLES_SIDE = [[6, 3, 'k'], [7, 3, 'k'], [8, 3, 'A'], [9, 3, 'k']];
+const SCARF_DOWN = [[5, 8, 'e'], [6, 8, 'C'], [7, 8, 'e'], [8, 8, 'C'], [9, 8, 'e'], [10, 8, 'C'], [11, 9, 'e'], [12, 10, 'C']];
+const SCARF_SIDE = [[5, 8, 'e'], [6, 8, 'C'], [7, 8, 'e'], [3, 8, 'C'], [4, 9, 'e']];
+const SCARF_UP = [[5, 8, 'e'], [6, 8, 'C'], [7, 8, 'e'], [8, 8, 'C'], [9, 8, 'e'], [10, 8, 'C']];
+// Notizbuch (Ina), Drachenschnur (Tamo)
+const BOOK_DOWN = [[12, 11, 'c'], [13, 11, 'w'], [12, 12, 'k'], [13, 12, 'k']];
+const BOOK_SIDE = [[11, 11, 'c'], [12, 11, 'w'], [11, 12, 'k']];
+const KITE_DOWN = [[13, 10, 'w'], [14, 9, 'w'], [15, 8, 'e'], [15, 7, 'C']];
+const KITE_SIDE = [[12, 10, 'w'], [13, 9, 'w'], [14, 8, 'e'], [14, 7, 'C']];
+
 export const CHARACTERS = {
+  // Windklippen (Plan 3b): Drachenfliegerin mit Schutzbrille (Design 5.3) und die Bewohner
+  trainer5: character({ h: 'h', i: 'r', c: 'L', d: 'S', l: 'w', b: 'b' }, { down: [...GOGGLES_DOWN, ...SCARF_DOWN], up: SCARF_UP, side: [...GOGGLES_SIDE, ...SCARF_SIDE] }),
+  ole: character({ h: 'm', i: 's', c: 'o', d: 'b', l: 'c', b: 'k' }, { down: BEARD_DOWN.map(([x, y]) => [x, y, 'f']), side: BEARD_SIDE.map(([x, y]) => [x, y, 'f']) }),
+  ina: character({ h: 'n', i: 'k', c: 'w', d: 'f', l: 'A', b: 'D' }, { down: BOOK_DOWN, side: BOOK_SIDE }),
+  tamo: character({ h: 'o', i: 'b', c: 'G', d: 'g', l: 'Y', b: 'o' }, { down: KITE_DOWN, side: KITE_SIDE }),
   // Spiegeldünen (Plan 3b): Karawanenführer mit Turban und Spiegel (Design 5.3) und die Bewohner
   trainer4: character({ h: 'c', i: 'Y', c: 'S', d: 'D', l: 'h', b: 'b' }, { down: MIRROR_DOWN, side: MIRROR_SIDE }),
   samir: character({ h: 'b', i: 'k', c: 'A', d: 'L', l: 'w', b: 'b' }, { down: PIPE_DOWN, side: PIPE_SIDE }),

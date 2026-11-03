@@ -22,4 +22,9 @@ export const STORY = {
     'In den Glasstatuen spiegelte sich, was die Menschen wussten. Seit dem Nebel zeigen die Spiegel nur noch Wege, die es gar nicht gibt.',
     'Ein Händler wanderte einmal bis zur Höhle im Berg. Er hörte dort ein leises Summen, wie von jemandem, der ganz allein ein Lied übt.',
   ],
+  5: [
+    'Auf den Klippen drehen sich die Windräder schon seit hundert Jahren. Früher trug der Wind Nachrichten von einem Gebiet zum nächsten.',
+    'Mit dem Nebel wurde der Wind still. Niemand schickte mehr Grüße über die Insel, und viele vergaßen, wer auf der anderen Seite wohnt.',
+    'Weht der Wind vom Berg her, klingt er wie ein Seufzen. Die Drachenflieger sagen, im Berg wartet jemand darauf, dass man an ihn denkt.',
+  ],
 };

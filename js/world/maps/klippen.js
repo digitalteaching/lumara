@@ -1,0 +1,118 @@
+// Gebiet 5: die Windklippen (Design 5.3). 40 × 30 Felder.
+// Felsplattformen über einem Wolkenmeer, verbunden durch Hängebrücken. Westen: Eingang aus den
+// Spiegeldünen. Norden und Süden: Plattformen mit Windgras und Windrädern. Osten: der Gipfel mit
+// Leuchtstein und Drachenfliegerin, dahinter Nebel über dem Weg zu den Uhrwerkruinen (Plan 3c).
+
+export const KLIPPEN = {
+  id: 'klippen',
+  name: 'Windklippen',
+  genitive: 'der Windklippen',
+  area: 5,
+  ground: 'cliffrock',
+  rows: [
+    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCCcccccccccccCCCCSCCCCCCCCCCC',
+    'CCSCCCCCCCCCcccwwwwwwwcccCCCCCCCCCCCCCCC',
+    'CCCCCCCCCSCCcccwwwwwwwcccCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCcccwwwwwwwcccCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCcccwwwwwwwcccCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCcccwwwwwwwcccCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCccccccccccccc-----cccccccCCC',
+    'CCCCCCCCCCCCCCCCCC|CCCCCCCCCCCccccccccCC',
+    'cccccccCCCCCCCCCCC|CCCCCCCCCCCccccccccCC',
+    'ccccccccCCCCCCCCCC|CCCCCCCCCCCccccccccCC',
+    'ccccccccCCCCCCCCCC|CCCCCCCCCCCcccccccc%%',
+    'ccccccccCCCCCCCCCC|CCCCCCCCSCCccwwwwwc%%',
+    'ccccccccCCCCCCCCCC|CCCCCCCCCCCccwwwwwc%%',
+    'ccccccccCCCCcccccccccccccCCCCCccwwwwwc%%',
+    'cccccccc----cccccccccccccCCCCCccwwwwwcCC',
+    'cccccccCCCCCcccccccccccccCCCCCccccccccCC',
+    'CCCCCCCCCCCCccccccccccccc-----ccccccccCC',
+    'CCCCCCCCCCCCccccccwwwwwccCCCCCCccccccCCC',
+    'CCCCCCCCCCCCccccccwwwwwccCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCccccccwwwwwccCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCccccccwwwwwccCCCCCCCCCCCCCCC',
+    'CCCCCSCCCCCCcccccccccccccCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCCcccccccccccCCCCCCCCCSCCCCCC',
+    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC',
+  ],
+  legend: {
+    c: 'cliffrock',
+    w: 'windgrass',
+    C: 'clouds',
+    '-': 'bridge',
+    '|': 'bridgev',
+    S: 'spire',
+    '%': 'fog',
+  },
+  objects: [
+    { type: 'beacon', number: 5, x: 34, y: 11 },
+    {
+      type: 'trainer', number: 5, x: 31, y: 19, dir: 'left', sight: 4, sprite: 'trainer5',
+      afterWin: 'Dein Leuchtstein strahlt. Spürst du den Wind? Er trägt wieder Grüße.',
+    },
+
+    {
+      type: 'npc', id: 'ole', name: 'Ole', x: 5, y: 13, dir: 'down', sprite: 'ole',
+      lines: [
+        'Hallo! Ich bin Ole und passe auf die Windräder auf.',
+        'Lange war der Wind hier still. Meine Räder standen fast ein ganzes Jahr.',
+        'Jetzt dreht er sich wieder ein bisschen. Hörst du, wie es knarrt?',
+      ],
+      linesLit: ['Der Leuchtstein strahlt, und meine Windräder drehen sich wie nie zuvor!'],
+    },
+    {
+      type: 'npc', id: 'ina', name: 'Ina', x: 14, y: 20, dir: 'right', sprite: 'ina',
+      lines: [
+        'Ich erforsche die Wolken unter den Brücken. Jede sieht anders aus!',
+        'Auf den Hängebrücken gilt: geradeaus schauen, nicht nach unten.',
+        'Manchmal schwimmt ein Wolkenwal vorbei. Mit etwas Glück siehst du einen.',
+      ],
+      linesLit: ['Seit der Stein leuchtet, sind die Wolken weiß wie frische Wäsche.'],
+    },
+    {
+      type: 'npc', id: 'tamo', name: 'Tamo', x: 23, y: 6, dir: 'down', sprite: 'tamo',
+      lines: [
+        'Mein Drache fliegt fast so hoch wie der von Skye! Aber nur fast.',
+        'Skye wartet oben auf dem Gipfel im Osten. Bei ihr läuft die Uhr noch schneller.',
+        'Wenn du einen Zeitstein hast, nimm ihn mit. Er hält die Zeit kurz an!',
+      ],
+      linesLit: ['Du hast Skye besiegt? Wow! Dann bist du ja schneller als der Wind!'],
+    },
+
+    { type: 'deco', id: 'windrad-west', x: 2, y: 12, prop: 'windmill', anim: true },
+    { type: 'deco', id: 'windrad-nord', x: 13, y: 4, prop: 'windmill', anim: true },
+    { type: 'deco', id: 'windrad-gipfel', x: 36, y: 10, prop: 'windmill', anim: true },
+    { type: 'deco', id: 'windrad-sued', x: 23, y: 24, prop: 'windmill', anim: true },
+
+    { type: 'notestone', id: 'zettel-nord', x: 22, y: 8 },
+    { type: 'notestone', id: 'zettel-sued', x: 13, y: 23 },
+    { type: 'notestone', id: 'zettel-gipfel', x: 36, y: 19 },
+    { type: 'bush', id: 'strauch-west', x: 5, y: 17 },
+    { type: 'bush', id: 'strauch-sued', x: 24, y: 17 },
+
+    { type: 'sign', x: 4, y: 16, lines: ['Windklippen', 'Halt dich an den Seilen fest und schau beim Laufen nach vorn.'] },
+    {
+      // Nebelrand zu den Uhrwerkruinen (Design 10.4). Gebiet 6 ist in dieser Fassung noch nicht gebaut.
+      type: 'sign', role: 'fogEdge', x: 37, y: 12, gate: 5, leadsTo: 6, leadsToName: 'die Uhrwerkruinen', leadsToPlural: true,
+      lines: ['Der Nebel ist hier zu dicht.', 'Vielleicht weicht er, wenn der Leuchtstein der Klippen wieder leuchtet.'],
+      linesOpen: ['Osten: Uhrwerkruinen', 'Der Nebel hat sich zurückgezogen. Der Weg ist frei.'],
+    },
+  ],
+  // Hinter dem Tor liegt Gebiet 6; einen Ausgang dorthin gibt es erst, wenn es gebaut ist (Plan 3c).
+  gates: [{ id: 'ost', leadsTo: 6, x: 38, y: 13, w: 2, h: 4, ground: 'cliffrock' }],
+  exits: [{ x: 0, y: 13, w: 1, h: 4, to: 'duenen', at: { x: 38, y: 14, dir: 'left' } }],
+  finds: [
+    { id: 'glitzer-nord', x: 17, y: 6 },
+    { id: 'glitzer-sued', x: 20, y: 22 },
+    { id: 'glitzer-gipfel', x: 34, y: 15 },
+  ],
+  spawn: { x: 1, y: 14, dir: 'right' },
+  respawn: { x: 34, y: 12, dir: 'up' },
+  particles: ['windstreak', 'cloud'], // Windstreifen und kleine Wolken (Design 5.3)
+};

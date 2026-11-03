@@ -100,3 +100,15 @@ test('Gebiet 4: Das Moor führt nach Norden in die Dünen und zurück', () => {
 test('In den Dünen stehen und ein Paket mit 3 Trainern laden: Aufwachen am Stein im Moor', () => {
   assert.deepEqual(resolveStart(st([1, 2, 3, 4], { map: 'duenen', x: 19, y: 20, dir: 'up' }), pack(3)), { map: 'moor', ...beaconFront(MAPS.moor, 3) });
 });
+
+test('Gebiet 5: Die Dünen führen nach Osten in die Klippen und zurück', () => {
+  assert.equal(exitAt(MAPS.duenen, 39, 14)?.to, 'klippen');
+  assert.equal(exitAt(MAPS.klippen, 0, 14)?.to, 'duenen');
+  assert.equal(areaOpen(st([1, 2, 3, 4]), pack(5), 5), true);
+  assert.deepEqual(openGatesFor(MAPS.duenen, st([1, 2, 3, 4]), pack(5)), ['ost']);
+  assert.deepEqual(openGatesFor(MAPS.klippen, st([1, 2, 3, 4, 5]), pack(8)), []); // Gebiet 6 ist noch nicht gebaut
+});
+
+test('Auf den Klippen stehen und ein Paket mit 4 Trainern laden: Aufwachen am Stein in den Dünen', () => {
+  assert.deepEqual(resolveStart(st([1, 2, 3, 4, 5], { map: 'klippen', x: 20, y: 18, dir: 'up' }), pack(4)), { map: 'duenen', ...beaconFront(MAPS.duenen, 4) });
+});

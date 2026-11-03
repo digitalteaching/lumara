@@ -4,6 +4,7 @@ import { fogEdgeLines, fogSignLines } from '../js/world/fogEdge.js';
 import { BUCHT } from '../js/world/maps/bucht.js';
 import { WALD } from '../js/world/maps/wald.js';
 import { MOOR } from '../js/world/maps/moor.js';
+import { KLIPPEN } from '../js/world/maps/klippen.js';
 
 const sign = { role: 'fogEdge', gate: 1, leadsTo: 2, leadsToName: 'der Flüsterwald', lines: ['Der Nebel ist hier zu dicht.'] };
 
@@ -49,4 +50,12 @@ test('Mehrzahl am Nebelrand: „Hinter dem Nebel liegen die Spiegeldünen.“', 
   const s = MOOR.objects.find(o => o.role === 'fogEdge');
   assert.equal(fogEdgeLines(s, { gateBeaten: true, packHasNext: true, builtAreas: 3 })[0], 'Hinter dem Nebel liegen die Spiegeldünen.');
   assert.equal(fogEdgeLines(WALD.objects.find(o => o.role === 'fogEdge'), { gateBeaten: true, packHasNext: true, builtAreas: 2 })[0], 'Hinter dem Nebel liegt das Pilzmoor.');
+});
+
+test('Nebelrand hinter den Klippen: Uhrwerkruinen entstehen gerade', () => {
+  const s = KLIPPEN.objects.find(o => o.role === 'fogEdge');
+  assert.deepEqual(fogEdgeLines(s, { gateBeaten: true, packHasNext: true, builtAreas: 5 }), [
+    'Hinter dem Nebel liegen die Uhrwerkruinen.',
+    'Der Weg dorthin entsteht gerade. In einer der nächsten Spielfassungen kannst du hindurch.',
+  ]);
 });

@@ -290,9 +290,9 @@ const windgrass = lean => retint(tallGrass(lean), { l: 'g', g: 'G', G: 'T', F: '
 // Wolken tief unter einem: Himmelblau mit weichen weißen Bäuschen
 function clouds(shift) {
   const g = grid(16, 16, 'L');
-  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) if (noise(x, y, 72) < 0.06) g[y][x] = 'A';
+  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) if (noise(x, y, 72) < 0.04) g[y][x] = 'A';
   const puff = ['..ff..', '.fwwf.', 'fwwwwf', '.ffff.'];
-  for (const [ox, oy] of [[1, 2], [9, 7], [3, 11]]) stamp(g, puff, ox + shift, oy);
+  for (const [ox, oy] of [[2, 3], [9, 10]]) stamp(g, puff, ox + shift, oy);
   return toRows(g);
 }
 

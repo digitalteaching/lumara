@@ -148,6 +148,24 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
     if (land(x + 1, y)) for (let i = 0; i < 16; i += 3) ctx.fillRect(sx + 15, sy + i + wave, 1, 2);
   }
 
+  // Felskante über den Wolken: unten eine dunkle Felswand, an den Seiten ein schmaler Rand.
+  function drawCliffEdge(ctx, x, y, sx, sy) {
+    const sky = (nx, ny) => map.tileAt(nx, ny) === 'clouds' || map.tileAt(nx, ny) === 'spire';
+    ctx.fillStyle = '#46496e';
+    if (sky(x, y + 1)) {
+      ctx.fillRect(sx, sy + 13, 16, 3);
+      ctx.fillStyle = '#6b6f94';
+      for (let i = 1; i < 16; i += 4) ctx.fillRect(sx + i, sy + 13, 2, 1);
+      ctx.fillStyle = '#46496e';
+    }
+    if (sky(x - 1, y)) ctx.fillRect(sx, sy, 1, 16);
+    if (sky(x + 1, y)) ctx.fillRect(sx + 15, sy, 1, 16);
+    if (sky(x, y - 1)) {
+      ctx.fillStyle = '#d4d6e6';
+      ctx.fillRect(sx, sy, 16, 1);
+    }
+  }
+
   // Teilchen der Karte (Design 5.3). Ein eigener Zufall, damit Wetter das Spiel nicht beeinflusst.
   // Gischt entsteht an Wasserfeldern, die an Land grenzen, etwas zum Ufer hin.
   const shore = [];
@@ -374,6 +392,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
           }
           ctx.drawImage(tileCanvas(kind, frame), sx, sy);
           if (kind === 'water') drawShore(ctx, x, y, sx, sy);
+          if (kind === 'cliffrock' || kind === 'windgrass') drawCliffEdge(ctx, x, y, sx, sy);
         }
       }
 
