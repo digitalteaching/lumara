@@ -40,11 +40,16 @@ export function createGameWorld(game) {
   }
 
   async function backToWorld(report) {
+    if (report.outcome === 'lost') {
+      const r = def.respawn;
+      game.state.position = { map: def.id, x: r.x, y: r.y, dir: r.dir };
+    }
+    // Sofort speichern: Kinder schließen die App oft direkt nach einem Sieg (Design 11).
+    game.save();
     await playTransition(game, 'fade', 300);
     if (report.outcome === 'lost') {
       const r = def.respawn;
       player.teleport(r.x, r.y, r.dir);
-      game.state.position = { map: def.id, x: r.x, y: r.y, dir: r.dir };
     }
     game.go(world);
     await reveal(game);

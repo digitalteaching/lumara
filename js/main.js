@@ -1,4 +1,4 @@
-// Einstieg: baut das game-Objekt und startet die Schleife.
+// Einstieg: baut das game-Objekt, startet die Schleife und den Startablauf.
 
 import { CONFIG } from './config.js';
 import { createRng } from './core/rng.js';
@@ -6,17 +6,18 @@ import { startLoop } from './core/loop.js';
 import { createScreen } from './gfx/screen.js';
 import { createInput } from './core/input.js';
 import { mountControls } from './ui/controls.js';
+import { showToast } from './ui/toast.js';
 import { createGameWorld } from './scenes/worldEvents.js';
-import { createTitleScene } from './scenes/title.js';
-import { createPackScene } from './scenes/pack.js';
 import { createGalleryScene } from './scenes/gallery.js';
-import { createIntroScene } from './scenes/intro.js';
-import { createNameScene } from './scenes/name.js';
-import { createEggScene } from './scenes/eggs.js';
-import { newGameState } from './state.js';
+import { startFlow } from './scenes/start.js';
+import { newGameState, packProgress } from './state.js';
 import { STARTERS } from './data/species.js';
 import { parsePack } from './pack/parser.js';
 import { createPackStore } from './pack/store.js';
+import { createSaveStore } from './save/store.js';
+import { createAutosave } from './save/autosave.js';
+import { createPlayClock } from './save/playClock.js';
+import { makeSaver } from './app/flow.js';
 import { createDuelScene, makeWildSetup, makeTrainerSetup } from './scenes/duel.js';
 
 const screen = createScreen(document.getElementById('screen'), document.getElementById('stage'));
@@ -35,6 +36,11 @@ const game = {
   overlay: null,
   pack: null,
   state: null,
+  store: createSaveStore(),
+  packStore: createPackStore(),
+  clock: createPlayClock(),
+  saveEnabled: false, // nur der normale Startablauf speichert
+  save: null,
   get mode() {
     return document.body.dataset.mode;
   },
@@ -47,38 +53,35 @@ const game = {
     scene.enter?.();
   },
 };
+game.save = makeSaver(game);
 
-window.lumara = game;
+// Automatisch speichern: alle 30 s Spielzeit, beim Verstecken und beim Schließen der Seite.
+const autosave = createAutosave({
+  save: () => game.save(),
+  onFail: () => showToast('Dein Spielstand kann auf diesem Gerät gerade nicht gespeichert werden. Sichere ihn über Menü → Einstellungen → Spielstand sichern.', 9000),
+});
+autosave.attach(document, window);
+
+// Spielzeit für die Lehrkraft: jede Eingabe zählt als „das Kind ist dabei“.
+const markActivity = () => game.clock.activity(performance.now());
+window.addEventListener('keydown', markActivity, { capture: true });
+window.addEventListener('pointerdown', markActivity, { capture: true });
 
 // Entwickler-Abkürzungen nur auf dem eigenen Rechner.
 const params = new URLSearchParams(location.search);
 const isLocal = ['localhost', '127.0.0.1'].includes(location.hostname);
-
-// Ablauf: Titel → Lernpaket → Intro → Name → Eiwahl → Bucht.
-function startFlow() {
-  game.go(createTitleScene(game, () =>
-    game.go(createPackScene(game, () =>
-      game.go(createIntroScene(game, () =>
-        game.go(createNameScene(game, name =>
-          game.go(createEggScene(game, name, (species, nickname) => {
-            game.state = newGameState({ name, species, nickname });
-            game.go(createGameWorld(game));
-          })),
-        )),
-      )),
-    )),
-  ));
-}
+if (isLocal) window.lumara = game;
 
 // Paket aus dem Speicher, sonst das Beispielpaket (nur für Entwickler-Abkürzungen).
 async function devPack() {
-  const stored = createPackStore().load();
+  const stored = game.packStore.load();
   const r = stored ? parsePack(stored) : null;
   if (r?.ok) return { text: stored, data: r.pack };
   const text = await (await fetch('pakete/englisch-6-beispiel.txt')).text();
   return { text, data: parsePack(text).pack };
 }
 
+// Die Abkürzungen speichern nie, damit der echte Spielstand auf dem Rechner bleibt.
 async function devStart() {
   game.pack = await devPack();
   const species = STARTERS.includes(params.get('wesen')) ? params.get('wesen') : 'funki';
@@ -101,11 +104,14 @@ async function devDuel(kind) {
 if (isLocal && params.has('galerie')) game.go(createGalleryScene(game));
 else if (isLocal && params.has('duell')) devDuel(params.get('duell'));
 else if (isLocal && params.has('dev')) devStart();
-else startFlow();
+else startFlow(game, game.store.load());
 
 startLoop({
   update(dt) {
     game.scene?.update(dt);
+    autosave.tick(dt);
+    const add = game.clock.step(performance.now(), !document.hidden);
+    if (add && game.saveEnabled && game.state && game.pack) packProgress(game.state, game.pack.data.shortId).stats.playMs += add;
     input.endFrame();
   },
   render(t) {

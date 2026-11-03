@@ -122,7 +122,7 @@ export function drawTitleArt(ctx, t, reducedMotion) {
   }
 }
 
-export function createTitleScene(game, next) {
+export function createTitleScene(game, next, { hint = 'Tippe, um zu beginnen' } = {}) {
   let root = null;
   let offA = null;
   let done = false;
@@ -146,7 +146,7 @@ export function createTitleScene(game, next) {
         { class: 'title-screen passive' },
         el('h1', { class: 'title-logo' }, 'Lumara'),
         el('p', { class: 'title-sub' }, 'Das Land unter dem Nebel'),
-        el('p', { class: 'title-tap' }, 'Tippe, um zu beginnen'),
+        el('p', { class: 'title-tap' }, hint),
       );
       game.ui.append(root);
       offA = game.input.on('a', go);

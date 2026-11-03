@@ -440,3 +440,25 @@ body.kbd #panel {
   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
 }
 body:not([data-mode="walk"]) .hud { display: none; }
+
+/* Hinweis oben in der Mitte (Speicherfehler, neue Version) */
+.toast {
+  position: fixed;
+  left: 50%;
+  top: max(12px, env(safe-area-inset-top));
+  transform: translateX(-50%);
+  z-index: 50;
+  max-width: min(92vw, 640px);
+  background: var(--cream);
+  color: var(--ink);
+  border: 3px solid var(--frame);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: var(--text-small);
+  font-weight: 600;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+/* Spielstand wiederherstellen */
+.recover-title { font-weight: 700; font-size: calc(var(--text) * 1.1); }

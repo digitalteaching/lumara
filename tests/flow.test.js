@@ -1,0 +1,34 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { routeAfterTitle, makeSaver } from '../js/app/flow.js';
+import { createSaveStore } from '../js/save/store.js';
+import { newGameState } from '../js/state.js';
+import { fakeStorage } from './helpers/fixtures.js';
+
+test('Weg nach dem Titel', () => {
+  assert.equal(routeAfterTitle({ status: 'ok', storedPackOk: true }), 'world');
+  assert.equal(routeAfterTitle({ status: 'ok', storedPackOk: false }), 'pack-world');
+  assert.equal(routeAfterTitle({ status: 'backup', storedPackOk: true }), 'recover');
+  assert.equal(routeAfterTitle({ status: 'damaged', storedPackOk: true }), 'recover');
+  assert.equal(routeAfterTitle({ status: 'newer', storedPackOk: true }), 'newer');
+  assert.equal(routeAfterTitle({ status: 'none', storedPackOk: false }), 'new-game');
+});
+
+test('makeSaver speichert nur im normalen Spiel', () => {
+  const game = { saveEnabled: false, state: newGameState({ name: 'Mia', species: 'nixi', nickname: null }), store: createSaveStore(fakeStorage()) };
+  const save = makeSaver(game);
+  assert.equal(save(), null);
+  game.saveEnabled = true;
+  assert.equal(save(), true);
+  game.state = null;
+  assert.equal(save(), null);
+});
+
+test('makeSaver meldet nur das erste erfolgreiche Speichern', () => {
+  let first = 0;
+  const game = { saveEnabled: true, state: newGameState({ name: 'Mia', species: 'nixi', nickname: null }), store: createSaveStore(fakeStorage()) };
+  const save = makeSaver(game, { onFirstSave: () => first++ });
+  save();
+  save();
+  assert.equal(first, 1);
+});
