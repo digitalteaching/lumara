@@ -1,11 +1,12 @@
-// Menü (Design 13). In Plan 2 gibt es „Wesen“ und „Einstellungen“; Rucksack, Wesen-Buch,
-// Karte und Tagebuch kommen mit den Plänen, die sie füllen.
+// Menü (Design 13): „Wesen“, „Rucksack“ und „Einstellungen“; Tagebuch, Wesen-Buch und Karte
+// kommen mit den Plänen, die sie füllen.
 
 import { el } from '../ui/dom.js';
 import { openSheet } from '../ui/sheet.js';
 import { SPECIES, speciesName, displayName } from '../data/species.js';
 import { xpToNext, maxEnergy, stageForLevel } from '../duel/progress.js';
 import { settingsPage } from './settings.js';
+import { bagPage } from './bagPage.js';
 
 export function creaturePage(game) {
   return {
@@ -42,6 +43,7 @@ function menuPage(game) {
       body.append(
         el('div', { class: 'sheet-list' },
           el('button', { class: 'btn', type: 'button', onclick: () => nav.push(creaturePage(game)) }, 'Wesen'),
+          el('button', { class: 'btn', type: 'button', onclick: () => nav.push(bagPage(game)) }, 'Rucksack'),
           el('button', { class: 'btn', type: 'button', onclick: () => nav.push(settingsPage(game)) }, 'Einstellungen'),
           el('button', { class: 'btn primary', type: 'button', onclick: () => nav.close() }, 'Zurück zum Spiel'),
         ),

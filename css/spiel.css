@@ -541,6 +541,11 @@ body:not([data-mode="walk"]) .menu-btn { display: none; }
 .sheet .btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
 .sheet-list { display: flex; flex-direction: column; gap: 10px; }
 .sheet-list .btn { width: 100%; text-align: left; }
+.bag-list { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+.bag-row { display: flex; align-items: center; gap: 12px; min-height: 44px; }
+.bag-name { flex: 1; }
+.bag-count { min-width: 2ch; text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
+.bag-message { min-height: 1.4em; font-weight: 700; }
 .sheet-section { display: flex; flex-direction: column; gap: 8px; }
 .sheet-section h3 { margin: 0; font-size: var(--text-small); text-transform: uppercase; letter-spacing: 0.05em; color: var(--frame-dark); }
 .sheet-section p { margin: 0; }

@@ -7,7 +7,8 @@ import { CONFIG } from './config.js';
 import { maxEnergy, addXp, xpForWin } from './duel/progress.js';
 import { recordAnswer } from './duel/questions.js';
 import { BUCHT } from './world/maps/bucht.js';
-import { emptyBag } from './items/bag.js';
+import { emptyBag, addItem } from './items/bag.js';
+import { lootRolls } from './items/food.js';
 
 export function emptyWorld() {
   return { bushes: {}, notes: {}, finds: {} };
@@ -84,8 +85,9 @@ export function lightStone(state, n) {
 
 // Ergebnis eines Duells in den Spielzustand übernehmen (Design 6.3, 7.1). Ein Trainersieg entzündet
 // den Leuchtstein gleich mit: Beides landet in derselben Speicherung, auch wenn das Kind die App
-// direkt beim Sieg schließt.
-export function applyDuelResult(state, shortId, setup, summary) {
+// direkt beim Sieg schließt. Mit rng gibt es nach einem Sieg Beute (report.loot: was gefunden
+// wurde, kept: ob es in den Rucksack passte).
+export function applyDuelResult(state, shortId, setup, summary, rng = null) {
   const progress = packProgress(state, shortId);
   for (const a of summary.answers) recordAnswer(progress.history, a.key, a.correct);
   countAnswers(progress.stats, summary.answers);
@@ -95,6 +97,7 @@ export function applyDuelResult(state, shortId, setup, summary) {
   const report = {
     outcome: summary.outcome,
     stoneLit: false,
+    loot: [],
     xp: 0,
     flawless: summary.flawless,
     levelsGained: 0,
@@ -114,6 +117,7 @@ export function applyDuelResult(state, shortId, setup, summary) {
       if (!progress.beaten.includes(setup.trainer.number)) progress.beaten.push(setup.trainer.number);
       report.stoneLit = lightStone(state, setup.trainer.number);
     }
+    if (rng) report.loot = lootRolls(state, setup, rng).map(l => ({ ...l, kept: addItem(state, l.item) > 0 }));
   } else if (summary.outcome === 'lost') {
     c.energy = maxEnergy(c);
   } else {

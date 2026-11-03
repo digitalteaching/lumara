@@ -16,6 +16,7 @@ export function createDuel({ kind, player, foe, deck, rng }) {
   let shieldUsed = false;
   let secondChanceUsed = false;
   let wrongCount = 0;
+  let feeds = 0;
 
   const d = {
     kind,
@@ -59,6 +60,19 @@ export function createDuel({ kind, player, foe, deck, rng }) {
     recentForms.pop();
     d.current = present(deck.draw());
     return d.current;
+  };
+
+  // Füttern statt antworten (Design 8): kostet den Zug, aber niemand verliert Energie.
+  // amount ist eine Zahl oder 'full'. Gibt zurück, wie viel Energie dazukam.
+  d.canFeed = () => d.state === 'question' && feeds < CONFIG.food.maxFeedPerDuel;
+  d.feed = amount => {
+    if (!d.canFeed()) return 0;
+    feeds++;
+    const room = d.playerMax - d.playerEnergy;
+    const gained = amount === 'full' ? room : Math.max(0, Math.min(amount, room));
+    d.playerEnergy += gained;
+    d.state = 'ready';
+    return gained;
   };
 
   d.answer = response => {

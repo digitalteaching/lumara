@@ -12,6 +12,8 @@ import { createDuelPanel } from '../ui/duelPanel.js';
 import { say, choose, closeDialogs } from '../ui/dialog.js';
 import { el, clear } from '../ui/dom.js';
 import { applyDuelResult, packProgress } from '../state.js';
+import { FOOD, foodCount, takeItem } from '../items/bag.js';
+import { foodEnergy } from '../items/food.js';
 import { pickWild, wildLevel } from '../world/encounters.js';
 
 const FINAL = new Set(['won', 'lost', 'fled']);
@@ -179,6 +181,27 @@ export function createDuelScene(game, setup, onEnd) {
     duel.next();
   }
 
+  // Füttern statt antworten (Design 8). Bei Beeren und Sternfrüchten fragt eine kleine Auswahl.
+  // Abbrechen zeigt dieselbe Frage wieder.
+  async function feed() {
+    panel.clear();
+    const bag = game.state.bag;
+    const kinds = FOOD.filter(k => bag[k] > 0);
+    let item = kinds[0];
+    if (kinds.length > 1) {
+      const pick = await choose(game, `Was soll ${displayName(c)} essen?`, [`Beere (${bag.berry})`, `Sternfrucht (${bag.starfruit})`, 'Zurück'], { cancelIndex: 2 });
+      if (!alive) return;
+      item = kinds[pick];
+    }
+    if (!item || !duel.canFeed() || !takeItem(game.state, item)) return;
+    const gained = duel.feed(foodEnergy(c.species, item));
+    c.energy = duel.playerEnergy; // Rucksack und Energie passen zusammen, falls jetzt gespeichert wird
+    anim.sparkle = t;
+    updatePlates();
+    const what = item === 'berry' ? 'eine Beere' : 'eine Sternfrucht';
+    await panel.feedback({ ok: true, title: `${displayName(c)} isst ${what}.`, lines: [`+${gained} Energie`], autoMs: 1400 });
+  }
+
   async function end() {
     panel?.remove();
     panel = null;
@@ -186,7 +209,7 @@ export function createDuelScene(game, setup, onEnd) {
     const own = displayName(c);
     // Sofort übernehmen und speichern, noch vor den Dialogen: Kinder schließen die App oft genau
     // beim Sieg (Design 11). Sonst speichert das Schließen den Stand ohne Sieg und XP.
-    const report = applyDuelResult(game.state, game.pack.data.shortId, setup, s);
+    const report = applyDuelResult(game.state, game.pack.data.shortId, setup, s, game.rng);
     game.save?.();
     if (s.outcome === 'won') {
       anim.foe.faint = t;
@@ -210,6 +233,13 @@ export function createDuelScene(game, setup, onEnd) {
       }
       if (report.stageAfter > report.stageBefore) await say(game, [`${displayName(c)} wird stärker!`]);
     }
+    for (const l of report.loot) {
+      if (!alive) return;
+      const line = l.source === 'wild'
+        ? `${wildName(setup.foe.species, setup.foe.stage, 'the')} hat eine Beere verloren.`
+        : `${displayName(c)} findet eine Beere.`;
+      await say(game, l.kept ? [line] : [line, 'Dein Rucksack ist voll.']);
+    }
     if (alive) onEnd(report);
   }
 
@@ -225,13 +255,22 @@ export function createDuelScene(game, setup, onEnd) {
       }
     }
     panel = createDuelPanel(game);
-    const ctx = { disabledIndex: null, notice: null };
+    const ctx = { disabledIndex: null, notice: null, feed: null };
+    const hadFood = foodCount(game.state.bag) > 0;
     while (alive && !FINAL.has(duel.state)) {
       if (duel.state === 'ready') duel.ask();
+      ctx.feed = {
+        show: hadFood,
+        enabled: duel.canFeed() && foodCount(game.state.bag) > 0 && duel.playerEnergy < duel.playerMax,
+      };
       const action = await panel.ask(duel, ctx);
       ctx.disabledIndex = null;
       ctx.notice = null;
       if (!alive) return;
+      if (action.type === 'feed') {
+        await feed();
+        continue;
+      }
       if (action.type === 'flee') {
         duel.flee();
         break;

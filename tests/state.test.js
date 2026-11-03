@@ -57,6 +57,23 @@ test('Trainersieg entzündet den Leuchtstein im selben Schritt wie „besiegt“
   assert.deepEqual(s.stones, [1]);
 });
 
+test('Beute nach einem Sieg landet im Rucksack, gemeldet wird, was hineinpasste', () => {
+  const s = newGameState({ name: 'A', species: 'pieks', nickname: null });
+  const always = { next: () => 0 };
+  const wild = { kind: 'wild', area: 1 };
+  assert.deepEqual(applyDuelResult(s, 'ENQ9', wild, won(), always).loot, [
+    { item: 'berry', source: 'wild', kept: true },
+    { item: 'berry', source: 'find', kept: true },
+  ]);
+  assert.equal(s.bag.berry, 2);
+  s.bag.berry = 9;
+  assert.deepEqual(applyDuelResult(s, 'ENQ9', wild, won(), always).loot.map(l => l.kept), [true, false]);
+  assert.equal(s.bag.berry, 10);
+  const fled = { outcome: 'fled', playerEnergy: 3, flawless: true, answers: [] };
+  assert.deepEqual(applyDuelResult(s, 'ENQ9', wild, fled, always).loot, []);
+  assert.deepEqual(applyDuelResult(s, 'ENQ9', wild, won()).loot, []); // ohne Zufall keine Beute
+});
+
 test('Niederlage: keine XP, volle Energie, Historie trotzdem', () => {
   const s = newGameState({ name: 'A', species: 'kiesel', nickname: null });
   const r = applyDuelResult(s, 'ENQ9', T1, { outcome: 'lost', playerEnergy: 0, flawless: false, answers: [{ key: 'b', correct: false }] });

@@ -133,8 +133,11 @@ export function createDuelPanel(game) {
     clear(root);
   }
 
-  // Zeigt die aktuelle Frage. Ergebnis: { type: 'answer', response } | { type: 'flee' } | { type: 'surrender' }
-  function ask(duel, { disabledIndex = null, notice = null } = {}) {
+  // Zeigt die aktuelle Frage.
+  // Ergebnis: { type: 'answer', response } | { type: 'feed' } | { type: 'flee' } | { type: 'surrender' }
+  // feed: { show, enabled } – „Füttern“ steht das ganze Duell an seinem Platz, wenn zu Beginn
+  // Futter im Rucksack war, und ist gesperrt, wenn gerade nicht gefüttert werden kann.
+  function ask(duel, { disabledIndex = null, notice = null, feed = null } = {}) {
     return new Promise(resolve => {
       let done = false;
       let form = null;
@@ -187,6 +190,9 @@ export function createDuelPanel(game) {
               render();
             },
           }, '↻ Rückenwind'));
+        }
+        if (feed?.show) {
+          side.append(el('button', { class: 'btn side', type: 'button', disabled: !feed.enabled, onclick: () => finish({ type: 'feed' }) }, 'Füttern'));
         }
         side.append(
           duel.kind === 'wild'

@@ -57,6 +57,7 @@ export const CONFIG = deepFreeze({
   world: { builtAreas: 2 }, // Gebiete, die diese Spielfassung schon hat (Nebelrand, Design 17)
   save: { autosaveMs: 30000 },
   bag: { foodMax: 10 },
+  food: { berry: 2, berryPieks: 4, bushRegrowMs: 300000, wildDropChance: 0.2, pieksFindChance: 0.5, maxFeedPerDuel: 2 },
   beacons: {
     sceneMs: 2600,
     ringColors: ['#ffe08a', '#7fd17a', '#c69ae8', '#f2c26b', '#9fd8ef', '#e8a272', '#bfe9ff', '#f5f0a8'],

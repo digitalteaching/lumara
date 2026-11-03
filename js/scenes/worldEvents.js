@@ -11,6 +11,7 @@ import { fogEdgeLines } from '../world/fogEdge.js';
 import { MAPS, areaConfig, areaOpen, exitAt, openGatesFor, resolveStart, whisperLine, beaconFront } from '../world/network.js';
 import { visitStone, travelTargets, respawnPoint, challengeMark } from '../world/beacons.js';
 import { playBeaconScene } from './beacon.js';
+import { bushKey, bushReady, harvest } from '../items/food.js';
 import { BUCHT } from '../world/maps/bucht.js';
 import { packProgress } from '../state.js';
 import { displayName } from '../data/species.js';
@@ -215,6 +216,9 @@ export function createGameWorld(game) {
     return null;
   });
 
+  // Sträucher (Design 8): voll mit roten Beeren oder nur Blätter, bis die Spielzeit sie nachwachsen lässt.
+  world.propVariant.bush = o => (bushReady(game.state, bushKey(def.id, o)) ? 'bush' : 'bushEmpty');
+
   // Schild am Nebelrand: vor dem Standard-Schild, weil der Text vom Stand abhängt (Design 10.4).
   world.onInteract.unshift(async ev => {
     const o = ev.target;
@@ -243,6 +247,12 @@ export function createGameWorld(game) {
     }
     if (o?.type === 'beacon') {
       await useBeacon(o);
+      return true;
+    }
+    if (o?.type === 'bush') {
+      const r = harvest(game.state, bushKey(def.id, o));
+      if (r === 'ok') game.save();
+      await say(game, [{ ok: 'Du pflückst eine Beere.', full: 'Dein Rucksack ist voll.', empty: 'Hier wachsen bald neue Beeren.' }[r]]);
       return true;
     }
     if (o?.type === 'building' && o.onDoor === 'heal' && player.dir === 'up' && ev.y === o.y + o.h - 1) {

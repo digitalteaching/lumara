@@ -24,6 +24,31 @@ const play = (d, ok) => {
   return r;
 };
 
+test('Füttern statt antworten: höchstens zweimal, niemand verliert Energie', () => {
+  const d = mk({ energy: 2, maxEnergy: 4 });
+  d.ask();
+  assert.equal(d.canFeed(), true);
+  assert.equal(d.feed(2), 2);
+  assert.equal(d.playerEnergy, 4);
+  assert.equal(d.state, 'ready');
+  d.ask();
+  assert.equal(d.feed('full'), 0);
+  d.ask();
+  assert.equal(d.canFeed(), false);
+  assert.equal(d.feed(2), 0);
+  assert.equal(d.foeEnergy, 5);
+});
+
+test('Füttern geht nur, solange eine Frage offen ist', () => {
+  const d = mk({ energy: 1, maxEnergy: 4 });
+  assert.equal(d.canFeed(), false);
+  assert.equal(d.feed('full'), 0);
+  assert.equal(d.playerEnergy, 1);
+  d.ask();
+  assert.equal(d.feed('full'), 3);
+  assert.equal(d.summary().answers.length, 0);
+});
+
 test('richtig kostet den Gegner 1, jede dritte richtige in Folge 2', () => {
   const d = mk(), rs = [play(d, true), play(d, true), play(d, true)];
   assert.deepEqual(rs.map(r => r.foeDamage), [1, 1, 2]);
