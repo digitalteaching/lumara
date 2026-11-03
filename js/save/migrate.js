@@ -9,11 +9,21 @@ import { STARTERS } from '../data/species.js';
 import { xpToNext, maxEnergy } from '../duel/progress.js';
 import { createMap } from '../world/map.js';
 import { BUCHT } from '../world/maps/bucht.js';
-import { validateName, emptyPackProgress } from '../state.js';
+import { validateName, emptyPackProgress, emptyWorld } from '../state.js';
+import { emptyBag, BAG_ITEMS } from '../items/bag.js';
 
-export const CURRENT_VERSION = 1;
+export const CURRENT_VERSION = 2;
 
-const MIGRATIONS = {};
+const MIGRATIONS = {
+  // 1 → 2 (Plan 3a): Leuchtsteine, Rucksack, Geschichte, Uhren für das Nachwachsen, gesamte Spielzeit.
+  // Wer schon einen Trainer besiegt hat, bekommt dessen Stein: Er hat ihn sich verdient.
+  1(s) {
+    const packs = isObject(s.packs) ? Object.values(s.packs) : [];
+    const beaten = packs.flatMap(p => (Array.isArray(p?.beaten) ? p.beaten : []));
+    const playMs = packs.reduce((sum, p) => sum + count(p?.stats?.playMs), 0);
+    return { ...s, version: 2, playMs, stones: beaten, lastStone: null, bag: emptyBag(), shineActive: false, story: {}, world: emptyWorld() };
+  },
+};
 
 const MAPS = { bucht: BUCHT };
 const DIRS = ['up', 'down', 'left', 'right'];
@@ -97,6 +107,42 @@ function repairPacks(raw) {
   return out;
 }
 
+function repairStones(raw) {
+  return Array.isArray(raw) ? [...new Set(raw.filter(n => isInt(n) && n >= 1 && n <= 8))].sort((a, b) => a - b) : [];
+}
+
+// Futter höchstens foodMax: zuerst werden Sternfrüchte gekappt, dann Beeren.
+function repairBag(raw) {
+  const bag = emptyBag();
+  if (!isObject(raw)) return bag;
+  for (const k of BAG_ITEMS) bag[k] = isInt(raw[k]) && raw[k] > 0 ? raw[k] : 0;
+  const max = CONFIG.bag.foodMax;
+  bag.berry = Math.min(bag.berry, max);
+  bag.starfruit = Math.min(bag.starfruit, max - bag.berry);
+  return bag;
+}
+
+function repairStory(raw) {
+  const out = {};
+  if (!isObject(raw)) return out;
+  for (const [k, v] of Object.entries(raw)) {
+    const area = Number(k);
+    if (isInt(area) && area >= 1 && area <= 8 && isInt(v) && v > 0) out[area] = Math.min(3, v);
+  }
+  return out;
+}
+
+const WORLD_KEY = /^[a-z]+:\d+,\d+$/;
+function repairWorld(raw) {
+  const out = emptyWorld();
+  if (!isObject(raw)) return out;
+  for (const part of Object.keys(out)) {
+    if (!isObject(raw[part])) continue;
+    for (const [k, v] of Object.entries(raw[part])) if (WORLD_KEY.test(k) && Number.isFinite(v) && v >= 0) out[part][k] = v;
+  }
+  return out;
+}
+
 export function migrateState(raw) {
   if (!isObject(raw) || !isInt(raw.version)) return { ok: false, reason: 'invalid' };
   if (raw.version > CURRENT_VERSION) return { ok: false, reason: 'newer' };
@@ -110,6 +156,7 @@ export function migrateState(raw) {
   const name = typeof s.name === 'string' ? validateName(s.name) : { ok: false };
   const creature = repairCreature(s.creature);
   if (!name.ok || !creature) return { ok: false, reason: 'invalid' };
+  const stones = repairStones(s.stones);
 
   return {
     ok: true,
@@ -121,6 +168,13 @@ export function migrateState(raw) {
       position: repairPosition(s.position),
       settings: { textSpeed: TEXT_SPEEDS.includes(s.settings?.textSpeed) ? s.settings.textSpeed : 'normal' },
       packs: repairPacks(s.packs),
+      playMs: count(s.playMs),
+      stones,
+      lastStone: stones.includes(s.lastStone) ? s.lastStone : null,
+      bag: repairBag(s.bag),
+      shineActive: s.shineActive === true,
+      story: repairStory(s.story),
+      world: repairWorld(s.world),
     },
   };
 }

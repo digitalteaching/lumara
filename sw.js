@@ -41,6 +41,7 @@ const FILES = [
   "js/gfx/palette.js",
   "js/gfx/screen.js",
   "js/gfx/sprites.js",
+  "js/items/bag.js",
   "js/main.js",
   "js/menu/backupPages.js",
   "js/menu/homePage.js",

@@ -1,23 +1,36 @@
-// Spielzustand im Speicher, Format Version 1 (Design 10.4, 11). Was dem Kind gehört (Name, Wesen,
-// Position, Einstellungen), liegt oben; was zum Lernpaket gehört, liegt in packs[Kurzform].
+// Spielzustand im Speicher, Format Version 2 (Design 10.4, 11). Was dem Kind gehört (Name, Wesen,
+// Position, Einstellungen, Leuchtsteine, Rucksack, Geschichte, Spielzeit), liegt oben; was zum
+// Lernpaket gehört, liegt in packs[Kurzform].
 // Änderungen am Format brauchen eine Umwandlung in js/save/migrate.js.
 
 import { CONFIG } from './config.js';
 import { maxEnergy, addXp, xpForWin } from './duel/progress.js';
 import { recordAnswer } from './duel/questions.js';
 import { BUCHT } from './world/maps/bucht.js';
+import { emptyBag } from './items/bag.js';
+
+export function emptyWorld() {
+  return { bushes: {}, notes: {}, finds: {} };
+}
 
 export function newGameState({ name, species, nickname }) {
   const creature = { species, nickname: nickname || null, level: 1, xpInLevel: 0, energy: 0, lifeStones: 0 };
   creature.energy = maxEnergy(creature);
   return {
-    version: 1,
+    version: 2,
     savedAt: 0,
     name,
     creature,
     position: { map: 'bucht', ...BUCHT.spawn },
     settings: { textSpeed: 'normal' },
     packs: {},
+    playMs: 0,
+    stones: [],
+    lastStone: null,
+    bag: emptyBag(),
+    shineActive: false,
+    story: {},
+    world: emptyWorld(),
   };
 }
 

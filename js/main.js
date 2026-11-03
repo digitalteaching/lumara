@@ -189,7 +189,10 @@ startLoop({
     game.scene?.update(dt);
     autosave.tick(dt);
     const add = game.clock.step(performance.now(), !document.hidden);
-    if (add && game.saveEnabled && game.state && game.pack) packProgress(game.state, game.pack.data.shortId).stats.playMs += add;
+    if (add && game.saveEnabled && game.state && game.pack) {
+      packProgress(game.state, game.pack.data.shortId).stats.playMs += add;
+      game.state.playMs += add; // gesamte Spielzeit des Kindes, für Sträucher, Zettel und Fundstellen
+    }
     input.endFrame();
   },
   render(t) {

@@ -56,5 +56,6 @@ export const CONFIG = deepFreeze({
   names: { maxLength: 12 },
   world: { builtAreas: 1 }, // Gebiete, die diese Spielfassung schon hat (Nebelrand, Design 17)
   save: { autosaveMs: 30000 },
+  bag: { foodMax: 10 },
   play: { idleMs: 120000 },
 });
