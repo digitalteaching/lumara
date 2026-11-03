@@ -2,17 +2,17 @@
 // ist, ob das Paket das nächste Thema hat und ob das Gebiet in dieser Spielfassung schon gebaut ist.
 // null heißt: Der Weg ist offen (ab Plan 3); dann zeigt fogSignLines den Wegweiser-Text.
 
-const TEACHER_LINE = 'Dieser Weg öffnet sich, sobald deine Lehrkraft das nächste Thema freigibt.';
+import { t } from '../i18n/i18n.js';
 
 // Ist das Gebiet noch nicht gebaut, hilft auch ein neues Thema nicht: Dann sagt das Schild das,
 // bevor es auf die Lehrkraft verweist.
 export function fogEdgeLines(sign, { gateBeaten, packHasNext, builtAreas }) {
   if (!gateBeaten) return sign.lines;
   if (sign.leadsTo > builtAreas) {
-    const verb = sign.leadsToPlural ? 'liegen' : 'liegt'; // „die Spiegeldünen“ sind Mehrzahl
-    return [`Hinter dem Nebel ${verb} ${sign.leadsToName}.`, 'Der Weg dorthin entsteht gerade. In einer der nächsten Spielfassungen kannst du hindurch.'];
+    // „die Spiegeldünen“ sind Mehrzahl
+    return [t(sign.leadsToPlural ? 'fog.beyondMany' : 'fog.beyondOne', { name: sign.leadsToName }), t('fog.building')];
   }
-  if (!packHasNext) return [TEACHER_LINE];
+  if (!packHasNext) return [t('fog.teacher')];
   return null;
 }
 

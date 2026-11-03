@@ -11,6 +11,7 @@ import { npcLines } from '../world/network.js';
 import { CONFIG } from '../config.js';
 import { createParticles } from '../gfx/particles.js';
 import { createRng } from '../core/rng.js';
+import { t } from '../i18n/i18n.js';
 
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 
@@ -546,7 +547,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
       // Jede Zelle der vorderen Reihe zählt als Tür, wenn man nach oben darauf schaut.
       const front = player.dir === 'up' && ev.y === o.y + o.h - 1;
       if (!front || o.onDoor === 'heal') return false;
-      await say(game, o.lines ?? ['Die Tür ist verschlossen.']);
+      await say(game, o.lines ?? [t('world.doorLocked')]);
       return true;
     }
     return false;

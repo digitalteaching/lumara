@@ -24,10 +24,10 @@ import { maxEnergy } from '../duel/progress.js';
 import { say, choose } from '../ui/dialog.js';
 import { el, clear } from '../ui/dom.js';
 import { openMenu } from '../menu/menu.js';
+import { t } from '../i18n/i18n.js';
 
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 const DELTA = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
-export const RELOCATED = 'Der Nebel ist zurückgekommen. Ich habe dich hierher gebracht.';
 
 // In ein anderes Gebiet (oder an einen anderen Ort) wechseln: überblenden, speichern, neue Welt.
 export async function travelTo(game, pos, style = 'fade') {
@@ -73,8 +73,8 @@ export function createGameWorld(game) {
     if (lost) game.state.position = { ...r };
     game.save();
     await playTransition(game, 'fade', 300);
-    const where = r && !samePlace(r, { map: 'bucht', ...BUCHT.respawn }) ? 'am Leuchtstein' : 'am Leuchtturm';
-    const line = `Du bist ${where} aufgewacht. ${displayName(game.state.creature)} hat sich erholt.`;
+    const atBeacon = r && !samePlace(r, { map: 'bucht', ...BUCHT.respawn });
+    const line = t(atBeacon ? 'world.wokeAtBeacon' : 'world.wokeAtLighthouse', { name: displayName(game.state.creature) });
     if (lost && r.map !== def.id) {
       const next = createGameWorld(game);
       game.go(next);
@@ -151,9 +151,9 @@ export function createGameWorld(game) {
   async function afterStoneLit() {
     await playBeaconScene(game, world, trainerNumber);
     const sign = fogSignFor(def, trainerNumber);
-    const lit = `Der Leuchtstein ${def.genitive} leuchtet wieder!`;
+    const lit = t('world.beaconRelit', { of: def.genitive });
     if (sign && areaOpen(game.state, game.pack.data, sign.leadsTo)) {
-      await say(game, [`${lit} Der Nebel weicht.`]);
+      await say(game, [`${lit} ${t('world.mistRetreats')}`]);
     } else {
       const more = sign ? fogEdgeLines(sign, { gateBeaten: true, packHasNext: game.pack.data.trainers.some(t => t.number === sign.leadsTo), builtAreas: CONFIG.world.builtAreas }) : null;
       await say(game, [lit, ...(more ?? [])]);
@@ -165,16 +165,16 @@ export function createGameWorld(game) {
   async function useBeacon(o) {
     const c = game.state.creature;
     if (!game.state.stones.includes(o.number)) {
-      await say(game, ['Ein erloschener Leuchtstein. Seine Hüterin oder sein Hüter ist ganz in der Nähe.']);
+      await say(game, [t('world.beaconDark')]);
       return;
     }
     c.energy = maxEnergy(c);
     visitStone(game.state, o.number);
     game.save();
-    await say(game, [`${displayName(c)} tankt neues Licht.`]);
+    await say(game, [t('world.beaconRefill', { name: displayName(c) })]);
     const others = travelTargets(game.state, game.pack.data).filter(t => t.number !== o.number);
     if (!others.length) return;
-    const pick = await choose(game, 'Wohin möchtest du reisen?', [...others.map(t => breakName(t.name)), 'Hierbleiben']);
+    const pick = await choose(game, t('world.travelWhere'), [...others.map(o => breakName(o.name)), t('world.stayHere')]);
     const target = others[pick];
     if (!target) return;
     visitStone(game.state, target.number);
@@ -214,7 +214,7 @@ export function createGameWorld(game) {
 
   // Luftspiegelungen (Design 5.3): Wer dagegen läuft, bekommt einen leisen Hinweis, einmal pro Anlauf.
   world.onBump.push(ev => {
-    if (map.tileAt(ev.x, ev.y) === 'mirage') showWhisper('Nur eine Luftspiegelung!');
+    if (map.tileAt(ev.x, ev.y) === 'mirage') showWhisper(t('world.mirage'));
   });
 
   world.onStepped.push((x, y) => {
@@ -287,10 +287,10 @@ export function createGameWorld(game) {
   async function useNoteStone(o) {
     const key = noteKey(def.id, o);
     if (!noteReady(game.state, key)) {
-      await say(game, ['Ein grauer Stein. Gerade liegt kein Zettel darunter.']);
+      await say(game, [t('world.noteEmpty')]);
       return;
     }
-    const pick = await choose(game, 'Unter dem Stein liegt ein Zettel. Möchtest du die Aufgabe lösen?', ['Ja', 'Später'], { cancelIndex: 1 });
+    const pick = await choose(game, t('world.noteAsk'), [t('common.yes'), t('duel.later')], { cancelIndex: 1 });
     if (pick !== 0) return;
     const c = game.state.creature;
     const levelBefore = c.level;
@@ -302,9 +302,9 @@ export function createGameWorld(game) {
       return out;
     });
     if (!result) return;
-    for (let lvl = levelBefore + 1; lvl <= c.level; lvl++) await say(game, [`${displayName(c)} erreicht Level ${lvl}!`]);
-    if (result.evolved) await say(game, [`${displayName(c)} wird stärker!`]);
-    if (result.story) await say(game, [result.story], { speaker: 'Ein Stück Geschichte' });
+    for (let lvl = levelBefore + 1; lvl <= c.level; lvl++) await say(game, [t('duel.levelUp', { name: displayName(c), level: lvl })]);
+    if (result.evolved) await say(game, [t('duel.stronger', { name: displayName(c) })]);
+    if (result.story) await say(game, [result.story], { speaker: t('world.storySpeaker') });
   }
 
   // ---------- Höhlentor (Design 5.2) ----------
@@ -368,13 +368,13 @@ export function createGameWorld(game) {
     if (o?.type === 'bush') {
       const r = harvest(game.state, bushKey(def.id, o));
       if (r === 'ok') game.save();
-      await say(game, [{ ok: 'Du pflückst eine Beere.', full: 'Dein Rucksack ist voll.', empty: 'Hier wachsen bald neue Beeren.' }[r]]);
+      await say(game, [t({ ok: 'world.berryPicked', full: 'bag.full', empty: 'world.berriesSoon' }[r])]);
       return true;
     }
     if (o?.type === 'building' && o.onDoor === 'heal' && player.dir === 'up' && ev.y === o.y + o.h - 1) {
       const c = game.state.creature;
       c.energy = maxEnergy(c);
-      await say(game, [`Das Licht des Leuchtturms gibt ${displayName(c)} neue Kraft.`]);
+      await say(game, [t('world.lighthouseHeal', { name: displayName(c) })]);
       return true;
     }
     return false;
@@ -450,9 +450,9 @@ export function createGameWorld(game) {
     const here = { map: def.id, x: player.x, y: player.y, dir: player.dir };
     const target = resolveStart({ ...game.state, position: here }, game.pack.data);
     const next = await travelTo(game, samePlace(here, target) ? here : target);
-    if (!samePlace(here, target)) await next.lock(() => say(game, [RELOCATED], { speaker: 'Ilvy' }));
+    if (!samePlace(here, target)) await next.lock(() => say(game, [t('world.relocated')], { speaker: 'Ilvy' }));
   }
-  const menuBtn = el('button', { class: 'menu-btn', type: 'button', 'aria-label': 'Menü', onclick: showMenu }, '☰');
+  const menuBtn = el('button', { class: 'menu-btn', type: 'button', 'aria-label': t('world.menu'), onclick: showMenu }, '☰');
   let offMenu = null;
 
   const baseEnter = world.enter;

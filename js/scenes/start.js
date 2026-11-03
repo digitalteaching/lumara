@@ -12,7 +12,7 @@ import { createEggScene } from './eggs.js';
 import { createRecoverScene } from './recover.js';
 import { createInstallScene } from './install.js';
 import { readPlatform } from '../app/platform.js';
-import { createGameWorld, RELOCATED } from './worldEvents.js';
+import { createGameWorld } from './worldEvents.js';
 import { resolveStart } from '../world/network.js';
 import { say } from '../ui/dialog.js';
 import { el } from '../ui/dom.js';
@@ -39,7 +39,7 @@ export function startFlow(game, loaded) {
     if (moved) game.state.position = { ...target };
     const world = createGameWorld(game);
     game.go(world);
-    if (moved) world.lock(() => say(game, [RELOCATED], { speaker: 'Ilvy' }));
+    if (moved) world.lock(() => say(game, [t('world.relocated')], { speaker: 'Ilvy' }));
   }
 
   // Mit vorhandenem Spielstand in die Welt, vorher bei Bedarf ein Paket laden.

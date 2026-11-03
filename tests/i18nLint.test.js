@@ -21,6 +21,13 @@ export const CONVERTED = [
   'js/items/stones.js',
   'js/items/food.js',
   'js/data/texts.js',
+  'js/scenes/worldEvents.js',
+  'js/scenes/world.js',
+  'js/scenes/beacon.js',
+  'js/world/fogEdge.js',
+  'js/world/caveGate.js',
+  'js/world/islandMap.js',
+  'js/world/beacons.js',
 ];
 
 const GERMAN = /[äöüÄÖÜß]|\b(der|die|das|und|nicht|du|dein|deine|ist|mit|noch|Zurück|Ja|Nein)\b/;
@@ -28,9 +35,11 @@ const GERMAN = /[äöüÄÖÜß]|\b(der|die|das|und|nicht|du|dein|deine|ist|mit|
 // Zeichenketten außerhalb von Kommentaren. Schlüssel von t()/tl() und import-Pfade zählen nicht.
 function literals(source) {
   const out = [];
-  const code = source.replace(/\/\*[\s\S]*?\*\//g, '').split('\n').map(l => l.replace(/^\s*\/\/.*$/, '').replace(/\s\/\/.*$/, ''));
+  const code = source.replace(/\/\*[\s\S]*?\*\//g, m => m.replace(/[^\n]/g, '')).split('\n').map(l => l.replace(/^\s*\/\/.*$/, '').replace(/\s\/\/.*$/, ''));
+  const raw = source.split('\n');
   code.forEach((line, i) => {
     if (/^\s*import\s/.test(line)) return;
+    if (/\/\/ i18n-ok/.test(raw[i] ?? '')) return; // bewusst deutsch, etwa Trennstellen deutscher Namen
     for (const m of line.matchAll(/(['"`])((?:\\.|(?!\1).)*)\1/g)) {
       const before = line.slice(0, m.index);
       if (/\b(t|tl)\(\s*$/.test(before)) continue;

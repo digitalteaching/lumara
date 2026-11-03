@@ -3,6 +3,7 @@
 // Jeder Zustand steht als Text da, nicht nur als Farbe (Design 14). DOM-frei.
 
 import { MAPS, areaOpen } from './network.js';
+import { t } from '../i18n/i18n.js';
 
 // Lage im Raster mit 3 Spalten und 5 Zeilen: unten die Bucht, links hinauf Wald, Moor und Dünen,
 // oben die Klippen, rechts hinunter Ruinen, See und Wiese, in der Mitte der Berg.
@@ -29,20 +30,20 @@ export function islandMap(state, pack) {
 }
 
 export function mapLabels({ open, lit, here }) {
-  const out = [!open ? '☁ Im Nebel' : lit ? '✦ Leuchtstein leuchtet' : '○ Leuchtstein dunkel'];
-  if (here) out.push('● Du bist hier');
+  const out = [!open ? t('map.inMist') : lit ? t('map.lit') : t('map.dark')];
+  if (here) out.push(t('map.here'));
   return out;
 }
 
-export const caveLabels = ({ lit }) => ['Berg mit Höhle', `${lit} von 8 Fassungen leuchten`];
+export const caveLabels = ({ lit }) => [t('map.mountain'), t('map.sockets', { lit })];
 
 // Feste Trennstellen für die zusammengesetzten Gebietsnamen (weicher Trennstrich), damit schmale
 // Kästen und Knöpfe „Uhrwerk-ruinen“ trennen und nicht „Uhrwer-kruinen“.
 const BREAKS = {
-  Leuchtturmbucht: ['Leucht', 'turm', 'bucht'],
-  Flüsterwald: ['Flüster', 'wald'],
+  Leuchtturmbucht: ['Leucht', 'turm', 'bucht'], // i18n-ok: Trennstellen der deutschen Namen
+  Flüsterwald: ['Flüster', 'wald'], // i18n-ok
   Pilzmoor: ['Pilz', 'moor'],
-  Spiegeldünen: ['Spiegel', 'dünen'],
+  Spiegeldünen: ['Spiegel', 'dünen'], // i18n-ok
   Windklippen: ['Wind', 'klippen'],
   Uhrwerkruinen: ['Uhrwerk', 'ruinen'],
   Nordlichtsee: ['Nordlicht', 'see'],

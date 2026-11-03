@@ -5,6 +5,9 @@ import { DE } from '../js/i18n/de.js';
 import { EN } from '../js/i18n/en.js';
 import { STONE_LINES } from '../js/items/stones.js';
 import { defaultLines } from '../js/data/texts.js';
+import { fogEdgeLines } from '../js/world/fogEdge.js';
+import { caveGateLines } from '../js/world/caveGate.js';
+import { mapLabels, caveLabels } from '../js/world/islandMap.js';
 
 test.afterEach(() => {
   setLanguage('de');
@@ -58,4 +61,12 @@ test('Duell auf Englisch: Knöpfe und Rückmeldungen', () => {
   assert.equal(STONE_LINES.life('Nixi'), 'A life stone! Nixi now has 1 more energy for good.');
   assert.equal(defaultLines('en').win, 'Well done! You won.');
   assert.equal(defaultLines('de').loss, 'Diesmal nicht. Übe noch ein bisschen und komm wieder!');
+});
+
+test('Welt auf Englisch: Nebelschild, Höhlentor und Karte der Insel', () => {
+  setLanguage('en');
+  assert.deepEqual(fogEdgeLines({ leadsTo: 3, lines: [] }, { gateBeaten: true, packHasNext: false, builtAreas: 8 }), ['This path opens as soon as your teacher shares the next topic.']);
+  assert.deepEqual(caveGateLines(3), ['A big gate in the mountain with eight sockets.', '3 of them are glowing.', 'Maybe it opens when all eight light stones glow again.']);
+  assert.deepEqual(mapLabels({ open: false, lit: true, here: false }), ['☁ In the mist']);
+  assert.deepEqual(caveLabels({ lit: 8 }), ['Mountain with a cave', '8 of 8 sockets are glowing']);
 });
