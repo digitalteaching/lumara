@@ -259,9 +259,9 @@ FRAGE: Which word means „Pilz“?
 ANTWORT: mushroom
 FALSCH: mouse | muffin | melon
 
-FRAGE: Which word means „Preis“?
+FRAGE: Which word means „Preis“ (was etwas im Laden kostet)?
 ANTWORT: price
-FALSCH: prize | rice | piece
+FALSCH: prince | rice | piece
 
 FRAGE: Choose the right sentence.
 ANTWORT: There isn't any juice left.

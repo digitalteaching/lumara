@@ -52,3 +52,12 @@ test('Vorlage erklärt jedes Schlüsselwort und beschreibt alle 8 Trainerfiguren
   assert.ok(v.includes('KENNUNG: fach-jahrgang-name'));
   assert.ok(!parsePack(v).warnings.some(w => /Unbekanntes Schlüsselwort/.test(w.message)));
 });
+
+test('Beispielpaket: „Preis“ (was etwas kostet) hat keine richtige Übersetzung unter den falschen Antworten', () => {
+  const p = parsePack(read('englisch-6-beispiel.txt')).pack;
+  const q = p.trainers.flatMap(t => t.questions).find(x => x.text.includes('„Preis“'));
+  assert.ok(q);
+  assert.equal(q.answer, 'price');
+  assert.ok(!q.wrong.includes('prize'), q.wrong.join(' | ')); // „Preis“ heißt auch „prize“ (Gewinn)
+  assert.match(q.text, /kostet/);
+});
