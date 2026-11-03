@@ -127,4 +127,5 @@ export const BUCHT = {
   ],
   spawn: { x: 19, y: 24, dir: 'up' },
   respawn: { x: 34, y: 16, dir: 'down' },
+  particles: ['gull', 'spray'], // Möwen und Gischt am Ufer (Design 5.3)
 };

@@ -40,6 +40,7 @@ const FILES = [
   "js/gfx/art/tiles.js",
   "js/gfx/canvasSprites.js",
   "js/gfx/palette.js",
+  "js/gfx/particles.js",
   "js/gfx/screen.js",
   "js/gfx/sprites.js",
   "js/items/bag.js",

@@ -110,4 +110,5 @@ export const WALD = {
   ],
   spawn: { x: 19, y: 28, dir: 'up' },
   respawn: { x: 16, y: 5, dir: 'up' },
+  particles: ['firefly', 'leaf'], // Glühwürmchen und fallende Blätter (Design 5.3)
 };

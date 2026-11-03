@@ -9,6 +9,8 @@ import { CHARACTERS } from '../gfx/art/characters.js';
 import { say } from '../ui/dialog.js';
 import { npcLines } from '../world/network.js';
 import { CONFIG } from '../config.js';
+import { createParticles } from '../gfx/particles.js';
+import { createRng } from '../core/rng.js';
 
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 
@@ -127,6 +129,58 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
     if (land(x + 1, y)) for (let i = 0; i < 16; i += 3) ctx.fillRect(sx + 15, sy + i + wave, 1, 2);
   }
 
+  // Teilchen der Karte (Design 5.3). Ein eigener Zufall, damit Wetter das Spiel nicht beeinflusst.
+  // Gischt entsteht an Wasserfeldern, die an Land grenzen, etwas zum Ufer hin.
+  const shore = [];
+  if (def.particles?.includes('spray')) {
+    for (let y = 0; y < map.height; y++) {
+      for (let x = 0; x < map.width; x++) {
+        if (map.tileAt(x, y) !== 'water') continue;
+        const side = [[0, -1], [-1, 0], [1, 0], [0, 1]].find(([dx, dy]) => map.inBounds(x + dx, y + dy) && map.tileAt(x + dx, y + dy) !== 'water');
+        if (side) shore.push([x * T + 8 + side[0] * 4, y * T + 8 + side[1] * 4]);
+      }
+    }
+  }
+  const particles = def.particles?.length
+    ? createParticles(def.particles, {
+      rng: createRng((Math.random() * 2 ** 32) >>> 0),
+      reducedMotion: () => game.reducedMotion,
+      width: SCREEN_W,
+      height: SCREEN_H,
+      shore,
+    })
+    : null;
+
+  function drawParticles(ctx) {
+    particles.each(p => {
+      if (p.alpha <= 0.02) return;
+      const x = Math.round(p.x + (p.sway ?? 0)), y = Math.round(p.y);
+      ctx.globalAlpha = p.alpha;
+      if (p.kind === 'gull') {
+        // kleine „v“-Form, die Flügel schlagen
+        const up = p.flap ? 1 : 0;
+        ctx.fillStyle = '#3b3a52';
+        ctx.fillRect(x, y, 1, 1);
+        ctx.fillRect(x - 1, y - 1, 1, 1);
+        ctx.fillRect(x + 1, y - 1, 1, 1);
+        ctx.fillRect(x - 2, y - 1 - up, 1, 1);
+        ctx.fillRect(x + 2, y - 1 - up, 1, 1);
+      } else if (p.kind === 'firefly') {
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha * 0.3;
+        ctx.fillRect(x - 1, y - 1, 3, 3);
+        ctx.globalAlpha = p.alpha;
+        ctx.fillRect(x, y, 1, 1);
+      } else {
+        // Gischt: ein Pixel; Blatt: zwei Pixel und eins schräg darunter
+        ctx.fillStyle = p.color;
+        ctx.fillRect(x, y, p.size, 1);
+        if (p.size === 2) ctx.fillRect(x + 1, y + 1, 1, 1);
+      }
+    });
+    ctx.globalAlpha = 1;
+  }
+
   function drawFog(ctx, cam) {
     if (!fogCells.length) return;
     ctx.save();
@@ -202,6 +256,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
 
     update(dt) {
       time += dt;
+      particles?.update(dt, camera());
       for (const [k, ms] of rustle) {
         if (ms - dt <= 0) rustle.delete(k);
         else rustle.set(k, ms - dt);
@@ -317,6 +372,8 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
         ctx.globalAlpha = 1;
       }
 
+      // Nach den Figuren und vor dem Nebel
+      if (particles) drawParticles(ctx);
       drawFog(ctx, cam);
       for (const fn of afterRender) fn(ctx, cam);
     },
