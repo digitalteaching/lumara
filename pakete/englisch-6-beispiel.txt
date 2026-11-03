@@ -577,7 +577,7 @@ FALSCH: didn't had | not had | don't have
 
 FRAGE: Which time expression goes with the simple past?
 ANTWORT: two days ago
-FALSCH: tomorrow | right now | every day
+FALSCH: tomorrow | right now | next week
 FORM: auswahl
 
 FRAGE: Which question is right?
@@ -592,6 +592,7 @@ FORM: auswahl
 
 FRAGE: Wie heißt „vor zwei Tagen“ auf Englisch?
 ANTWORT: two days ago
+AUCH RICHTIG: 2 days ago
 
 FRAGE: Wie heißt „gestern“ auf Englisch?
 ANTWORT: yesterday
@@ -932,7 +933,7 @@ EXTRA: collect | did
 
 FRAGE: Wie heißt „Zahnrad“ auf Englisch?
 ANTWORT: gear
-AUCH RICHTIG: cog
+AUCH RICHTIG: cog | cogwheel
 
 FRAGE: Yesterday Otto ___ (build) a new clock.
 ANTWORT: built

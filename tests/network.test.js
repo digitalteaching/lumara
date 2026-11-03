@@ -181,9 +181,20 @@ test('Der Ring schließt sich: Pfad zwischen Sternenwiese und Bucht erst nach St
 test('Auf dem Pfad der Bucht stehen und ein Paket mit 7 Trainern laden: nicht im Nebel festsitzen', () => {
   const r = resolveStart(st([1, 2, 3, 4, 5, 6, 7, 8], { map: 'bucht', x: 38, y: 6, dir: 'right' }), pack(7));
   assert.notDeepEqual([r.map, r.x, r.y], ['bucht', 38, 6]);
+  // Die Bucht ist weiter offen: Das Kind bleibt in der Bucht, am Leuchtstein, statt auf eine andere Karte zu müssen.
+  assert.deepEqual(r, { map: 'bucht', ...beaconFront(MAPS.bucht, 1) });
+  assert.deepEqual(resolveStart(st([1, 2, 3, 4, 5, 6, 7, 8], { map: 'bucht', x: 39, y: 7, dir: 'right' }), pack(3)), { map: 'bucht', ...beaconFront(MAPS.bucht, 1) });
   assert.deepEqual(resolveStart(st([1, 2, 3, 4, 5, 6, 7, 8], { map: 'bucht', x: 38, y: 6, dir: 'left' }), pack(8)), { map: 'bucht', x: 38, y: 6, dir: 'left' });
 });
 
 test('Auf der Wiese stehen und ein Paket mit 7 Trainern laden: Aufwachen am Stein des Sees', () => {
   assert.deepEqual(resolveStart(st([1, 2, 3, 4, 5, 6, 7, 8], { map: 'wiese', x: 20, y: 10, dir: 'up' }), pack(7)), { map: 'see', ...beaconFront(MAPS.see, 7) });
+});
+
+test('Offenes Gebiet, aber das Feld liegt wieder im Nebel: ohne eigenen Stein an den Aufwachpunkt der Karte', () => {
+  const def = MAPS.wald;
+  const gate = def.gates[0];
+  // Im Tor nach Norden stehen, Stein 2 leuchtet nicht (anderes Paket): Der Wald bleibt, das Tor ist zu.
+  const r = resolveStart(st([1, 3], { map: 'wald', x: gate.x, y: gate.y, dir: 'up' }), pack(8));
+  assert.deepEqual(r, { map: 'wald', ...def.respawn });
 });

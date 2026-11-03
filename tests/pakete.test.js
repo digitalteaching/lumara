@@ -70,3 +70,13 @@ test('Beispielpaket: Die Fragen der Trainer 6 bis 8 haben eigene Texte (eigene E
   assert.equal(new Set(mine).size, mine.length);
   for (const k of mine) assert.ok(!others.has(k), k);
 });
+
+test('Beispielpaket, Themen 6 bis 8: keine richtige Antwort unter den falschen, sinnvolle Schreibweisen gelten', () => {
+  const p = parsePack(read('englisch-6-beispiel.txt')).pack;
+  const all = [...p.trainers.flatMap(t => t.questions), ...p.notes];
+  const q = text => all.find(x => x.text === text);
+  // „every day“ passt auch zum simple past („I walked to school every day“)
+  assert.ok(!q('Which time expression goes with the simple past?').wrong.includes('every day'));
+  assert.ok(q('Wie heißt „vor zwei Tagen“ auf Englisch?').alsoCorrect.includes('2 days ago'));
+  assert.ok(q('Wie heißt „Zahnrad“ auf Englisch?').alsoCorrect.includes('cogwheel'));
+});

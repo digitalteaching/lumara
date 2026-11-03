@@ -86,12 +86,17 @@ export function highestOpenStone(state, pack) {
   return null;
 }
 
-// Gilt die gespeicherte Position noch? Sonst der höchste entzündete Stein in einem offenen Gebiet,
-// sonst der Leuchtturm.
+// Gilt die gespeicherte Position noch? Ist das Gebiet offen, nur das Feld nicht (ein Tor hat sich mit
+// einem anderen Paket wieder geschlossen, etwa der Pfad im Osten der Bucht), bleibt das Kind auf
+// dieser Karte: vor ihrem Stein, wenn er leuchtet, sonst am Aufwachpunkt der Karte. Liegt das ganze
+// Gebiet im Nebel, der höchste entzündete Stein in einem offenen Gebiet, sonst der Leuchtturm.
 export function resolveStart(state, pack) {
   const pos = state.position;
   const def = MAPS[pos?.map];
-  // Auch das Feld selbst muss frei sein: Ein Tor kann sich mit einem anderen Paket wieder schließen.
-  if (def && areaOpen(state, pack, def.area) && createMap(def, { openGates: openGatesFor(def, state, pack) }).canEnter(pos.x, pos.y)) return pos;
+  if (def && areaOpen(state, pack, def.area)) {
+    if (createMap(def, { openGates: openGatesFor(def, state, pack) }).canEnter(pos.x, pos.y)) return pos;
+    const own = beaconOf(def, def.area) && state.stones.includes(def.area);
+    return { map: def.id, ...(own ? beaconFront(def, def.area) : def.respawn) };
+  }
   return highestOpenStone(state, pack) ?? { map: 'bucht', ...BUCHT.respawn };
 }

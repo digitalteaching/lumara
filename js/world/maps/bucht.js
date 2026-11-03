@@ -17,7 +17,7 @@ export const BUCHT = {
     'TT.,,,,,,,,.....T.____......,,,,,,,,..%%',
     'TT.,,,,,,,,.......____......,,,,,,,,..%%',
     'TT.,,,,,,,,.......____.T..............%%',
-    'TT.,,,,,,,,.......____....**.....o....TT',
+    'TT.,,,,,,,,.......____....**.....o.....T',
     'TT.,,,,,,,,.......____....**..........TT',
     'TT................____...............~~~',
     'TT.o.####.........____.....####.....~~~~',
@@ -115,7 +115,8 @@ export const BUCHT = {
     },
     {
       // Nebelrand zur Sternenwiese: Der Pfad öffnet sich erst, wenn der achte Leuchtstein leuchtet.
-      type: 'sign', role: 'fogEdge', x: 37, y: 9, gate: 8, leadsTo: 8, leadsToName: 'die Sternenwiese',
+      // Das Schild steht auf einem früheren Baumfeld, damit jede alte Position begehbar bleibt.
+      type: 'sign', role: 'fogEdge', x: 38, y: 9, gate: 8, leadsTo: 8, leadsToName: 'die Sternenwiese',
       lines: ['Ein steiler Pfad führt nach oben, doch der Nebel ist zu dicht.', 'Man sagt, er weicht erst, wenn der letzte Leuchtstein wieder leuchtet.'],
       linesOpen: ['Osten: Sternenwiese', 'Der Nebel hat sich zurückgezogen. Der Pfad ist frei.'],
     },
