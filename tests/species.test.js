@@ -1,6 +1,15 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { SPECIES, STARTERS, AREA_WILD, TRAINER_CREATURES, displayName, speciesName } from '../js/data/species.js';
+import { SPECIES, STARTERS, AREA_WILD, TRAINER_CREATURES, displayName, speciesName, wildName } from '../js/data/species.js';
+
+test('wilde Wesen mit dem richtigen Artikel', () => {
+  assert.equal(wildName('eichhuscher', 1, 'a'), 'Ein wilder Eichhuscher');
+  assert.equal(wildName('glimmqualle', 1, 'a'), 'Eine wilde Glimmqualle');
+  assert.equal(wildName('haeuschel', 1, 'a'), 'Ein wildes Häuschel');
+  assert.equal(wildName('gischtling', 1, 'the'), 'Der wilde Gischtling');
+  assert.equal(wildName('glimmqualle', 1, 'the'), 'Die wilde Glimmqualle');
+  for (const s of Object.values(SPECIES).filter(s => s.kind === 'wild')) assert.ok(['m', 'f', 'n'].includes(s.gender), s.id);
+});
 
 test('Gebiet 2 hat zwei häufige und eine seltene Art, die Trainer-Art ist weiterentwickelt', () => {
   assert.deepEqual(AREA_WILD[2], { common: ['moosling', 'eichhuscher'], rare: 'rindenwicht' });

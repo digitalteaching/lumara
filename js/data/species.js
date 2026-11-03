@@ -54,6 +54,7 @@ export const SPECIES = {
   gischtling: {
     id: 'gischtling',
     kind: 'wild',
+    gender: 'm',
     area: 1,
     rarity: 'common',
     names: ['Gischtling', 'Brandungsgeist'],
@@ -62,6 +63,7 @@ export const SPECIES = {
   haeuschel: {
     id: 'haeuschel',
     kind: 'wild',
+    gender: 'n',
     area: 1,
     rarity: 'common',
     names: ['Häuschel', 'Muschelturm'],
@@ -70,6 +72,7 @@ export const SPECIES = {
   glimmqualle: {
     id: 'glimmqualle',
     kind: 'wild',
+    gender: 'f',
     area: 1,
     rarity: 'rare',
     names: ['Glimmqualle'],
@@ -80,6 +83,7 @@ export const SPECIES = {
   moosling: {
     id: 'moosling',
     kind: 'wild',
+    gender: 'm',
     area: 2,
     rarity: 'common',
     names: ['Moosling', 'Moosmuffel'],
@@ -88,6 +92,7 @@ export const SPECIES = {
   eichhuscher: {
     id: 'eichhuscher',
     kind: 'wild',
+    gender: 'm',
     area: 2,
     rarity: 'common',
     names: ['Eichhuscher', 'Kronenhuscher'],
@@ -96,6 +101,7 @@ export const SPECIES = {
   rindenwicht: {
     id: 'rindenwicht',
     kind: 'wild',
+    gender: 'm',
     area: 2,
     rarity: 'rare',
     names: ['Rindenwicht'],
@@ -112,6 +118,15 @@ export const TRAINER_CREATURES = {
   1: { species: 'haeuschel', stage: 2 },
   2: { species: 'eichhuscher', stage: 2 },
 };
+
+// „Ein wilder Eichhuscher“, „Die wilde Glimmqualle“: mit dem Artikel, der zum Wesen passt.
+const WILD_ARTICLES = {
+  a: { m: 'Ein wilder', f: 'Eine wilde', n: 'Ein wildes' },
+  the: { m: 'Der wilde', f: 'Die wilde', n: 'Das wilde' },
+};
+export function wildName(speciesId, stage, form) {
+  return `${WILD_ARTICLES[form][SPECIES[speciesId].gender ?? 'n']} ${speciesName(speciesId, stage)}`;
+}
 
 export function speciesName(speciesId, stage) {
   const names = SPECIES[speciesId].names;

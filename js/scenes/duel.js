@@ -4,7 +4,7 @@ import { CONFIG } from '../config.js';
 import { createDuel } from '../duel/duel.js';
 import { createDeck, poolFor } from '../duel/questions.js';
 import { stageForLevel, maxEnergy } from '../duel/progress.js';
-import { speciesName, displayName, AREA_WILD, TRAINER_CREATURES } from '../data/species.js';
+import { speciesName, displayName, wildName, AREA_WILD, TRAINER_CREATURES } from '../data/species.js';
 import { creatureRows } from '../gfx/art/creatures.js';
 import { spriteFrom } from '../gfx/canvasSprites.js';
 import { drawArena, ARENA } from '../gfx/arena.js';
@@ -191,7 +191,7 @@ export function createDuelScene(game, setup, onEnd) {
     if (s.outcome === 'won') {
       anim.foe.faint = t;
       if (setup.trainer) await say(game, [setup.trainer.lines.win], { speaker: setup.trainer.name });
-      else await say(game, [`Das wilde ${foeName} ist erschöpft.`]);
+      else await say(game, [`${wildName(setup.foe.species, setup.foe.stage, 'the')} ist erschöpft.`]);
     } else if (s.outcome === 'lost') {
       anim.own.faint = t;
       if (setup.trainer) await say(game, [setup.trainer.lines.loss], { speaker: setup.trainer.name });
@@ -215,7 +215,7 @@ export function createDuelScene(game, setup, onEnd) {
 
   async function run() {
     if (setup.kind === 'wild') {
-      await say(game, [`Ein wildes ${foeName} taucht auf!`]);
+      await say(game, [`${wildName(setup.foe.species, setup.foe.stage, 'a')} taucht auf!`]);
       if (!alive) return;
       const pick = await choose(game, 'Was tust du?', ['Duell', 'Fliehen']);
       if (!alive) return;
