@@ -93,10 +93,10 @@ export const SEE = {
     { type: 'bush', id: 'strauch-nord', x: 15, y: 3 },
     { type: 'bush', id: 'strauch-ost', x: 36, y: 15 },
 
-    { type: 'sign', x: 17, y: 2, lines: ['Nordlichtsee', 'Das Eis trägt. Um die Löcher bitte einen Bogen machen.'] },
+    { type: 'sign', id: 'schild-eingang', x: 17, y: 2, lines: ['Nordlichtsee', 'Das Eis trägt. Um die Löcher bitte einen Bogen machen.'] },
     {
       // Nebelrand zur Sternenwiese (Design 10.4)
-      type: 'sign', role: 'fogEdge', x: 17, y: 27, gate: 7, leadsTo: 8, leadsToName: 'die Sternenwiese',
+      type: 'sign', id: 'nebel-sued', role: 'fogEdge', x: 17, y: 27, gate: 7, leadsTo: 8, leadsToName: 'die Sternenwiese',
       lines: ['Der Nebel ist hier zu dicht.', 'Vielleicht weicht er, wenn der Leuchtstein des Sees wieder leuchtet.'],
       linesOpen: ['Süden: Sternenwiese', 'Der Nebel hat sich zurückgezogen. Der Weg ist frei.'],
     },

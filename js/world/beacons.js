@@ -2,7 +2,7 @@
 
 import { packProgress, lightStone } from '../state.js';
 import { BUCHT } from './maps/bucht.js';
-import { areaOpen, beaconFront, mapOfBeacon, highestOpenStone } from './network.js';
+import { areaOpen, beaconFront, mapOfBeacon, highestOpenStone, areaName } from './network.js';
 
 // Entzündet wird im selben Schritt wie der Sieg (state.js, applyDuelResult).
 export { lightStone };
@@ -16,7 +16,7 @@ export function travelTargets(state, pack) {
   return state.stones
     .map(n => ({ number: n, def: mapOfBeacon(n) }))
     .filter(t => t.def && areaOpen(state, pack, t.def.area))
-    .map(t => ({ number: t.number, map: t.def.id, name: t.def.name }));
+    .map(t => ({ number: t.number, map: t.def.id, name: areaName(t.def) }));
 }
 
 // Vor dem zuletzt besuchten Stein, wenn sein Gebiet offen ist. Liegt es nach einem Paketwechsel im

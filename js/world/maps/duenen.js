@@ -100,10 +100,10 @@ export const DUENEN = {
     { type: 'bush', id: 'strauch-west', x: 13, y: 19 },
     { type: 'bush', id: 'strauch-ost', x: 35, y: 18 },
 
-    { type: 'sign', x: 17, y: 26, lines: ['Spiegeldünen', 'Nicht jeder glänzende Weg ist echt. Bleib auf dem Pfad!'] },
+    { type: 'sign', id: 'schild-eingang', x: 17, y: 26, lines: ['Spiegeldünen', 'Nicht jeder glänzende Weg ist echt. Bleib auf dem Pfad!'] },
     {
       // Nebelrand zu den Windklippen (Design 10.4): Der Text hängt vom Stand ab, siehe world/fogEdge.js.
-      type: 'sign', role: 'fogEdge', x: 37, y: 12, gate: 4, leadsTo: 5, leadsToName: 'die Windklippen', leadsToPlural: true,
+      type: 'sign', id: 'nebel-ost', role: 'fogEdge', x: 37, y: 12, gate: 4, leadsTo: 5, leadsToName: 'die Windklippen', leadsToPlural: true,
       lines: ['Der Nebel ist hier zu dicht.', 'Vielleicht weicht er, wenn der Leuchtstein der Dünen wieder leuchtet.'],
       linesOpen: ['Osten: Windklippen', 'Der Nebel hat sich zurückgezogen. Der Weg ist frei.'],
     },

@@ -95,10 +95,10 @@ export const WALD = {
     { type: 'bush', id: 'strauch-sued', x: 27, y: 22 },
     { type: 'bush', id: 'strauch-west', x: 6, y: 11 },
 
-    { type: 'sign', x: 17, y: 27, lines: ['Flüsterwald', 'Bleib auf dem Weg, dann hörst du die alten Bäume flüstern.'] },
+    { type: 'sign', id: 'schild-eingang', x: 17, y: 27, lines: ['Flüsterwald', 'Bleib auf dem Weg, dann hörst du die alten Bäume flüstern.'] },
     {
       // Nebelrand zum Pilzmoor (Design 10.4): Der Text hängt vom Stand ab, siehe world/fogEdge.js.
-      type: 'sign', role: 'fogEdge', x: 17, y: 2, gate: 2, leadsTo: 3, leadsToName: 'das Pilzmoor',
+      type: 'sign', id: 'nebel-nord', role: 'fogEdge', x: 17, y: 2, gate: 2, leadsTo: 3, leadsToName: 'das Pilzmoor',
       lines: ['Der Nebel ist hier zu dicht.', 'Vielleicht weicht er, wenn der Leuchtstein des Waldes wieder leuchtet.'],
       linesOpen: ['Norden: Pilzmoor', 'Der Nebel hat sich zurückgezogen. Der Weg ist frei.'],
     },

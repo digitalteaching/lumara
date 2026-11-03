@@ -98,10 +98,10 @@ export const RUINEN = {
     { type: 'bush', id: 'strauch-west', x: 12, y: 12 },
     { type: 'bush', id: 'strauch-ost', x: 22, y: 13 },
 
-    { type: 'sign', x: 3, y: 12, lines: ['Uhrwerkruinen', 'Bitte nicht in die Kanäle fallen. Die Zahnräder nicht anfassen.'] },
+    { type: 'sign', id: 'schild-eingang', x: 3, y: 12, lines: ['Uhrwerkruinen', 'Bitte nicht in die Kanäle fallen. Die Zahnräder nicht anfassen.'] },
     {
       // Nebelrand zum Nordlichtsee (Design 10.4)
-      type: 'sign', role: 'fogEdge', x: 17, y: 27, gate: 6, leadsTo: 7, leadsToName: 'der Nordlichtsee',
+      type: 'sign', id: 'nebel-sued', role: 'fogEdge', x: 17, y: 27, gate: 6, leadsTo: 7, leadsToName: 'der Nordlichtsee',
       lines: ['Der Nebel ist hier zu dicht.', 'Vielleicht weicht er, wenn der Leuchtstein der Ruinen wieder leuchtet.'],
       linesOpen: ['Süden: Nordlichtsee', 'Der Nebel hat sich zurückgezogen. Der Weg ist frei.'],
     },

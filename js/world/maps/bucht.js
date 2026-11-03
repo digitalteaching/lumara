@@ -109,18 +109,18 @@ export const BUCHT = {
 
     {
       // Nebelrand zum Flüsterwald (Design 10.4): Der Text hängt vom Stand ab, siehe world/fogEdge.js.
-      type: 'sign', role: 'fogEdge', x: 17, y: 3, gate: 1, leadsTo: 2, leadsToName: 'der Flüsterwald',
+      type: 'sign', id: 'nebel-nord', role: 'fogEdge', x: 17, y: 3, gate: 1, leadsTo: 2, leadsToName: 'der Flüsterwald',
       lines: ['Der Nebel ist hier zu dicht.', 'Vielleicht weicht er, wenn der Leuchtstein der Bucht wieder leuchtet.'],
       linesOpen: ['Norden: Flüsterwald', 'Der Nebel hat sich zurückgezogen. Der Weg ist frei.'],
     },
     {
       // Nebelrand zur Sternenwiese: Der Pfad öffnet sich erst, wenn der achte Leuchtstein leuchtet.
       // Das Schild steht auf einem früheren Baumfeld, damit jede alte Position begehbar bleibt.
-      type: 'sign', role: 'fogEdge', x: 38, y: 9, gate: 8, leadsTo: 8, leadsToName: 'die Sternenwiese',
+      type: 'sign', id: 'nebel-ost', role: 'fogEdge', x: 38, y: 9, gate: 8, leadsTo: 8, leadsToName: 'die Sternenwiese',
       lines: ['Ein steiler Pfad führt nach oben, doch der Nebel ist zu dicht.', 'Man sagt, er weicht erst, wenn der letzte Leuchtstein wieder leuchtet.'],
       linesOpen: ['Osten: Sternenwiese', 'Der Nebel hat sich zurückgezogen. Der Pfad ist frei.'],
     },
-    { type: 'sign', x: 22, y: 13, lines: ['Leuchtturmbucht', 'Norden: Flüsterwald · Osten: Leuchtturm'] },
+    { type: 'sign', id: 'schild-dorf', x: 22, y: 13, lines: ['Leuchtturmbucht', 'Norden: Flüsterwald · Osten: Leuchtturm'] },
 
     // Leuchtstein der Bucht, neben dem Nordweg und außerhalb des Blicks der Trainerin
     { type: 'beacon', number: 1, x: 24, y: 4 },

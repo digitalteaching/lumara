@@ -11,6 +11,8 @@ import { KLIPPEN } from './maps/klippen.js';
 import { RUINEN } from './maps/ruinen.js';
 import { SEE } from './maps/see.js';
 import { WIESE } from './maps/wiese.js';
+import { language, mark } from '../i18n/i18n.js';
+import { EN_WORLD } from '../i18n/en-world.js';
 
 export const MAPS = { bucht: BUCHT, wald: WALD, moor: MOOR, duenen: DUENEN, klippen: KLIPPEN, ruinen: RUINEN, see: SEE, wiese: WIESE };
 
@@ -62,10 +64,36 @@ export function whisperLine(o, passCount) {
 // Bewohner reagieren auf den Fortschritt (Design 5.6): eigene Sätze, sobald der Weg ins nächste
 // Gebiet wirklich offen ist, sonst sobald der Stein ihres Gebiets leuchtet.
 export function npcLines(o, state, area, pack) {
-  if (o.linesOpen && pack && areaOpen(state, pack, area + 1)) return o.linesOpen;
-  if (o.linesLit && state.stones.includes(area)) return o.linesLit;
+  const def = mapOfArea(area);
+  if (o.linesOpen && pack && areaOpen(state, pack, area + 1)) return worldLines(def, o, 'linesOpen');
+  if (o.linesLit && state.stones.includes(area)) return worldLines(def, o, 'linesLit');
   // Bewohner, die von der Uhr erzählen, schweigen davon, wenn das Paket keine Uhr hat.
-  return o.linesNoClock && pack?.timePressure === 'aus' ? o.linesNoClock : o.lines;
+  return worldLines(def, o, o.linesNoClock && pack?.timePressure === 'aus' ? 'linesNoClock' : 'lines');
+}
+
+// ---------- Spielsprache (Design 10.6) ----------
+// Die deutschen Texte stehen in den Karten, jede andere Sprache in js/i18n/<sprache>-world.js.
+const LOCAL_WORLD = { en: EN_WORLD };
+const localWorld = () => LOCAL_WORLD[language()] ?? null;
+
+export const mapOfArea = area => Object.values(MAPS).find(d => d.area === area) ?? null;
+
+// Ein Textfeld eines Objekts (lines, linesLit, linesOpen, linesNoClock, afterWin) in der Spielsprache.
+export function worldLines(def, o, field) {
+  const id = o.type === 'trainer' ? 'trainer' : o.id;
+  const v = (def && localWorld()?.objects[def.id]?.[id]?.[field]) ?? o[field];
+  if (v == null) return v;
+  return Array.isArray(v) ? v.map(mark) : mark(v);
+}
+
+export const areaName = def => mark(localWorld()?.areas[def.id]?.name ?? def.name);
+// Im Satz „Der Leuchtstein der Bucht …“ / „The light stone of Lighthouse Bay …“
+export const areaOf = def => mark(localWorld()?.areas[def.id]?.of ?? def.genitive);
+// Ziel hinter einem Nebelschild, mit Artikel: „die Windklippen“ / „the Windy Cliffs“.
+export function destinationName(sign) {
+  const target = mapOfArea(sign.leadsTo);
+  const local = target && localWorld()?.areas[target.id]?.the;
+  return mark(local ?? sign.leadsToName);
 }
 
 export function mapOfBeacon(number) {

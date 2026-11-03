@@ -7,7 +7,7 @@ import { TILES, BUILDINGS, PROPS, OVERLAY_TILES } from '../gfx/art/tiles.js';
 import { spriteFrom } from '../gfx/canvasSprites.js';
 import { CHARACTERS } from '../gfx/art/characters.js';
 import { say } from '../ui/dialog.js';
-import { npcLines } from '../world/network.js';
+import { npcLines, worldLines } from '../world/network.js';
 import { CONFIG } from '../config.js';
 import { createParticles } from '../gfx/particles.js';
 import { createRng } from '../core/rng.js';
@@ -535,19 +535,19 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
       return true;
     }
     if (o.type === 'sign') {
-      await say(game, o.lines);
+      await say(game, worldLines(def, o, 'lines'));
       return true;
     }
     // Zierobjekte mit Inschrift (etwa Glasstatuen) spricht man an wie ein Schild.
     if (o.type === 'deco' && o.lines) {
-      await say(game, o.lines);
+      await say(game, worldLines(def, o, 'lines'));
       return true;
     }
     if (o.type === 'building') {
       // Jede Zelle der vorderen Reihe zählt als Tür, wenn man nach oben darauf schaut.
       const front = player.dir === 'up' && ev.y === o.y + o.h - 1;
       if (!front || o.onDoor === 'heal') return false;
-      await say(game, o.lines ?? [t('world.doorLocked')]);
+      await say(game, worldLines(def, o, 'lines') ?? [t('world.doorLocked')]);
       return true;
     }
     return false;

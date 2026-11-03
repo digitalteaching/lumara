@@ -10,7 +10,7 @@ import { trainerSees } from '../world/map.js';
 import { fogEdgeLines, fogSignLines, fogSignFor } from '../world/fogEdge.js';
 import { caveGateLines, caveSocketLights } from '../world/caveGate.js';
 import { breakName } from '../world/islandMap.js';
-import { MAPS, areaConfig, areaOpen, exitAt, openGatesFor, resolveStart, whisperLine, beaconFront, packWorldKey } from '../world/network.js';
+import { MAPS, areaConfig, areaOpen, exitAt, openGatesFor, resolveStart, whisperLine, beaconFront, packWorldKey, worldLines, areaOf } from '../world/network.js';
 import { visitStone, travelTargets, respawnPoint, challengeMark } from '../world/beacons.js';
 import { playBeaconScene } from './beacon.js';
 import { bushKey, bushReady, harvest } from '../items/food.js';
@@ -151,11 +151,11 @@ export function createGameWorld(game) {
   async function afterStoneLit() {
     await playBeaconScene(game, world, trainerNumber);
     const sign = fogSignFor(def, trainerNumber);
-    const lit = t('world.beaconRelit', { of: def.genitive });
+    const lit = t('world.beaconRelit', { of: areaOf(def) });
     if (sign && areaOpen(game.state, game.pack.data, sign.leadsTo)) {
       await say(game, [`${lit} ${t('world.mistRetreats')}`]);
     } else {
-      const more = sign ? fogEdgeLines(sign, { gateBeaten: true, packHasNext: game.pack.data.trainers.some(t => t.number === sign.leadsTo), builtAreas: CONFIG.world.builtAreas }) : null;
+      const more = sign ? fogEdgeLines(sign, { gateBeaten: true, packHasNext: game.pack.data.trainers.some(x => x.number === sign.leadsTo), builtAreas: CONFIG.world.builtAreas }, def) : null;
       await say(game, [lit, ...(more ?? [])]);
     }
   }
@@ -206,7 +206,7 @@ export function createGameWorld(game) {
     if (tree && tree !== nearWhisper) {
       const n = whisperCount.get(tree) ?? 0;
       whisperCount.set(tree, n + 1);
-      showWhisper(whisperLine(tree, n));
+      showWhisper(whisperLine({ lines: worldLines(def, tree, 'lines') }, n));
     }
     nearWhisper = tree;
     return null;
@@ -338,9 +338,9 @@ export function createGameWorld(game) {
     // Ob der Stein leuchtet, entscheidet über das Tor (auch mit einem anderen Paket entzündet).
     await say(game, fogSignLines(o, {
       gateBeaten: game.state.stones.includes(o.gate),
-      packHasNext: game.pack.data.trainers.some(t => t.number === o.leadsTo),
+      packHasNext: game.pack.data.trainers.some(x => x.number === o.leadsTo),
       builtAreas: CONFIG.world.builtAreas,
-    }));
+    }, def));
     return true;
   });
 
@@ -384,9 +384,10 @@ export function createGameWorld(game) {
   // Text vom Nebelrand (nächstes Thema fehlt im Paket oder das Gebiet ist noch nicht gebaut).
   function afterWinLines(t) {
     const sign = fogSignFor(def, trainerNumber);
-    if (!sign) return [t.afterWin];
-    if (areaOpen(game.state, game.pack.data, sign.leadsTo)) return [t.afterWin];
-    return fogEdgeLines(sign, { gateBeaten: true, packHasNext: game.pack.data.trainers.some(x => x.number === sign.leadsTo), builtAreas: CONFIG.world.builtAreas }) ?? [t.afterWin];
+    const line = worldLines(def, t, 'afterWin');
+    if (!sign) return [line];
+    if (areaOpen(game.state, game.pack.data, sign.leadsTo)) return [line];
+    return fogEdgeLines(sign, { gateBeaten: true, packHasNext: game.pack.data.trainers.some(x => x.number === sign.leadsTo), builtAreas: CONFIG.world.builtAreas }, def) ?? [line];
   }
 
   // Weißer Stern über einem Trainer, dessen Stein leuchtet, der mit diesem Paket aber noch nicht

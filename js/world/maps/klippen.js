@@ -101,10 +101,10 @@ export const KLIPPEN = {
     { type: 'bush', id: 'strauch-west', x: 5, y: 17 },
     { type: 'bush', id: 'strauch-sued', x: 24, y: 17 },
 
-    { type: 'sign', x: 4, y: 16, lines: ['Windklippen', 'Halt dich an den Seilen fest und schau beim Laufen nach vorn.'] },
+    { type: 'sign', id: 'schild-eingang', x: 4, y: 16, lines: ['Windklippen', 'Halt dich an den Seilen fest und schau beim Laufen nach vorn.'] },
     {
       // Nebelrand zu den Uhrwerkruinen (Design 10.4)
-      type: 'sign', role: 'fogEdge', x: 37, y: 12, gate: 5, leadsTo: 6, leadsToName: 'die Uhrwerkruinen', leadsToPlural: true,
+      type: 'sign', id: 'nebel-ost', role: 'fogEdge', x: 37, y: 12, gate: 5, leadsTo: 6, leadsToName: 'die Uhrwerkruinen', leadsToPlural: true,
       lines: ['Der Nebel ist hier zu dicht.', 'Vielleicht weicht er, wenn der Leuchtstein der Klippen wieder leuchtet.'],
       linesOpen: ['Osten: Uhrwerkruinen', 'Der Nebel hat sich zurückgezogen. Der Weg ist frei.'],
     },

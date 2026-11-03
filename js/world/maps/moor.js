@@ -101,10 +101,10 @@ export const MOOR = {
     // Die Irrlichtinsel: sichtbar, aber unerreichbar (Platz für Plan 4)
     { type: 'deco', id: 'irrlichtinsel', x: 7, y: 11, prop: 'bigshroom' },
 
-    { type: 'sign', x: 17, y: 26, lines: ['Pilzmoor', 'Bleib auf dem Torf und den Stegen. Das Moorwasser ist tief.'] },
+    { type: 'sign', id: 'schild-eingang', x: 17, y: 26, lines: ['Pilzmoor', 'Bleib auf dem Torf und den Stegen. Das Moorwasser ist tief.'] },
     {
       // Nebelrand zu den Spiegeldünen (Design 10.4): Der Text hängt vom Stand ab, siehe world/fogEdge.js.
-      type: 'sign', role: 'fogEdge', x: 17, y: 2, gate: 3, leadsTo: 4, leadsToName: 'die Spiegeldünen', leadsToPlural: true,
+      type: 'sign', id: 'nebel-nord', role: 'fogEdge', x: 17, y: 2, gate: 3, leadsTo: 4, leadsToName: 'die Spiegeldünen', leadsToPlural: true,
       lines: ['Der Nebel ist hier zu dicht.', 'Vielleicht weicht er, wenn der Leuchtstein des Moors wieder leuchtet.'],
       linesOpen: ['Norden: Spiegeldünen', 'Der Nebel hat sich zurückgezogen. Der Weg ist frei.'],
     },

@@ -3,10 +3,10 @@
 
 import { el } from '../ui/dom.js';
 import { STORY } from '../data/story.js';
-import { MAPS } from '../world/network.js';
+import { MAPS, mapOfArea, areaName as nameOf } from '../world/network.js';
 import { t } from '../i18n/i18n.js';
 
-const areaName = area => Object.values(MAPS).find(m => m.area === area)?.name ?? t('diary.area', { n: area });
+const areaName = area => (mapOfArea(area) ? nameOf(mapOfArea(area)) : t('diary.area', { n: area }));
 
 export function diaryPage(game) {
   return {

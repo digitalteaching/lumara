@@ -9,6 +9,12 @@ import { fogEdgeLines } from '../js/world/fogEdge.js';
 import { caveGateLines } from '../js/world/caveGate.js';
 import { mapLabels, caveLabels } from '../js/world/islandMap.js';
 import { backupMessage } from '../js/save/backup.js';
+import { EN_WORLD } from '../js/i18n/en-world.js';
+import { MAPS, npcLines, areaName, areaOf, worldLines } from '../js/world/network.js';
+import { BUCHT } from '../js/world/maps/bucht.js';
+import { MOOR } from '../js/world/maps/moor.js';
+import { DUENEN } from '../js/world/maps/duenen.js';
+import { newGameState } from '../js/state.js';
 
 test.afterEach(() => {
   setLanguage('de');
@@ -82,4 +88,41 @@ test('Menü auf Englisch, die Seite für die Lehrkraft bleibt Deutsch', () => {
   assert.equal(backupMessage('unknown'), 'This file is not a Lumara saved game.');
   setLanguage('de');
   assert.equal(backupMessage('damaged'), 'Diese Sicherung ist beschädigt und lässt sich nicht laden.');
+});
+
+const FIELDS = ['lines', 'linesLit', 'linesOpen', 'linesNoClock', 'afterWin'];
+
+test('Jeder Text auf jeder Karte hat eine id und eine englische Fassung', () => {
+  for (const def of Object.values(MAPS)) {
+    const a = EN_WORLD.areas[def.id];
+    assert.ok(a?.name && a?.of && a?.the, def.id);
+    const ids = new Set();
+    for (const o of def.objects) {
+      const fields = FIELDS.filter(f => o[f] != null);
+      if (!fields.length) continue;
+      const id = o.type === 'trainer' ? 'trainer' : o.id;
+      assert.ok(id, `${def.id}: ${o.type} bei ${o.x},${o.y} ohne id`);
+      assert.ok(!ids.has(id), `${def.id}: id ${id} doppelt`);
+      ids.add(id);
+      for (const f of fields) {
+        const en = EN_WORLD.objects[def.id]?.[id]?.[f];
+        assert.ok(Array.isArray(o[f]) ? Array.isArray(en) && en.length > 0 : typeof en === 'string' && en, `${def.id}.${id}.${f}`);
+      }
+    }
+    for (const id of Object.keys(EN_WORLD.objects[def.id] ?? {})) assert.ok(ids.has(id), `${def.id}: ${id} gibt es nicht auf der Karte`);
+  }
+});
+
+test('Bewohner, Schilder und Leuchtstein auf Englisch', () => {
+  setLanguage('en');
+  const ilvy = BUCHT.objects.find(o => o.id === 'ilvy');
+  assert.equal(npcLines(ilvy, newGameState({ name: 'A', species: 'nixi', nickname: null }), 1, null)[0], EN_WORLD.objects.bucht.ilvy.lines[0]);
+  assert.equal(areaName(MOOR), 'Mushroom Marsh');
+  assert.equal(t('world.beaconRelit', { of: areaOf(MOOR) }), 'The light stone of the Mushroom Marsh shines again!');
+  const sign = DUENEN.objects.find(o => o.id === 'nebel-ost');
+  assert.deepEqual(worldLines(DUENEN, sign, 'linesOpen'), ['East: Windy Cliffs', 'The mist has moved back. The way is free.']);
+  assert.deepEqual(fogEdgeLines(sign, { gateBeaten: true, packHasNext: true, builtAreas: 4 }, DUENEN)[0], 'Beyond the mist lie the Windy Cliffs.');
+  setLanguage('de');
+  assert.equal(areaName(MOOR), 'Pilzmoor');
+  assert.deepEqual(fogEdgeLines(sign, { gateBeaten: true, packHasNext: true, builtAreas: 4 }, DUENEN)[0], 'Hinter dem Nebel liegen die Windklippen.');
 });

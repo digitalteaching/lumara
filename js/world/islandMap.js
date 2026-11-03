@@ -2,7 +2,7 @@
 // Menüseite. Im Nebel ist, was mit diesem Paket nicht offen ist, auch wenn der Stein leuchtet.
 // Jeder Zustand steht als Text da, nicht nur als Farbe (Design 14). DOM-frei.
 
-import { MAPS, areaOpen } from './network.js';
+import { MAPS, areaOpen, areaName } from './network.js';
 import { t } from '../i18n/i18n.js';
 
 // Lage im Raster mit 3 Spalten und 5 Zeilen: unten die Bucht, links hinauf Wald, Moor und Dünen,
@@ -17,7 +17,7 @@ export function islandMap(state, pack) {
     const area = Number(key);
     return {
       area,
-      name: defs.find(d => d.area === area)?.name ?? '',
+      name: (d => (d ? areaName(d) : ''))(defs.find(d => d.area === area)),
       col,
       row,
       open: areaOpen(state, pack, area),

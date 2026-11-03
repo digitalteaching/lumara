@@ -84,10 +84,10 @@ export const WIESE = {
     { type: 'bush', id: 'strauch-sued', x: 14, y: 21 },
     { type: 'bush', id: 'strauch-ost', x: 34, y: 11 },
 
-    { type: 'sign', x: 17, y: 2, lines: ['Sternenwiese', 'Bitte leise sein. Die Nachtschafe schlafen nie, aber sie träumen gern.'] },
+    { type: 'sign', id: 'schild-eingang', x: 17, y: 2, lines: ['Sternenwiese', 'Bitte leise sein. Die Nachtschafe schlafen nie, aber sie träumen gern.'] },
     {
       // Nebelrand am Pfad hinunter zur Bucht (Design 5.2, 10.4)
-      type: 'sign', role: 'fogEdge', x: 2, y: 19, gate: 8, leadsTo: 1, leadsToName: 'die Leuchtturmbucht',
+      type: 'sign', id: 'nebel-west', role: 'fogEdge', x: 2, y: 19, gate: 8, leadsTo: 1, leadsToName: 'die Leuchtturmbucht',
       lines: ['Ein Pfad führt hinunter zur Bucht, doch der Nebel ist zu dicht.', 'Vielleicht weicht er, wenn der Leuchtstein der Wiese wieder leuchtet.'],
       linesOpen: ['Westen: Leuchtturmbucht', 'Der Nebel hat sich zurückgezogen. Der Pfad führt hinunter zur Bucht.'],
     },
