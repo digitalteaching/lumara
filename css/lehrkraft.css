@@ -1,0 +1,88 @@
+/* Lumara · Seite für Lehrkräfte: eine ruhige, normale Webseite im Stil der Kästen aus dem Spiel. */
+
+:root {
+  --cream: #f3ecd2;
+  --paper: #fffaf0;
+  --frame: #a8743a;
+  --frame-dark: #7a5236;
+  --ink: #1d2b3a;
+  --button: #2f4a5e;
+  --ok: #2f7a40;
+  --bad: #b03224;
+  --warn: #8a5a00;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 18px;
+  line-height: 1.45;
+  -webkit-text-size-adjust: 100%;
+}
+
+header, main, footer { max-width: 920px; margin: 0 auto; padding: 0 16px; }
+header { padding-top: 24px; }
+h1 { margin: 0 0 6px; font-size: 30px; }
+h2 { margin: 0 0 8px; font-size: 24px; }
+h3 { margin: 16px 0 6px; font-size: 19px; }
+p { margin: 6px 0; }
+a { color: var(--button); }
+
+.card {
+  background: var(--paper);
+  border: 4px solid var(--frame);
+  border-radius: 8px;
+  box-shadow: 0 0 0 2px var(--frame-dark);
+  padding: 16px 18px;
+  margin: 20px 0;
+}
+
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px 16px; margin: 12px 0 16px; }
+label { display: flex; flex-direction: column; gap: 4px; font-weight: 600; font-size: 16px; }
+label.check { flex-direction: row; align-items: center; gap: 10px; padding-top: 24px; }
+input:not([type]), input[name] { font: inherit; font-size: 18px; padding: 10px 12px; min-height: 48px; border: 2px solid var(--frame); border-radius: 6px; background: #fff; color: var(--ink); }
+input[type="checkbox"] { width: 26px; height: 26px; min-height: 0; accent-color: var(--button); }
+input:focus-visible { outline: 3px solid var(--button); outline-offset: 1px; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 10px 18px;
+  border: 3px solid var(--frame-dark);
+  border-radius: 6px;
+  background: var(--button);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn.primary { background: var(--frame); }
+.btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.btn.file { position: relative; flex-direction: row; font-size: 18px; }
+.btn.file input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+.result { font-weight: 700; font-size: 22px; margin: 12px 0; }
+.result.ok { color: var(--ok); }
+.result.bad { color: var(--bad); }
+.problems { color: var(--bad); font-weight: 600; }
+.errors { color: var(--bad); }
+.warnings, .warn { color: var(--warn); }
+.errors, .warnings { padding-left: 20px; }
+.small { font-size: 15px; opacity: 0.8; }
+
+.table-wrap { overflow-x: auto; margin: 12px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 16px; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #d8c9a4; vertical-align: middle; }
+th { background: var(--cream); }
+td .btn { min-height: 40px; padding: 6px 12px; font-size: 15px; }
+
+#probe-frame { display: block; width: 100%; max-width: 720px; aspect-ratio: 3 / 2; border: 4px solid var(--frame); border-radius: 6px; background: #12111f; }
+
+footer { padding: 8px 16px 32px; font-size: 15px; opacity: 0.8; }

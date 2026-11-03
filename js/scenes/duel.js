@@ -46,6 +46,21 @@ export function makeTrainerSetup(game, number) {
   };
 }
 
+// Probefrage für Lehrkräfte (Design 12.3): ein Trainerduell mit den Fragen eines beliebigen Trainers.
+// Wesen gibt es bisher nur für Trainer 1, die anderen leihen sich das von Trainer 1 (bis Plan 3).
+export function makeProbeSetup(game, number) {
+  const pack = game.pack.data;
+  const t = pack.trainers.find(x => x.number === number) ?? pack.trainers[0];
+  const cfg = CONFIG.trainers[t.number - 1];
+  return {
+    kind: 'trainer',
+    area: t.number,
+    foe: { ...(TRAINER_CREATURES[t.number] ?? TRAINER_CREATURES[1]), level: cfg.level, maxEnergy: cfg.energy },
+    trainer: { number: t.number, name: t.name, lines: { hello: t.hello, win: t.win, loss: t.loss } },
+    pool: poolFor(pack, { kind: 'trainer', trainerNumber: t.number, beaten: [] }),
+  };
+}
+
 // Weiße Silhouette eines Sprites für das Aufhellen bei Treffern.
 const whiteCache = new WeakMap();
 function whiteOf(img) {

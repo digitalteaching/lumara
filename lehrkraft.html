@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3ecd2">
+  <title>Lumara · Für Lehrkräfte</title>
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/lehrkraft.css">
+</head>
+<body>
+  <header>
+    <h1>Lumara · Für Lehrkräfte</h1>
+    <p>Hier prüfst du die Statistik eines Kindes und dein eigenes Lernpaket. Alles bleibt auf diesem Gerät, nichts wird hochgeladen.</p>
+  </header>
+
+  <main>
+    <section class="card" aria-labelledby="h-stats">
+      <h2 id="h-stats">Statistik prüfen</h2>
+      <p>Tippe die Werte von der Seite „Für die Lehrkraft“ (Menü → Einstellungen) ab.</p>
+      <form id="stats-form" novalidate>
+        <div class="grid">
+          <label>Name <input name="name" autocomplete="off" spellcheck="false"></label>
+          <label>Paketkennung <input name="packId" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="K7PX"></label>
+          <label>Level <input name="level" inputmode="numeric" autocomplete="off"></label>
+          <label>Stufe <input name="stage" inputmode="numeric" autocomplete="off"></label>
+          <label>Gewonnene Duelle <input name="wins" inputmode="numeric" autocomplete="off"></label>
+          <label>Trefferquote (%) <input name="accuracy" inputmode="numeric" autocomplete="off"></label>
+          <label>Spielzeit (h:mm) <input name="playTime" autocomplete="off" placeholder="1:05"></label>
+          <label>Trainer besiegt <input name="trainers" inputmode="numeric" autocomplete="off"></label>
+          <label class="check"><input type="checkbox" name="boss"> Endgegner besiegt</label>
+          <label>Prüfcode <input name="code" maxlength="9" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="K7P-3QX"></label>
+        </div>
+        <button type="submit" class="btn primary">Prüfen</button>
+      </form>
+      <div id="stats-result" role="status" aria-live="polite"></div>
+      <p class="small">Der Prüfcode ist eine einfache Hürde und nicht fälschungssicher.</p>
+    </section>
+
+    <section class="card" aria-labelledby="h-pack">
+      <h2 id="h-pack">Lernpaket prüfen</h2>
+      <p>Wähle deine Paketdatei (.txt). Du siehst Fehler und Hinweise mit Zeilennummern, eine Übersicht pro Trainer und kannst Fragen in der echten Duell-Ansicht ausprobieren.</p>
+      <label class="btn primary file">Paketdatei auswählen <input type="file" id="pack-file" accept=".txt,text/plain"></label>
+      <div id="pack-result"></div>
+      <div id="probe" hidden>
+        <h3 id="probe-title">Probefrage</h3>
+        <iframe id="probe-frame" title="Probefrage in der Duell-Ansicht"></iframe>
+        <p class="small">Im Rahmen läuft das Spiel mit deinem Paket. Es wird nichts gespeichert.</p>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="h-material">
+      <h2 id="h-material">Material</h2>
+      <ul>
+        <li><a href="pakete/vorlage.txt" download>Vorlage für ein eigenes Lernpaket</a> (mit Erklärungen zu jedem Schlüsselwort)</li>
+        <li><a href="pakete/englisch-6-beispiel.txt" download>Beispielpaket Englisch Jahrgang 6</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer><a href="./">Zum Spiel</a></footer>
+  <script type="module" src="js/teacher/page.js"></script>
+</body>
+</html>

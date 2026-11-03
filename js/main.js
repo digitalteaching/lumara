@@ -20,7 +20,9 @@ import { createPlayClock } from './save/playClock.js';
 import { makeSaver } from './app/flow.js';
 import { APP_VERSION } from './version.js';
 import { requestPersist } from './app/platform.js';
-import { createDuelScene, makeWildSetup, makeTrainerSetup } from './scenes/duel.js';
+import { createDuelScene, makeWildSetup, makeTrainerSetup, makeProbeSetup } from './scenes/duel.js';
+import { maxEnergy } from './duel/progress.js';
+import { el } from './ui/dom.js';
 
 const screen = createScreen(document.getElementById('screen'), document.getElementById('stage'));
 const input = createInput();
@@ -44,6 +46,8 @@ const game = {
   saveEnabled: false, // nur der normale Startablauf speichert
   save: null,
   version: APP_VERSION,
+  probe: false, // Probefrage für Lehrkräfte
+  updateReady: false,
   get mode() {
     return document.body.dataset.mode;
   },
@@ -104,7 +108,39 @@ async function devDuel(kind) {
   again();
 }
 
-if (isLocal && params.has('galerie')) game.go(createGalleryScene(game));
+// Probefrage im Rahmen der Seite für Lehrkräfte (Design 12.3). Wirkt auf jedem Host, speichert nie.
+async function probeStart() {
+  game.probe = true;
+  if (window.parent === window) {
+    game.panel.append(el('div', { class: 'box screen-card' }, el('p', {}, 'Diese Ansicht gehört zur Seite für Lehrkräfte.')));
+    return;
+  }
+  const msg = await new Promise(resolve => {
+    window.addEventListener('message', function onMessage(e) {
+      if (e.origin !== location.origin || e.source !== window.parent || e.data?.type !== 'lumara-probe') return;
+      window.removeEventListener('message', onMessage);
+      resolve(e.data);
+    });
+    window.parent.postMessage({ type: 'lumara-probe-ready' }, location.origin);
+  });
+  const text = String(msg.packText ?? '');
+  const r = parsePack(text);
+  if (!r.ok) {
+    game.panel.append(el('div', { class: 'box screen-card' }, el('p', {}, 'Dieses Lernpaket hat Fehler. Prüfe es zuerst auf der Seite.')));
+    return;
+  }
+  game.pack = { text, data: r.pack };
+  game.state = newGameState({ name: 'Probe', species: 'kiesel', nickname: null });
+  const trainer = Number(msg.trainer) || 1;
+  const again = () => {
+    game.state.creature.energy = maxEnergy(game.state.creature);
+    game.go(createDuelScene(game, makeProbeSetup(game, trainer), again));
+  };
+  again();
+}
+
+if (params.has('probe')) probeStart();
+else if (isLocal && params.has('galerie')) game.go(createGalleryScene(game));
 else if (isLocal && params.has('duell')) devDuel(params.get('duell'));
 else if (isLocal && params.has('dev')) devStart();
 else startFlow(game, game.store.load());
