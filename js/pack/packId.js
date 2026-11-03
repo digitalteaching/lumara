@@ -3,7 +3,8 @@
 
 import { hash32 } from '../core/hash.js';
 
-const ALPHABET = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
+// Ohne verwechselbare Zeichen (kein 0, O, 1, I, L). Auch für den Prüfcode (Design 12.2).
+export const ALPHABET = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
 
 export function packIdentity(text, kennung) {
   if (kennung) return kennung;

@@ -538,6 +538,21 @@ body:not([data-mode="walk"]) .menu-btn { display: none; }
 .btn.danger { background: var(--bad); color: #fff; }
 .small { font-size: var(--text-small); }
 
+/* Für die Lehrkraft: alles auf einen Blick, für einen Screenshot */
+.sheet-card.wide { width: min(1000px, 100%); }
+.teacher { display: grid; grid-template-columns: 3fr 2fr; gap: 14px 20px; }
+.teacher-values { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; font-size: var(--text); }
+.teacher-values dt { font-weight: 700; color: var(--frame-dark); }
+.teacher-values dd { margin: 0; font-weight: 600; }
+.teacher-side { display: flex; flex-direction: column; gap: 6px; font-size: var(--text); }
+.teacher-code { display: flex; flex-direction: column; align-items: center; padding: 8px; border: 3px solid var(--ink); border-radius: 6px; background: #fff; }
+.teacher-code span { font-weight: 700; }
+.teacher-code b { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: clamp(30px, 5vw, 44px); letter-spacing: 0.08em; }
+.teacher-topics-title { margin: 4px 0 0; font-weight: 700; color: var(--frame-dark); }
+.teacher-topics { margin: 0; padding-left: 1.6em; display: flex; flex-direction: column; gap: 2px; }
+.teacher-foot { margin: 0; font-size: 14px; opacity: 0.8; word-break: break-all; }
+@media (max-width: 700px) { .teacher { grid-template-columns: 1fr; } }
+
 /* Erst installieren: Schritte mit Teilen-Symbol */
 .install-steps { margin: 0; padding-left: 1.4em; text-align: left; display: flex; flex-direction: column; gap: 6px; }
 .share-icon { width: 1.2em; height: 1.2em; vertical-align: -0.2em; color: var(--button); }

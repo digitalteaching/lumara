@@ -2,7 +2,7 @@
 // zurückblättert. B, Esc und „Zurück“ gehen eine Seite zurück, M schließt, Pfeil hoch und runter
 // bewegen den Fokus. Jede neue Seite nimmt kurz keine Tipps an (Doppeltipp-Schutz).
 //
-// Page = { title: string, render(body: HTMLElement, nav: Nav): void }
+// Page = { title: string, wide?: boolean, render(body: HTMLElement, nav: Nav): void }
 // Nav  = { push(page), back(), close(), refresh() }
 
 import { el, clear } from './dom.js';
@@ -42,6 +42,7 @@ export function openSheet(game, page) {
       const p = stack.at(-1);
       clear(body);
       title.textContent = p.title;
+      card.classList.toggle('wide', !!p.wide);
       p.render(body, nav);
       body.scrollTop = 0;
       guard.reset();
