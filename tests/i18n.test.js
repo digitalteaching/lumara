@@ -8,6 +8,7 @@ import { defaultLines } from '../js/data/texts.js';
 import { fogEdgeLines } from '../js/world/fogEdge.js';
 import { caveGateLines } from '../js/world/caveGate.js';
 import { mapLabels, caveLabels } from '../js/world/islandMap.js';
+import { backupMessage } from '../js/save/backup.js';
 
 test.afterEach(() => {
   setLanguage('de');
@@ -43,11 +44,14 @@ test('Englisch hat jeden deutschen Schlüssel, mit gleicher Art und gleichen Pla
   assert.deepEqual(Object.keys(EN).filter(k => !(k in DE)), []);
 });
 
-test('Englische Texte sind nicht leer und je Zeile höchstens etwa 90 Zeichen lang', () => {
+// Sprechblasen haben je Zeile höchstens etwa 90 Zeichen. Texte auf Menüseiten dürfen länger sein,
+// sie brechen um.
+const BUBBLES = /^(intro|eggs|world|duel|note|stone|cave|fog|trainer|recover)\./;
+test('Englische Texte sind nicht leer, Sprechblasen je Zeile höchstens etwa 90 Zeichen lang', () => {
   for (const [k, v] of Object.entries(EN)) {
     for (const line of Array.isArray(v) ? v : [v]) {
       assert.ok(line.trim(), k);
-      assert.ok(line.length <= 110, `${k}: ${line.length} Zeichen`);
+      if (BUBBLES.test(k)) assert.ok(line.length <= 110, `${k}: ${line.length} Zeichen`);
     }
   }
 });
@@ -69,4 +73,13 @@ test('Welt auf Englisch: Nebelschild, Höhlentor und Karte der Insel', () => {
   assert.deepEqual(caveGateLines(3), ['A big gate in the mountain with eight sockets.', '3 of them are glowing.', 'Maybe it opens when all eight light stones glow again.']);
   assert.deepEqual(mapLabels({ open: false, lit: true, here: false }), ['☁ In the mist']);
   assert.deepEqual(caveLabels({ lit: 8 }), ['Mountain with a cave', '8 of 8 sockets are glowing']);
+});
+
+test('Menü auf Englisch, die Seite für die Lehrkraft bleibt Deutsch', () => {
+  setLanguage('en');
+  assert.equal(t('menu.creature'), 'Creature');
+  assert.equal(t('menu.teacher'), 'For your teacher');
+  assert.equal(backupMessage('unknown'), 'This file is not a Lumara saved game.');
+  setLanguage('de');
+  assert.equal(backupMessage('damaged'), 'Diese Sicherung ist beschädigt und lässt sich nicht laden.');
 });

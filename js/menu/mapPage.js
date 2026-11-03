@@ -3,10 +3,11 @@
 
 import { el } from '../ui/dom.js';
 import { islandMap, mapLabels, caveLabels, breakName } from '../world/islandMap.js';
+import { t } from '../i18n/i18n.js';
 
 export function mapPage(game) {
   return {
-    title: 'Karte',
+    title: t('menu.map'),
     render(body) {
       const m = islandMap(game.state, game.pack.data);
       const cell = (col, row, cls, [name, ...lines]) =>
@@ -14,7 +15,7 @@ export function mapPage(game) {
           el('p', { class: 'map-name' }, name),
           lines.map(l => el('p', { class: 'map-state' }, l)));
       body.append(
-        el('div', { class: 'island-map', role: 'list', 'aria-label': 'Karte der Insel' },
+        el('div', { class: 'island-map', role: 'list', 'aria-label': t('map.aria') },
           m.areas.map(a => cell(a.col, a.row, `map-area${a.open ? '' : ' fog'}${a.here ? ' here' : ''}`, [breakName(a.name), ...mapLabels(a)])),
           cell(m.cave.col, m.cave.row, 'map-cave', caveLabels(m.cave))),
       );

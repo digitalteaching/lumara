@@ -9,10 +9,11 @@ import { settingsPage } from './settings.js';
 import { bagPage } from './bagPage.js';
 import { diaryPage } from './diaryPage.js';
 import { mapPage } from './mapPage.js';
+import { t } from '../i18n/i18n.js';
 
 export function creaturePage(game) {
   return {
-    title: 'Wesen',
+    title: t('menu.creature'),
     render(body) {
       const c = game.state.creature;
       const stage = stageForLevel(c.level);
@@ -23,15 +24,15 @@ export function creaturePage(game) {
         el('div', { class: 'creature-card' },
           el('p', { class: 'creature-name' }, displayName(c)),
           displayName(c) === speciesName(c.species, stage) ? null : el('p', { class: 'creature-species' }, speciesName(c.species, stage)),
-          el('p', {}, `Level ${c.level} · Stufe ${stage}`),
+          el('p', {}, t('creature.levelStage', { level: c.level, stage })),
           atMax
-            ? el('p', {}, 'Höchstes Level erreicht.')
+            ? el('p', {}, t('creature.maxLevel'))
             : [
-              el('div', { class: 'xp-bar', role: 'img', 'aria-label': `${c.xpInLevel} von ${need} XP` }, el('span', { style: { width: `${Math.round((c.xpInLevel / need) * 100)}%` } })),
-              el('p', { class: 'small' }, `${c.xpInLevel} / ${need} XP bis Level ${c.level + 1}`),
+              el('div', { class: 'xp-bar', role: 'img', 'aria-label': t('creature.xpAria', { xp: c.xpInLevel, need }) }, el('span', { style: { width: `${Math.round((c.xpInLevel / need) * 100)}%` } })),
+              el('p', { class: 'small' }, t('creature.xpToNext', { xp: c.xpInLevel, need, next: c.level + 1 })),
             ],
-          el('p', {}, `Energie ${c.energy} / ${maxEnergy(c)}`),
-          el('p', { class: 'creature-special' }, el('b', {}, `Besonderheit: ${special.name}. `), special.text),
+          el('p', {}, t('common.energy', { n: c.energy, max: maxEnergy(c) })),
+          el('p', { class: 'creature-special' }, el('b', {}, t('creature.specialLabel', { name: special.name })), special.text),
         ),
       );
     },
@@ -40,16 +41,16 @@ export function creaturePage(game) {
 
 function menuPage(game) {
   return {
-    title: 'Menü',
+    title: t('menu.title'),
     render(body, nav) {
       body.append(
         el('div', { class: 'sheet-list' },
-          el('button', { class: 'btn', type: 'button', onclick: () => nav.push(creaturePage(game)) }, 'Wesen'),
-          el('button', { class: 'btn', type: 'button', onclick: () => nav.push(bagPage(game)) }, 'Rucksack'),
-          el('button', { class: 'btn', type: 'button', onclick: () => nav.push(mapPage(game)) }, 'Karte'),
-          el('button', { class: 'btn', type: 'button', onclick: () => nav.push(diaryPage(game)) }, 'Tagebuch'),
-          el('button', { class: 'btn', type: 'button', onclick: () => nav.push(settingsPage(game)) }, 'Einstellungen'),
-          el('button', { class: 'btn primary', type: 'button', onclick: () => nav.close() }, 'Zurück zum Spiel'),
+          el('button', { class: 'btn', type: 'button', onclick: () => nav.push(creaturePage(game)) }, t('menu.creature')),
+          el('button', { class: 'btn', type: 'button', onclick: () => nav.push(bagPage(game)) }, t('menu.bag')),
+          el('button', { class: 'btn', type: 'button', onclick: () => nav.push(mapPage(game)) }, t('menu.map')),
+          el('button', { class: 'btn', type: 'button', onclick: () => nav.push(diaryPage(game)) }, t('menu.diary')),
+          el('button', { class: 'btn', type: 'button', onclick: () => nav.push(settingsPage(game)) }, t('menu.settings')),
+          el('button', { class: 'btn primary', type: 'button', onclick: () => nav.close() }, t('menu.backToGame')),
         ),
       );
     },

@@ -4,26 +4,23 @@
 
 import { encodeSave, decodeSave } from './codec.js';
 import { migrateState } from './migrate.js';
+import { t } from '../i18n/i18n.js';
 import { formatDateTime, isoDate } from '../ui/format.js';
 
 const HEADER = 'LUMARA-SICHERUNG';
 const VERSION = 1;
 
-export const BACKUP_MESSAGES = Object.freeze({
-  pack: 'Das ist ein Lernpaket, kein Spielstand. Ein Lernpaket lädst du unter „Lernpaket wechseln“.',
-  unknown: 'Diese Datei ist keine Lumara-Sicherung.',
-  damaged: 'Diese Sicherung ist beschädigt und lässt sich nicht laden.',
-  newer: 'Diese Sicherung stammt aus einer neueren Fassung von Lumara. Lade die Seite neu und versuche es dann noch einmal.',
-});
+// Warum eine Sicherung nicht geladen wird, in der Spielsprache: pack, unknown, damaged oder newer.
+export const backupMessage = kind => t(`backup.msg.${kind}`);
 
 // Kommentarzeilen bleiben kurz, damit ein Mailprogramm sie nicht umbricht.
 export function createBackupText(state, packText) {
   return [
     `${HEADER} ${VERSION}`,
-    `# Lumara-Spielstand von ${state.name}`,
-    `# Level ${state.creature.level}, gesichert am ${formatDateTime(state.savedAt)}`,
-    '# Wiederherstellen: Lumara öffnen, dann',
-    '# Menü → Einstellungen → Spielstand laden.',
+    `# ${t('backup.fileTitle', { name: state.name })}`,
+    `# ${t('backup.fileLevel', { level: state.creature.level, date: formatDateTime(state.savedAt) })}`,
+    `# ${t('backup.fileHow1')}`,
+    `# ${t('backup.fileHow2')}`,
     encodeSave({ state, pack: packText }),
     '',
   ].join('\n');

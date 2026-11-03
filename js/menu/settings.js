@@ -7,8 +7,9 @@ import { saveBackupPage, loadBackupPage } from './backupPages.js';
 import { packSwitchPage } from './packPage.js';
 import { homeScreenPage } from './homePage.js';
 import { teacherStatsPage } from './teacherPage.js';
+import { t } from '../i18n/i18n.js';
 
-const SPEEDS = [['slow', 'Langsam'], ['normal', 'Normal'], ['fast', 'Schnell']];
+const SPEEDS = [['slow', 'settings.slow'], ['normal', 'settings.normal'], ['fast', 'settings.fast']];
 
 function section(title, ...content) {
   return el('section', { class: 'sheet-section' }, el('h3', {}, title), ...content);
@@ -17,7 +18,7 @@ function section(title, ...content) {
 function textSpeed(game, nav) {
   const current = game.state.settings.textSpeed;
   return section(
-    'Textgeschwindigkeit',
+    t('settings.textSpeed'),
     el('div', { class: 'row seg' }, SPEEDS.map(([id, label]) =>
       el('button', {
         class: 'btn',
@@ -28,22 +29,22 @@ function textSpeed(game, nav) {
           game.save();
           nav.refresh();
         },
-      }, label),
+      }, t(label)),
     )),
   );
 }
 
 function newGamePages(game) {
   const second = confirmPage({
-    title: 'Neues Spiel',
-    text: 'Bist du ganz sicher? Das lässt sich nicht rückgängig machen. Tipp: Sichere vorher deinen Spielstand.',
-    yes: 'Ja, neu beginnen',
+    title: t('settings.newGame'),
+    text: t('settings.newGameSure'),
+    yes: t('recover.yesNew'),
     onYes: () => reloadGame(game),
   });
   return confirmPage({
-    title: 'Neues Spiel',
-    text: 'Möchtest du wirklich ein neues Spiel beginnen? Dein Wesen und alles, was du erreicht hast, gehen verloren.',
-    yes: 'Ja, weiter',
+    title: t('settings.newGame'),
+    text: t('settings.newGameAsk'),
+    yes: t('settings.yesGoOn'),
     onYes: nav => nav.push(second),
   });
 }
@@ -52,22 +53,22 @@ const entry = (label, onclick) => el('button', { class: 'btn', type: 'button', o
 
 export function settingsPage(game) {
   return {
-    title: 'Einstellungen',
+    title: t('menu.settings'),
     render(body, nav) {
       body.append(
         textSpeed(game, nav),
-        game.state && game.pack ? section('Lernpaket', el('div', { class: 'sheet-list' }, entry('Lernpaket wechseln', () => nav.push(packSwitchPage(game))))) : null,
+        game.state && game.pack ? section(t('settings.pack'), el('div', { class: 'sheet-list' }, entry(t('settings.switchPack'), () => nav.push(packSwitchPage(game))))) : null,
         section(
-          'Spielstand',
+          t('settings.savedGame'),
           el('div', { class: 'sheet-list' },
-            game.state ? entry('Spielstand sichern', () => nav.push(saveBackupPage(game))) : null,
-            entry('Spielstand laden', () => nav.push(loadBackupPage(game))),
+            game.state ? entry(t('settings.saveGame'), () => nav.push(saveBackupPage(game))) : null,
+            entry(t('settings.loadGame'), () => nav.push(loadBackupPage(game))),
           ),
         ),
-        game.state && game.pack ? section('Lehrkraft', el('div', { class: 'sheet-list' }, entry('Für die Lehrkraft', () => nav.push(teacherStatsPage(game))))) : null,
-        section('Gerät', el('div', { class: 'sheet-list' }, entry('Zum Home-Bildschirm', () => nav.push(homeScreenPage(game))))),
-        section('Neu anfangen', el('button', { class: 'btn danger', type: 'button', onclick: () => nav.push(newGamePages(game)) }, 'Neues Spiel')),
-        el('p', { class: 'sheet-foot' }, `Spielfassung ${game.version}${game.updateReady ? ' · Neue Version da – beim nächsten Start aktiv' : ''}`),
+        game.state && game.pack ? section(t('settings.teacher'), el('div', { class: 'sheet-list' }, entry(t('menu.teacher'), () => nav.push(teacherStatsPage(game))))) : null,
+        section(t('settings.device'), el('div', { class: 'sheet-list' }, entry(t('settings.homeScreen'), () => nav.push(homeScreenPage(game))))),
+        section(t('settings.startOver'), el('button', { class: 'btn danger', type: 'button', onclick: () => nav.push(newGamePages(game)) }, t('settings.newGame'))),
+        el('p', { class: 'sheet-foot' }, `${t('settings.version', { v: game.version })}${game.updateReady ? ` · ${t('app.updateReady')}` : ''}`),
       );
     },
   };

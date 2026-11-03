@@ -28,6 +28,17 @@ export const CONVERTED = [
   'js/world/caveGate.js',
   'js/world/islandMap.js',
   'js/world/beacons.js',
+  'js/menu/menu.js',
+  'js/menu/bagPage.js',
+  'js/menu/mapPage.js',
+  'js/menu/diaryPage.js',
+  'js/menu/settings.js',
+  'js/menu/packPage.js',
+  'js/menu/backupPages.js',
+  'js/menu/homePage.js',
+  'js/ui/sheet.js',
+  'js/ui/toast.js',
+  'js/save/backup.js',
 ];
 
 const GERMAN = /[äöüÄÖÜß]|\b(der|die|das|und|nicht|du|dein|deine|ist|mit|noch|Zurück|Ja|Nein)\b/;

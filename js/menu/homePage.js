@@ -3,6 +3,7 @@
 
 import { el } from '../ui/dom.js';
 import { readPlatform } from '../app/platform.js';
+import { t } from '../i18n/i18n.js';
 
 const SVG = 'http://www.w3.org/2000/svg';
 
@@ -29,30 +30,30 @@ export function installSteps() {
   return el(
     'ol',
     { class: 'install-steps' },
-    el('li', {}, 'Tippe auf Teilen ', shareIcon(), '.'),
-    el('li', {}, 'Wähle „Zum Home-Bildschirm“.'),
-    el('li', {}, 'Öffne Lumara dort über das neue Symbol.'),
+    el('li', {}, t('home.step1'), shareIcon(), '.'),
+    el('li', {}, t('home.step2')),
+    el('li', {}, t('home.step3')),
   );
 }
 
 export function homeScreenPage() {
   return {
-    title: 'Zum Home-Bildschirm',
+    title: t('settings.homeScreen'),
     render(body) {
       const p = readPlatform();
       if (p.standalone) {
-        body.append(el('p', { class: 'sheet-text' }, 'Lumara läuft schon vom Home-Bildschirm.'));
+        body.append(el('p', { class: 'sheet-text' }, t('home.already')));
         return;
       }
       if (p.appleMobile) {
         body.append(
-          el('p', { class: 'sheet-text' }, 'Leg Lumara auf deinen Home-Bildschirm. Dann bleibt dein Spielstand sicher gespeichert.'),
+          el('p', { class: 'sheet-text' }, t('install.text')),
           installSteps(),
-          el('p', { class: 'small' }, 'Wichtig: Die App auf dem Home-Bildschirm hat einen eigenen Speicher. Sichere vorher deinen Spielstand und lade ihn dort mit „Spielstand laden“.'),
+          el('p', { class: 'small' }, t('home.ownStorage')),
         );
         return;
       }
-      body.append(el('p', { class: 'sheet-text' }, 'Im Menü des Browsers findest du „App installieren“ oder „Zum Startbildschirm hinzufügen“.'));
+      body.append(el('p', { class: 'sheet-text' }, t('home.otherBrowser')));
     },
   };
 }

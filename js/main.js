@@ -26,7 +26,7 @@ import { maxEnergy } from './duel/progress.js';
 import { MAPS } from './world/network.js';
 import { el } from './ui/dom.js';
 import { setGamePack } from './app/gamePack.js';
-import { setPseudo } from './i18n/i18n.js';
+import { setPseudo, t } from './i18n/i18n.js';
 
 const screen = createScreen(document.getElementById('screen'), document.getElementById('stage'));
 const input = createInput();
@@ -69,7 +69,7 @@ game.save = makeSaver(game, { onFirstSave: requestPersist });
 // Automatisch speichern: alle 30 s Spielzeit, beim Verstecken und beim Schließen der Seite.
 const autosave = createAutosave({
   save: () => game.save(),
-  onFail: () => showToast('Dein Spielstand kann auf diesem Gerät gerade nicht gespeichert werden. Sichere ihn über Menü → Einstellungen → Spielstand sichern.', 9000),
+  onFail: () => showToast(t('app.saveFailed'), 9000),
 });
 autosave.attach(document, window);
 
@@ -82,9 +82,9 @@ watchOtherTabs(game, window, {
     const card = el(
       'div',
       { class: 'box sheet-card taken', role: 'alertdialog' },
-      el('p', { class: 'recover-title' }, 'Lumara ist in einem anderen Fenster offen.'),
-      el('p', {}, 'Dort wurde gerade weitergespielt. Damit nichts verloren geht, wird hier nicht mehr gespeichert.'),
-      el('button', { class: 'btn primary', type: 'button', onclick: () => location.reload() }, 'Hier weiterspielen'),
+      el('p', { class: 'recover-title' }, t('app.otherWindow')),
+      el('p', {}, t('app.otherWindowText')),
+      el('button', { class: 'btn primary', type: 'button', onclick: () => location.reload() }, t('app.playHere')),
     );
     document.body.append(el('div', { class: 'sheet' }, card));
   },
@@ -175,7 +175,7 @@ else if (isLocal && params.has('dev')) devStart();
 else startFlow(game, game.store.load());
 
 // Offline und Updates (Design 16). Auf dem eigenen Rechner nur mit ?sw, sonst immer frische Dateien.
-const UPDATE_TEXT = 'Neue Version da – beim nächsten Start aktiv';
+const UPDATE_TEXT = () => t('app.updateReady');
 let updateToastPending = false;
 if (!game.probe) {
   if (isLocal && !params.has('sw')) removeServiceWorkers();
@@ -195,7 +195,7 @@ startLoop({
     // Den Hinweis auf eine neue Fassung nie mitten im Duell zeigen.
     if (updateToastPending && game.mode !== 'duel') {
       updateToastPending = false;
-      showToast(UPDATE_TEXT);
+      showToast(UPDATE_TEXT());
     }
     game.scene?.update(dt);
     autosave.tick(dt);

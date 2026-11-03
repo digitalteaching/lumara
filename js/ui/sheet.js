@@ -7,6 +7,7 @@
 
 import { el, clear } from './dom.js';
 import { createFreshGuard, guardClicks } from './freshGuard.js';
+import { t } from '../i18n/i18n.js';
 
 const FOCUSABLE = 'button:not([disabled]), input:not([disabled]):not([type="hidden"]), a[href]';
 const isTouch = () => document.body.classList.contains('touch');
@@ -19,7 +20,7 @@ export function openSheet(game, page) {
     let closed = false;
 
     const title = el('h2', { class: 'sheet-title' });
-    const backBtn = el('button', { class: 'btn sheet-back', type: 'button', onclick: () => nav.back() }, '‹ Zurück');
+    const backBtn = el('button', { class: 'btn sheet-back', type: 'button', onclick: () => nav.back() }, t('sheet.back'));
     const body = el('div', { class: 'sheet-body' });
     const card = el('div', { class: 'box sheet-card', role: 'dialog', 'aria-modal': 'true' }, el('div', { class: 'sheet-head' }, title, backBtn), body);
     const root = el('div', { class: 'sheet' }, card);
@@ -86,7 +87,7 @@ export function openSheet(game, page) {
 }
 
 // Sicherheitsfrage als eigene Seite. Der Fokus liegt auf „Nein“.
-export function confirmPage({ title, text, yes, no = 'Nein', onYes }) {
+export function confirmPage({ title, text, yes, no = t('common.no'), onYes }) {
   return {
     title,
     render(body, nav) {

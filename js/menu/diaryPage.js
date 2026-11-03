@@ -4,25 +4,26 @@
 import { el } from '../ui/dom.js';
 import { STORY } from '../data/story.js';
 import { MAPS } from '../world/network.js';
+import { t } from '../i18n/i18n.js';
 
-const areaName = area => Object.values(MAPS).find(m => m.area === area)?.name ?? `Gebiet ${area}`;
+const areaName = area => Object.values(MAPS).find(m => m.area === area)?.name ?? t('diary.area', { n: area });
 
 export function diaryPage(game) {
   return {
-    title: 'Tagebuch',
+    title: t('menu.diary'),
     render(body) {
       const found = game.state.story;
       const areas = Object.keys(STORY).map(Number).sort((a, b) => a - b);
       body.append(
         el('div', { class: 'sheet-section diary' },
-          el('h3', {}, 'Geschichte'),
+          el('h3', {}, t('diary.story')),
           areas.map(area =>
             el('div', { class: 'diary-area' },
               el('h4', {}, areaName(area)),
               STORY[area].map((text, i) =>
                 i < (found[area] ?? 0)
                   ? el('p', { class: 'diary-piece' }, text)
-                  : el('p', { class: 'diary-piece missing' }, 'Noch nicht gefunden')),
+                  : el('p', { class: 'diary-piece missing' }, t('diary.missing'))),
             )),
         ),
       );

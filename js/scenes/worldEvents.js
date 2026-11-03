@@ -24,7 +24,7 @@ import { maxEnergy } from '../duel/progress.js';
 import { say, choose } from '../ui/dialog.js';
 import { el, clear } from '../ui/dom.js';
 import { openMenu } from '../menu/menu.js';
-import { t } from '../i18n/i18n.js';
+import { t, language } from '../i18n/i18n.js';
 
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 const DELTA = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
@@ -438,9 +438,11 @@ export function createGameWorld(game) {
     if (game.mode !== 'walk' || world.locked) return;
     world.lock(async () => {
       // Auch eine neue Fassung desselben Pakets (gleiche KENNUNG) kann Tore öffnen oder schließen.
+      // Eine neue Sprache (Design 10.6) baut die Welt ebenfalls neu auf, damit alles Sichtbare passt.
       const packBefore = packWorldKey(game.pack.data);
+      const langBefore = language();
       await openMenu(game);
-      if (packWorldKey(game.pack.data) !== packBefore) await afterPackSwitch();
+      if (packWorldKey(game.pack.data) !== packBefore || language() !== langBefore) await afterPackSwitch();
     });
   }
 

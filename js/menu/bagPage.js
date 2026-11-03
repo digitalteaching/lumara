@@ -8,14 +8,15 @@ import { eat } from '../items/food.js';
 import { useShine } from '../items/stones.js';
 import { displayName } from '../data/species.js';
 import { maxEnergy } from '../duel/progress.js';
+import { t } from '../i18n/i18n.js';
 
-const NAMES = { berry: 'Beeren', starfruit: 'Sternfrüchte', farsight: 'Weitblicksteine', shine: 'Glanzsteine', time: 'Zeitsteine' };
-const EATS = { berry: 'eine Beere', starfruit: 'eine Sternfrucht' };
+const NAMES = { berry: 'bag.berries', starfruit: 'bag.starfruits', farsight: 'bag.farsights', shine: 'bag.shines', time: 'bag.times' };
+const EATS = { berry: 'item.aBerry', starfruit: 'item.aStarfruit' };
 
 export function bagPage(game) {
   let message = '';
   return {
-    title: 'Rucksack',
+    title: t('menu.bag'),
     render(body, nav) {
       const s = game.state;
       const c = s.creature;
@@ -28,11 +29,11 @@ export function bagPage(game) {
           disabled: !(bag[item] > 0),
           onclick: () => {
             const r = eat(s, item);
-            message = r.ok ? `${displayName(c)} isst ${EATS[item]}. +${r.gained} Energie` : `${displayName(c)} ist schon satt.`;
+            message = r.ok ? t('bag.eats', { name: displayName(c), what: t(EATS[item]), n: r.gained }) : t('bag.notHungry', { name: displayName(c) });
             if (r.ok) game.save();
             nav.refresh();
           },
-        }, 'Füttern');
+        }, t('duel.feed'));
       const shineButton = el('button', {
         class: 'btn',
         type: 'button',
@@ -42,25 +43,25 @@ export function bagPage(game) {
           if (useShine(s)) game.save();
           nav.refresh();
         },
-      }, 'Einsetzen');
+      }, t('bag.use'));
       const row = (item, action = null, note = null) =>
         el('div', { class: 'bag-row' },
-          el('span', { class: 'bag-name' }, NAMES[item], note ? el('span', { class: 'bag-note' }, note) : null),
+          el('span', { class: 'bag-name' }, t(NAMES[item]), note ? el('span', { class: 'bag-note' }, note) : null),
           el('span', { class: 'bag-count' }, String(bag[item])),
           action);
 
       body.append(...[
-        el('p', {}, `Energie ${c.energy} / ${maxEnergy(c)}`),
-        el('p', { class: 'small' }, `Futter: ${foodCount(bag)} von ${CONFIG.bag.foodMax} Plätzen belegt`),
+        el('p', {}, t('common.energy', { n: c.energy, max: maxEnergy(c) })),
+        el('p', { class: 'small' }, t('bag.foodSlots', { n: foodCount(bag), max: CONFIG.bag.foodMax })),
         el('div', { class: 'bag-list' },
           row('berry', feedButton('berry')),
           row('starfruit', feedButton('starfruit')),
-          row('farsight', null, 'Im Duell: zeigt einen Hinweis.'),
+          row('farsight', null, t('bag.farsightNote')),
           row('shine', shineButton),
-          row('time', null, 'Im Duell mit Zeitdruck: hält die Zeit für eine Frage an.'),
+          row('time', null, t('bag.timeNote')),
         ),
-        s.shineActive ? el('p', { class: 'bag-shine' }, 'Glanzstein leuchtet: doppelte XP beim nächsten Sieg.') : null,
-        el('p', {}, `Lebenssteine im Wesen: ${c.lifeStones} von ${CONFIG.creature.maxLifeStones}`),
+        s.shineActive ? el('p', { class: 'bag-shine' }, t('bag.shineActive')) : null,
+        el('p', {}, t('bag.lifeStones', { n: c.lifeStones, max: CONFIG.creature.maxLifeStones })),
         el('p', { class: 'bag-message', role: 'status' }, message),
       ].filter(Boolean));
     },
