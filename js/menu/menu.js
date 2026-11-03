@@ -3,7 +3,7 @@
 
 import { el } from '../ui/dom.js';
 import { openSheet } from '../ui/sheet.js';
-import { SPECIES, speciesName, displayName } from '../data/species.js';
+import { speciesText, speciesName, displayName } from '../data/species.js';
 import { xpToNext, maxEnergy, stageForLevel } from '../duel/progress.js';
 import { settingsPage } from './settings.js';
 import { bagPage } from './bagPage.js';
@@ -18,7 +18,7 @@ export function creaturePage(game) {
       const c = game.state.creature;
       const stage = stageForLevel(c.level);
       const need = xpToNext(c.level);
-      const special = SPECIES[c.species].special;
+      const special = speciesText(c.species).special;
       const atMax = c.level >= game.config.creature.maxLevel;
       body.append(
         el('div', { class: 'creature-card' },

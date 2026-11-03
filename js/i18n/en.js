@@ -266,4 +266,12 @@ export const EN = {
   'backup.fileLevel': 'Level {level}, saved on {date}',
   'backup.fileHow1': 'To get it back: open Lumara, then',
   'backup.fileHow2': 'Menu → Settings → Load a saved game.',
+
+  // Wilde Wesen mit Artikel
+  'wild.a.m': 'A wild {name}',
+  'wild.a.f': 'A wild {name}',
+  'wild.a.n': 'A wild {name}',
+  'wild.the.m': 'The wild {name}',
+  'wild.the.f': 'The wild {name}',
+  'wild.the.n': 'The wild {name}',
 };

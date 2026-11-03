@@ -1,6 +1,8 @@
 // Arten der Wesen: Namen der Stufen, Beschreibungen und Besonderheiten (Design 6.1, 6.4).
 
 import { stageForLevel } from '../duel/progress.js';
+import { language, mark, t } from '../i18n/i18n.js';
+import { EN_SPECIES } from '../i18n/en-species.js';
 
 export const STARTERS = ['funki', 'kiesel', 'nixi', 'flausch', 'pieks'];
 
@@ -305,17 +307,31 @@ export const TRAINER_CREATURES = {
   8: { species: 'schnuppling', stage: 2 },
 };
 
-// „Ein wilder Eichhuscher“, „Die wilde Glimmqualle“: mit dem Artikel, der zum Wesen passt.
-const WILD_ARTICLES = {
-  a: { m: 'Ein wilder', f: 'Eine wilde', n: 'Ein wildes' },
-  the: { m: 'Der wilde', f: 'Die wilde', n: 'Das wilde' },
-};
+// Namen, Beschreibung und Besonderheit in der Spielsprache (Design 10.6). Deutsch steht in SPECIES,
+// jede andere Sprache in js/i18n/<sprache>-species.js. Das grammatische Geschlecht hängt an der
+// Sprache; ohne eigenes gilt das deutsche.
+const LOCAL = { en: EN_SPECIES };
+export function speciesText(speciesId) {
+  const sp = SPECIES[speciesId];
+  const local = LOCAL[language()]?.[speciesId];
+  const src = local ?? sp;
+  return {
+    names: src.names.map(mark),
+    gender: local?.gender ?? sp.gender ?? 'n',
+    description: mark(src.description),
+    special: src.special ? { name: mark(src.special.name), text: mark(src.special.text) } : undefined,
+  };
+}
+
+// „Ein wilder Eichhuscher“, „Die wilde Glimmqualle“, „A wild Oakscamper“: mit dem Artikel, der zum
+// Wesen und zur Sprache passt.
 export function wildName(speciesId, stage, form) {
-  return `${WILD_ARTICLES[form][SPECIES[speciesId].gender ?? 'n']} ${speciesName(speciesId, stage)}`;
+  const { gender } = speciesText(speciesId);
+  return t(`wild.${form}.${gender}`, { name: speciesName(speciesId, stage) });
 }
 
 export function speciesName(speciesId, stage) {
-  const names = SPECIES[speciesId].names;
+  const names = speciesText(speciesId).names;
   return names[Math.min(stage, names.length) - 1];
 }
 

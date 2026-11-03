@@ -2,6 +2,9 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { SPECIES, STARTERS, AREA_WILD, TRAINER_CREATURES, displayName, speciesName, wildName } from '../js/data/species.js';
 import { creatureRows } from '../js/gfx/art/creatures.js';
+import { EN_SPECIES } from '../js/i18n/en-species.js';
+import { setLanguage, t } from '../js/i18n/i18n.js';
+import { speciesText } from '../js/data/species.js';
 
 test('wilde Wesen mit dem richtigen Artikel', () => {
   assert.equal(wildName('eichhuscher', 1, 'a'), 'Ein wilder Eichhuscher');
@@ -76,4 +79,30 @@ test('Die neuen Bilder sind verschieden: jede Art hat ihre eigene Silhouette', (
   const shapes = ids.map(id => creatureRows(id, 1).map(r => r.replace(/[^.]/g, '#')).join('/'));
   assert.equal(new Set(shapes).size, ids.length);
   for (const n of [6, 7, 8]) assert.notDeepEqual(creatureRows(TRAINER_CREATURES[n].species, 2), creatureRows(TRAINER_CREATURES[n].species, 1));
+});
+
+test('Jede Art hat englische Namen für jede Stufe, eine Beschreibung und, bei Startwesen, ihre Besonderheit', () => {
+  for (const [id, sp] of Object.entries(SPECIES)) {
+    assert.equal(EN_SPECIES[id]?.names.length, sp.names.length, id);
+    assert.ok(EN_SPECIES[id].description, id);
+    if (sp.kind === 'starter') assert.ok(EN_SPECIES[id].special?.name && EN_SPECIES[id].special?.text, id);
+  }
+  assert.deepEqual(Object.keys(EN_SPECIES).filter(id => !SPECIES[id]), []);
+});
+
+test('Namen und Sätze mit Wesen auf Englisch', () => {
+  setLanguage('en');
+  try {
+    assert.equal(speciesName('kiesel', 4), 'Mountainheart');
+    assert.equal(speciesText('pieks').special.name, 'Green Thumb');
+    assert.equal(wildName('eichhuscher', 1, 'a'), 'A wild Oakscamper');
+    assert.equal(wildName('gischtling', 1, 'the'), 'The wild Sprayling');
+    assert.equal(t('duel.wildAppears', { wild: wildName('gischtling', 1, 'a') }), 'A wild Sprayling appears!');
+    assert.equal(displayName({ species: 'pieks', level: 1, nickname: 'Spiky' }), 'Spiky');
+    assert.equal(displayName({ species: 'pieks', level: 20, nickname: null }), 'Thornhog');
+  } finally {
+    setLanguage('de');
+  }
+  assert.equal(speciesName('kiesel', 4), 'Bergherz');
+  assert.equal(wildName('eichhuscher', 1, 'a'), 'Ein wilder Eichhuscher');
 });

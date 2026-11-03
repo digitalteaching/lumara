@@ -1,7 +1,7 @@
 // Eiwahl (Design 4, Schritt 5): fünf leuchtende Eier am Strand, Beschreibung und Besonderheit,
 // dann schlüpft das Wesen, und es darf einen Spitznamen bekommen.
 
-import { STARTERS, SPECIES } from '../data/species.js';
+import { STARTERS, speciesText } from '../data/species.js';
 import { eggRows, EGG_GLOW } from '../gfx/art/eggs.js';
 import { creatureRows } from '../gfx/art/creatures.js';
 import { spriteFrom } from '../gfx/canvasSprites.js';
@@ -46,7 +46,7 @@ export function createEggScene(game, playerName, next) {
   function showInfo() {
     if (!info) return;
     clear(info);
-    const sp = SPECIES[STARTERS[selected]];
+    const sp = speciesText(STARTERS[selected]);
     info.append(
       el('h3', { class: 'egg-name' }, sp.names[0]),
       el('p', {}, sp.description),
@@ -89,7 +89,7 @@ export function createEggScene(game, playerName, next) {
     await new Promise(r => setTimeout(r, game.reducedMotion ? 600 : 1500));
     if (!active) return;
     const species = STARTERS[selected];
-    const name = SPECIES[species].names[0];
+    const name = speciesText(species).names[0];
     await say(game, tl('eggs.hatched', { name }));
     if (!active) return;
     const wants = (await choose(game, t('eggs.askNickname', { name }), [t('common.yes'), t('common.no')])) === 0;
@@ -118,7 +118,7 @@ export function createEggScene(game, playerName, next) {
         const hit = el('button', {
           class: 'egg-hit',
           type: 'button',
-          'aria-label': SPECIES[STARTERS[i]].names[0],
+          'aria-label': speciesText(STARTERS[i]).names[0],
           style: {
             left: `calc(var(--gpx) * ${eggX(i) - 6})`,
             top: `calc(var(--gpx) * ${EGG_Y - 8})`,
