@@ -21,6 +21,11 @@ export function newGameState({ name, species, nickname }) {
   };
 }
 
+// Zeichen pro Sekunde im Textfenster, nach der Einstellung des Kindes (Design 13).
+export function textSpeedCps(settings) {
+  return CONFIG.text.speeds[settings?.textSpeed] ?? CONFIG.text.speeds.normal;
+}
+
 export function emptyPackProgress() {
   return { beaten: [], boss: false, history: {}, stats: { wins: 0, right: 0, total: 0, playMs: 0, topics: {}, floor: 0 } };
 }

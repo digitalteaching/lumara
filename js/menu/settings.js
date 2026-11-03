@@ -1,0 +1,58 @@
+// Einstellungen (Design 13). Spätere Tasks hängen hier ihre Einträge ein.
+
+import { el } from '../ui/dom.js';
+import { confirmPage } from '../ui/sheet.js';
+import { reloadGame } from '../app/flow.js';
+
+const SPEEDS = [['slow', 'Langsam'], ['normal', 'Normal'], ['fast', 'Schnell']];
+
+function section(title, ...content) {
+  return el('section', { class: 'sheet-section' }, el('h3', {}, title), ...content);
+}
+
+function textSpeed(game, nav) {
+  const current = game.state.settings.textSpeed;
+  return section(
+    'Textgeschwindigkeit',
+    el('div', { class: 'row seg' }, SPEEDS.map(([id, label]) =>
+      el('button', {
+        class: 'btn',
+        type: 'button',
+        'aria-pressed': id === current ? 'true' : 'false',
+        onclick: () => {
+          game.state.settings.textSpeed = id;
+          game.save();
+          nav.refresh();
+        },
+      }, label),
+    )),
+  );
+}
+
+function newGamePages(game) {
+  const second = confirmPage({
+    title: 'Neues Spiel',
+    text: 'Bist du ganz sicher? Das lässt sich nicht rückgängig machen. Tipp: Sichere vorher deinen Spielstand.',
+    yes: 'Ja, neu beginnen',
+    onYes: () => reloadGame(game),
+  });
+  return confirmPage({
+    title: 'Neues Spiel',
+    text: 'Möchtest du wirklich ein neues Spiel beginnen? Dein Wesen und alles, was du erreicht hast, gehen verloren.',
+    yes: 'Ja, weiter',
+    onYes: nav => nav.push(second),
+  });
+}
+
+export function settingsPage(game) {
+  return {
+    title: 'Einstellungen',
+    render(body, nav) {
+      body.append(
+        textSpeed(game, nav),
+        section('Neu anfangen', el('button', { class: 'btn danger', type: 'button', onclick: () => nav.push(newGamePages(game)) }, 'Neues Spiel')),
+        el('p', { class: 'sheet-foot' }, `Spielfassung ${game.version}`),
+      );
+    },
+  };
+}

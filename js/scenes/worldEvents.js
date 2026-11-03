@@ -12,6 +12,7 @@ import { displayName } from '../data/species.js';
 import { maxEnergy } from '../duel/progress.js';
 import { say } from '../ui/dialog.js';
 import { el, clear } from '../ui/dom.js';
+import { openMenu } from '../menu/menu.js';
 
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 const DELTA = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
@@ -177,15 +178,28 @@ export function createGameWorld(game) {
     hud.append(el('div', { class: 'plate-head' }, el('span', {}, displayName(c)), el('span', { class: 'plate-lv' }, `Lv ${c.level}`)), bar);
   });
 
+  // Menüknopf oben rechts und Taste M (Design 13)
+  function showMenu() {
+    if (game.mode !== 'walk' || world.locked) return;
+    world.lock(() => openMenu(game));
+  }
+  const menuBtn = el('button', { class: 'menu-btn', type: 'button', 'aria-label': 'Menü', onclick: showMenu }, '☰');
+  let offMenu = null;
+
   const baseEnter = world.enter;
   world.enter = () => {
     baseEnter();
     if (!hud.isConnected) game.ui.append(hud);
+    if (!menuBtn.isConnected) game.ui.append(menuBtn);
+    offMenu ??= game.input.on('menu', showMenu);
   };
   const baseExit = world.exit;
   world.exit = () => {
     baseExit?.();
     hud.remove();
+    menuBtn.remove();
+    offMenu?.();
+    offMenu = null;
   };
 
   // Beim Betreten prüfen, ob die Trainerin die Figur schon sieht.

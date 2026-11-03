@@ -18,6 +18,7 @@ import { createSaveStore } from './save/store.js';
 import { createAutosave } from './save/autosave.js';
 import { createPlayClock } from './save/playClock.js';
 import { makeSaver } from './app/flow.js';
+import { APP_VERSION } from './version.js';
 import { createDuelScene, makeWildSetup, makeTrainerSetup } from './scenes/duel.js';
 
 const screen = createScreen(document.getElementById('screen'), document.getElementById('stage'));
@@ -41,6 +42,7 @@ const game = {
   clock: createPlayClock(),
   saveEnabled: false, // nur der normale Startablauf speichert
   save: null,
+  version: APP_VERSION,
   get mode() {
     return document.body.dataset.mode;
   },

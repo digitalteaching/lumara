@@ -1,6 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { newGameState, validateName, packProgress, applyDuelResult, emptyPackProgress } from '../js/state.js';
+import { newGameState, validateName, packProgress, applyDuelResult, emptyPackProgress, textSpeedCps } from '../js/state.js';
+
+test('Textgeschwindigkeit', () => {
+  assert.equal(textSpeedCps(undefined), 40);
+  assert.equal(textSpeedCps({ textSpeed: 'fast' }), 80);
+  assert.equal(textSpeedCps({ textSpeed: 'slow' }), 25);
+  assert.equal(textSpeedCps({ textSpeed: 'quatsch' }), 40);
+});
 import { BUCHT } from '../js/world/maps/bucht.js';
 
 test('neues Spiel: Level 1, volle Energie, Start am Steg', () => {

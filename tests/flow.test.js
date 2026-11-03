@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { routeAfterTitle, makeSaver } from '../js/app/flow.js';
+import { routeAfterTitle, makeSaver, reloadGame } from '../js/app/flow.js';
 import { createSaveStore } from '../js/save/store.js';
 import { newGameState } from '../js/state.js';
 import { fakeStorage } from './helpers/fixtures.js';
@@ -22,6 +22,17 @@ test('makeSaver speichert nur im normalen Spiel', () => {
   assert.equal(save(), true);
   game.state = null;
   assert.equal(save(), null);
+});
+
+test('Neues Spiel: Stand gelöscht, und das Speichern beim Schließen bringt ihn nicht zurück', () => {
+  const game = { saveEnabled: true, state: newGameState({ name: 'Mia', species: 'nixi', nickname: null }), store: createSaveStore(fakeStorage()) };
+  game.save = makeSaver(game);
+  game.save();
+  let reloaded = false;
+  reloadGame(game, {}, { reload: () => { reloaded = true; } });
+  assert.equal(game.save(), null);
+  assert.deepEqual(game.store.load(), { status: 'none' });
+  assert.ok(reloaded);
 });
 
 test('makeSaver meldet nur das erste erfolgreiche Speichern', () => {

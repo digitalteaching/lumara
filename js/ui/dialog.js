@@ -3,6 +3,7 @@
 
 import { el } from './dom.js';
 import { createFreshGuard, guardClicks } from './freshGuard.js';
+import { textSpeedCps } from '../state.js';
 
 // Offene Fenster, damit ein Szenenwechsel sie sauber schließen kann.
 const active = new Set();
@@ -38,7 +39,7 @@ export function say(game, lines, { speaker } = {}) {
     );
     game.panel.append(box);
 
-    const perChar = 1000 / game.config.text.charsPerSecond;
+    const perChar = 1000 / textSpeedCps(game.state?.settings);
     let index = 0;
     let shown = 0;
     let full = false;

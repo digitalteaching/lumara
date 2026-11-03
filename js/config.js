@@ -9,7 +9,7 @@ function deepFreeze(obj) {
 export const CONFIG = deepFreeze({
   screen: { width: 240, height: 160, tile: 16 },
   walk: { msPerTile: 220 },
-  text: { charsPerSecond: 40 },
+  text: { speeds: { slow: 25, normal: 40, fast: 80 } }, // Zeichen pro Sekunde
   creature: {
     baseEnergy: 4,
     stageLevels: [1, 15, 35, 60],
