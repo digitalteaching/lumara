@@ -16,11 +16,14 @@ export const BACKUP_MESSAGES = Object.freeze({
   newer: 'Diese Sicherung stammt aus einer neueren Fassung von Lumara. Lade die Seite neu und versuche es dann noch einmal.',
 });
 
+// Kommentarzeilen bleiben kurz, damit ein Mailprogramm sie nicht umbricht.
 export function createBackupText(state, packText) {
   return [
     `${HEADER} ${VERSION}`,
-    `# Spielstand von ${state.name} · Level ${state.creature.level} · gesichert am ${formatDateTime(state.savedAt)}`,
-    '# Zum Wiederherstellen: Lumara öffnen → Menü → Einstellungen → Spielstand laden.',
+    `# Lumara-Spielstand von ${state.name}`,
+    `# Level ${state.creature.level}, gesichert am ${formatDateTime(state.savedAt)}`,
+    '# Wiederherstellen: Lumara öffnen, dann',
+    '# Menü → Einstellungen → Spielstand laden.',
     encodeSave({ state, pack: packText }),
     '',
   ].join('\n');
@@ -36,8 +39,11 @@ export function parseBackupText(text) {
   if (Number(head[1]) > VERSION) return { ok: false, reason: 'newer' };
   if (Number(head[1]) !== VERSION) return { ok: false, reason: 'unknown' };
 
-  const payload = lines.slice(first + 1).filter(l => !l.trim().startsWith('#')).join('');
-  const d = decodeSave(payload);
+  // Umgebrochene Kommentarzeilen hinterlassen Bruchstücke ohne # vor den Daten. Die werden
+  // nacheinander verworfen; die Prüfsumme sorgt dafür, dass nur die echten Daten passen.
+  const rest = lines.slice(first + 1).filter(l => !l.trim().startsWith('#'));
+  let d = { ok: false };
+  for (let skip = 0; skip <= 8 && skip < rest.length && !d.ok; skip++) d = decodeSave(rest.slice(skip).join(''));
   if (!d.ok || typeof d.value?.pack !== 'string') return { ok: false, reason: 'damaged' };
   const m = migrateState(d.value.state);
   if (!m.ok) return { ok: false, reason: m.reason === 'newer' ? 'newer' : 'damaged' };

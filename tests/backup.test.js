@@ -12,15 +12,41 @@ const state = { ...newGameState({ name: 'Mia', species: 'nixi', nickname: null }
 test('Sicherung enthält Spielstand und Paket und lässt sich zurückholen', () => {
   const text = createBackupText(state, PACK);
   assert.ok(text.startsWith('LUMARA-SICHERUNG 1\n'));
-  assert.ok(text.includes('# Spielstand von Mia · Level 1 · gesichert am 03.11.2026, 09:10'));
+  assert.ok(text.includes('# Lumara-Spielstand von Mia\n# Level 1, gesichert am 03.11.2026, 09:10\n'));
   assert.ok(!text.includes('Testpaket'));
   assert.deepEqual(parseBackupText(text), { ok: true, state: migrateState(state).state, packText: PACK });
 });
 
 test('übersteht Windows-Zeilenenden, BOM und Umbrüche aus E-Mails', () => {
   const lines = createBackupText(state, PACK).split('\n');
-  const wrapped = [...lines.slice(0, 3), lines[3].replace(/(.{76})/g, '$1\n')].join('\r\n');
+  const data = lines.findIndex(l => l && !l.startsWith('#') && !l.startsWith('LUMARA'));
+  const wrapped = [...lines.slice(0, data), lines[data].replace(/(.{76})/g, '$1\n')].join('\r\n');
   assert.equal(parseBackupText('﻿' + wrapped + '\r\n').ok, true);
+});
+
+// Wie ein Mailprogramm: lange Zeilen an Wortgrenzen umbrechen, Wörter länger als die Breite hart.
+function mailWrap(text, width) {
+  return text.split('\n').flatMap(line => {
+    const out = [];
+    let rest = line;
+    while (rest.length > width) {
+      const cut = rest.lastIndexOf(' ', width);
+      const at = cut > 0 ? cut : width;
+      out.push(rest.slice(0, at));
+      rest = rest.slice(cut > 0 ? at + 1 : at);
+    }
+    out.push(rest);
+    return out;
+  }).join('\n');
+}
+
+test('übersteht ein Mailprogramm, das alle Zeilen umbricht', () => {
+  const long = { ...state, name: 'Maximilian-J', creature: { ...state.creature, level: 100 } };
+  for (const width of [30, 40, 60, 72, 76, 78]) {
+    const r = parseBackupText(mailWrap(createBackupText(long, PACK), width));
+    assert.equal(r.ok, true, `Umbruch bei ${width} Zeichen`);
+    assert.equal(r.state.name, 'Maximilian-J');
+  }
 });
 
 test('erkennt falsche Dateien', () => {
