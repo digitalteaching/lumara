@@ -17,7 +17,7 @@ export const PARTICLE_LIMITS = {
 // Wie oft höchstens ein neues Teilchen dazukommt (ms)
 const SPAWN_MS = {
   gull: 7000, spray: 260, firefly: 380, leaf: 650, spore: 450, bubble: 420, wisp: 2500, sand: 180, glint: 300, windstreak: 350, cloud: 3000,
-  spark: 420, steam: 900, snow: 220, aurora: 2500, fallingstar: 3500, glimmer: 350,
+  spark: 260, steam: 900, snow: 220, aurora: 2500, fallingstar: 3500, glimmer: 350,
 };
 const PARALLAX = 0.5;
 const LEAF_COLORS = ['#7fae4a', '#c9a640', '#b7743a', '#5f8f3a'];
@@ -53,7 +53,7 @@ export function createParticles(kinds, { rng, reducedMotion = false, width = 240
       if (kind === 'spark') {
         // kurz und hell, steigt ein Stück auf; leuchtet höchstens einmal pro Sekunde auf
         const life = between(1000, 1500);
-        return { kind, wx: wx + between(-5, 5), wy: wy + between(-3, 3), rise: between(3, 5), age: 0, life, blinkHz: 1000 / life, alpha: 0, size: 1, color: rng.next() < 0.5 ? '#ffe08a' : '#fffaf0' };
+        return { kind, wx: wx + between(-6, 6), wy: wy + between(-6, 0), rise: between(6, 10), age: 0, life, blinkHz: 1000 / life, alpha: 0, size: 1, color: rng.next() < 0.5 ? '#ffe08a' : '#fffaf0' };
       }
       return { kind, wx: wx + between(-6, 6), wy: wy + between(-6, 6), age: 0, life: between(500, 1100), alpha: 0, size: 1, color: '#fbfdff' };
     }

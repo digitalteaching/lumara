@@ -27,4 +27,9 @@ export const STORY = {
     'Mit dem Nebel wurde der Wind still. Niemand schickte mehr Grüße über die Insel, und viele vergaßen, wer auf der anderen Seite wohnt.',
     'Weht der Wind vom Berg her, klingt er wie ein Seufzen. Die Drachenflieger sagen, im Berg wartet jemand darauf, dass man an ihn denkt.',
   ],
+  6: [
+    'In der Stadt der Zahnräder bauten die Leute Uhren, die sich alles merkten. Jede Uhr schlug einmal, wenn jemand etwas Neues gelernt hatte.',
+    'Als der Nebel kam, liefen die Kanäle über, und die Stadt versank. Die Zahnräder drehen sich bis heute, aber niemand weiß mehr, wofür.',
+    'In der alten Sternwarte zeichnete jemand eine Karte vom Berg. Darauf ist ein Tor mit acht Fassungen zu sehen, eine für jeden Leuchtstein.',
+  ],
 };

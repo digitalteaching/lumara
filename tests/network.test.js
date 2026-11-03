@@ -14,7 +14,7 @@ test('Gebiet 2 ist offen, wenn Stein 1 leuchtet und das Paket Trainer 2 hat', ()
   assert.equal(areaOpen(st([]), pack(2), 2), false);
   assert.equal(areaOpen(st([1]), pack(2), 2), true);
   assert.equal(areaOpen(st([1]), pack(1), 2), false); // Paket ohne Thema 2 (Design 10.4)
-  assert.equal(areaOpen(st([1, 2, 3, 4, 5]), pack(8), 6), false); // Gebiet 6 ist noch nicht gebaut
+  assert.equal(areaOpen(st([1, 2, 3, 4, 5, 6, 7, 8]), pack(8), 9), false); // ein Gebiet 9 gibt es nicht
   assert.equal(areaOpen(st([]), pack(1), 1), true);
 });
 
@@ -106,7 +106,7 @@ test('Gebiet 5: Die Dünen führen nach Osten in die Klippen und zurück', () =>
   assert.equal(exitAt(MAPS.klippen, 0, 14)?.to, 'duenen');
   assert.equal(areaOpen(st([1, 2, 3, 4]), pack(5), 5), true);
   assert.deepEqual(openGatesFor(MAPS.duenen, st([1, 2, 3, 4]), pack(5)), ['ost']);
-  assert.deepEqual(openGatesFor(MAPS.klippen, st([1, 2, 3, 4, 5]), pack(8)), []); // Gebiet 6 ist noch nicht gebaut
+  assert.deepEqual(openGatesFor(MAPS.klippen, st([1, 2, 3, 4, 5]), pack(8)), ['ost']);
 });
 
 test('Auf den Klippen stehen und ein Paket mit 4 Trainern laden: Aufwachen am Stein in den Dünen', () => {
@@ -130,4 +130,18 @@ test('Tor mit afterStone: erst offen, wenn der Stein leuchtet und das Gebiet dah
 test('Bucht: Der Pfad im Osten bleibt vor Stein 8 im Nebel', () => {
   assert.deepEqual(openGatesFor(BUCHT, st([1, 2, 3, 4, 5, 6, 7]), pack(8)), ['nord']);
   assert.deepEqual(openGatesFor(BUCHT, st([1, 2, 3, 4, 5, 6, 7, 8]), pack(5)), ['nord']); // Paket ohne Trainer 8
+});
+
+test('Gebiet 6: Die Klippen führen nach Osten in die Ruinen und zurück', () => {
+  assert.deepEqual(exitAt(MAPS.klippen, 39, 14), { x: 39, y: 13, w: 1, h: 4, to: 'ruinen', at: { x: 1, y: 14, dir: 'right' } });
+  assert.deepEqual(exitAt(MAPS.ruinen, 0, 14), { x: 0, y: 13, w: 1, h: 4, to: 'klippen', at: { x: 38, y: 14, dir: 'left' } });
+  assert.equal(areaOpen(st([1, 2, 3, 4, 5]), pack(6), 6), true);
+  assert.equal(areaOpen(st([1, 2, 3, 4, 5]), pack(5), 6), false);
+  assert.deepEqual(openGatesFor(MAPS.klippen, st([1, 2, 3, 4, 5]), pack(5)), []);
+  const m = createMap(MAPS.klippen, { openGates: ['ost'] });
+  assert.ok(m.canEnter(39, 14)); // das Tor gibt den Ausgang frei
+});
+
+test('In den Ruinen stehen und ein Paket mit 5 Trainern laden: Aufwachen am Stein auf den Klippen', () => {
+  assert.deepEqual(resolveStart(st([1, 2, 3, 4, 5, 6], { map: 'ruinen', x: 20, y: 18, dir: 'up' }), pack(5)), { map: 'klippen', ...beaconFront(MAPS.klippen, 5) });
 });

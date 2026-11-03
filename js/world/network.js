@@ -8,8 +8,9 @@ import { WALD } from './maps/wald.js';
 import { MOOR } from './maps/moor.js';
 import { DUENEN } from './maps/duenen.js';
 import { KLIPPEN } from './maps/klippen.js';
+import { RUINEN } from './maps/ruinen.js';
 
-export const MAPS = { bucht: BUCHT, wald: WALD, moor: MOOR, duenen: DUENEN, klippen: KLIPPEN };
+export const MAPS = { bucht: BUCHT, wald: WALD, moor: MOOR, duenen: DUENEN, klippen: KLIPPEN, ruinen: RUINEN };
 
 const hasTrainer = (pack, n) => pack.trainers.some(t => t.number === n);
 

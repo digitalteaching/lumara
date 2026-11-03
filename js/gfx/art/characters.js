@@ -141,7 +141,24 @@ const BOOK_SIDE = [[11, 11, 'c'], [12, 11, 'w'], [11, 12, 'k']];
 const KITE_DOWN = [[13, 10, 'w'], [14, 9, 'w'], [15, 8, 'e'], [15, 7, 'C']];
 const KITE_SIDE = [[12, 10, 'w'], [13, 9, 'w'], [14, 8, 'e'], [14, 7, 'C']];
 
+// Uhrwerkruinen (Plan 3c): Lupe über einem Auge, Werkzeuggürtel, Schraubenschlüssel, Ruder, Spielzeugrad
+const LOUPE_DOWN = [[9, 5, 'k'], [10, 5, 'h'], [11, 5, 'k'], [9, 6, 'h'], [10, 6, 'A'], [11, 6, 'h'], [10, 7, 'h']];
+const LOUPE_SIDE = [[9, 4, 'h'], [9, 5, 'A'], [10, 5, 'h'], [8, 5, 'h']];
+const TOOLBELT_DOWN = [[5, 12, 'h'], [7, 12, 'm'], [9, 12, 'h'], [11, 12, 'm']];
+const TOOLBELT_SIDE = [[6, 12, 'h'], [8, 12, 'm']];
+const WRENCH_DOWN = [[13, 11, 'm'], [13, 12, 's'], [14, 10, 'm'], [12, 10, 'm']];
+const WRENCH_SIDE = [[11, 11, 'm'], [12, 10, 'm'], [11, 12, 's']];
+const OAR_DOWN = [[1, 6, 'r'], [1, 7, 'o'], [1, 8, 'o'], [1, 9, 'o'], [1, 10, 'o'], [0, 11, 'r'], [1, 11, 'r'], [0, 12, 'r'], [1, 12, 'o']];
+const OAR_SIDE = [[3, 6, 'r'], [3, 7, 'o'], [3, 8, 'o'], [3, 9, 'o'], [2, 10, 'r'], [3, 10, 'r'], [2, 11, 'o']];
+const TOYGEAR_DOWN = [[13, 10, 'h'], [12, 11, 'h'], [13, 11, 'b'], [14, 11, 'h'], [13, 12, 'h']];
+const TOYGEAR_SIDE = [[12, 10, 'h'], [11, 11, 'h'], [12, 11, 'b'], [13, 11, 'h'], [12, 12, 'h']];
+
 export const CHARACTERS = {
+  // Uhrwerkruinen (Plan 3c): Erfinder mit Lupenbrille und Werkzeuggürtel (Design 5.3) und die Bewohner
+  trainer6: character({ h: 'f', i: 'm', c: 'r', d: 'o', l: 'h', b: 'b' }, { down: [...LOUPE_DOWN, ...TOOLBELT_DOWN], side: [...LOUPE_SIDE, ...TOOLBELT_SIDE] }),
+  greta: character({ h: 'C', i: 'e', c: 't', d: 'F', l: 'T', b: 'b' }, { down: WRENCH_DOWN, side: WRENCH_SIDE }),
+  pino: character({ h: 'b', i: 'k', c: 'S', d: 'D', l: 'w', b: 'n' }, { down: OAR_DOWN, side: OAR_SIDE }),
+  bo: character({ h: 'h', i: 'r', c: 'v', d: 'P', l: 'V', b: 'o' }, { down: TOYGEAR_DOWN, side: TOYGEAR_SIDE }),
   // Windklippen (Plan 3b): Drachenfliegerin mit Schutzbrille (Design 5.3) und die Bewohner
   trainer5: character({ h: 'h', i: 'r', c: 'L', d: 'S', l: 'w', b: 'b' }, { down: [...GOGGLES_DOWN, ...SCARF_DOWN], up: SCARF_UP, side: [...GOGGLES_SIDE, ...SCARF_SIDE] }),
   ole: character({ h: 'm', i: 's', c: 'o', d: 'b', l: 'c', b: 'k' }, { down: BEARD_DOWN.map(([x, y]) => [x, y, 'f']), side: BEARD_SIDE.map(([x, y]) => [x, y, 'f']) }),

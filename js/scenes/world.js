@@ -252,10 +252,13 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
         ctx.fillRect(x, y + 1, 10, 2);
         ctx.fillRect(x + 2, y + 3, 6, 1);
       } else if (p.kind === 'spark') {
-        // heller Punkt mit schwachem Schein
+        // helles Kreuz mit warmem Schein
+        ctx.fillStyle = '#e0705a';
+        ctx.globalAlpha = p.alpha * 0.55;
+        ctx.fillRect(x - 2, y, 5, 1);
+        ctx.fillRect(x, y - 2, 1, 5);
+        ctx.globalAlpha = p.alpha;
         ctx.fillStyle = p.color;
-        ctx.fillRect(x, y, 1, 1);
-        ctx.globalAlpha = p.alpha * 0.35;
         ctx.fillRect(x - 1, y, 3, 1);
         ctx.fillRect(x, y - 1, 1, 3);
       } else if (p.kind === 'steam') {

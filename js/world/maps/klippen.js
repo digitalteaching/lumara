@@ -1,7 +1,7 @@
 // Gebiet 5: die Windklippen (Design 5.3). 40 × 30 Felder.
 // Felsplattformen über einem Wolkenmeer, verbunden durch Hängebrücken. Westen: Eingang aus den
 // Spiegeldünen. Norden und Süden: Plattformen mit Windgras und Windrädern. Osten: der Gipfel mit
-// Leuchtstein und Drachenfliegerin, dahinter Nebel über dem Weg zu den Uhrwerkruinen (Plan 3c).
+// Leuchtstein und Drachenfliegerin, dahinter Nebel über dem Weg zu den Uhrwerkruinen.
 
 export const KLIPPEN = {
   id: 'klippen',
@@ -103,15 +103,17 @@ export const KLIPPEN = {
 
     { type: 'sign', x: 4, y: 16, lines: ['Windklippen', 'Halt dich an den Seilen fest und schau beim Laufen nach vorn.'] },
     {
-      // Nebelrand zu den Uhrwerkruinen (Design 10.4). Gebiet 6 ist in dieser Fassung noch nicht gebaut.
+      // Nebelrand zu den Uhrwerkruinen (Design 10.4)
       type: 'sign', role: 'fogEdge', x: 37, y: 12, gate: 5, leadsTo: 6, leadsToName: 'die Uhrwerkruinen', leadsToPlural: true,
       lines: ['Der Nebel ist hier zu dicht.', 'Vielleicht weicht er, wenn der Leuchtstein der Klippen wieder leuchtet.'],
       linesOpen: ['Osten: Uhrwerkruinen', 'Der Nebel hat sich zurückgezogen. Der Weg ist frei.'],
     },
   ],
-  // Hinter dem Tor liegt Gebiet 6; einen Ausgang dorthin gibt es erst, wenn es gebaut ist (Plan 3c).
   gates: [{ id: 'ost', leadsTo: 6, x: 38, y: 13, w: 2, h: 4, ground: 'cliffrock' }],
-  exits: [{ x: 0, y: 13, w: 1, h: 4, to: 'duenen', at: { x: 38, y: 14, dir: 'left' } }],
+  exits: [
+    { x: 0, y: 13, w: 1, h: 4, to: 'duenen', at: { x: 38, y: 14, dir: 'left' } },
+    { x: 39, y: 13, w: 1, h: 4, to: 'ruinen', at: { x: 1, y: 14, dir: 'right' } },
+  ],
   finds: [
     { id: 'glitzer-nord', x: 17, y: 6 },
     { id: 'glitzer-sued', x: 20, y: 22 },
