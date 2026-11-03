@@ -3,6 +3,7 @@
 import { el } from '../ui/dom.js';
 import { confirmPage } from '../ui/sheet.js';
 import { reloadGame } from '../app/flow.js';
+import { saveBackupPage, loadBackupPage } from './backupPages.js';
 
 const SPEEDS = [['slow', 'Langsam'], ['normal', 'Normal'], ['fast', 'Schnell']];
 
@@ -44,12 +45,21 @@ function newGamePages(game) {
   });
 }
 
+const entry = (label, onclick) => el('button', { class: 'btn', type: 'button', onclick }, label);
+
 export function settingsPage(game) {
   return {
     title: 'Einstellungen',
     render(body, nav) {
       body.append(
         textSpeed(game, nav),
+        section(
+          'Spielstand',
+          el('div', { class: 'sheet-list' },
+            game.state ? entry('Spielstand sichern', () => nav.push(saveBackupPage(game))) : null,
+            entry('Spielstand laden', () => nav.push(loadBackupPage(game))),
+          ),
+        ),
         section('Neu anfangen', el('button', { class: 'btn danger', type: 'button', onclick: () => nav.push(newGamePages(game)) }, 'Neues Spiel')),
         el('p', { class: 'sheet-foot' }, `Spielfassung ${game.version}`),
       );

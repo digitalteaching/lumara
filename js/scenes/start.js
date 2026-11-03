@@ -11,6 +11,9 @@ import { createNameScene } from './name.js';
 import { createEggScene } from './eggs.js';
 import { createRecoverScene } from './recover.js';
 import { createGameWorld } from './worldEvents.js';
+import { el } from '../ui/dom.js';
+import { openSheet } from '../ui/sheet.js';
+import { loadBackupPage } from '../menu/backupPages.js';
 
 function storedPack(game) {
   const text = game.packStore.load();
@@ -38,7 +41,7 @@ export function startFlow(game, loaded) {
   function newGame() {
     game.state = null;
     game.saveEnabled = false;
-    game.go(createPackScene(game, () =>
+    const afterPack = () =>
       game.go(createIntroScene(game, () =>
         game.go(createNameScene(game, name =>
           game.go(createEggScene(game, name, (species, nickname) => {
@@ -48,8 +51,8 @@ export function startFlow(game, loaded) {
             enterWorld();
           })),
         )),
-      )),
-    ));
+      ));
+    game.go(createPackScene(game, afterPack, { offerRestore: true }));
   }
 
   function afterTitle() {
@@ -63,6 +66,9 @@ export function startFlow(game, loaded) {
           game.store.clear();
           newGame();
         },
+        extraButtons: () => loaded.status === 'newer' ? [] : [
+          el('button', { class: 'btn', type: 'button', onclick: () => openSheet(game, loadBackupPage(game)) }, 'Spielstand-Datei laden'),
+        ],
       }));
     }
     newGame();

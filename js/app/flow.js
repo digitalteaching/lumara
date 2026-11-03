@@ -12,10 +12,17 @@ export function routeAfterTitle({ status, storedPackOk, installFirst = false }) 
 // Neustart nach „Neues Spiel“ oder nach dem Laden einer Sicherung. Zuerst wird das Speichern
 // abgeschaltet: Sonst würde das automatische Speichern beim Verlassen der Seite den alten Stand
 // zurückschreiben.
-export function reloadGame(game, options = {}, { reload = () => location.reload() } = {}) {
+// Mit state (Sicherung laden): Paket und Stand werden gespeichert; der bisherige Stand landet
+// dabei als Sicherung im zweiten Schlüssel.
+export function reloadGame(game, { state = null, packText = null } = {}, { reload = () => location.reload() } = {}) {
   game.saveEnabled = false;
   game.state = null;
-  game.store.clear();
+  if (state) {
+    if (packText) game.packStore.save(packText);
+    game.store.save(state);
+  } else {
+    game.store.clear();
+  }
   reload();
 }
 

@@ -8,10 +8,14 @@ import { el, clear } from '../ui/dom.js';
 import { createFreshGuard, guardClicks } from '../ui/freshGuard.js';
 import { decodePackBytes } from '../pack/decode.js';
 import { drawTitleArt } from './title.js';
+import { openSheet } from '../ui/sheet.js';
+import { loadBackupPage } from '../menu/backupPages.js';
 
 const EXAMPLE_URL = 'pakete/englisch-6-beispiel.txt';
 
-export function createPackScene(game, next) {
+// offerRestore: Bei einem neuen Spiel gibt es den Weg „Ich habe eine Sicherungsdatei“
+// (zum Beispiel beim ersten Start der Home-Bildschirm-App, Design 11).
+export function createPackScene(game, next, { offerRestore = false } = {}) {
   const store = createPackStore();
   let card = null;
   let message = null;
@@ -108,6 +112,12 @@ export function createPackScene(game, next) {
         el('p', { class: 'pack-intro' }, 'Lade das Lernpaket, das du von deiner Lehrkraft bekommen hast.'),
         fileButton('Lernpaket laden', 'btn primary big'),
         el('button', { class: 'btn link', type: 'button', onclick: loadExample }, 'Ohne eigenes Paket ausprobieren'),
+        message,
+      );
+    }
+    if (offerRestore) {
+      card.insertBefore(
+        el('button', { class: 'btn link', type: 'button', onclick: () => openSheet(game, loadBackupPage(game)) }, 'Ich habe eine Sicherungsdatei'),
         message,
       );
     }

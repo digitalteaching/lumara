@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { routeAfterTitle, makeSaver, reloadGame } from '../js/app/flow.js';
 import { createSaveStore } from '../js/save/store.js';
+import { createPackStore } from '../js/pack/store.js';
 import { newGameState } from '../js/state.js';
 import { fakeStorage } from './helpers/fixtures.js';
 
@@ -33,6 +34,17 @@ test('Neues Spiel: Stand gelöscht, und das Speichern beim Schließen bringt ihn
   assert.equal(game.save(), null);
   assert.deepEqual(game.store.load(), { status: 'none' });
   assert.ok(reloaded);
+});
+
+test('Sicherung laden: Stand und Paket gespeichert, das Speichern beim Schließen überschreibt nichts', () => {
+  const mem = fakeStorage();
+  const game = { saveEnabled: true, state: newGameState({ name: 'Alt', species: 'funki', nickname: null }), store: createSaveStore(mem), packStore: createPackStore(mem) };
+  game.save = makeSaver(game);
+  const restored = newGameState({ name: 'Mia', species: 'nixi', nickname: null });
+  reloadGame(game, { state: restored, packText: 'PAKET: X' }, { reload: () => {} });
+  assert.equal(game.save(), null);
+  assert.equal(game.store.load().state.name, 'Mia');
+  assert.equal(game.packStore.load(), 'PAKET: X');
 });
 
 test('makeSaver meldet nur das erste erfolgreiche Speichern', () => {
