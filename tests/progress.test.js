@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { xpToNext, stageForLevel, maxEnergy, addXp, xpForWin } from '../js/duel/progress.js';
+import { xpToNext, stageForLevel, maxEnergy, addXp, xpForWin, gainXp } from '../js/duel/progress.js';
 
 const total = L => {
   let s = 0;
@@ -35,4 +35,17 @@ test('XP für Siege', () => {
   assert.equal(xpForWin({ kind: 'trainer', trainerNumber: 8, flawless: false }), 200);
   assert.equal(xpForWin({ kind: 'wild', area: 1, flawless: false }), 10);
   assert.equal(xpForWin({ kind: 'wild', area: 1, flawless: true }), 13);
+});
+
+test('gainXp: Eine Entwicklung füllt die neuen Energiefelder, auch über zwei Stufen', () => {
+  const c = { species: 'funki', level: 14, xpInLevel: 0, energy: 1, lifeStones: 0 };
+  const r = gainXp(c, xpToNext(14));
+  assert.deepEqual([r.stageBefore, r.stageAfter, c.level, c.xpInLevel, c.energy], [1, 2, 15, 0, 2]);
+  const d = { species: 'kiesel', level: 3, xpInLevel: 0, energy: 2, lifeStones: 0 };
+  gainXp(d, 5);
+  assert.equal(d.energy, 2); // ohne Entwicklung bleibt die Energie
+  const e = { species: 'nixi', level: 14, xpInLevel: 0, energy: 3, lifeStones: 0 };
+  let sum = 0;
+  for (let l = 14; l < 35; l++) sum += xpToNext(l);
+  assert.deepEqual([gainXp(e, sum).stageAfter, e.level, e.energy], [3, 35, 5]);
 });

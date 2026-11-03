@@ -123,3 +123,11 @@ test('Zettel ab Gebiet 4 können einen Zeitstein bringen', () => {
 test('Zettel mit ZEITDRUCK: aus bringen keinen Zeitstein', () => {
   assert.equal(solveNote(s0(), 'duenen:1,1', 4, true, seq(0, 0.95), 'aus').item, 'life');
 });
+
+test('Ein Zettel mit Entwicklung füllt das neue Energiefeld', () => {
+  const s = s0();
+  Object.assign(s.creature, { level: 14, xpInLevel: xpToNext(14) - CONFIG.notes.xp, energy: 2 });
+  const out = solveNote(s, 'bucht:3,12', 1, true, seq(0.99), 'normal'); // 0.99: keine Belohnung
+  assert.equal(out.evolved, true);
+  assert.equal(s.creature.energy, 3);
+});

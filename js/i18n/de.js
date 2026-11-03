@@ -298,4 +298,10 @@ export const DE = {
 
   // Teilen
   'backup.shareTitle': 'Lumara-Spielstand',
+
+  // Wesen-Buch
+  'book.unknown': '? Noch nicht gesehen',
+  'book.seen': '◐ Gesehen',
+  'book.beaten': '● Besiegt',
+  'book.shinySeen': '✦ Glanzform gesehen',
 };

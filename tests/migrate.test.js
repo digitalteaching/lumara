@@ -9,16 +9,20 @@ import { BUCHT } from '../js/world/maps/bucht.js';
 import { SPIELSTAND_V1 } from './fixtures/spielstand-v1.js';
 import { SPIELSTAND_V2 } from './fixtures/spielstand-v2.js';
 import { SPIELSTAND_V3 } from './fixtures/spielstand-v3.js';
+import { SPIELSTAND_V4 } from './fixtures/spielstand-v4.js';
+import { TRAINER_CREATURES } from '../js/data/species.js';
+const bookOf = stones => Object.fromEntries(stones.map(n => [TRAINER_CREATURES[n].species, { beaten: true, shiny: false }]));
 import { foodCount } from '../js/items/bag.js';
 import { createMap } from '../js/world/map.js';
 
-test('Spielstand der Fassung 1 bleibt für immer ladbar und wird zu Format 3', () => {
+test('Spielstand der Fassung 1 bleibt für immer ladbar und wird zu Format 4', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v1.txt', import.meta.url), 'utf8'));
   assert.equal(d.ok, true);
   const m = migrateState(d.value);
   assert.equal(m.ok, true);
-  assert.equal(m.state.version, 3);
-  const { version, playMs, stones, lastStone, bag, shineActive, story, world, ...rest } = m.state;
+  assert.equal(m.state.version, 4);
+  const { version, playMs, stones, lastStone, bag, shineActive, story, world, book, ...rest } = m.state;
+  assert.deepEqual(book, { haeuschel: { beaten: true, shiny: false } }); // Maren war besiegt
   const { version: _v, ...v1 } = SPIELSTAND_V1;
   assert.deepEqual(rest, v1);
   assert.deepEqual(stones, [1]); // Hüterin war mit ENQ9 besiegt → Stein 1 leuchtet
@@ -30,14 +34,14 @@ test('Spielstand der Fassung 1 bleibt für immer ladbar und wird zu Format 3', (
   assert.deepEqual(world, { bushes: {}, notes: {}, finds: {} });
 });
 
-test('Spielstand der Fassung 2 bleibt für immer ladbar und wird zu Format 3', () => {
+test('Spielstand der Fassung 2 bleibt für immer ladbar und wird zu Format 4', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v2.txt', import.meta.url), 'utf8'));
-  assert.deepEqual(migrateState(d.value), { ok: true, state: { ...SPIELSTAND_V2, version: 3, bag: { ...SPIELSTAND_V2.bag, time: 0 } } });
+  assert.deepEqual(migrateState(d.value), { ok: true, state: { ...SPIELSTAND_V2, version: 4, bag: { ...SPIELSTAND_V2.bag, time: 0 }, book: bookOf(SPIELSTAND_V2.stones) } });
 });
 
 test('Spielstand der Fassung 3 bleibt für immer ladbar', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v3.txt', import.meta.url), 'utf8'));
-  assert.deepEqual(migrateState(d.value), { ok: true, state: SPIELSTAND_V3 });
+  assert.deepEqual(migrateState(d.value), { ok: true, state: { ...SPIELSTAND_V3, version: 4, book: bookOf(SPIELSTAND_V3.stones) } });
 });
 
 test('Format 3: unmögliche Zeitsteine werden 0', () => {
@@ -92,7 +96,7 @@ test('Position in einer Wand oder außerhalb der Karte wird zum Startpunkt', () 
 });
 
 test('aus einer neueren Fassung oder unbrauchbar', () => {
-  assert.deepEqual(migrateState({ ...SPIELSTAND_V3, version: 4 }), { ok: false, reason: 'newer' });
+  assert.deepEqual(migrateState({ ...SPIELSTAND_V4, version: 5 }), { ok: false, reason: 'newer' });
   const bad = [
     null, 'x', {}, { version: 1 },
     { ...SPIELSTAND_V1, name: '' },
@@ -107,4 +111,15 @@ test('Der neue Pfad der Bucht macht keine gespeicherte Position ungültig', () =
   for (const [x, y] of [[22, 8], [BUCHT.spawn.x, BUCHT.spawn.y], [BUCHT.respawn.x, BUCHT.respawn.y]]) assert.ok(m.canEnter(x, y));
   for (let y = 5; y <= 8; y++) for (const x of [38, 39]) assert.equal(m.tileAt(x, y), 'fog');
   assert.equal(migrateState(structuredClone(SPIELSTAND_V1)).state.position.map, 'bucht');
+});
+
+test('Spielstand der Fassung 4 bleibt für immer ladbar', () => {
+  const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v4.txt', import.meta.url), 'utf8'));
+  assert.deepEqual(migrateState(d.value), { ok: true, state: SPIELSTAND_V4 });
+});
+
+test('Format 4: kaputte oder unbekannte Einträge im Buch fallen heraus', () => {
+  const book = { moosling: { beaten: 'ja', shiny: true }, funki: { beaten: true, shiny: false }, quatsch: { beaten: true, shiny: true }, gischtling: 5 };
+  assert.deepEqual(migrateState({ ...structuredClone(SPIELSTAND_V4), book }).state.book, { moosling: { beaten: false, shiny: true } });
+  assert.deepEqual(migrateState({ ...structuredClone(SPIELSTAND_V4), book: 'x' }).state.book, {});
 });

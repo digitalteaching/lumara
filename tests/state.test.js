@@ -9,10 +9,11 @@ test('Textgeschwindigkeit', () => {
   assert.equal(textSpeedCps({ textSpeed: 'quatsch' }), 40);
 });
 import { BUCHT } from '../js/world/maps/bucht.js';
+import { xpToNext } from '../js/duel/progress.js';
 
 test('neues Spiel: Level 1, volle Energie, Start am Steg', () => {
   const s = newGameState({ name: 'Mia', species: 'kiesel', nickname: null });
-  assert.equal(s.version, 3);
+  assert.equal(s.version, 4);
   assert.equal(s.creature.level, 1);
   assert.equal(s.creature.xpInLevel, 0);
   assert.equal(s.creature.energy, 5);
@@ -112,7 +113,7 @@ const EMPTY = { beaten: [], boss: false, history: {}, stats: { wins: 0, right: 0
 
 test('neuer Spielstand hat Version, Einstellungen und leeren Fortschritt', () => {
   const s = newGameState({ name: 'Mia', species: 'nixi', nickname: null });
-  assert.equal(s.version, 3);
+  assert.equal(s.version, 4);
   assert.equal(s.savedAt, 0);
   assert.deepEqual(s.settings, { textSpeed: 'normal' });
   assert.deepEqual(packProgress(s, 'ENQ9'), EMPTY);
@@ -163,4 +164,31 @@ test('Fortschritt wird pro Paket angelegt und wiedergefunden', () => {
   packProgress(s, 'ENQ9').beaten.push(1);
   assert.deepEqual(packProgress(s, 'ENQ9').beaten, [1]);
   assert.deepEqual(packProgress(s, 'GNEP').beaten, []);
+});
+
+const W = shiny => ({ kind: 'wild', area: 2, foe: { species: 'moosling', stage: 1, level: 5, maxEnergy: 3, shiny }, pool: [] });
+const ended = outcome => ({ outcome, playerEnergy: 3, flawless: false, answers: [] });
+
+test('Wildes Wesen: gesehen auch bei Flucht und Niederlage, besiegt nur nach einem Sieg', () => {
+  const s = newGameState({ name: 'A', species: 'funki', nickname: null });
+  assert.deepEqual(s.book, {});
+  applyDuelResult(s, 'ENQ9', W(false), ended('fled'));
+  assert.deepEqual(s.book.moosling, { beaten: false, shiny: false });
+  applyDuelResult(s, 'ENQ9', W(true), ended('lost'));
+  assert.deepEqual(s.book.moosling, { beaten: false, shiny: true });
+  applyDuelResult(s, 'ENQ9', W(false), won());
+  assert.deepEqual(s.book.moosling, { beaten: true, shiny: true });
+});
+
+test('Ein Trainerwesen zählt für seine Art im Buch', () => {
+  const s = newGameState({ name: 'A', species: 'funki', nickname: null });
+  applyDuelResult(s, 'ENQ9', T1, won());
+  assert.deepEqual(s.book, { haeuschel: { beaten: true, shiny: false } });
+});
+
+test('Sieg mit Entwicklung: Die Energie aus dem Duell bleibt, das neue Feld ist gefüllt', () => {
+  const s = newGameState({ name: 'A', species: 'funki', nickname: null });
+  Object.assign(s.creature, { level: 14, xpInLevel: xpToNext(14) - 1 });
+  const r = applyDuelResult(s, 'ENQ9', T1, won());
+  assert.deepEqual([r.stageBefore, r.stageAfter, s.creature.energy], [1, 2, 3]); // playerEnergy 2 + 1
 });

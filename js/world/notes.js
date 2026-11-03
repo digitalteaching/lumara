@@ -3,7 +3,7 @@
 // neuer Zettel unter dem Stein. DOM-frei.
 
 import { CONFIG } from '../config.js';
-import { addXp } from '../duel/progress.js';
+import { gainXp } from '../duel/progress.js';
 import { poolFor } from '../duel/questions.js';
 import { addItem } from '../items/bag.js';
 import { timedArea } from '../items/stones.js';
@@ -41,9 +41,7 @@ export function solveNote(state, key, area, correct, rng, timePressure = 'normal
   if (!correct || !noteReady(state, key)) return NOTHING();
   const c = state.creature;
   const xp = CONFIG.notes.xp;
-  const r = addXp(c, xp);
-  c.level = r.level;
-  c.xpInLevel = r.xpInLevel;
+  const r = gainXp(c, xp);
 
   let item = null;
   let lost = null;

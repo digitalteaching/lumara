@@ -4,7 +4,8 @@
 // Änderungen am Format brauchen eine Umwandlung in js/save/migrate.js.
 
 import { CONFIG } from './config.js';
-import { maxEnergy, addXp, xpForWin } from './duel/progress.js';
+import { maxEnergy, gainXp, xpForWin } from './duel/progress.js';
+import { recordSighting } from './data/book.js';
 import { recordAnswer } from './duel/questions.js';
 import { BUCHT } from './world/maps/bucht.js';
 import { emptyBag, addItem } from './items/bag.js';
@@ -19,7 +20,7 @@ export function newGameState({ name, species, nickname }) {
   const creature = { species, nickname: nickname || null, level: 1, xpInLevel: 0, energy: 0, lifeStones: 0 };
   creature.energy = maxEnergy(creature);
   return {
-    version: 3,
+    version: 4,
     savedAt: 0,
     name,
     creature,
@@ -33,6 +34,7 @@ export function newGameState({ name, species, nickname }) {
     shineActive: false,
     story: {},
     world: emptyWorld(),
+    book: {},
   };
 }
 
@@ -101,6 +103,9 @@ export function applyDuelResult(state, shortId, setup, summary, rng = null) {
   for (const a of summary.answers) recordAnswer(progress.history, a.key, a.correct);
   countAnswers(progress.stats, summary.answers);
   if (summary.outcome === 'won') progress.stats.wins++;
+  // Wesen-Buch (Design 6.4): gesehen bei jedem Ausgang, besiegt nur nach einem Sieg. Trainerwesen
+  // zählen für ihre Art, Glanzformen gibt es nur bei wilden Wesen.
+  if (setup.foe) recordSighting(state, setup.foe.species, { beaten: summary.outcome === 'won', shiny: setup.kind === 'wild' && setup.foe.shiny === true });
 
   const c = state.creature;
   const report = {
@@ -124,10 +129,9 @@ export function applyDuelResult(state, shortId, setup, summary, rng = null) {
       report.shine = true;
       state.shineActive = false;
     }
-    const r = addXp(c, report.xp);
-    c.level = r.level;
-    c.xpInLevel = r.xpInLevel;
+    // Erst die Energie aus dem Duell, dann die XP: Eine Entwicklung füllt ihre neuen Felder dazu.
     c.energy = summary.playerEnergy;
+    const r = gainXp(c, report.xp);
     Object.assign(report, { levelsGained: r.levelsGained, levelAfter: r.level, stageBefore: r.stageBefore, stageAfter: r.stageAfter });
     if (setup.kind === 'trainer') {
       if (!progress.beaten.includes(setup.trainer.number)) progress.beaten.push(setup.trainer.number);

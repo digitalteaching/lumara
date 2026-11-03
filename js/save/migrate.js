@@ -5,7 +5,8 @@
 // Abgelehnt wird nur, was sich nicht sinnvoll reparieren lässt (Name, Wesen, Level).
 
 import { CONFIG } from '../config.js';
-import { STARTERS } from '../data/species.js';
+import { STARTERS, TRAINER_CREATURES } from '../data/species.js';
+import { BOOK_SLOTS } from '../data/book.js';
 import { xpToNext, maxEnergy } from '../duel/progress.js';
 import { createMap } from '../world/map.js';
 import { BUCHT } from '../world/maps/bucht.js';
@@ -13,7 +14,7 @@ import { MAPS as WORLD_MAPS } from '../world/network.js';
 import { validateName, emptyPackProgress, emptyWorld } from '../state.js';
 import { emptyBag, BAG_ITEMS } from '../items/bag.js';
 
-export const CURRENT_VERSION = 3;
+export const CURRENT_VERSION = 4;
 
 const MIGRATIONS = {
   // 1 → 2 (Plan 3a): Leuchtsteine, Rucksack, Geschichte, Uhren für das Nachwachsen, gesamte Spielzeit.
@@ -26,6 +27,12 @@ const MIGRATIONS = {
   },
   // 2 → 3 (Plan 3b): Der Rucksack bekommt Zeitsteine.
   2: s => ({ ...s, version: 3, bag: { ...s.bag, time: 0 } }),
+  // 3 → 4 (Plan 4b): das Wesen-Buch. Wer schon Trainer besiegt hat, hat ihre Wesen gesehen und besiegt.
+  3: s => ({
+    ...s,
+    version: 4,
+    book: Object.fromEntries((Array.isArray(s.stones) ? s.stones : []).filter(n => TRAINER_CREATURES[n]).map(n => [TRAINER_CREATURES[n].species, { beaten: true, shiny: false }])),
+  }),
 };
 
 const MAPS = WORLD_MAPS;
@@ -136,6 +143,15 @@ function repairStory(raw) {
   return out;
 }
 
+// Nur Arten, die im Buch stehen; beaten und shiny sind wahr nur bei genau true.
+const IN_BOOK = new Set(BOOK_SLOTS.filter(Boolean));
+function repairBook(raw) {
+  const out = {};
+  if (!isObject(raw)) return out;
+  for (const [id, e] of Object.entries(raw)) if (IN_BOOK.has(id) && isObject(e)) out[id] = { beaten: e.beaten === true, shiny: e.shiny === true };
+  return out;
+}
+
 const WORLD_KEY = /^[a-z]+:\d+,\d+$/;
 function repairWorld(raw) {
   const out = emptyWorld();
@@ -182,6 +198,7 @@ export function migrateState(raw) {
       shineActive: s.shineActive === true,
       story: repairStory(s.story),
       world: repairWorld(s.world),
+      book: repairBook(s.book),
     },
   };
 }

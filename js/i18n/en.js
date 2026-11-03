@@ -298,4 +298,10 @@ export const EN = {
 
   // Teilen
   'backup.shareTitle': 'Lumara saved game',
+
+  // Wesen-Buch
+  'book.unknown': '? Not seen yet',
+  'book.seen': '◐ Seen',
+  'book.beaten': '● Beaten',
+  'book.shinySeen': '✦ Shiny form seen',
 };

@@ -27,6 +27,7 @@ const FILES = [
   "js/core/input.js",
   "js/core/loop.js",
   "js/core/rng.js",
+  "js/data/book.js",
   "js/data/species.js",
   "js/data/story.js",
   "js/data/texts.js",

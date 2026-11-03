@@ -43,6 +43,17 @@ export function addXp({ level, xpInLevel }, amount) {
   return { level: lvl, xpInLevel: xp, levelsGained: gained, stageBefore, stageAfter: stageForLevel(lvl) };
 }
 
+// XP gutschreiben: Level und XP im Level setzen. Steigt die Stufe, kommen die neuen Energiefelder
+// gleich gefüllt dazu (Design 6.2, 6.3: die Entwicklung ist ein großer Moment). Rückgabe wie addXp.
+export function gainXp(creature, amount) {
+  const r = addXp(creature, amount);
+  const bonus = C.stageEnergyBonus[r.stageAfter - 1] - C.stageEnergyBonus[r.stageBefore - 1];
+  creature.level = r.level;
+  creature.xpInLevel = r.xpInLevel;
+  if (bonus > 0) creature.energy = Math.min(maxEnergy(creature), creature.energy + bonus);
+  return r;
+}
+
 export function xpForWin({ kind, area, trainerNumber, flawless }) {
   const base = kind === 'trainer' ? X.trainerBase + X.trainerPerNumber * trainerNumber : X.wildBase + X.wildPerArea * area;
   return flawless ? Math.round(base * (1 + X.flawlessBonus)) : base;
