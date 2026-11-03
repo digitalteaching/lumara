@@ -5,7 +5,7 @@
 import { CONFIG } from '../config.js';
 import { el, clear } from './dom.js';
 import { createFreshGuard, guardClicks } from './freshGuard.js';
-import { t } from '../i18n/i18n.js';
+import { t as tr } from '../i18n/i18n.js'; // t ist hier ein eigener Name
 
 const isTouch = () => document.body.classList.contains('touch');
 
@@ -49,10 +49,10 @@ function typingForm(p, onSubmit) {
     spellcheck: 'false',
     enterkeyhint: 'done',
     inputmode: 'text',
-    'aria-label': t('duel.answerLabel'),
+    'aria-label': tr('duel.answerLabel'),
   });
   const hint = el('p', { class: 'answer-hint' });
-  const submit = el('button', { class: 'btn primary', type: 'submit' }, t('duel.check'));
+  const submit = el('button', { class: 'btn primary', type: 'submit' }, tr('duel.check'));
   const form = el('form', { class: 'typing', novalidate: true }, el('div', { class: 'typing-row' }, input, submit), hint);
   form.addEventListener('submit', e => {
     e.preventDefault();
@@ -63,7 +63,7 @@ function typingForm(p, onSubmit) {
   return {
     node: form,
     applyHint(h) {
-      hint.textContent = t('duel.hintFirstLetter', { letter: h.firstLetter });
+      hint.textContent = tr('duel.hintFirstLetter', { letter: h.firstLetter });
       if (!input.value) input.value = h.firstLetter;
       input.focus();
     },
@@ -74,14 +74,14 @@ function typingForm(p, onSubmit) {
 function tilesForm(p, onSubmit) {
   let placed = [];
   let locked = null; // vom Joker gelegtes Kärtchen
-  const line = el('div', { class: 'tiles-line', 'aria-label': 'Dein Satz' });
+  const line = el('div', { class: 'tiles-line', 'aria-label': tr('duel.sentenceAria') });
   const pool = el('div', { class: 'tiles-pool' });
-  const check = el('button', { class: 'btn primary', type: 'button', onclick: () => onSubmit(placed.map(i => p.tiles[i])) }, t('duel.check'));
+  const check = el('button', { class: 'btn primary', type: 'button', onclick: () => onSubmit(placed.map(i => p.tiles[i])) }, tr('duel.check'));
 
   function render() {
     clear(line);
     clear(pool);
-    if (!placed.length) line.append(el('span', { class: 'tiles-empty' }, t('duel.tilesEmpty')));
+    if (!placed.length) line.append(el('span', { class: 'tiles-empty' }, tr('duel.tilesEmpty')));
     placed.forEach(i => {
       line.append(el('button', {
         class: `btn tile placed${i === locked ? ' locked' : ''}`,
@@ -145,7 +145,7 @@ export function watchKeyboard() {
 function timeBar(lowShare) {
   const fill = el('div', { class: 'timebar-fill' });
   const label = el('span', { class: 'timebar-label' });
-  const node = el('div', { class: 'timebar', role: 'progressbar', 'aria-label': t('duel.time'), 'aria-valuemin': '0' }, fill, label);
+  const node = el('div', { class: 'timebar', role: 'progressbar', 'aria-label': tr('duel.time'), 'aria-valuemin': '0' }, fill, label);
   let shownSec = null;
   let shownFrozen = null;
   return {
@@ -161,8 +161,8 @@ function timeBar(lowShare) {
       shownFrozen = frozen;
       node.setAttribute('aria-valuemax', String(Math.ceil(limit / 1000)));
       node.setAttribute('aria-valuenow', String(sec));
-      node.setAttribute('aria-valuetext', frozen ? t('duel.timeFrozenAria', { sec }) : t('duel.timeLeftAria', { sec }));
-      label.textContent = frozen ? t('duel.timeFrozen') : `${sec} s`;
+      node.setAttribute('aria-valuetext', frozen ? tr('duel.timeFrozenAria', { sec }) : tr('duel.timeLeftAria', { sec }));
+      label.textContent = frozen ? tr('duel.timeFrozen') : `${sec} s`;
     },
   };
 }
@@ -248,7 +248,7 @@ export function createDuelPanel(game) {
               if (hint) form.applyHint(hint);
               afterHint();
             },
-          }, t('duel.jokerBtn'));
+          }, tr('duel.jokerBtn'));
           side.append(jokerBtn);
         }
         if (farsight && !note) {
@@ -274,7 +274,7 @@ export function createDuelPanel(game) {
               disabledIndex = null;
               render();
             },
-          }, t('duel.swapBtn')));
+          }, tr('duel.swapBtn')));
         }
         let feedBtn = null;
         if (time && !note) {
@@ -293,10 +293,10 @@ export function createDuelPanel(game) {
           side.append(timeBtn);
         }
         if (feed?.show && !note) {
-          feedBtn = el('button', { class: 'btn side', type: 'button', disabled: !feed.enabled(), onclick: () => finish({ type: 'feed' }) }, t('duel.feed'));
+          feedBtn = el('button', { class: 'btn side', type: 'button', disabled: !feed.enabled(), onclick: () => finish({ type: 'feed' }) }, tr('duel.feed'));
           side.append(feedBtn);
         }
-        const leaveLabel = t({ flee: 'duel.flee', surrender: 'duel.surrender', later: 'duel.later' }[leave]);
+        const leaveLabel = tr({ flee: 'duel.flee', surrender: 'duel.surrender', later: 'duel.later' }[leave]);
         side.append(el('button', { class: 'btn side', type: 'button', onclick: () => finish({ type: leave }) }, leaveLabel));
 
         if (duel.timeLimit != null) {

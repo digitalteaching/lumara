@@ -1,7 +1,7 @@
 // Lernpaket wechseln (Design 10.1, 10.4). Alles, was dem Kind gehört, bleibt. Fortschritt,
 // Statistik und besiegte Trainer hängen an der Paketkennung und kommen mit demselben Paket zurück.
 
-import { el, clear } from '../ui/dom.js';
+import { el, clear, appendAll } from '../ui/dom.js';
 import { parsePack } from '../pack/parser.js';
 import { readPackFile } from '../pack/readFile.js';
 import { setGamePack } from '../app/gamePack.js';
@@ -82,7 +82,7 @@ export function packSwitchPage(game) {
         if (file) fromFile(file);
       });
       const p = game.pack?.data;
-      body.append(
+      appendAll(body,
         el('p', { class: 'sheet-text' }, t('pack.switchText')),
         p ? el('p', { class: 'small' }, t('pack.current', { title: p.title, subject: p.subject, id: p.shortId })) : null,
         el('label', { class: 'btn primary' }, t('pack.chooseFile'), input),

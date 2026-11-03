@@ -4,42 +4,17 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 
+// Alle Dateien mit Texten für das Kind: scenes, ui, menu (ohne die Seite für die Lehrkraft), items,
+// world (ohne die Karten, deren Texte tests/i18n.test.js prüft) und die Standardtexte.
+const DIRS = ['js/scenes', 'js/ui', 'js/menu', 'js/items', 'js/world'];
+const SKIP = new Set(['js/menu/teacherPage.js']);
 export const CONVERTED = [
-  'js/scenes/title.js',
-  'js/scenes/intro.js',
-  'js/scenes/eggs.js',
-  'js/scenes/name.js',
-  'js/scenes/recover.js',
-  'js/scenes/install.js',
-  'js/scenes/start.js',
-  'js/scenes/duel.js',
-  'js/scenes/note.js',
-  'js/ui/duelPanel.js',
-  'js/duel/answers.js',
-  'js/items/stones.js',
-  'js/items/food.js',
+  ...DIRS.flatMap(d => readdirSync(new URL(`../${d}`, import.meta.url)).filter(f => f.endsWith('.js')).map(f => `${d}/${f}`)),
   'js/data/texts.js',
-  'js/scenes/worldEvents.js',
-  'js/scenes/world.js',
-  'js/scenes/beacon.js',
-  'js/world/fogEdge.js',
-  'js/world/caveGate.js',
-  'js/world/islandMap.js',
-  'js/world/beacons.js',
-  'js/menu/menu.js',
-  'js/menu/bagPage.js',
-  'js/menu/mapPage.js',
-  'js/menu/diaryPage.js',
-  'js/menu/settings.js',
-  'js/menu/packPage.js',
-  'js/menu/backupPages.js',
-  'js/menu/homePage.js',
-  'js/ui/sheet.js',
-  'js/ui/toast.js',
   'js/save/backup.js',
-];
+].filter(f => !SKIP.has(f));
 
 const GERMAN = /[äöüÄÖÜß]|\b(der|die|das|und|nicht|du|dein|deine|ist|mit|noch|Zurück|Ja|Nein)\b/;
 
@@ -64,6 +39,23 @@ test('Umgestellte Dateien enthalten keinen deutschen Text mehr', () => {
   for (const file of CONVERTED) {
     const src = readFileSync(new URL(`../${file}`, import.meta.url), 'utf8');
     const bad = literals(src).filter(l => GERMAN.test(l.text));
+    assert.deepEqual(bad, [], file);
+    // Beschriftungen für Bildschirmleser kommen immer aus dem Textmodul, auch einzelne Wörter.
+    const aria = src.split('\n').map((l, i) => [i + 1, l.trim()]).filter(([, l]) => /'aria-label':\s*['"`]/.test(l));
+    assert.deepEqual(aria, [], `${file}: aria-label`);
+  }
+});
+
+// Wer t() aus dem Textmodul nutzt, darf keinen eigenen Namen t haben (etwa eine Zeitvariable
+// „let t = 0“): Sonst ist t() dort keine Funktion mehr, und die Szene bricht ab.
+test('Kein eigener Name t verdeckt die Textfunktion t()', () => {
+  const files = readdirSync(new URL('../js', import.meta.url), { recursive: true }).filter(f => f.endsWith('.js')).map(f => `js/${f}`);
+  const shadow = /\b(let|const|var)\s+t\s*=|\bfunction\s*\w*\s*\(([^)]*,\s*)?t\s*[,)=]|\(\s*t\s*[,)]|[,(]\s*t\s*\)\s*=>|(^|[^\w.])t\s*=>/;
+  for (const file of files) {
+    const src = readFileSync(new URL(`../${file}`, import.meta.url), 'utf8');
+    const spec = src.match(/import\s*\{([^}]*)\}\s*from\s*'[^']*i18n\/i18n\.js'/)?.[1] ?? '';
+    if (!spec.split(',').some(x => x.trim() === 't')) continue; // „t as tr“ verdeckt nichts
+    const bad = src.split('\n').map((l, i) => [i + 1, l.trim()]).filter(([, l]) => !l.startsWith('//') && shadow.test(l.replace(/\bt\(/g, 'T(')));
     assert.deepEqual(bad, [], file);
   }
 });

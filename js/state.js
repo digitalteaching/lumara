@@ -69,9 +69,9 @@ function countAnswers(stats, answers) {
     stats.total++;
     if (a.correct) stats.right++;
     if (a.trainer == null) continue;
-    const t = (stats.topics[a.trainer] ??= { right: 0, total: 0 });
-    t.total++;
-    if (a.correct) t.right++;
+    const topic = (stats.topics[a.trainer] ??= { right: 0, total: 0 });
+    topic.total++;
+    if (a.correct) topic.right++;
   }
 }
 

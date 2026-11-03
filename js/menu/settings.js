@@ -1,6 +1,6 @@
 // Einstellungen (Design 13). Spätere Tasks hängen hier ihre Einträge ein.
 
-import { el } from '../ui/dom.js';
+import { el, appendAll } from '../ui/dom.js';
 import { confirmPage } from '../ui/sheet.js';
 import { reloadGame } from '../app/flow.js';
 import { saveBackupPage, loadBackupPage } from './backupPages.js';
@@ -55,7 +55,7 @@ export function settingsPage(game) {
   return {
     title: t('menu.settings'),
     render(body, nav) {
-      body.append(
+      appendAll(body,
         textSpeed(game, nav),
         game.state && game.pack ? section(t('settings.pack'), el('div', { class: 'sheet-list' }, entry(t('settings.switchPack'), () => nav.push(packSwitchPage(game))))) : null,
         section(

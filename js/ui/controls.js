@@ -1,10 +1,11 @@
 // Steuerkreuz, A und B auf dem Bildschirm (nur bei Touch-Geräten sichtbar).
 
 import { dpadDirection } from '../core/input.js';
+import { t } from '../i18n/i18n.js';
 
 export function mountControls(padEl, input) {
   padEl.innerHTML = `
-    <div class="dpad" aria-label="Steuerkreuz">
+    <div class="dpad" aria-label="${t('controls.dpad')}">
       <span class="dpad-arm up"></span><span class="dpad-arm down"></span>
       <span class="dpad-arm left"></span><span class="dpad-arm right"></span>
       <span class="dpad-hub"></span>

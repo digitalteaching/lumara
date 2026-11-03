@@ -1,6 +1,6 @@
 // Seiten „Spielstand sichern“ und „Spielstand laden“ (Design 11.3, 11.4).
 
-import { el, clear } from '../ui/dom.js';
+import { el, clear, appendAll } from '../ui/dom.js';
 import { confirmPage } from '../ui/sheet.js';
 import { shareOrDownload } from '../ui/share.js';
 import { formatDateTime } from '../ui/format.js';
@@ -37,7 +37,7 @@ export function saveBackupPage(game) {
           busy = false;
         }
       }
-      body.append(
+      appendAll(body,
         el('p', { class: 'sheet-text' }, t('backup.saveText')),
         readPlatform().appleMobile ? el('p', { class: 'small' }, t('backup.tipFiles')) : null,
         el('button', { class: 'btn primary', type: 'button', onclick: run }, t('settings.saveGame')),
@@ -88,7 +88,7 @@ export function loadBackupPage(game) {
         if (!parsed.ok) return msg.append(badMsg(backupMessage(parsed.reason)));
         nav.push(restoreConfirm(game, parsed));
       });
-      body.append(
+      appendAll(body,
         el('p', { class: 'sheet-text' }, t('backup.chooseText')),
         el('label', { class: 'btn primary' }, t('backup.chooseFile'), input),
         msg,

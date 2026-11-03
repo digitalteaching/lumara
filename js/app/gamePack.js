@@ -8,6 +8,7 @@ export function applyLanguage(lang) {
   if (typeof document !== 'undefined') {
     document.documentElement.lang = active;
     document.title = t('app.title');
+    document.querySelector('.dpad')?.setAttribute('aria-label', t('controls.dpad'));
   }
   return active;
 }

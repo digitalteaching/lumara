@@ -274,4 +274,21 @@ export const EN = {
   'wild.the.m': 'The wild {name}',
   'wild.the.f': 'The wild {name}',
   'wild.the.n': 'The wild {name}',
+
+  // Lernpaket laden
+  'pack.notStored': 'The pack could not be saved on this device. Next time you start, you have to load it again.',
+  'pack.storedLabel': 'Learning pack: ',
+  'pack.go': 'Let’s go',
+  'pack.loadOther': 'Load another learning pack',
+  'pack.intro': 'Load the learning pack you got from your teacher.',
+  'pack.load': 'Load learning pack',
+  'pack.tryExample': 'Try it without your own pack',
+  'pack.haveBackup': 'I have a backup file',
+
+  // Steuerung
+  'controls.dpad': 'D-pad',
+
+  // Duell: Bildschirmleser
+  'duel.streakAria': 'Streak {n}',
+  'duel.sentenceAria': 'Your sentence',
 };

@@ -274,4 +274,21 @@ export const DE = {
   'wild.the.m': 'Der wilde {name}',
   'wild.the.f': 'Die wilde {name}',
   'wild.the.n': 'Das wilde {name}',
+
+  // Lernpaket laden
+  'pack.notStored': 'Das Paket konnte auf diesem Gerät nicht gespeichert werden. Beim nächsten Start musst du es neu laden.',
+  'pack.storedLabel': 'Lernpaket: ',
+  'pack.go': 'Los geht’s',
+  'pack.loadOther': 'Anderes Lernpaket laden',
+  'pack.intro': 'Lade das Lernpaket, das du von deiner Lehrkraft bekommen hast.',
+  'pack.load': 'Lernpaket laden',
+  'pack.tryExample': 'Ohne eigenes Paket ausprobieren',
+  'pack.haveBackup': 'Ich habe eine Sicherungsdatei',
+
+  // Steuerung
+  'controls.dpad': 'Steuerkreuz',
+
+  // Duell: Bildschirmleser
+  'duel.streakAria': 'Serie {n}',
+  'duel.sentenceAria': 'Dein Satz',
 };

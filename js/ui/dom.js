@@ -19,6 +19,11 @@ export function el(tag, props = {}, ...children) {
   return node;
 }
 
+// Wie node.append, aber null und false fallen weg (sonst stünde „null“ als Text auf der Seite).
+export function appendAll(node, ...children) {
+  for (const c of children.flat()) if (c != null && c !== false) node.append(c);
+}
+
 export function clear(node) {
   while (node.firstChild) node.firstChild.remove();
 }

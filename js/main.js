@@ -206,9 +206,9 @@ startLoop({
     }
     input.endFrame();
   },
-  render(t) {
-    game.scene?.render(screen.ctx, t);
-    game.overlay?.render(screen.ctx, t);
+  render(ms) {
+    game.scene?.render(screen.ctx, ms);
+    game.overlay?.render(screen.ctx, ms);
     screen.present();
   },
 });

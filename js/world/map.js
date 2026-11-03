@@ -32,12 +32,12 @@ export function createMap(def, { openGates = [] } = {}) {
 
   def.rows.forEach((row, y) => {
     if (row.length !== width) {
-      throw new Error(`Karte ${def.name}: Zeile ${y + 1} hat Länge ${row.length} statt ${width}`);
+      throw new Error(`Karte ${def.name}: Zeile ${y + 1} hat Länge ${row.length} statt ${width}`); // i18n-ok: Fehler für Entwickler
     }
     for (const ch of row) {
       const kind = def.legend[ch];
       if (!kind || !(WALKABLE.has(kind) || BLOCKED.has(kind))) {
-        throw new Error(`Karte ${def.name}: unbekanntes Zeichen '${ch}' in Zeile ${y + 1}`);
+        throw new Error(`Karte ${def.name}: unbekanntes Zeichen '${ch}' in Zeile ${y + 1}`); // i18n-ok: Fehler für Entwickler
       }
       tiles.push(kind);
     }

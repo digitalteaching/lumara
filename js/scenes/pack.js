@@ -10,6 +10,7 @@ import { drawTitleArt } from './title.js';
 import { openSheet } from '../ui/sheet.js';
 import { loadBackupPage } from '../menu/backupPages.js';
 import { setGamePack } from '../app/gamePack.js';
+import { t } from '../i18n/i18n.js';
 
 const EXAMPLE_URL = 'pakete/englisch-6-beispiel.txt';
 
@@ -34,11 +35,11 @@ export function createPackScene(game, next, { offerRestore = false } = {}) {
   function showErrors(details) {
     clear(message);
     message.append(
-      el('p', { class: 'msg bad' }, el('span', { class: 'icon', 'aria-hidden': 'true' }, '✗'), ' Diese Datei ist kein gültiges Lernpaket. Frag deine Lehrkraft.'),
+      el('p', { class: 'msg bad' }, el('span', { class: 'icon', 'aria-hidden': 'true' }, '✗'), t('pack.invalid')),
       el(
         'details',
         { class: 'details' },
-        el('summary', {}, 'Details für die Lehrkraft'),
+        el('summary', {}, t('pack.details')),
         el('ul', {}, details.map(d => el('li', {}, d))),
       ),
     );
@@ -51,8 +52,8 @@ export function createPackScene(game, next, { offerRestore = false } = {}) {
     if (store.save(text)) return next();
     clear(message);
     message.append(
-      el('p', { class: 'msg' }, 'Das Paket konnte auf diesem Gerät nicht gespeichert werden. Beim nächsten Start musst du es neu laden.'),
-      el('button', { class: 'btn primary', type: 'button', onclick: () => next() }, 'Weiter'),
+      el('p', { class: 'msg' }, t('pack.notStored')),
+      el('button', { class: 'btn primary', type: 'button', onclick: () => next() }, t('common.next')),
     );
   }
 
@@ -77,7 +78,7 @@ export function createPackScene(game, next, { offerRestore = false } = {}) {
       accept(await res.text());
     } catch {
       clear(message);
-      message.append(el('p', { class: 'msg bad' }, '✗ Das Beispielpaket konnte nicht geladen werden. Prüfe die Internetverbindung.'));
+      message.append(el('p', { class: 'msg bad' }, t('pack.exampleFailed')));
     } finally {
       busy = false;
     }
@@ -92,7 +93,7 @@ export function createPackScene(game, next, { offerRestore = false } = {}) {
       card = el(
         'div',
         { class: 'box screen-card' },
-        el('p', { class: 'pack-name' }, 'Lernpaket: ', el('b', {}, stored.pack.title), ` (${stored.pack.subject})`),
+        el('p', { class: 'pack-name' }, t('pack.storedLabel'), el('b', {}, stored.pack.title), ` (${stored.pack.subject})`),
         el('button', {
           class: 'btn primary big',
           type: 'button',
@@ -100,23 +101,23 @@ export function createPackScene(game, next, { offerRestore = false } = {}) {
             setGamePack(game, { text: storedText, data: stored.pack });
             next();
           },
-        }, 'Los geht’s'),
-        fileButton('Anderes Lernpaket laden', 'btn link'),
+        }, t('pack.go')),
+        fileButton(t('pack.loadOther'), 'btn link'),
         message,
       );
     } else {
       card = el(
         'div',
         { class: 'box screen-card' },
-        el('p', { class: 'pack-intro' }, 'Lade das Lernpaket, das du von deiner Lehrkraft bekommen hast.'),
-        fileButton('Lernpaket laden', 'btn primary big'),
-        el('button', { class: 'btn link', type: 'button', onclick: loadExample }, 'Ohne eigenes Paket ausprobieren'),
+        el('p', { class: 'pack-intro' }, t('pack.intro')),
+        fileButton(t('pack.load'), 'btn primary big'),
+        el('button', { class: 'btn link', type: 'button', onclick: loadExample }, t('pack.tryExample')),
         message,
       );
     }
     if (offerRestore) {
       card.insertBefore(
-        el('button', { class: 'btn link', type: 'button', onclick: () => openSheet(game, loadBackupPage(game)) }, 'Ich habe eine Sicherungsdatei'),
+        el('button', { class: 'btn link', type: 'button', onclick: () => openSheet(game, loadBackupPage(game)) }, t('pack.haveBackup')),
         message,
       );
     }

@@ -6,7 +6,7 @@ import { BUILDINGS } from '../gfx/art/tiles.js';
 import { spriteFrom } from '../gfx/canvasSprites.js';
 import { say, closeDialogs } from '../ui/dialog.js';
 import { el } from '../ui/dom.js';
-import { t, tl } from '../i18n/i18n.js';
+import { t as tr, tl } from '../i18n/i18n.js'; // t ist hier ein eigener Name
 
 const BOAT_TO = { x: 20 * 16, y: 24 * 16 };
 const BOAT_FROM = { x: 40 * 16, y: 26 * 16 };
@@ -38,7 +38,7 @@ export function createIntroScene(game, next) {
   return {
     enter() {
       game.mode = 'screen';
-      skipBtn = el('button', { class: 'btn skip-btn', type: 'button', onclick: finish }, t('intro.skip'));
+      skipBtn = el('button', { class: 'btn skip-btn', type: 'button', onclick: finish }, tr('intro.skip'));
       game.ui.append(skipBtn);
       offB = game.input.on('b', finish);
       run();

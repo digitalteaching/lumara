@@ -4,7 +4,7 @@
 
 Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, erkundet eine geheimnisvolle Insel unter einem Nebel des Vergessens und besteht Duelle mit Aufgaben aus dem Unterricht. Dafür bekommt es Punkte, und sein Wesen entwickelt sich weiter. Die Inhalte kommen aus einem Lernpaket, einer Textdatei, die die Lehrkraft selbst schreibt. Dadurch funktioniert das Spiel in jedem Fach. Das erste Beispielpaket ist für Jahrgang 6 Englisch.
 
-**Status:** Plan 1, Plan 2, Plan 3a, Plan 3b und Plan 3c sind gebaut (Spielfassung 0.5.0).
+**Status:** Plan 1, Plan 2, Plan 3a, Plan 3b, Plan 3c und Plan 4a sind gebaut (Spielfassung 0.6.0).
 
 - **Plan 1**, spielbarer Kern:
   - Leuchtturmbucht, Lernpaket, fünf Startwesen
@@ -40,6 +40,10 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
   - Karte der Insel im Menü: Gebiete im Nebel grau und mit „Im Nebel“, dazu „Du bist hier“. Das Reisemenü zeigt viele Ziele in zwei Spalten.
   - Beispielpaket mit allen acht Themen und 27 Zetteln
   - Mit `ZEITDRUCK: aus` gibt es keine Zeitsteine, und nach einem Zeitstein ist Füttern gesperrt.
+- **Plan 4a**, die Spielsprache (Design 10.6):
+  - Ist das Lernpaket für Englisch, ist das ganze Spiel auf Englisch: Oberfläche, Duelle, Bewohner, Schilder, Geschichte und die Namen der Gebiete und Wesen. Jedes andere Paket läuft auf Deutsch.
+  - Die Sprache kommt aus `SPIELSPRACHE:` oder, ohne diese Zeile, aus `FACH:`. Französisch und Spanisch erkennt das Spiel schon; sie kommen in einem späteren Plan und laufen bis dahin auf Deutsch.
+  - Auf Deutsch bleibt alles für die Lehrkraft: `lehrkraft.html`, die Seite „Für die Lehrkraft“ im Spiel und die Fehlerliste beim Laden eines Pakets.
 
 Die Höhle im Berg, Aufträge und geheime Orte kommen mit späteren Plänen.
 
@@ -49,6 +53,7 @@ Die Höhle im Berg, Aufträge und geheime Orte kommen mit späteren Plänen.
 - Bauplan 3a: [docs/superpowers/plans/2026-11-03-lumara-plan-3a-welt-fluesterwald.md](docs/superpowers/plans/2026-11-03-lumara-plan-3a-welt-fluesterwald.md)
 - Bauplan 3b: [docs/superpowers/plans/2026-11-03-lumara-plan-3b-gebiete-3-bis-5.md](docs/superpowers/plans/2026-11-03-lumara-plan-3b-gebiete-3-bis-5.md)
 - Bauplan 3c: [docs/superpowers/plans/2026-11-03-lumara-plan-3c-gebiete-6-bis-8.md](docs/superpowers/plans/2026-11-03-lumara-plan-3c-gebiete-6-bis-8.md)
+- Bauplan 4a: [docs/superpowers/plans/2026-11-03-lumara-plan-4a-spielsprache.md](docs/superpowers/plans/2026-11-03-lumara-plan-4a-spielsprache.md)
 - Frühere Ideensammlung: [docs/2026-10-17-zwischenstand-ideensammlung.md](docs/2026-10-17-zwischenstand-ideensammlung.md)
 
 ## Für Lehrkräfte
@@ -57,6 +62,7 @@ Die Höhle im Berg, Aufträge und geheime Orte kommen mit späteren Plänen.
   - Statistik prüfen: Werte vom Screenshot abtippen, dazu den Prüfcode.
   - Lernpaket prüfen: Fehler und Hinweise mit Zeilennummern, eine Übersicht pro Trainer und Probefragen in der echten Duell-Ansicht.
 - Die Statistik steht im Spiel unter Menü → Einstellungen → Für die Lehrkraft. Sie gilt jeweils für das aktuelle Lernpaket.
+- **Spielsprache:** Mit `FACH: Englisch` (oder `SPIELSPRACHE: englisch`) läuft das ganze Spiel auf Englisch, auf Niveau A1 bis A2. So wird schon das Herumlaufen zum Sprachbad. Mit `SPIELSPRACHE: deutsch` bleibt ein Englisch-Paket auf Deutsch.
 - Vorlage: [pakete/vorlage.txt](pakete/vorlage.txt)
 - Beispielpaket Englisch 6 (Trainer 1 bis 8): [pakete/englisch-6-beispiel.txt](pakete/englisch-6-beispiel.txt)
 
@@ -83,6 +89,7 @@ Bleibt das Bild schwarz, einfach neu laden. Der einfache Python-Server bleibt be
 | `/?duell=trainer` | direkt das Duell gegen die Hüterin der Bucht |
 | `/?galerie` | alle Wesen in Originalgröße, A blättert weiter |
 | `/?ipad` | so tun, als liefe das Spiel auf einem iPad in Safari (zeigt „Bevor es losgeht“, wenn es noch keinen Spielstand gibt) |
+| `/?sprache=xx` | Prüfmodus der Spielsprache: Jeder übersetzte Text steht in ⟦ ⟧, vergessene Texte fallen so sofort auf |
 | `/?sw` | Service Worker auch lokal einschalten (zum Testen von Offline und Updates) |
 
 - `?dev`, `?duell` und `?galerie` speichern nie einen Spielstand. Der echte Stand auf dem Rechner bleibt also erhalten.
