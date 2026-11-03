@@ -4,13 +4,15 @@
 
 const TEACHER_LINE = 'Dieser Weg öffnet sich, sobald deine Lehrkraft das nächste Thema freigibt.';
 
+// Ist das Gebiet noch nicht gebaut, hilft auch ein neues Thema nicht: Dann sagt das Schild das,
+// bevor es auf die Lehrkraft verweist.
 export function fogEdgeLines(sign, { gateBeaten, packHasNext, builtAreas }) {
   if (!gateBeaten) return sign.lines;
-  if (!packHasNext) return [TEACHER_LINE];
   if (sign.leadsTo > builtAreas) {
     const verb = sign.leadsToPlural ? 'liegen' : 'liegt'; // „die Spiegeldünen“ sind Mehrzahl
     return [`Hinter dem Nebel ${verb} ${sign.leadsToName}.`, 'Der Weg dorthin entsteht gerade. In einer der nächsten Spielfassungen kannst du hindurch.'];
   }
+  if (!packHasNext) return [TEACHER_LINE];
   return null;
 }
 

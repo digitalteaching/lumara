@@ -13,7 +13,7 @@ test('vor dem Sieg: die eigenen Zeilen des Schilds', () => {
 });
 
 test('Paket ohne nächstes Thema: Hinweis auf die Lehrkraft (Design 10.4)', () => {
-  assert.deepEqual(fogEdgeLines(sign, { gateBeaten: true, packHasNext: false, builtAreas: 1 }), ['Dieser Weg öffnet sich, sobald deine Lehrkraft das nächste Thema freigibt.']);
+  assert.deepEqual(fogEdgeLines(sign, { gateBeaten: true, packHasNext: false, builtAreas: 2 }), ['Dieser Weg öffnet sich, sobald deine Lehrkraft das nächste Thema freigibt.']);
 });
 
 test('Gebiet in dieser Fassung noch nicht gebaut', () => {
@@ -55,6 +55,15 @@ test('Mehrzahl am Nebelrand: „Hinter dem Nebel liegen die Spiegeldünen.“', 
 test('Nebelrand hinter den Klippen: Uhrwerkruinen entstehen gerade', () => {
   const s = KLIPPEN.objects.find(o => o.role === 'fogEdge');
   assert.deepEqual(fogEdgeLines(s, { gateBeaten: true, packHasNext: true, builtAreas: 5 }), [
+    'Hinter dem Nebel liegen die Uhrwerkruinen.',
+    'Der Weg dorthin entsteht gerade. In einer der nächsten Spielfassungen kannst du hindurch.',
+  ]);
+});
+
+test('Gebiet noch nicht gebaut und Thema fehlt: „entsteht gerade“, nicht der Hinweis auf die Lehrkraft', () => {
+  // Mit dem Beispielpaket (Trainer 1 bis 5) wäre der Lehrkraft-Satz falsch: Auch mit Thema 6 bliebe der Nebel.
+  const s = KLIPPEN.objects.find(o => o.role === 'fogEdge');
+  assert.deepEqual(fogEdgeLines(s, { gateBeaten: true, packHasNext: false, builtAreas: 5 }), [
     'Hinter dem Nebel liegen die Uhrwerkruinen.',
     'Der Weg dorthin entsteht gerade. In einer der nächsten Spielfassungen kannst du hindurch.',
   ]);
