@@ -4,6 +4,7 @@ import { el } from '../ui/dom.js';
 import { confirmPage } from '../ui/sheet.js';
 import { reloadGame } from '../app/flow.js';
 import { saveBackupPage, loadBackupPage } from './backupPages.js';
+import { packSwitchPage } from './packPage.js';
 
 const SPEEDS = [['slow', 'Langsam'], ['normal', 'Normal'], ['fast', 'Schnell']];
 
@@ -53,6 +54,7 @@ export function settingsPage(game) {
     render(body, nav) {
       body.append(
         textSpeed(game, nav),
+        game.state && game.pack ? section('Lernpaket', el('div', { class: 'sheet-list' }, entry('Lernpaket wechseln', () => nav.push(packSwitchPage(game))))) : null,
         section(
           'Spielstand',
           el('div', { class: 'sheet-list' },

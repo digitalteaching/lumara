@@ -54,6 +54,7 @@ export const CONFIG = deepFreeze({
     templateId: 'fach-jahrgang-name',
   },
   names: { maxLength: 12 },
+  world: { builtAreas: 1 }, // Gebiete, die diese Spielfassung schon hat (Nebelrand, Design 17)
   save: { autosaveMs: 30000 },
   play: { idleMs: 120000 },
 });

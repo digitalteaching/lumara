@@ -94,7 +94,8 @@ export const BUCHT = {
     { type: 'trainer', number: 1, x: 22, y: 6, dir: 'left', sight: 4, sprite: 'trainer1' },
 
     {
-      type: 'sign', x: 17, y: 3,
+      // Nebelrand zum Flüsterwald (Design 10.4): Der Text hängt vom Stand ab, siehe world/fogEdge.js.
+      type: 'sign', role: 'fogEdge', x: 17, y: 3, gate: 1, leadsTo: 2, leadsToName: 'der Flüsterwald',
       lines: ['Der Nebel ist hier zu dicht.', 'Vielleicht weicht er, wenn der Leuchtstein der Bucht wieder leuchtet.'],
     },
     { type: 'sign', x: 22, y: 13, lines: ['Leuchtturmbucht', 'Norden: Flüsterwald · Osten: Leuchtturm'] },

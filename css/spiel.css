@@ -530,6 +530,8 @@ body:not([data-mode="walk"]) .menu-btn { display: none; }
 .sheet-confirm { justify-content: flex-end; }
 .sheet-foot { margin: 4px 0 0; font-size: var(--text-small); opacity: 0.75; text-align: center; }
 .sheet-msg:empty { display: none; }
+.sheet .btn.link { color: var(--ink); align-self: flex-start; }
+.sheet label.btn { align-self: flex-start; }
 .sheet-msg .msg { margin: 0; }
 .seg { justify-content: flex-start; }
 .seg .btn[aria-pressed="true"] { background: var(--frame); color: #fff; outline: 3px solid var(--ink); outline-offset: -6px; }

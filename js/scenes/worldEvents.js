@@ -7,6 +7,7 @@ import { createDuelScene, makeWildSetup, makeTrainerSetup } from './duel.js';
 import { playTransition, reveal } from './transition.js';
 import { createEncounterCounter } from '../world/encounters.js';
 import { trainerSees } from '../world/map.js';
+import { fogEdgeLines } from '../world/fogEdge.js';
 import { packProgress } from '../state.js';
 import { displayName } from '../data/species.js';
 import { maxEnergy } from '../duel/progress.js';
@@ -125,6 +126,19 @@ export function createGameWorld(game) {
     if (trainerSpotsPlayer({ x, y })) return () => trainerDuel({ spotted: true });
     if (counter.onStep(map.isTallGrass(x, y))) return () => wildDuel();
     return null;
+  });
+
+  // Schild am Nebelrand: vor dem Standard-Schild, weil der Text vom Stand abhängt (Design 10.4).
+  world.onInteract.unshift(async ev => {
+    const o = ev.target;
+    if (o?.type !== 'sign' || o.role !== 'fogEdge') return false;
+    const lines = fogEdgeLines(o, {
+      gateBeaten: packProgress(game.state, shortId()).beaten.includes(o.gate),
+      packHasNext: game.pack.data.trainers.some(t => t.number === o.leadsTo),
+      builtAreas: CONFIG.world.builtAreas,
+    });
+    await say(game, lines ?? o.lines);
+    return true;
   });
 
   world.onInteract.push(async ev => {

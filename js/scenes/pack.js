@@ -1,12 +1,11 @@
 // Lernpaket laden (Design 10.1, 10.3): Datei auswählen oder das Beispielpaket ausprobieren.
 // Kinder sehen nur eine kurze Meldung, die Details für die Lehrkraft sind aufklappbar.
 
-import { CONFIG } from '../config.js';
 import { parsePack } from '../pack/parser.js';
 import { createPackStore } from '../pack/store.js';
+import { readPackFile } from '../pack/readFile.js';
 import { el, clear } from '../ui/dom.js';
 import { createFreshGuard, guardClicks } from '../ui/freshGuard.js';
-import { decodePackBytes } from '../pack/decode.js';
 import { drawTitleArt } from './title.js';
 import { openSheet } from '../ui/sheet.js';
 import { loadBackupPage } from '../menu/backupPages.js';
@@ -58,12 +57,11 @@ export function createPackScene(game, next, { offerRestore = false } = {}) {
 
   async function handleFile(file) {
     if (busy) return;
-    if (file.size > CONFIG.pack.maxBytes) return showErrors(['Die Datei ist größer als 1 MB.']);
     busy = true;
     try {
-      accept(decodePackBytes(await file.arrayBuffer()));
-    } catch {
-      showErrors(['Die Datei konnte nicht gelesen werden.']);
+      const r = await readPackFile(file);
+      if (!r.ok) return showErrors(r.details);
+      accept(r.text);
     } finally {
       busy = false;
     }
