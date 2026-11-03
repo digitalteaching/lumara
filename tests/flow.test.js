@@ -15,6 +15,11 @@ test('Weg nach dem Titel', () => {
   assert.equal(routeAfterTitle({ status: 'none', storedPackOk: false }), 'new-game');
 });
 
+test('erst installieren nur ohne Spielstand', () => {
+  assert.equal(routeAfterTitle({ status: 'none', storedPackOk: false, installFirst: true }), 'install');
+  assert.equal(routeAfterTitle({ status: 'ok', storedPackOk: true, installFirst: true }), 'world');
+});
+
 test('makeSaver speichert nur im normalen Spiel', () => {
   const game = { saveEnabled: false, state: newGameState({ name: 'Mia', species: 'nixi', nickname: null }), store: createSaveStore(fakeStorage()) };
   const save = makeSaver(game);

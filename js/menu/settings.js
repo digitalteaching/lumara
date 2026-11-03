@@ -5,6 +5,7 @@ import { confirmPage } from '../ui/sheet.js';
 import { reloadGame } from '../app/flow.js';
 import { saveBackupPage, loadBackupPage } from './backupPages.js';
 import { packSwitchPage } from './packPage.js';
+import { homeScreenPage } from './homePage.js';
 
 const SPEEDS = [['slow', 'Langsam'], ['normal', 'Normal'], ['fast', 'Schnell']];
 
@@ -62,6 +63,7 @@ export function settingsPage(game) {
             entry('Spielstand laden', () => nav.push(loadBackupPage(game))),
           ),
         ),
+        section('Gerät', el('div', { class: 'sheet-list' }, entry('Zum Home-Bildschirm', () => nav.push(homeScreenPage(game))))),
         section('Neu anfangen', el('button', { class: 'btn danger', type: 'button', onclick: () => nav.push(newGamePages(game)) }, 'Neues Spiel')),
         el('p', { class: 'sheet-foot' }, `Spielfassung ${game.version}`),
       );

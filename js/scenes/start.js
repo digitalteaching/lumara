@@ -10,6 +10,8 @@ import { createIntroScene } from './intro.js';
 import { createNameScene } from './name.js';
 import { createEggScene } from './eggs.js';
 import { createRecoverScene } from './recover.js';
+import { createInstallScene } from './install.js';
+import { readPlatform } from '../app/platform.js';
 import { createGameWorld } from './worldEvents.js';
 import { el } from '../ui/dom.js';
 import { openSheet } from '../ui/sheet.js';
@@ -56,7 +58,9 @@ export function startFlow(game, loaded) {
   }
 
   function afterTitle() {
-    const route = routeAfterTitle({ status: loaded.status, storedPackOk: !!storedPack(game) });
+    const p = readPlatform();
+    const route = routeAfterTitle({ status: loaded.status, storedPackOk: !!storedPack(game), installFirst: p.appleMobile && !p.standalone });
+    if (route === 'install') return game.go(createInstallScene(game, newGame));
     if (route === 'world' || route === 'pack-world') return continueWith(loaded.state);
     if (route === 'recover' || route === 'newer') {
       return game.go(createRecoverScene(game, {

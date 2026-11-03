@@ -6,6 +6,7 @@ import { shareOrDownload } from '../ui/share.js';
 import { formatDateTime } from '../ui/format.js';
 import { createBackupText, parseBackupText, backupFileName, compareWithDevice, BACKUP_MESSAGES } from '../save/backup.js';
 import { reloadGame } from '../app/flow.js';
+import { readPlatform } from '../app/platform.js';
 
 const MAX_BYTES = 4 * 1024 * 1024;
 
@@ -37,7 +38,7 @@ export function saveBackupPage(game) {
       }
       body.append(
         el('p', { class: 'sheet-text' }, 'Sichere deinen Spielstand als Datei. Damit kannst du auf einem anderen Gerät weiterspielen oder nach dem Löschen der Browserdaten alles zurückholen. Die Datei enthält auch dein Lernpaket.'),
-        el('p', { class: 'small' }, 'Tipp: Wähle „In Dateien sichern“.'),
+        readPlatform().appleMobile ? el('p', { class: 'small' }, 'Tipp: Wähle „In Dateien sichern“.') : null,
         el('button', { class: 'btn primary', type: 'button', onclick: run }, 'Spielstand sichern'),
         msg,
       );

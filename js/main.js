@@ -19,6 +19,7 @@ import { createAutosave } from './save/autosave.js';
 import { createPlayClock } from './save/playClock.js';
 import { makeSaver } from './app/flow.js';
 import { APP_VERSION } from './version.js';
+import { requestPersist } from './app/platform.js';
 import { createDuelScene, makeWildSetup, makeTrainerSetup } from './scenes/duel.js';
 
 const screen = createScreen(document.getElementById('screen'), document.getElementById('stage'));
@@ -55,7 +56,7 @@ const game = {
     scene.enter?.();
   },
 };
-game.save = makeSaver(game);
+game.save = makeSaver(game, { onFirstSave: requestPersist });
 
 // Automatisch speichern: alle 30 s Spielzeit, beim Verstecken und beim Schließen der Seite.
 const autosave = createAutosave({

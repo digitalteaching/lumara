@@ -538,6 +538,10 @@ body:not([data-mode="walk"]) .menu-btn { display: none; }
 .btn.danger { background: var(--bad); color: #fff; }
 .small { font-size: var(--text-small); }
 
+/* Erst installieren: Schritte mit Teilen-Symbol */
+.install-steps { margin: 0; padding-left: 1.4em; text-align: left; display: flex; flex-direction: column; gap: 6px; }
+.share-icon { width: 1.2em; height: 1.2em; vertical-align: -0.2em; color: var(--button); }
+
 /* Wesen-Seite */
 .creature-card { display: flex; flex-direction: column; gap: 6px; }
 .creature-card p { margin: 0; }
