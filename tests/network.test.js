@@ -119,3 +119,15 @@ test('Bewohner ohne Uhr: linesNoClock bei ZEITDRUCK: aus', () => {
   assert.deepEqual(npcLines(o, st([]), 4, { ...pack(5), timePressure: 'normal' }), ['Uhr!']);
   assert.deepEqual(npcLines(o, st([4]), 4, { ...pack(4), timePressure: 'aus' }), ['lit']);
 });
+
+test('Tor mit afterStone: erst offen, wenn der Stein leuchtet und das Gebiet dahinter offen ist', () => {
+  const def = { gates: [{ id: 'x', leadsTo: 2, afterStone: 3 }] };
+  assert.deepEqual(openGatesFor(def, st([1]), pack(3)), []);
+  assert.deepEqual(openGatesFor(def, st([1, 3]), pack(3)), ['x']);
+  assert.deepEqual(openGatesFor(def, st([1, 3]), pack(1)), []); // Gebiet 2 mit diesem Paket im Nebel
+});
+
+test('Bucht: Der Pfad im Osten bleibt vor Stein 8 im Nebel', () => {
+  assert.deepEqual(openGatesFor(BUCHT, st([1, 2, 3, 4, 5, 6, 7]), pack(8)), ['nord']);
+  assert.deepEqual(openGatesFor(BUCHT, st([1, 2, 3, 4, 5, 6, 7, 8]), pack(5)), ['nord']); // Paket ohne Trainer 8
+});

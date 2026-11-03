@@ -36,7 +36,7 @@ test('Bucht: Leuchtstein 1, Nebeltor nach Norden, Ausgang in den Wald, Strauch, 
   const r = reachable(m, BUCHT.spawn);
   const nextTo = (x, y) => [[0, 1], [0, -1], [1, 0], [-1, 0]].some(([dx, dy]) => r.has(cellKey(x + dx, y + dy)));
   assert.ok(BUCHT.objects.some(o => o.type === 'beacon' && o.number === 1));
-  assert.deepEqual(BUCHT.gates.map(g => [g.id, g.leadsTo]), [['nord', 2]]);
+  assert.deepEqual(BUCHT.gates.map(g => [g.id, g.leadsTo]), [['nord', 2], ['ost', 8]]);
   assert.ok(BUCHT.exits.some(e => e.to === 'wald' && r.has(cellKey(e.x, e.y))));
   assert.ok(BUCHT.objects.some(o => o.type === 'bush'));
   assert.ok(BUCHT.objects.filter(o => o.type === 'notestone').length >= 3);

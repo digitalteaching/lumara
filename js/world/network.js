@@ -22,8 +22,12 @@ export function areaOpen(state, pack, area) {
   return state.stones.includes(area - 1) && hasTrainer(pack, area);
 }
 
+// Ein Tor mit afterStone öffnet sich erst, wenn auch dieser Stein leuchtet (der Pfad zwischen
+// Sternenwiese und Bucht nach dem Sieg über Trainer 8, Design 5.2).
 export function openGatesFor(def, state, pack) {
-  return (def.gates ?? []).filter(g => areaOpen(state, pack, g.leadsTo)).map(g => g.id);
+  return (def.gates ?? [])
+    .filter(g => areaOpen(state, pack, g.leadsTo) && (g.afterStone == null || state.stones.includes(g.afterStone)))
+    .map(g => g.id);
 }
 
 export function exitAt(def, x, y) {

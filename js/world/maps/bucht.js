@@ -1,5 +1,6 @@
 // Gebiet 1: die Leuchtturmbucht (Design 5.3). 40 × 30 Felder.
 // Norden: Nebel über dem Weg zum Flüsterwald. Mitte: Fischerdorf. Osten: Leuchtturm. Süden: Strand, Steg, Meer.
+// Nordosten: Nebel über dem steilen Pfad hinauf zur Sternenwiese (offen nach dem Sieg über Trainer 8).
 
 export const BUCHT = {
   id: 'bucht',
@@ -12,10 +13,10 @@ export const BUCHT = {
     'TTTTTTTTTTTTTTT%%%%%%%%%%TTTTTTTTTTTTTTT',
     'TTTTT.........TT..____..TT.........TTTTT',
     'TTTTT.............____......,,,,,,,,.TTT',
-    'TTT..,,,,,..o.....____......,,,,,,,,..TT',
-    'TT.,,,,,,,,.....T.____......,,,,,,,,..TT',
-    'TT.,,,,,,,,.......____......,,,,,,,,..TT',
-    'TT.,,,,,,,,.......____.T..............TT',
+    'TTT..,,,,,..o.....____......,,,,,,,,..%%',
+    'TT.,,,,,,,,.....T.____......,,,,,,,,..%%',
+    'TT.,,,,,,,,.......____......,,,,,,,,..%%',
+    'TT.,,,,,,,,.......____.T..............%%',
     'TT.,,,,,,,,.......____....**.....o....TT',
     'TT.,,,,,,,,.......____....**..........TT',
     'TT................____...............~~~',
@@ -112,6 +113,12 @@ export const BUCHT = {
       lines: ['Der Nebel ist hier zu dicht.', 'Vielleicht weicht er, wenn der Leuchtstein der Bucht wieder leuchtet.'],
       linesOpen: ['Norden: Flüsterwald', 'Der Nebel hat sich zurückgezogen. Der Weg ist frei.'],
     },
+    {
+      // Nebelrand zur Sternenwiese: Der Pfad öffnet sich erst, wenn der achte Leuchtstein leuchtet.
+      type: 'sign', role: 'fogEdge', x: 37, y: 9, gate: 8, leadsTo: 8, leadsToName: 'die Sternenwiese',
+      lines: ['Ein steiler Pfad führt nach oben, doch der Nebel ist zu dicht.', 'Man sagt, er weicht erst, wenn der letzte Leuchtstein wieder leuchtet.'],
+      linesOpen: ['Osten: Sternenwiese', 'Der Nebel hat sich zurückgezogen. Der Pfad ist frei.'],
+    },
     { type: 'sign', x: 22, y: 13, lines: ['Leuchtturmbucht', 'Norden: Flüsterwald · Osten: Leuchtturm'] },
 
     // Leuchtstein der Bucht, neben dem Nordweg und außerhalb des Blicks der Trainerin
@@ -122,7 +129,11 @@ export const BUCHT = {
     { type: 'notestone', id: 'zettel-strand', x: 12, y: 21 },
   ],
   // Nebeltor über dem Nordweg: weicht, wenn Stein 1 leuchtet und das Paket Thema 2 hat
-  gates: [{ id: 'nord', leadsTo: 2, x: 18, y: 0, w: 4, h: 3, ground: 'path' }],
+  gates: [
+    { id: 'nord', leadsTo: 2, x: 18, y: 0, w: 4, h: 3, ground: 'path' },
+    // Der steile Pfad hinauf zur Sternenwiese: erst nach dem Sieg über Trainer 8 (Design 5.2).
+    { id: 'ost', leadsTo: 8, afterStone: 8, x: 38, y: 5, w: 2, h: 4, ground: 'path' },
+  ],
   exits: [{ x: 18, y: 0, w: 4, h: 1, to: 'wald', at: { x: 19, y: 28, dir: 'up' } }],
   finds: [
     { id: 'glitzer-west', x: 5, y: 7 },

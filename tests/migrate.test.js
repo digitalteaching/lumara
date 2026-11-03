@@ -10,6 +10,7 @@ import { SPIELSTAND_V1 } from './fixtures/spielstand-v1.js';
 import { SPIELSTAND_V2 } from './fixtures/spielstand-v2.js';
 import { SPIELSTAND_V3 } from './fixtures/spielstand-v3.js';
 import { foodCount } from '../js/items/bag.js';
+import { createMap } from '../js/world/map.js';
 
 test('Spielstand der Fassung 1 bleibt für immer ladbar und wird zu Format 3', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v1.txt', import.meta.url), 'utf8'));
@@ -99,4 +100,11 @@ test('aus einer neueren Fassung oder unbrauchbar', () => {
     { ...SPIELSTAND_V1, creature: { ...SPIELSTAND_V1.creature, level: 'zehn' } },
   ];
   for (const b of bad) assert.deepEqual(migrateState(b), { ok: false, reason: 'invalid' });
+});
+
+test('Der neue Pfad der Bucht macht keine gespeicherte Position ungültig', () => {
+  const m = createMap(BUCHT);
+  for (const [x, y] of [[22, 8], [BUCHT.spawn.x, BUCHT.spawn.y], [BUCHT.respawn.x, BUCHT.respawn.y]]) assert.ok(m.canEnter(x, y));
+  for (let y = 5; y <= 8; y++) for (const x of [38, 39]) assert.equal(m.tileAt(x, y), 'fog');
+  assert.equal(migrateState(structuredClone(SPIELSTAND_V1)).state.position.map, 'bucht');
 });

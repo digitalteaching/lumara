@@ -7,7 +7,7 @@ import { createDuelScene, makeWildSetup, makeTrainerSetup } from './duel.js';
 import { playTransition, reveal } from './transition.js';
 import { createEncounterCounter } from '../world/encounters.js';
 import { trainerSees } from '../world/map.js';
-import { fogEdgeLines, fogSignLines } from '../world/fogEdge.js';
+import { fogEdgeLines, fogSignLines, fogSignFor } from '../world/fogEdge.js';
 import { MAPS, areaConfig, areaOpen, exitAt, openGatesFor, resolveStart, whisperLine, beaconFront, packWorldKey } from '../world/network.js';
 import { visitStone, travelTargets, respawnPoint, challengeMark } from '../world/beacons.js';
 import { playBeaconScene } from './beacon.js';
@@ -148,7 +148,7 @@ export function createGameWorld(game) {
   // Paket), gibt es keine Szene, die XP sind trotzdem die vollen.
   async function afterStoneLit() {
     await playBeaconScene(game, world, trainerNumber);
-    const sign = def.objects.find(o => o.type === 'sign' && o.role === 'fogEdge');
+    const sign = fogSignFor(def, trainerNumber);
     const lit = `Der Leuchtstein ${def.genitive} leuchtet wieder!`;
     if (sign && areaOpen(game.state, game.pack.data, sign.leadsTo)) {
       await say(game, [`${lit} Der Nebel weicht.`]);
@@ -357,7 +357,7 @@ export function createGameWorld(game) {
   // Was ein besiegter Trainer sagt: Ist der Weg weiter offen, sein Satz aus der Karte, sonst der
   // Text vom Nebelrand (nächstes Thema fehlt im Paket oder das Gebiet ist noch nicht gebaut).
   function afterWinLines(t) {
-    const sign = def.objects.find(o => o.type === 'sign' && o.role === 'fogEdge');
+    const sign = fogSignFor(def, trainerNumber);
     if (!sign) return [t.afterWin];
     if (areaOpen(game.state, game.pack.data, sign.leadsTo)) return [t.afterWin];
     return fogEdgeLines(sign, { gateBeaten: true, packHasNext: game.pack.data.trainers.some(x => x.number === sign.leadsTo), builtAreas: CONFIG.world.builtAreas }) ?? [t.afterWin];

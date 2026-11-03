@@ -18,3 +18,7 @@ export function fogEdgeLines(sign, { gateBeaten, packHasNext, builtAreas }) {
 
 // Was das Schild wirklich sagt: Ist der Weg offen, sein Wegweiser-Text (linesOpen).
 export const fogSignLines = (sign, ctx) => fogEdgeLines(sign, ctx) ?? sign.linesOpen ?? sign.lines;
+
+// Das Nebelschild, dessen Tor zu diesem Trainer gehört. Eine Karte kann mehrere haben (die Bucht).
+export const fogSignFor = (def, trainerNumber) =>
+  (def.objects ?? []).find(o => o.type === 'sign' && o.role === 'fogEdge' && o.gate === trainerNumber) ?? null;
