@@ -209,6 +209,11 @@ export function createGameWorld(game) {
     return null;
   });
 
+  // Luftspiegelungen (Design 5.3): Wer dagegen läuft, bekommt einen leisen Hinweis, einmal pro Anlauf.
+  world.onBump.push(ev => {
+    if (map.tileAt(ev.x, ev.y) === 'mirage') showWhisper('Nur eine Luftspiegelung!');
+  });
+
   world.onStepped.push((x, y) => {
     // Ausgang in ein anderes Gebiet zählt vor allem anderen.
     const exit = exitAt(def, x, y);

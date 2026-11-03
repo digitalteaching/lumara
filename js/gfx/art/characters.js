@@ -120,7 +120,20 @@ const LADLE_SIDE = [[12, 9, 'o'], [12, 10, 'o'], [13, 8, 'r']];
 const PLANK_DOWN = [[1, 8, 'k'], [2, 8, 'r'], [1, 9, 'r'], [2, 9, 'o'], [1, 10, 'o'], [2, 10, 'k']];
 const PLANK_SIDE = [[3, 8, 'r'], [2, 9, 'r'], [3, 9, 'o'], [2, 10, 'o']];
 
+// Spiegel in der Hand, der einen Lichtpunkt wirft (Karawanenführer), Juwel am Turban
+const MIRROR_DOWN = [[13, 10, 'k'], [13, 11, 'w'], [14, 11, 'A'], [14, 10, 'k'], [7, 2, 'e']];
+const MIRROR_SIDE = [[12, 10, 'k'], [12, 11, 'w'], [13, 11, 'A']];
+// Glasbläserpfeife (Samir), Kartenrolle (Talia)
+const PIPE_DOWN = [[13, 9, 'r'], [13, 10, 'r'], [13, 11, 'r'], [13, 12, 'A']];
+const PIPE_SIDE = [[12, 9, 'r'], [12, 10, 'r'], [12, 11, 'A']];
+const SCROLL_DOWN = [[12, 11, 'c'], [13, 11, 'w'], [14, 11, 'k'], [12, 12, 'Y']];
+const SCROLL_SIDE = [[11, 11, 'c'], [12, 11, 'w'], [11, 12, 'Y']];
+
 export const CHARACTERS = {
+  // Spiegeldünen (Plan 3b): Karawanenführer mit Turban und Spiegel (Design 5.3) und die Bewohner
+  trainer4: character({ h: 'c', i: 'Y', c: 'S', d: 'D', l: 'h', b: 'b' }, { down: MIRROR_DOWN, side: MIRROR_SIDE }),
+  samir: character({ h: 'b', i: 'k', c: 'A', d: 'L', l: 'w', b: 'b' }, { down: PIPE_DOWN, side: PIPE_SIDE }),
+  talia: character({ h: 'e', i: 'C', c: 'Y', d: 'y', l: 'c', b: 'o' }, { down: SCROLL_DOWN, side: SCROLL_SIDE }),
   // Pilzmoor (Plan 3b): Pilzsammlerin mit großem Korb und Pilzhut (Design 5.3) und die Bewohner
   trainer3: character({ h: 'C', i: 'e', c: 'g', d: 'l', l: 'G', b: 'b' }, { down: [...HAT_DOWN, ...MUSHBASKET_DOWN], up: HAT_UP, side: [...HAT_SIDE, ...MUSHBASKET_SIDE] }),
   wenke: character({ h: 'w', i: 'f', c: 'R', d: 'P', l: 'w', b: 'b' }, { down: LADLE_DOWN, side: LADLE_SIDE }),

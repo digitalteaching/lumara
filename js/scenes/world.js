@@ -56,6 +56,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
   const player = createPlayer(start);
   const onStepped = [];
   const onInteract = [];
+  const onBump = []; // (ev) – die Figur läuft gegen ein Feld, das man nicht betreten kann
   const onTick = []; // (dt) – läuft auch, während die Welt gesperrt ist
   const afterRender = []; // (ctx, cam) – z. B. Ausrufezeichen über Trainern
   const groundRender = []; // (ctx, cam) – auf dem Boden, unter Figuren, z. B. glitzernde Fundstellen
@@ -275,6 +276,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
     player,
     onStepped,
     onInteract,
+    onBump,
     onTick,
     afterRender,
     groundRender,
@@ -343,6 +345,8 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
           }
         } else if (ev.type === 'interact') {
           if (onInteract.length) lock(() => handle(onInteract, ev));
+        } else if (ev.type === 'bump') {
+          for (const fn of onBump) fn(ev);
         }
       }
     },

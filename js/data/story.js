@@ -17,4 +17,9 @@ export const STORY = {
     'Als der Nebel kam, gingen die Laternen eine nach der anderen aus. Nur die Irrlichter blieben. Sie suchen bis heute nach den Liedern von damals.',
     'Ein altes Lied erzählt von einem kleinen Wesen tief im Berg, das Echos sammelt. Es hört jedes Wort, das irgendwo auf der Insel vergessen wird.',
   ],
+  4: [
+    'Die Dünen waren einmal ein weiter Strand. Der Sand wurde zu Glas, als der Leuchtstein hier so hell strahlte wie die Mittagssonne.',
+    'In den Glasstatuen spiegelte sich, was die Menschen wussten. Seit dem Nebel zeigen die Spiegel nur noch Wege, die es gar nicht gibt.',
+    'Ein Händler wanderte einmal bis zur Höhle im Berg. Er hörte dort ein leises Summen, wie von jemandem, der ganz allein ein Lied übt.',
+  ],
 };

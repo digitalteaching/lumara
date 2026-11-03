@@ -38,3 +38,26 @@ test('A meldet das Feld und das Objekt in Blickrichtung', () => {
   assert.equal(ev.type, 'interact');
   assert.equal(ev.target.type, 'trainer');
 });
+
+test('Anstoßen: einmal pro Drücken gegen dasselbe Feld', () => {
+  const map = createMap(TEST_MAP_DEF);
+  const p = createPlayer({ x: 2, y: 1, dir: 'up' }); // oben steht ein Baum
+  const bumps = dir => p.update(16, { dir, a: false }, map).filter(e => e.type === 'bump');
+  assert.deepEqual(bumps('up'), [{ type: 'bump', x: 2, y: 0 }]);
+  assert.equal(bumps('up').length, 0);
+  assert.equal(bumps('up').length, 0);
+  p.update(16, { dir: null, a: false }, map); // loslassen
+  assert.equal(bumps('up').length, 1);
+  assert.equal(bumps('right').length, 0); // nach rechts ist frei: ein Schritt, kein Anstoßen
+});
+
+test('Anstoßen nach einem Richtungswechsel und am Ende eines Schritts', () => {
+  const map = createMap(TEST_MAP_DEF);
+  const p = createPlayer({ x: 2, y: 1, dir: 'up' });
+  assert.equal(p.update(16, { dir: 'up', a: false }, map).filter(e => e.type === 'bump').length, 1); // Baum
+  assert.equal(p.update(16, { dir: 'left', a: false }, map).filter(e => e.type === 'bump').length, 1); // Trainer: anderes Feld
+  const q = createPlayer({ x: 2, y: 2, dir: 'up' });
+  q.update(16, { dir: 'up', a: false }, map); // läuft nach (2,1)
+  const ev = q.update(300, { dir: 'up', a: false }, map); // angekommen, oben ist der Baum
+  assert.deepEqual(ev.map(e => e.type), ['stepped', 'bump']);
+});

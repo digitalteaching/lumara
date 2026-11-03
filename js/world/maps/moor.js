@@ -109,9 +109,12 @@ export const MOOR = {
       linesOpen: ['Norden: Spiegeldünen', 'Der Nebel hat sich zurückgezogen. Der Weg ist frei.'],
     },
   ],
-  // Der Ausgang hinter dem Tor kommt mit den Spiegeldünen (Plan 3b, Task 10).
   gates: [{ id: 'nord', leadsTo: 4, x: 18, y: 0, w: 4, h: 2, ground: 'peat' }],
-  exits: [{ x: 18, y: 29, w: 4, h: 1, to: 'wald', at: { x: 19, y: 1, dir: 'down' } }],
+  exits: [
+    { x: 18, y: 29, w: 4, h: 1, to: 'wald', at: { x: 19, y: 1, dir: 'down' } },
+    // Hinter dem Tor im Norden, nur begehbar, wenn es offen ist
+    { x: 18, y: 0, w: 4, h: 1, to: 'duenen', at: { x: 19, y: 28, dir: 'up' } },
+  ],
   finds: [
     { id: 'glitzer-nordwest', x: 6, y: 6 },
     { id: 'glitzer-nordost', x: 31, y: 4 },

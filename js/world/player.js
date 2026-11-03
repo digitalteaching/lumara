@@ -30,11 +30,26 @@ export function createPlayer({ x, y, dir }) {
     return true;
   }
 
+  // Anstoßen (Design 5.3, Luftspiegelungen): einmal pro Drücken gegen dasselbe Feld. Ein Schritt,
+  // ein anderes Zielfeld oder das Loslassen machen es wieder möglich.
+  let bumpedAt = null;
+  function bump(events, d) {
+    const n = step(p, d);
+    const k = `${n.x},${n.y}`;
+    if (bumpedAt === k) return;
+    bumpedAt = k;
+    events.push({ type: 'bump', x: n.x, y: n.y });
+  }
+
   p.update = (dtMs, intent, map, occupied) => {
     const events = [];
+    if (!intent.dir) bumpedAt = null;
     if (!p.moving) {
       if (intent.dir) {
-        if (tryStart(intent.dir, map, occupied)) p.progress = dtMs / ms;
+        if (tryStart(intent.dir, map, occupied)) {
+          p.progress = dtMs / ms;
+          bumpedAt = null;
+        } else bump(events, intent.dir);
       } else if (intent.a) {
         const f = step(p, p.dir);
         events.push({ type: 'interact', x: f.x, y: f.y, target: map.objectAt(f.x, f.y) });
@@ -50,7 +65,11 @@ export function createPlayer({ x, y, dir }) {
       p.fromX = p.x;
       p.fromY = p.y;
       events.push({ type: 'stepped', x: p.x, y: p.y });
-      if (intent.dir && tryStart(intent.dir, map, occupied)) p.progress = leftover / ms;
+      bumpedAt = null;
+      if (intent.dir) {
+        if (tryStart(intent.dir, map, occupied)) p.progress = leftover / ms;
+        else bump(events, intent.dir);
+      }
     }
     return events;
   };

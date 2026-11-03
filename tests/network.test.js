@@ -90,3 +90,13 @@ test('Im Moor stehen und ein Paket mit 2 Trainern laden: Aufwachen am Stein im W
   assert.deepEqual(resolveStart(st([1, 2, 3], { map: 'moor', x: 19, y: 20, dir: 'up' }), pack(2)), { map: 'wald', ...beaconFront(MAPS.wald, 2) });
   assert.deepEqual(resolveStart(st([1, 2, 3], { map: 'moor', x: 19, y: 20, dir: 'up' }), pack(3)), { map: 'moor', x: 19, y: 20, dir: 'up' });
 });
+
+test('Gebiet 4: Das Moor führt nach Norden in die Dünen und zurück', () => {
+  assert.equal(exitAt(MAPS.moor, 19, 0)?.to, 'duenen');
+  assert.equal(exitAt(MAPS.duenen, 19, 29)?.to, 'moor');
+  assert.equal(areaOpen(st([1, 2, 3]), pack(4), 4), true);
+});
+
+test('In den Dünen stehen und ein Paket mit 3 Trainern laden: Aufwachen am Stein im Moor', () => {
+  assert.deepEqual(resolveStart(st([1, 2, 3, 4], { map: 'duenen', x: 19, y: 20, dir: 'up' }), pack(3)), { map: 'moor', ...beaconFront(MAPS.moor, 3) });
+});

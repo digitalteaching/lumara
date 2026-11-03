@@ -267,7 +267,7 @@ function dune() {
   for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) {
     const crest = 5 + Math.round(2 * Math.sin((x / 16) * Math.PI * 2));
     if (y === crest) g[y][x] = 'w';
-    else if (y > crest) g[y][x] = noise(x, y, 62) < 0.22 ? 'r' : 'y';
+    else if (y > crest) g[y][x] = noise(x, y, 62) < 0.07 ? 'r' : 'y';
     else if (noise(x, y, 63) < 0.08) g[y][x] = 'y';
   }
   return toRows(g);
