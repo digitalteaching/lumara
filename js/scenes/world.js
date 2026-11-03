@@ -56,6 +56,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
   const onInteract = [];
   const onTick = []; // (dt) – läuft auch, während die Welt gesperrt ist
   const afterRender = []; // (ctx, cam) – z. B. Ausrufezeichen über Trainern
+  const groundRender = []; // (ctx, cam) – auf dem Boden, unter Figuren, z. B. glitzernde Fundstellen
   const rustle = new Map();
   const facing = new Map(); // Figuren, die sich zur Spielfigur gedreht haben
   let locked = 0;
@@ -159,6 +160,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
     onInteract,
     onTick,
     afterRender,
+    groundRender,
     lock,
     camera,
     refreshFog,
@@ -242,6 +244,8 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
           if (kind === 'water') drawShore(ctx, x, y, sx, sy);
         }
       }
+
+      for (const fn of groundRender) fn(ctx, cam);
 
       // Gebäude, Figuren und Spielfigur nach unterer Kante sortiert
       const drawables = [];

@@ -224,7 +224,8 @@ export function createDuelScene(game, setup, onEnd) {
     }
     if (!alive) return;
     if (report.xp) {
-      await say(game, [`${own} bekommt ${report.xp} XP.${report.flawless ? ' Makellos! +25 %' : ''}`]);
+      const extra = `${report.flawless ? ' Makellos! +25 %' : ''}${report.shine ? ' Der Glanzstein verdoppelt sie!' : ''}`;
+      await say(game, [`${own} bekommt ${report.xp} XP.${extra}`]);
       for (let lvl = report.levelAfter - report.levelsGained + 1; lvl <= report.levelAfter; lvl++) {
         if (!alive) return;
         anim.sparkle = t;
@@ -255,8 +256,16 @@ export function createDuelScene(game, setup, onEnd) {
       }
     }
     panel = createDuelPanel(game);
-    const ctx = { disabledIndex: null, notice: null, feed: null };
+    const ctx = { disabledIndex: null, notice: null, feed: null, farsight: null };
     const hadFood = foodCount(game.state.bag) > 0;
+    // Weitblick steht das ganze Duell an seinem Platz, wenn zu Beginn einer im Rucksack war.
+    if (game.state.bag.farsight > 0) {
+      ctx.farsight = {
+        label: () => `Weitblick (${game.state.bag.farsight})`,
+        enabled: () => duel.canFarsight() && game.state.bag.farsight > 0,
+        use: () => (ctx.farsight.enabled() && takeItem(game.state, 'farsight') ? duel.useFarsight() : null),
+      };
+    }
     while (alive && !FINAL.has(duel.state)) {
       if (duel.state === 'ready') duel.ask();
       ctx.feed = {

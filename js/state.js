@@ -98,6 +98,7 @@ export function applyDuelResult(state, shortId, setup, summary, rng = null) {
     outcome: summary.outcome,
     stoneLit: false,
     loot: [],
+    shine: false,
     xp: 0,
     flawless: summary.flawless,
     levelsGained: 0,
@@ -108,6 +109,12 @@ export function applyDuelResult(state, shortId, setup, summary, rng = null) {
 
   if (summary.outcome === 'won') {
     report.xp = xpForWin({ kind: setup.kind, area: setup.area, trainerNumber: setup.trainer?.number, flawless: summary.flawless });
+    // Ein eingesetzter Glanzstein verdoppelt die XP des nächsten Siegs (nach dem Makellos-Bonus).
+    if (state.shineActive) {
+      report.xp *= 2;
+      report.shine = true;
+      state.shineActive = false;
+    }
     const r = addXp(c, report.xp);
     c.level = r.level;
     c.xpInLevel = r.xpInLevel;

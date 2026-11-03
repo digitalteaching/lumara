@@ -137,7 +137,8 @@ export function createDuelPanel(game) {
   // Ergebnis: { type: 'answer', response } | { type: 'feed' } | { type: 'flee' } | { type: 'surrender' }
   // feed: { show, enabled } – „Füttern“ steht das ganze Duell an seinem Platz, wenn zu Beginn
   // Futter im Rucksack war, und ist gesperrt, wenn gerade nicht gefüttert werden kann.
-  function ask(duel, { disabledIndex = null, notice = null, feed = null } = {}) {
+  // farsight: { label(), enabled(), use() → hint | null } – Weitblickstein, wirkt wie die Erleuchtung.
+  function ask(duel, { disabledIndex = null, notice = null, feed = null, farsight = null } = {}) {
     return new Promise(resolve => {
       let done = false;
       let form = null;
@@ -166,18 +167,41 @@ export function createDuelPanel(game) {
         // Fähigkeitsknöpfe bleiben an ihrem Platz und werden nach Gebrauch nur gesperrt,
         // damit „Fliehen“ nie unter den Finger rutscht.
         const side = el('div', { class: 'duel-side' });
+        // Nach einem Hinweis (Erleuchtung oder Weitblick) sind beide für diese Frage gesperrt.
+        let jokerBtn = null;
+        let farBtn = null;
+        const afterHint = () => {
+          if (jokerBtn) jokerBtn.disabled = !duel.canJoker();
+          if (farBtn) {
+            farBtn.disabled = !farsight.enabled();
+            farBtn.textContent = farsight.label();
+          }
+        };
         if (species === 'funki') {
-          const b = el('button', {
+          jokerBtn = el('button', {
             class: 'btn side',
             type: 'button',
             disabled: !duel.canJoker(),
             onclick: () => {
               const hint = duel.useJoker();
               if (hint) form.applyHint(hint);
-              b.disabled = true;
+              afterHint();
             },
           }, '✦ Erleuchtung');
-          side.append(b);
+          side.append(jokerBtn);
+        }
+        if (farsight) {
+          farBtn = el('button', {
+            class: 'btn side',
+            type: 'button',
+            disabled: !farsight.enabled(),
+            onclick: () => {
+              const hint = farsight.use();
+              if (hint) form.applyHint(hint);
+              afterHint();
+            },
+          }, farsight.label());
+          side.append(farBtn);
         }
         if (species === 'flausch') {
           side.append(el('button', {

@@ -17,6 +17,7 @@ export function createDuel({ kind, player, foe, deck, rng }) {
   let secondChanceUsed = false;
   let wrongCount = 0;
   let feeds = 0;
+  let hintShown = false; // für die aktuelle Frage (Erleuchtung oder Weitblick)
 
   const d = {
     kind,
@@ -43,13 +44,24 @@ export function createDuel({ kind, player, foe, deck, rng }) {
     if (d.state !== 'ready') throw new Error(`ask() geht nur im Zustand ready, nicht in ${d.state}`);
     d.current = present(deck.draw());
     d.state = 'question';
+    hintShown = false;
     return d.current;
   };
 
-  d.canJoker = () => player.species === 'funki' && !jokerUsed && d.state === 'question';
+  d.canJoker = () => player.species === 'funki' && !jokerUsed && !hintShown && d.state === 'question';
   d.useJoker = () => {
     if (!d.canJoker()) return null;
     jokerUsed = true;
+    hintShown = true;
+    return jokerHint(d.current, rng);
+  };
+
+  // Weitblickstein (Design 8.2): derselbe Hinweis wie Funkis Erleuchtung, einmal pro Frage.
+  // Ob einer im Rucksack ist, prüft die Szene.
+  d.canFarsight = () => !hintShown && d.state === 'question';
+  d.useFarsight = () => {
+    if (!d.canFarsight()) return null;
+    hintShown = true;
     return jokerHint(d.current, rng);
   };
 
@@ -59,6 +71,7 @@ export function createDuel({ kind, player, foe, deck, rng }) {
     swapUsed = true;
     recentForms.pop();
     d.current = present(deck.draw());
+    hintShown = false;
     return d.current;
   };
 

@@ -74,6 +74,24 @@ test('Beute nach einem Sieg landet im Rucksack, gemeldet wird, was hineinpasste'
   assert.deepEqual(applyDuelResult(s, 'ENQ9', wild, won()).loot, []); // ohne Zufall keine Beute
 });
 
+test('Glanzstein verdoppelt die XP des nächsten Siegs', () => {
+  const s = newGameState({ name: 'A', species: 'funki', nickname: null });
+  s.shineActive = true;
+  const r = applyDuelResult(s, 'ENQ9', { kind: 'wild', area: 2 }, { outcome: 'won', playerEnergy: 3, flawless: true, answers: [] });
+  assert.equal(r.xp, Math.round((8 + 2 * 2) * 1.25) * 2);
+  assert.equal(r.shine, true);
+  assert.equal(s.shineActive, false);
+});
+
+test('Glanzstein bleibt aktiv nach einer Niederlage oder Flucht', () => {
+  const s = newGameState({ name: 'A', species: 'funki', nickname: null });
+  s.shineActive = true;
+  const lost = applyDuelResult(s, 'ENQ9', { kind: 'wild', area: 1 }, { outcome: 'lost', playerEnergy: 0, flawless: false, answers: [] });
+  assert.equal(lost.shine, false);
+  applyDuelResult(s, 'ENQ9', { kind: 'wild', area: 1 }, { outcome: 'fled', playerEnergy: 3, flawless: true, answers: [] });
+  assert.equal(s.shineActive, true);
+});
+
 test('Niederlage: keine XP, volle Energie, Historie trotzdem', () => {
   const s = newGameState({ name: 'A', species: 'kiesel', nickname: null });
   const r = applyDuelResult(s, 'ENQ9', T1, { outcome: 'lost', playerEnergy: 0, flawless: false, answers: [{ key: 'b', correct: false }] });

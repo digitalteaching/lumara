@@ -39,6 +39,33 @@ test('Füttern statt antworten: höchstens zweimal, niemand verliert Energie', (
   assert.equal(d.foeEnergy, 5);
 });
 
+test('Weitblick: einmal pro Frage, dieselbe Form wie Erleuchtung, auch nach verbrauchter Erleuchtung', () => {
+  const d = mk({ species: 'funki' });
+  assert.equal(d.canFarsight(), false); // keine offene Frage
+  d.ask();
+  assert.ok(d.useJoker().firstLetter);
+  assert.equal(d.canFarsight(), false); // Hinweis für diese Frage schon gezeigt
+  assert.equal(d.useFarsight(), null);
+  reply(d, true);
+  d.next();
+  d.ask();
+  assert.equal(d.canJoker(), false);
+  assert.equal(d.canFarsight(), true);
+  assert.deepEqual(d.useFarsight(), { firstLetter: d.current.question.answer.trim()[0] });
+  assert.equal(d.canFarsight(), false);
+  reply(d, true);
+  d.next();
+  d.ask();
+  assert.equal(d.canFarsight(), true); // neue Frage, neuer Weitblick
+});
+
+test('Nach Weitblick gibt es für dieselbe Frage keine Erleuchtung mehr', () => {
+  const d = mk({ species: 'funki' });
+  d.ask();
+  assert.ok(d.useFarsight());
+  assert.equal(d.canJoker(), false);
+});
+
 test('Füttern geht nur, solange eine Frage offen ist', () => {
   const d = mk({ energy: 1, maxEnergy: 4 });
   assert.equal(d.canFeed(), false);

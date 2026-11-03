@@ -12,6 +12,7 @@ import { MAPS, areaConfig, areaOpen, exitAt, openGatesFor, resolveStart, whisper
 import { visitStone, travelTargets, respawnPoint, challengeMark } from '../world/beacons.js';
 import { playBeaconScene } from './beacon.js';
 import { bushKey, bushReady, harvest } from '../items/food.js';
+import { findKey, findReady, takeFind, stepFind, STONE_LINES } from '../items/stones.js';
 import { BUCHT } from '../world/maps/bucht.js';
 import { packProgress } from '../state.js';
 import { displayName } from '../data/species.js';
@@ -212,8 +213,59 @@ export function createGameWorld(game) {
     const exit = exitAt(def, x, y);
     if (exit) return () => travelTo(game, { map: exit.to, ...exit.at });
     if (trainerSpotsPlayer({ x, y })) return () => trainerDuel({ spotted: true });
+    // Ein Stein im Gras zählt vor der Begegnung: Dann gibt es in diesem Schritt kein Duell.
+    if (map.isTallGrass(x, y)) {
+      const item = stepFind(game.state, game.rng);
+      if (item) return () => foundStone(item);
+    }
     if (counter.onStep(map.isTallGrass(x, y))) return () => wildDuel();
     return null;
+  });
+
+  // ---------- Seltene Steine (Design 8.2) ----------
+
+  async function foundStone(item) {
+    game.save();
+    await say(game, [STONE_LINES[item](displayName(game.state.creature))]);
+  }
+
+  const finds = def.finds ?? [];
+  const findAt = (x, y) => finds.find(f => f.x === x && f.y === y && findReady(game.state, findKey(def.id, f))) ?? null;
+
+  // Bereite Fundstellen glitzern: ein schwacher Punkt, dazu höchstens alle 1,4 Sekunden ein kurzes
+  // Aufblitzen. Bei „Bewegung reduzieren“ leuchtet der Punkt nur still.
+  world.groundRender.push((ctx, cam) => {
+    for (const f of finds) {
+      const x = f.x * 16 - cam.x + 8, y = f.y * 16 - cam.y + 9;
+      if (x < -4 || y < -4 || x > 244 || y > 164) continue;
+      if (!findReady(game.state, findKey(def.id, f))) continue;
+      const flash = !game.reducedMotion && (world.time + f.x * 137 + f.y * 71) % 1400 < 280;
+      ctx.fillStyle = '#fffaf0';
+      ctx.globalAlpha = game.reducedMotion ? 0.85 : flash ? 1 : 0.5;
+      ctx.fillRect(x, y, 1, 1);
+      if (flash || game.reducedMotion) {
+        ctx.fillRect(x - 1, y, 3, 1);
+        ctx.fillRect(x, y - 1, 1, 3);
+      }
+      if (flash) {
+        ctx.globalAlpha = 0.5;
+        ctx.fillRect(x - 2, y, 1, 1);
+        ctx.fillRect(x + 2, y, 1, 1);
+        ctx.fillRect(x, y - 2, 1, 1);
+        ctx.fillRect(x, y + 2, 1, 1);
+      }
+      ctx.globalAlpha = 1;
+    }
+  });
+
+  // Aufheben: vor der Fundstelle stehen und A drücken (Ziel ist die leere Zelle davor).
+  world.onInteract.push(async ev => {
+    if (ev.target) return false;
+    const f = findAt(ev.x, ev.y);
+    if (!f) return false;
+    const { item } = takeFind(game.state, findKey(def.id, f), game.rng);
+    await foundStone(item);
+    return true;
   });
 
   // Sträucher (Design 8): voll mit roten Beeren oder nur Blätter, bis die Spielzeit sie nachwachsen lässt.
