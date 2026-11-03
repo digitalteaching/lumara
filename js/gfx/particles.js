@@ -1,17 +1,23 @@
-// Teilchen und Wetter (Design 5.3): Möwen und Gischt in der Bucht, Glühwürmchen und Blätter im
-// Wald. Möwen, Blätter und Glühwürmchen leben in Bildkoordinaten und wandern mit halber Kamera-
-// geschwindigkeit (Parallaxe 0,5). Gischt hängt an festen Uferstellen der Welt.
+// Teilchen und Wetter (Design 5.3):
+// - Bucht: Möwen und Gischt; Wald: Glühwürmchen und Blätter
+// - Moor: Sporen, Blasen auf dem Moorwasser, Irrlichter; Dünen: Sandwehen und Glanzpunkte
+// - Klippen: Windstreifen und kleine Wolken
+// Die meisten leben in Bildkoordinaten und wandern mit halber Kamerageschwindigkeit (Parallaxe 0,5).
+// Gischt und Blasen hängen an festen Stellen der Welt (anchors, Weltpixel).
 // Bei „Bewegung reduzieren“: höchstens ein Viertel, langsamer, kein Blinken. DOM-frei.
 
-export const PARTICLE_LIMITS = { gull: 2, spray: 12, firefly: 14, leaf: 10 };
+export const PARTICLE_LIMITS = { gull: 2, spray: 12, firefly: 14, leaf: 10, spore: 14, bubble: 8, wisp: 3, sand: 12, glint: 10, windstreak: 8, cloud: 4 };
 
 // Wie oft höchstens ein neues Teilchen dazukommt (ms)
-const SPAWN_MS = { gull: 7000, spray: 260, firefly: 380, leaf: 650 };
+const SPAWN_MS = { gull: 7000, spray: 260, firefly: 380, leaf: 650, spore: 450, bubble: 420, wisp: 2500, sand: 180, glint: 300, windstreak: 350, cloud: 3000 };
 const PARALLAX = 0.5;
 const LEAF_COLORS = ['#7fae4a', '#c9a640', '#b7743a', '#5f8f3a'];
+const ANCHORED = new Set(['spray', 'bubble']);
 
-export function createParticles(kinds, { rng, reducedMotion = false, width = 240, height = 160, shore = [] } = {}) {
+// shore ist die Kurzform für anchors.spray.
+export function createParticles(kinds, { rng, reducedMotion = false, width = 240, height = 160, shore = [], anchors = {} } = {}) {
   const reduced = typeof reducedMotion === 'function' ? reducedMotion : () => reducedMotion;
+  const anchorsOf = { ...anchors, spray: anchors.spray ?? shore };
   const list = [];
   const timers = Object.fromEntries(kinds.map(k => [k, SPAWN_MS[k] * rng.next()]));
   let last = null;
@@ -25,11 +31,31 @@ export function createParticles(kinds, { rng, reducedMotion = false, width = 240
       const fromLeft = rng.next() < 0.5;
       return { kind, x: fromLeft ? -6 : width + 6, y: between(8, height * 0.45), vx: (fromLeft ? 1 : -1) * between(18, 26), vy: between(-2, 2), age: 0, flapHz: between(2, 3), alpha: 0.85, size: 1, flap: false };
     }
-    if (kind === 'spray') {
-      const seen = shore.filter(([wx, wy]) => wx >= cam.x - 8 && wx <= cam.x + width + 8 && wy >= cam.y - 8 && wy <= cam.y + height + 8);
+    if (ANCHORED.has(kind)) {
+      const seen = (anchorsOf[kind] ?? []).filter(([wx, wy]) => wx >= cam.x - 8 && wx <= cam.x + width + 8 && wy >= cam.y - 8 && wy <= cam.y + height + 8);
       if (!seen.length) return null;
       const [wx, wy] = seen[Math.floor(rng.next() * seen.length)];
+      if (kind === 'bubble') return { kind, wx: wx + between(-5, 5), wy: wy + between(-2, 4), rise: between(2, 4), age: 0, life: between(600, 1200), alpha: 0, size: 1, color: '#7fd0c0' };
       return { kind, wx: wx + between(-6, 6), wy: wy + between(-6, 6), age: 0, life: between(500, 1100), alpha: 0, size: 1, color: '#fbfdff' };
+    }
+    if (kind === 'spore') {
+      return { kind, x: between(0, width), y: between(height * 0.2, height), vy: -between(3, 7), swayHz: between(0.2, 0.4), swayPx: between(2, 4), phase: between(0, Math.PI * 2), sway: 0, age: 0, life: between(4000, 7000), alpha: 0, size: 1, color: rng.next() < 0.5 ? '#d6e27a' : '#b9d86a' };
+    }
+    if (kind === 'wisp') {
+      return { kind, x: between(10, width - 10), y: between(20, height - 20), age: 0, life: between(8000, 14000), blinkHz: between(0.3, 0.8), phase: between(0, Math.PI * 2), drift: between(0, Math.PI * 2), alpha: 0, size: 2, color: '#a8f0dc' };
+    }
+    if (kind === 'sand') {
+      return { kind, x: width + 4, y: between(10, height - 6), vx: -between(60, 95), age: 0, alpha: 0.6, size: Math.round(between(2, 4)), color: '#f6e7c2' };
+    }
+    if (kind === 'glint') {
+      const life = between(500, 800);
+      return { kind, x: between(4, width - 4), y: between(30, height - 4), age: 0, life, blinkHz: 1000 / life, alpha: 0, size: 1, color: '#fffaf0' };
+    }
+    if (kind === 'windstreak') {
+      return { kind, x: width + 10, y: between(6, height - 6), vx: -between(90, 140), age: 0, alpha: 0.5, size: Math.round(between(6, 10)), color: '#eef6ff' };
+    }
+    if (kind === 'cloud') {
+      return { kind, x: between(-10, width), y: between(8, height - 12), vx: -between(3, 6), age: 0, life: between(20000, 30000), alpha: 0, size: 10, color: '#ffffff' };
     }
     if (kind === 'firefly') {
       return { kind, x: between(0, width), y: between(0, height), age: 0, life: between(6000, 12000), blinkHz: between(0.4, 1.2), phase: between(0, Math.PI * 2), drift: between(0, Math.PI * 2), alpha: 0, size: 1, color: '#fff2a0' };
@@ -71,6 +97,46 @@ export function createParticles(kinds, { rng, reducedMotion = false, width = 240
       p.sway = still ? 0 : Math.sin((p.age / 1000) * p.swayHz * Math.PI * 2 + p.phase) * p.swayPx;
       return p.y < height + 4;
     }
+    if (p.kind === 'bubble') {
+      // steigt ein wenig auf und platzt
+      const f = p.age / (p.life * (still ? 2 : 1));
+      p.x = p.wx - cam.x;
+      p.y = p.wy - cam.y - p.rise * Math.min(1, f);
+      p.alpha = still ? 0.6 : f < 0.85 ? 0.8 : 0.4;
+      p.size = !still && f >= 0.85 ? 2 : 1; // kurz vor dem Platzen etwas größer
+      return f < 1;
+    }
+    if (p.kind === 'spore') {
+      p.y += p.vy * s * slow;
+      p.sway = still ? 0 : Math.sin((p.age / 1000) * p.swayHz * Math.PI * 2 + p.phase) * p.swayPx;
+      p.alpha = 0.75 * Math.max(0, Math.min(1, p.age / 900, (p.life - p.age) / 900));
+      return p.age < p.life && p.y > -4;
+    }
+    if (p.kind === 'wisp') {
+      // Irrlicht: treibt langsam und glimmt höchstens einmal pro Sekunde
+      p.drift += s * 0.4 * slow;
+      p.x += Math.cos(p.drift) * 5 * s * slow;
+      p.y += Math.sin(p.drift * 0.7) * 3 * s * slow;
+      const fade = Math.max(0, Math.min(1, p.age / 1500, (p.life - p.age) / 1500));
+      const glow = still ? 0.7 : 0.45 + 0.55 * (0.5 + 0.5 * Math.sin((p.age / 1000) * p.blinkHz * Math.PI * 2 + p.phase));
+      p.alpha = fade * glow;
+      return p.age < p.life;
+    }
+    if (p.kind === 'sand' || p.kind === 'windstreak') {
+      p.x += p.vx * s * slow;
+      return p.x > -p.size - 4;
+    }
+    if (p.kind === 'glint') {
+      // Ein kurzes Aufblitzen; bei „Bewegung reduzieren“ ein langsames, sanftes Aufleuchten
+      const f = p.age / (p.life * (still ? 4 : 1));
+      p.alpha = (still ? 0.5 : 1) * Math.sin(Math.min(1, f) * Math.PI);
+      return f < 1;
+    }
+    if (p.kind === 'cloud') {
+      p.x += p.vx * s * slow;
+      p.alpha = 0.35 * Math.max(0, Math.min(1, p.age / 2000, (p.life - p.age) / 2000));
+      return p.age < p.life && p.x > -14;
+    }
     return false;
   }
 
@@ -80,7 +146,7 @@ export function createParticles(kinds, { rng, reducedMotion = false, width = 240
       if (last) {
         const dx = (cam.x - last.x) * PARALLAX, dy = (cam.y - last.y) * PARALLAX;
         for (const p of list) {
-          if (p.kind === 'spray') continue;
+          if (ANCHORED.has(p.kind)) continue;
           p.x -= dx;
           p.y -= dy;
         }

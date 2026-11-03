@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createMap, trainerSees, reachable } from '../js/world/map.js';
+import { createMap, trainerSees, reachable, WALKABLE, BLOCKED, TALL_GRASS } from '../js/world/map.js';
 import { TEST_MAP_DEF } from './helpers/fixtures.js';
 
 const DEF = TEST_MAP_DEF;
@@ -38,4 +38,19 @@ test('Trainer sieht geradeaus bis zur Sichtweite, nicht nach hinten, nicht durch
 
 test('reachable findet alle begehbaren Felder vom Start', () => {
   assert.equal(reachable(createMap(DEF), DEF.spawn).has('4,3'), true);
+});
+
+test('Begehbar, blockiert und hohes Gras der neuen Kacheln', () => {
+  for (const k of ['peat', 'glasssand', 'cliffrock', 'bridge', 'bridgev', 'pier']) assert.ok(WALKABLE.has(k), k);
+  for (const k of ['bog', 'glowshroom', 'dune', 'mirage', 'clouds', 'spire']) assert.ok(BLOCKED.has(k), k);
+  for (const k of ['reed', 'dunegrass', 'windgrass']) {
+    assert.ok(TALL_GRASS.has(k), k);
+    assert.ok(WALKABLE.has(k), k);
+  }
+});
+
+test('Ein Zierobjekt blockiert sein Feld', () => {
+  const m = createMap({ ...DEF, objects: [{ type: 'deco', x: 1, y: 1, prop: 'statue', lines: ['Eine Statue.'] }] });
+  assert.equal(m.canEnter(1, 1), false);
+  assert.equal(m.objectAt(1, 1).prop, 'statue');
 });

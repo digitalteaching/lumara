@@ -67,7 +67,9 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
   // Nebelfelder; neu berechnet, wenn sich ein Tor öffnet. fogAlpha: einzelne Felder, die gerade weichen.
   let fogCells = [];
   const fogAlpha = new Map();
+  const groundCache = new Map(); // Boden unter Überlagerungen, neu, wenn sich Felder ändern
   function refreshFog() {
+    groundCache.clear();
     fogCells = [];
     for (let y = 0; y < map.height; y++) for (let x = 0; x < map.width; x++) if (map.tileAt(x, y) === 'fog') fogCells.push([x, y]);
   }
@@ -79,6 +81,9 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
     bush: () => 'bush',
     notestone: () => 'noteStone',
     whisper: () => 'oldtree',
+    // Zierobjekte: Riesenpilze, Glasstatuen, Glasturm, Windräder. anim wechselt alle 300 ms das
+    // Bild (Windradflügel), bei „Bewegung reduzieren“ steht es still.
+    deco: o => (o.anim ? `${o.prop}${game.reducedMotion ? 0 : Math.floor(time / 300) % 2}` : o.prop),
   };
 
   async function lock(fn) {
@@ -108,16 +113,28 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
     };
   }
 
-  // Boden unter Steinen: der häufigste flache Boden der Nachbarfelder.
-  const GROUNDS = new Set(['grass', 'sand', 'path', 'flowers', 'moss']);
+  // Boden unter Steinen: der häufigste flache Boden der Nachbarfelder. Ohne einen solchen
+  // (etwa eine Felsnadel mitten in den Wolken) die häufigste Nachbarkachel, die selbst Boden hat.
+  const GROUNDS = new Set(['grass', 'sand', 'path', 'flowers', 'moss', 'peat', 'glasssand', 'cliffrock']);
+  // Eine Felsnadel ragt immer aus den Wolken.
+  const FIXED_GROUND = { spire: 'clouds' };
   function groundAt(x, y) {
+    const fixed = FIXED_GROUND[map.tileAt(x, y)];
+    if (fixed) return fixed;
+    const key = cellKey(x, y);
+    if (groundCache.has(key)) return groundCache.get(key);
     const counts = {};
+    const others = {};
     for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
       const k = map.tileAt(x + dx, y + dy);
       if (GROUNDS.has(k)) counts[k] = (counts[k] ?? 0) + 1;
+      else if (k && !OVERLAY_TILES.has(k) && k !== 'fog') others[k] = (others[k] ?? 0) + 1;
     }
-    const best = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
-    return best ? (best[0] === 'flowers' ? 'grass' : best[0]) : 'grass';
+    const pick = c => Object.entries(c).sort((a, b) => b[1] - a[1])[0]?.[0];
+    const best = pick(counts) ?? pick(others) ?? 'grass';
+    const ground = best === 'flowers' ? 'grass' : best;
+    groundCache.set(key, ground);
+    return ground;
   }
 
   function drawShore(ctx, x, y, sx, sy) {
@@ -141,13 +158,18 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
       }
     }
   }
+  // Blasen steigen aus dem Moorwasser.
+  const bubbles = [];
+  if (def.particles?.includes('bubble')) {
+    for (let y = 0; y < map.height; y++) for (let x = 0; x < map.width; x++) if (map.tileAt(x, y) === 'bog') bubbles.push([x * T + 8, y * T + 8]);
+  }
   const particles = def.particles?.length
     ? createParticles(def.particles, {
       rng: createRng((Math.random() * 2 ** 32) >>> 0),
       reducedMotion: () => game.reducedMotion,
       width: SCREEN_W,
       height: SCREEN_H,
-      shore,
+      anchors: { spray: shore, bubble: bubbles },
     })
     : null;
 
@@ -165,12 +187,43 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
         ctx.fillRect(x + 1, y - 1, 1, 1);
         ctx.fillRect(x - 2, y - 1 - up, 1, 1);
         ctx.fillRect(x + 2, y - 1 - up, 1, 1);
-      } else if (p.kind === 'firefly') {
+      } else if (p.kind === 'firefly' || p.kind === 'wisp') {
+        // Glühwürmchen und Irrlichter: ein Lichtpunkt mit Schein, Irrlichter etwas größer
+        const r = p.kind === 'wisp' ? 2 : 1;
         ctx.fillStyle = p.color;
         ctx.globalAlpha = p.alpha * 0.3;
-        ctx.fillRect(x - 1, y - 1, 3, 3);
+        ctx.fillRect(x - r, y - r, 2 * r + 1, 2 * r + 1);
         ctx.globalAlpha = p.alpha;
         ctx.fillRect(x, y, 1, 1);
+        if (p.kind === 'wisp') ctx.fillRect(x - 1, y, 3, 1);
+      } else if (p.kind === 'bubble') {
+        // kleiner Ring; kurz vor dem Platzen etwas größer
+        ctx.fillStyle = p.color;
+        if (p.size === 2) {
+          ctx.fillRect(x - 1, y - 1, 3, 1);
+          ctx.fillRect(x - 1, y + 1, 3, 1);
+          ctx.fillRect(x - 1, y, 1, 1);
+          ctx.fillRect(x + 1, y, 1, 1);
+        } else {
+          ctx.fillRect(x, y, 2, 2);
+          ctx.fillStyle = '#e6fbf5';
+          ctx.fillRect(x, y, 1, 1);
+        }
+      } else if (p.kind === 'glint') {
+        // kurzer Glanz: ein Kreuz aus hellen Pixeln
+        ctx.fillStyle = p.color;
+        ctx.fillRect(x - 1, y, 3, 1);
+        ctx.fillRect(x, y - 1, 1, 3);
+      } else if (p.kind === 'cloud') {
+        // weicher, blasser Fleck von 10 × 4 Pixeln
+        ctx.fillStyle = p.color;
+        ctx.fillRect(x + 2, y, 6, 1);
+        ctx.fillRect(x, y + 1, 10, 2);
+        ctx.fillRect(x + 2, y + 3, 6, 1);
+      } else if (p.kind === 'sand' || p.kind === 'windstreak') {
+        // waagrechte Striche
+        ctx.fillStyle = p.color;
+        ctx.fillRect(x, y, p.size, 1);
       } else {
         // Gischt: ein Pixel; Blatt: zwei Pixel und eins schräg darunter
         ctx.fillStyle = p.color;
@@ -288,13 +341,23 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
       const cam = camera();
       const x0 = Math.floor(cam.x / T), y0 = Math.floor(cam.y / T);
       const waterFrame = Math.floor(time / 600) % 2;
+      // Bewegte Kacheln wechseln wie Wasser alle 600 ms das Bild; Wolken und Luftspiegelungen
+      // stehen bei „Bewegung reduzieren“ still.
+      const movingFrame = kind => {
+        if (kind === 'water' || kind === 'bog') return waterFrame;
+        if (kind === 'clouds' || kind === 'mirage') return game.reducedMotion ? 0 : waterFrame;
+        return null;
+      };
 
       for (let y = y0; y <= y0 + 10 && y < map.height; y++) {
         for (let x = x0; x <= x0 + 15 && x < map.width; x++) {
           const kind = map.tileAt(x, y);
           const sx = x * T - cam.x, sy = y * T - cam.y;
-          const frame = kind === 'water' ? waterFrame : map.isTallGrass(x, y) && rustle.has(cellKey(x, y)) ? 1 : 0;
-          if (OVERLAY_TILES.has(kind)) ctx.drawImage(tileCanvas(groundAt(x, y)), sx, sy);
+          const frame = movingFrame(kind) ?? (map.isTallGrass(x, y) && rustle.has(cellKey(x, y)) ? 1 : 0);
+          if (OVERLAY_TILES.has(kind)) {
+            const ground = groundAt(x, y);
+            ctx.drawImage(tileCanvas(ground, movingFrame(ground) ?? 0), sx, sy);
+          }
           ctx.drawImage(tileCanvas(kind, frame), sx, sy);
           if (kind === 'water') drawShore(ctx, x, y, sx, sy);
         }
@@ -311,7 +374,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
           const bx = o.x * T - cam.x, by = (o.y + o.h) * T - img.height - cam.y;
           drawables.push({ z: o.y + o.h - 1, draw: () => ctx.drawImage(img, bx, by) });
         } else if (propVariant[o.type]) {
-          // Leuchtsteine, Sträucher, Zettelsteine, Altbäume: unten auf ihrem Feld, hohe Bilder ragen nach oben
+          // Leuchtsteine, Sträucher, Zettelsteine, Altbäume, Zierobjekte: unten auf ihrem Feld, hohe Bilder ragen nach oben
           const img = spriteFrom(`prop:${propVariant[o.type](o)}`, PROPS[propVariant[o.type](o)]);
           const px = o.x * T - cam.x, py = (o.y + 1) * T - img.height - cam.y;
           drawables.push({ z: o.y, draw: () => ctx.drawImage(img, px, py) });
@@ -391,6 +454,11 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
       return true;
     }
     if (o.type === 'sign') {
+      await say(game, o.lines);
+      return true;
+    }
+    // Zierobjekte mit Inschrift (etwa Glasstatuen) spricht man an wie ein Schild.
+    if (o.type === 'deco' && o.lines) {
       await say(game, o.lines);
       return true;
     }

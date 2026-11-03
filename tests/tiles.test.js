@@ -34,3 +34,21 @@ test('Gegenstände der Welt aus Plan 3a haben ihre Größe', () => {
   }
   assert.equal(TILES.fern.length, 2);
 });
+
+test('Kacheln der Gebiete 3 bis 5: 16 × 16, bekannte Farben, richtige Bildzahl', () => {
+  const frames = { peat: 1, reed: 2, bog: 2, glowshroom: 1, glasssand: 1, dunegrass: 2, dune: 1, mirage: 2, cliffrock: 1, windgrass: 2, clouds: 2, bridge: 1, bridgev: 1, spire: 1 };
+  for (const [k, n] of Object.entries(frames)) {
+    assert.equal(TILES[k].length, n, k);
+    TILES[k].forEach((f, i) => {
+      const s = parseSprite(`${k}.${i}`, f); // wirft bei unbekannten Farben
+      assert.equal(s.w, 16, k);
+      assert.equal(s.h, 16, k);
+    });
+  }
+  for (const [k, h] of Object.entries({ bigshroom: 32, statue: 32, glasstower: 48, windmill0: 32, windmill1: 32 })) {
+    const s = parseSprite(k, PROPS[k]);
+    assert.equal(s.w, 16, k);
+    assert.equal(s.h, h, k);
+  }
+  assert.notDeepEqual(PROPS.windmill0, PROPS.windmill1); // die Flügel stehen anders
+});
