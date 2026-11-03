@@ -135,6 +135,16 @@ test('Endgegner und Zettel werden gelesen', () => {
   assert.equal(r.pack.notes.length, 3);
 });
 
+test('Der Parser legt die Spielsprache ab und kennt SPIELSPRACHE als Schlüsselwort', () => {
+  assert.equal(parsePack(makePackText()).pack.language, 'en'); // makePackText schreibt FACH: Englisch
+  const r = parsePack(makePackText().replace('FACH: Englisch', 'FACH: Mathe\nSPIELSPRACHE: englisch'));
+  assert.equal(r.pack.language, 'en');
+  assert.ok(!r.warnings.some(w => /Unbekanntes Schlüsselwort/.test(w.message)));
+  assert.equal(parsePack(makePackText().replace('FACH: Englisch', 'FACH: Mathe')).pack.language, 'de');
+  const latin = parsePack(makePackText().replace('FACH: Englisch', 'FACH: Latein'));
+  assert.ok(latin.warnings.some(w => w.message === 'Das Spiel gibt es noch nicht auf Latein. Es läuft auf Deutsch.'));
+});
+
 test('jede Frage kennt ihren Trainer, Zettel haben keinen', () => {
   const r = parsePack(makePackText({ trainers: 2 }) + '=== ZETTEL ===\n' + fillerQuestions(2, 'Z'));
   assert.equal(r.pack.trainers[0].questions[0].trainer, 1);

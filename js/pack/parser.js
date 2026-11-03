@@ -5,8 +5,9 @@ import { CONFIG } from '../config.js';
 import { DEFAULT_LINES } from '../data/texts.js';
 import { packIdentity, shortId } from './packId.js';
 import { normalizeTyped } from '../duel/answers.js';
+import { packLanguage } from './language.js';
 
-const HEADER_KEYS = new Set(['PAKET', 'KENNUNG', 'FACH', 'ZEITDRUCK']);
+const HEADER_KEYS = new Set(['PAKET', 'KENNUNG', 'FACH', 'ZEITDRUCK', 'SPIELSPRACHE']);
 const TRAINER_KEYS = new Set(['NAME', 'THEMA', 'HALLO', 'SIEG', 'NIEDERLAGE', 'REVANCHE']);
 const BOSS_KEYS = new Set(['HALLO', 'SIEG', 'NIEDERLAGE']);
 const QUESTION_FIELDS = new Set(['ANTWORT', 'SATZ', 'AUCH RICHTIG', 'FALSCH', 'EXTRA', 'FORM']);
@@ -56,7 +57,7 @@ export function parsePack(input) {
   const text = input.replace(/^﻿/, '').replace(/\r\n?/g, '\n');
   const lines = text.split('\n');
 
-  const header = { title: null, kennung: null, subject: null, timePressure: 'normal' };
+  const header = { title: null, kennung: null, subject: null, timePressure: 'normal', gameLanguage: null, gameLanguageLine: null };
   const headerSeen = new Map();
   const trainers = new Map();
   let boss = null;
@@ -185,7 +186,10 @@ export function parsePack(input) {
       if (key === 'PAKET') header.title = value || null;
       else if (key === 'FACH') header.subject = value || null;
       else if (key === 'KENNUNG') header.kennung = value || null;
-      else if (key === 'ZEITDRUCK') {
+      else if (key === 'SPIELSPRACHE') {
+        header.gameLanguage = value || null;
+        header.gameLanguageLine = n;
+      } else if (key === 'ZEITDRUCK') {
         const v = value.toLowerCase();
         if (TIME_VALUES.has(v)) header.timePressure = v;
         else warn(n, 'ZEITDRUCK kennt nur normal, lang oder aus. Es gilt normal.');
@@ -245,6 +249,9 @@ export function parsePack(input) {
   else if (header.kennung === CONFIG.pack.templateId) {
     warn(null, 'Die KENNUNG ist noch die aus der Vorlage. Wähle einen eigenen Namen, zum Beispiel englisch6-unit1-4.');
   }
+  // Spielsprache (Design 10.6). Die Hinweise kommen fertig formuliert, mit Zeile, wo es eine gibt.
+  const language = packLanguage(header);
+  warnings.push(...language.hints);
 
   // Trainer
   const numbers = [...trainers.keys()].sort((a, b) => a - b);
@@ -296,6 +303,7 @@ export function parsePack(input) {
     identity,
     shortId: shortId(identity),
     timePressure: header.timePressure,
+    language: language.language,
     trainers: numbers.map(num => {
       const t = trainers.get(num);
       return {

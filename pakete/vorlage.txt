@@ -26,6 +26,10 @@
 # FACH:       Das Fach (Pflicht).
 # ZEITDRUCK:  normal, lang oder aus (freiwillig, Standard ist normal).
 #             Zeitdruck gibt es ab Trainer 4. Mit lang gilt doppelte Zeit, mit aus nie eine Uhr.
+# SPIELSPRACHE: deutsch, englisch, französisch oder spanisch (freiwillig).
+#             Ist das Paket für eine Sprache, ist das ganze Spiel in dieser Sprache, sonst auf
+#             Deutsch. Ohne SPIELSPRACHE entscheidet FACH: Bei „FACH: Englisch“ läuft das Spiel
+#             auf Englisch. Französisch und Spanisch kommen in einer späteren Spielfassung.
 
 PAKET:
 KENNUNG: fach-jahrgang-name

@@ -58,6 +58,7 @@ const FILES = [
   "js/menu/settings.js",
   "js/menu/teacherPage.js",
   "js/pack/decode.js",
+  "js/pack/language.js",
   "js/pack/packId.js",
   "js/pack/parser.js",
   "js/pack/readFile.js",
