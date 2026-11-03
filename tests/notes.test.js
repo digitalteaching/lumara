@@ -67,7 +67,7 @@ test('Geschichte: nach Gebiet geordnet, Gebiete ohne Text zählen nicht', () => 
   s.story = { 2: 1, 1: 2 };
   assert.deepEqual(storyFound(s).map(x => [x.area, x.index]), [[1, 0], [1, 1], [2, 0]]);
   assert.equal(storyFound(s)[2].text, STORY[2][0]);
-  assert.equal(solveNote(s, 'pilz:1,1', 3, true, seq(0.6)).story, null);
+  assert.equal(solveNote(s, 'irgendwo:1,1', 9, true, seq(0.6)).story, null); // ein Gebiet ohne Geschichte
 });
 
 test('Ein Lebensstein als Belohnung wird zum Weitblickstein, wenn schon 3 wirken; was nicht passt, wird nicht gemeldet', () => {

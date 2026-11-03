@@ -107,7 +107,25 @@ const BASKET_SIDE = [[11, 11, 'o'], [12, 11, 'r'], [11, 12, 'o'], [12, 10, 'g']]
 const JAR_DOWN = [[12, 10, 'k'], [12, 11, 'A'], [12, 12, 'H'], [13, 11, 'k']];
 const JAR_SIDE = [[11, 10, 'k'], [11, 11, 'A'], [11, 12, 'H']];
 
+// Pilzhut mit breiter Krempe und weißen Tupfen (Pilzsammlerin)
+const HAT_DOWN = [[1, 4, 'k'], [2, 4, 'e'], [3, 4, 'e'], [12, 4, 'e'], [13, 4, 'e'], [14, 4, 'k'], [2, 5, 'k'], [13, 5, 'k'], [6, 2, 'w'], [9, 3, 'w'], [5, 4, 'w']];
+const HAT_UP = [[1, 4, 'k'], [2, 4, 'e'], [3, 4, 'e'], [12, 4, 'e'], [13, 4, 'e'], [14, 4, 'k'], [6, 3, 'w'], [9, 2, 'w'], [10, 5, 'w']];
+const HAT_SIDE = [[2, 3, 'k'], [3, 3, 'e'], [11, 3, 'e'], [12, 3, 'e'], [13, 3, 'k'], [6, 2, 'w'], [9, 3, 'w']];
+// Großer Korb mit Pilzen am Arm (Pilzsammlerin)
+const MUSHBASKET_DOWN = [[12, 11, 'o'], [13, 11, 'r'], [14, 11, 'k'], [12, 12, 'o'], [13, 12, 'o'], [14, 12, 'k'], [12, 10, 'R'], [13, 10, 'w']];
+const MUSHBASKET_SIDE = [[11, 11, 'o'], [12, 11, 'r'], [11, 12, 'o'], [12, 12, 'o'], [11, 10, 'R'], [12, 10, 'w']];
+// Kochlöffel (Wenke), Holzbrett über der Schulter (Jasper)
+const LADLE_DOWN = [[13, 9, 'o'], [13, 10, 'o'], [13, 11, 'o'], [14, 8, 'r']];
+const LADLE_SIDE = [[12, 9, 'o'], [12, 10, 'o'], [13, 8, 'r']];
+const PLANK_DOWN = [[1, 8, 'k'], [2, 8, 'r'], [1, 9, 'r'], [2, 9, 'o'], [1, 10, 'o'], [2, 10, 'k']];
+const PLANK_SIDE = [[3, 8, 'r'], [2, 9, 'r'], [3, 9, 'o'], [2, 10, 'o']];
+
 export const CHARACTERS = {
+  // Pilzmoor (Plan 3b): Pilzsammlerin mit großem Korb und Pilzhut (Design 5.3) und die Bewohner
+  trainer3: character({ h: 'C', i: 'e', c: 'g', d: 'l', l: 'G', b: 'b' }, { down: [...HAT_DOWN, ...MUSHBASKET_DOWN], up: HAT_UP, side: [...HAT_SIDE, ...MUSHBASKET_SIDE] }),
+  wenke: character({ h: 'w', i: 'f', c: 'R', d: 'P', l: 'w', b: 'b' }, { down: LADLE_DOWN, side: LADLE_SIDE }),
+  jasper: character({ h: 'o', i: 'b', c: 't', d: 'F', l: 'Y', b: 'k' }, { down: PLANK_DOWN, side: PLANK_SIDE }),
+  nele: character({ h: 'V', i: 'v', c: 'H', d: 'h', l: 'Y', b: 'D' }),
   // Flüsterwald (Plan 3a): Waldläufer mit Kapuze und Moosumhang (Design 5.3) und die Bewohner
   trainer2: character({ h: 'F', i: 'k', c: 'l', d: 'F', l: 'o', b: 'b' }, { down: MOSS_DOWN, side: MOSS_SIDE }),
   fenna: character({ h: 'h', i: 'r', c: 'v', d: 'P', l: 'c', b: 'b' }, { down: BASKET_DOWN, side: BASKET_SIDE }),

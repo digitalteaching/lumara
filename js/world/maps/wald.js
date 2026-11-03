@@ -1,12 +1,13 @@
 // Gebiet 2: der Flüsterwald (Design 5.3). 40 × 30 Felder.
 // Süden: Eingang von der Bucht. Mitte: ein Bach mit Brücke. Norden: Lichtung mit Leuchtstein und
-// Waldläufer, dahinter Nebel über dem Weg zum Pilzmoor.
+// Waldläufer, dahinter das Nebeltor zum Pilzmoor.
 
 export const WALD = {
   id: 'wald',
   name: 'Flüsterwald',
   genitive: 'des Flüsterwalds',
   area: 2,
+  ground: 'moss', // Boden unter Bäumen und Pilzen am Rand
   rows: [
     'YYYYYYYYYYYYYYYYYY%%%%YYYYYYYYYYYYYYYYYY',
     'YYYYYYYYYYYYYYYYYY%%%%YYYYYYYYYYYYYYYYYY',
@@ -103,7 +104,11 @@ export const WALD = {
     },
   ],
   gates: [{ id: 'nord', leadsTo: 3, x: 18, y: 0, w: 4, h: 2, ground: 'path' }],
-  exits: [{ x: 18, y: 29, w: 4, h: 1, to: 'bucht', at: { x: 19, y: 1, dir: 'down' } }],
+  exits: [
+    { x: 18, y: 29, w: 4, h: 1, to: 'bucht', at: { x: 19, y: 1, dir: 'down' } },
+    // Hinter dem Tor im Norden, nur begehbar, wenn es offen ist
+    { x: 18, y: 0, w: 4, h: 1, to: 'moor', at: { x: 19, y: 28, dir: 'up' } },
+  ],
   finds: [
     { id: 'glitzer-farn', x: 6, y: 20 },
     { id: 'glitzer-nord', x: 33, y: 5 },

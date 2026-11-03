@@ -23,7 +23,7 @@ import { requestPersist } from './app/platform.js';
 import { bootUpdates, removeServiceWorkers } from './app/update.js';
 import { createDuelScene, makeWildSetup, makeTrainerSetup, makeProbeSetup } from './scenes/duel.js';
 import { maxEnergy } from './duel/progress.js';
-import { WALD } from './world/maps/wald.js';
+import { MAPS } from './world/network.js';
 import { el } from './ui/dom.js';
 
 const screen = createScreen(document.getElementById('screen'), document.getElementById('stage'));
@@ -112,10 +112,11 @@ async function devStart() {
   game.pack = await devPack();
   const species = STARTERS.includes(params.get('wesen')) ? params.get('wesen') : 'funki';
   game.state = newGameState({ name: 'Test', species, nickname: null });
-  // ?dev&gebiet=wald: gleich im Flüsterwald, Stein 1 leuchtet
-  if (params.get('gebiet') === 'wald') {
-    game.state.stones = [1];
-    game.state.position = { map: 'wald', ...WALD.spawn };
+  // ?dev&gebiet=wald (moor, …): gleich am Eingang des Gebiets, alle Steine davor leuchten
+  const def = MAPS[params.get('gebiet')];
+  if (def && def.area > 1) {
+    game.state.stones = Array.from({ length: def.area - 1 }, (_, i) => i + 1);
+    game.state.position = { map: def.id, ...def.spawn };
   }
   game.go(createGameWorld(game));
 }

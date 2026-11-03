@@ -12,4 +12,9 @@ export const STORY = {
     'Die Hüterinnen und Hüter zogen sich in ihre Gebiete zurück. Sie warten darauf, dass jemand kommt und ihnen zeigt, was er gelernt hat.',
     'Manche sagen, der Nebel komme aus einer Höhle tief im Berg. Wer dort lebt, weiß niemand mehr. Vielleicht hat man es einfach vergessen.',
   ],
+  3: [
+    'Im Moor leuchten die Pilze, damit sich niemand verirrt. Früher stellten die Leute Laternen auf die Stege und sangen dabei Lieder über das Licht.',
+    'Als der Nebel kam, gingen die Laternen eine nach der anderen aus. Nur die Irrlichter blieben. Sie suchen bis heute nach den Liedern von damals.',
+    'Ein altes Lied erzählt von einem kleinen Wesen tief im Berg, das Echos sammelt. Es hört jedes Wort, das irgendwo auf der Insel vergessen wird.',
+  ],
 };

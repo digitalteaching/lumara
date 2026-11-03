@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { fogEdgeLines, fogSignLines } from '../js/world/fogEdge.js';
 import { BUCHT } from '../js/world/maps/bucht.js';
 import { WALD } from '../js/world/maps/wald.js';
+import { MOOR } from '../js/world/maps/moor.js';
 
 const sign = { role: 'fogEdge', gate: 1, leadsTo: 2, leadsToName: 'der Flüsterwald', lines: ['Der Nebel ist hier zu dicht.'] };
 
@@ -42,4 +43,10 @@ test('Weg offen: Das Schild sagt nicht mehr, der Nebel sei zu dicht', () => {
   }
   const s = BUCHT.objects.find(o => o.role === 'fogEdge');
   assert.deepEqual(fogSignLines(s, { gateBeaten: false, packHasNext: true, builtAreas: 2 }), s.lines);
+});
+
+test('Mehrzahl am Nebelrand: „Hinter dem Nebel liegen die Spiegeldünen.“', () => {
+  const s = MOOR.objects.find(o => o.role === 'fogEdge');
+  assert.equal(fogEdgeLines(s, { gateBeaten: true, packHasNext: true, builtAreas: 3 })[0], 'Hinter dem Nebel liegen die Spiegeldünen.');
+  assert.equal(fogEdgeLines(WALD.objects.find(o => o.role === 'fogEdge'), { gateBeaten: true, packHasNext: true, builtAreas: 2 })[0], 'Hinter dem Nebel liegt das Pilzmoor.');
 });

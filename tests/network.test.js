@@ -14,7 +14,7 @@ test('Gebiet 2 ist offen, wenn Stein 1 leuchtet und das Paket Trainer 2 hat', ()
   assert.equal(areaOpen(st([]), pack(2), 2), false);
   assert.equal(areaOpen(st([1]), pack(2), 2), true);
   assert.equal(areaOpen(st([1]), pack(1), 2), false); // Paket ohne Thema 2 (Design 10.4)
-  assert.equal(areaOpen(st([1, 2]), pack(8), 3), false); // Gebiet 3 ist noch nicht gebaut
+  assert.equal(areaOpen(st([1, 2, 3, 4, 5]), pack(8), 6), false); // Gebiet 6 ist noch nicht gebaut
   assert.equal(areaOpen(st([]), pack(1), 1), true);
 });
 
@@ -77,4 +77,16 @@ test('Bewohner: Sätze zum offenen Weg erst, wenn das nächste Gebiet wirklich o
   assert.deepEqual(npcLines(o, st([1]), 1, pack(1)), ['lit']); // Stein leuchtet, Wald liegt im Nebel
   assert.deepEqual(npcLines(o, st([1]), 1, pack(2)), ['offen']);
   assert.deepEqual(npcLines({ lines: ['a'], linesLit: ['lit'] }, st([1]), 1, pack(2)), ['lit']);
+});
+
+test('Gebiet 3 ist offen mit Stein 2 und Trainer 3; der Wald führt dann nach Norden ins Moor', () => {
+  assert.equal(areaOpen(st([1, 2]), pack(3), 3), true);
+  assert.equal(areaOpen(st([1, 2]), pack(2), 3), false);
+  assert.equal(exitAt(MAPS.wald, 19, 0)?.to, 'moor');
+  assert.equal(exitAt(MAPS.moor, 19, 29)?.to, 'wald');
+});
+
+test('Im Moor stehen und ein Paket mit 2 Trainern laden: Aufwachen am Stein im Wald', () => {
+  assert.deepEqual(resolveStart(st([1, 2, 3], { map: 'moor', x: 19, y: 20, dir: 'up' }), pack(2)), { map: 'wald', ...beaconFront(MAPS.wald, 2) });
+  assert.deepEqual(resolveStart(st([1, 2, 3], { map: 'moor', x: 19, y: 20, dir: 'up' }), pack(3)), { map: 'moor', x: 19, y: 20, dir: 'up' });
 });

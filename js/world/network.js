@@ -5,8 +5,9 @@ import { CONFIG } from '../config.js';
 import { createMap } from './map.js';
 import { BUCHT } from './maps/bucht.js';
 import { WALD } from './maps/wald.js';
+import { MOOR } from './maps/moor.js';
 
-export const MAPS = { bucht: BUCHT, wald: WALD };
+export const MAPS = { bucht: BUCHT, wald: WALD, moor: MOOR };
 
 const hasTrainer = (pack, n) => pack.trainers.some(t => t.number === n);
 

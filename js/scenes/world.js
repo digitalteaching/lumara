@@ -114,7 +114,8 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
   }
 
   // Boden unter Steinen: der häufigste flache Boden der Nachbarfelder. Ohne einen solchen
-  // (etwa eine Felsnadel mitten in den Wolken) die häufigste Nachbarkachel, die selbst Boden hat.
+  // (etwa eine Felsnadel mitten in den Wolken) die häufigste Nachbarkachel, die selbst Boden hat,
+  // sonst der Grundboden der Karte (def.ground, etwa Torf im Moor).
   const GROUNDS = new Set(['grass', 'sand', 'path', 'flowers', 'moss', 'peat', 'glasssand', 'cliffrock']);
   // Eine Felsnadel ragt immer aus den Wolken.
   const FIXED_GROUND = { spire: 'clouds' };
@@ -131,7 +132,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
       else if (k && !OVERLAY_TILES.has(k) && k !== 'fog') others[k] = (others[k] ?? 0) + 1;
     }
     const pick = c => Object.entries(c).sort((a, b) => b[1] - a[1])[0]?.[0];
-    const best = pick(counts) ?? pick(others) ?? 'grass';
+    const best = pick(counts) ?? pick(others) ?? def.ground ?? 'grass';
     const ground = best === 'flowers' ? 'grass' : best;
     groundCache.set(key, ground);
     return ground;
@@ -187,15 +188,24 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
         ctx.fillRect(x + 1, y - 1, 1, 1);
         ctx.fillRect(x - 2, y - 1 - up, 1, 1);
         ctx.fillRect(x + 2, y - 1 - up, 1, 1);
-      } else if (p.kind === 'firefly' || p.kind === 'wisp') {
-        // Glühwürmchen und Irrlichter: ein Lichtpunkt mit Schein, Irrlichter etwas größer
-        const r = p.kind === 'wisp' ? 2 : 1;
+      } else if (p.kind === 'firefly') {
         ctx.fillStyle = p.color;
         ctx.globalAlpha = p.alpha * 0.3;
-        ctx.fillRect(x - r, y - r, 2 * r + 1, 2 * r + 1);
+        ctx.fillRect(x - 1, y - 1, 3, 3);
         ctx.globalAlpha = p.alpha;
         ctx.fillRect(x, y, 1, 1);
-        if (p.kind === 'wisp') ctx.fillRect(x - 1, y, 3, 1);
+      } else if (p.kind === 'wisp') {
+        // Irrlicht: weicher runder Schein, heller Kern
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha * 0.22;
+        ctx.fillRect(x - 2, y - 1, 5, 3);
+        ctx.fillRect(x - 1, y - 2, 3, 5);
+        ctx.globalAlpha = p.alpha * 0.6;
+        ctx.fillRect(x - 1, y, 3, 1);
+        ctx.fillRect(x, y - 1, 1, 3);
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = '#effff8';
+        ctx.fillRect(x, y, 1, 1);
       } else if (p.kind === 'bubble') {
         // kleiner Ring; kurz vor dem Platzen etwas größer
         ctx.fillStyle = p.color;

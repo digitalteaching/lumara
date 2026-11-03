@@ -209,17 +209,17 @@ const mushroom = [
 // Dünen helles Sandgold, Glas-Cyan und Spiegelweiß; Klippen Felsgrau, Himmelblau, Wolkenweiß, Holz.
 
 // Torfboden: dunkelgrün mit Torf und Moos
-const peat = speckled('F', 51, [['b', 0.16], ['l', 0.08], ['t', 0.03]]);
+const peat = speckled('F', 51, [['l', 0.07], ['b', 0.05], ['t', 0.02]]);
 
-// Moorwasser: dunkel, mit türkisen Lichtern, die sich zwischen zwei Bildern verschieben
+// Moorwasser: dunkel und ruhig, mit türkisen Wellenlinien, die sich zwischen zwei Bildern verschieben
 function bog(shift) {
   const g = grid(16, 16, 'D');
-  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) if (noise(x, y, 52) < 0.14) g[y][x] = 'n';
-  for (const [cx, cy] of [[3, 3], [11, 7], [6, 12]]) {
+  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) if (noise(x, y, 52) < 0.07) g[y][x] = 'n';
+  for (const [cx, cy] of [[2, 2], [10, 6], [5, 10], [12, 13]]) {
     const x = (cx + shift) % 16;
-    for (let i = 0; i < 3; i++) g[cy][(x + i) % 16] = 't';
+    for (let i = 0; i < 4; i++) g[cy][(x + i) % 16] = 't';
+    g[cy][(x + 4) % 16] = 'n';
   }
-  for (const [cx, cy] of [[9, 2], [1, 9], [13, 13]]) g[cy][(cx + 16 - shift) % 16] = 'T';
   return toRows(g);
 }
 

@@ -8,7 +8,8 @@ export function fogEdgeLines(sign, { gateBeaten, packHasNext, builtAreas }) {
   if (!gateBeaten) return sign.lines;
   if (!packHasNext) return [TEACHER_LINE];
   if (sign.leadsTo > builtAreas) {
-    return [`Hinter dem Nebel liegt ${sign.leadsToName}.`, 'Der Weg dorthin entsteht gerade. In einer der nächsten Spielfassungen kannst du hindurch.'];
+    const verb = sign.leadsToPlural ? 'liegen' : 'liegt'; // „die Spiegeldünen“ sind Mehrzahl
+    return [`Hinter dem Nebel ${verb} ${sign.leadsToName}.`, 'Der Weg dorthin entsteht gerade. In einer der nächsten Spielfassungen kannst du hindurch.'];
   }
   return null;
 }
