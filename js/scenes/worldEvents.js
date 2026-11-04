@@ -4,6 +4,7 @@
 import { CONFIG } from '../config.js';
 import { createWorldScene } from './world.js';
 import { createDuelScene, makeWildSetup, makeTrainerSetup, makeBossSetup } from './duel.js';
+import { rematchOffer, rematchSetup } from '../duel/rematch.js';
 import { playTransition, reveal } from './transition.js';
 import { createEncounterCounter, wildTableFor } from '../world/encounters.js';
 import { secretOpen, takeSecretStory, takeSecretStone, blockedCells } from '../world/secrets.js';
@@ -611,6 +612,21 @@ export function createGameWorld(game) {
       if (beaten()) {
         world.turnToward(o, OPPOSITE[player.dir]);
         await say(game, afterWinLines(o), { speaker: packTrainer()?.name });
+        // Revanche (Design 7.5): nach dem Satz das Angebot auf der nächsten Stufe.
+        const offer = rematchOffer(packProgress(game.state, shortId()), trainerNumber);
+        if (offer) {
+          const name = packTrainer().name;
+          if (offer.max) await say(game, [tr('rematch.max')], { speaker: name });
+          const pick = await choose(game, tr('rematch.offer', { stage: offer.stage }), [tr('rematch.yes'), tr('rematch.later')], { cancelIndex: 1 });
+          if (pick === 0) {
+            const setup = rematchSetup(game.pack.data, trainerNumber, offer.stage);
+            await say(game, setup.trainer.lines.hello, { speaker: name });
+            world.resetFacing(o);
+            const report = await runDuel(setup, 'trainer');
+            await backToWorld(report);
+            return true;
+          }
+        }
         world.resetFacing(o);
       } else {
         await trainerDuel({ spotted: false });
