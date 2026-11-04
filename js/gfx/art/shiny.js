@@ -23,6 +23,7 @@ export const SHINY_OVERRIDE = {
   nebelunke: { f: 'V', m: 'v', d: 'P', s: 'P' }, // Morgennebel → Fliedernebel
   klippbock: { f: 'Y', m: 'y', s: 'r', d: 'o' }, // Grauer Bock → goldener Bock
   frostrobbe: { f: 'R', m: 'V', S: 'v', A: 'V' }, // Weiße Robbe → Rosenrobbe
+  kristallotter: { f: 'Y', m: 'y', s: 'r', w: 'c' }, // Raureif → Bernstein, die Kristalle werden grün
 };
 
 export function shinyRows(rows, speciesId = null) {

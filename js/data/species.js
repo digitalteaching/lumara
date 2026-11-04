@@ -322,10 +322,19 @@ export const SPECIES = {
     names: ['Irrlichtfee'],
     description: 'Eine winzige Fee aus Licht. Sie tanzt über dem Moor und zeigt allen, die sich verlaufen haben, den Weg nach Hause.',
   },
+  kristallotter: {
+    id: 'kristallotter',
+    kind: 'secret',
+    gender: 'm',
+    area: 7,
+    rarity: 'rare',
+    names: ['Kristallotter'],
+    description: 'Ein Otter mit Fell wie Raureif. Auf seinem Rücken wachsen kleine Eiskristalle, die im Nordlicht funkeln.',
+  },
 };
 
 // Die seltenen Arten der geheimen Orte in der Reihenfolge des Wesen-Buchs (Plätze 25 bis 30).
-export const SECRET_SPECIES = ['wurzelgeist', 'prismalibelle', 'perlkrabbe', 'irrlichtfee'];
+export const SECRET_SPECIES = ['wurzelgeist', 'prismalibelle', 'perlkrabbe', 'irrlichtfee', 'kristallotter'];
 
 export const AREA_WILD = {
   1: { common: ['gischtling', 'haeuschel'], rare: 'glimmqualle' },

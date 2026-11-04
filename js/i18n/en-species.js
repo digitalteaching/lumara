@@ -73,5 +73,6 @@ export const EN_SPECIES = {
   wurzelgeist: { names: ['Rootling'], description: 'A little spirit made of roots. On its head grows a flower that glows in the dark.' },
   prismalibelle: { names: ['Prismfly'], description: 'A dragonfly with wings made of glass. Where it flies, the light breaks into all the colours of the rainbow.' },
   perlkrabbe: { names: ['Pearlcrab'], description: 'A little crab with a shell like a pearl. At low tide it runs through the pools and polishes the stones.' },
+  kristallotter: { names: ['Crystalotter'], description: 'An otter with fur like frost. Little ice crystals grow on its back and sparkle in the northern lights.' },
   irrlichtfee: { names: ['Wispfairy'], description: 'A tiny fairy made of light. It dances over the marsh and shows everyone who is lost the way home.' },
 };

@@ -613,6 +613,25 @@ function irrlichtfee() {
   return done(g);
 }
 
+// Kristallotter: ein Otter mit Fell wie Raureif und Eiskristallen auf dem Rücken (Eisgrotte).
+function kristallotter() {
+  const g = canvas(32);
+  poly(g, [[1, 23], [9, 18], [11, 22], [3, 26]], ['A', 'L', 'S']); // Schwanz
+  poly(g, [[10, 25], [13, 24], [13, 29], [9, 29]], ['f', 'm', 's']); // Pfoten
+  poly(g, [[18, 25], [21, 24], [22, 29], [18, 29]], ['f', 'm', 's']);
+  ellipse(g, 15, 20, 8, 5.5, ['w', 'f', 'm']); // Körper
+  ellipse(g, 23, 14, 5, 4.5, ['w', 'f', 'm']); // Kopf
+  ellipse(g, 20.5, 9.5, 1.5, 1.5, ['f', 'm', 's']); // Ohr
+  poly(g, [[9, 16], [11, 9], [13, 16]], ['w', 'A', 'L']); // Eiskristalle auf dem Rücken
+  poly(g, [[13, 15], [15.5, 7], [18, 15]], ['w', 'A', 'L']);
+  poly(g, [[6, 18], [7, 13], [9, 18]], ['w', 'A', 'L']);
+  outline(g);
+  eye(g, 24, 12, 2, 3);
+  dots(g, [[28, 15, 'k'], [27, 15, 'k'], [27, 17, 'k'], [26, 17, 'k'], [22, 16, 'R'], [29, 13, 'f'],
+    [11, 11, 'w'], [15, 9, 'w'], [7, 15, 'w'], [12, 21, 'm'], [17, 22, 'm'], [3, 23, 'A'], [6, 21, 'A']]);
+  return done(g);
+}
+
 // ---------- Gebiet 1 ----------
 
 function gischtling() {
@@ -1229,6 +1248,7 @@ export const CREATURE_ART = {
   prismalibelle: { 1: prismalibelle() },
   perlkrabbe: { 1: perlkrabbe() },
   irrlichtfee: { 1: irrlichtfee() },
+  kristallotter: { 1: kristallotter() },
 };
 
 // Höchste vorhandene Stufe ≤ der gewünschten: Wilde Arten haben ein oder zwei Stufen.

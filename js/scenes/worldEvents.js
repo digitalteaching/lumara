@@ -351,7 +351,12 @@ export function createGameWorld(game) {
   });
 
   // Geschichtsstein: beim ersten Mal das Geheimstück, danach nur ein Satz.
-  world.propVariant.storystone = o => (game.state.secrets?.[o.place]?.story ? 'noteStoneDone' : 'noteStone');
+  // Ein Geschichtsstein mit eigenem Bild (der Kristall der Eisgrotte) hat dazu ein „gelesen“-Bild.
+  world.propVariant.storystone = o => {
+    const read = game.state.secrets?.[o.place]?.story;
+    if (o.prop) return read ? `${o.prop}Done` : o.prop;
+    return read ? 'noteStoneDone' : 'noteStone';
+  };
   world.onInteract.push(async ev => {
     const o = ev.target;
     if (o?.type !== 'storystone') return false;

@@ -20,6 +20,7 @@ export const EN_WORLD = {
     glasturm: { name: 'Glass Tower', of: 'of the Glass Tower', the: 'the Glass Tower' },
     gezeiten: { name: 'Tide Island', of: 'of Tide Island', the: 'Tide Island' },
     irrlicht: { name: 'Wisp Island', of: 'of Wisp Island', the: 'Wisp Island' },
+    eisgrotte: { name: 'Ice Cave', of: 'of the Ice Cave', the: 'the Ice Cave' },
   },
 
   objects: {
@@ -277,6 +278,10 @@ export const EN_WORLD = {
     },
 
     see: {
+      'eiskante-grotte': {
+        lines: ['The solid ice ends here. Behind it, the entrance of the cave sparkles.', 'With ice skates you could glide across the smooth ice.'],
+        linesOpen: ['You strap on the ice skates and glide across to the ice cave.'],
+      },
       trainer: { afterWin: 'Your light stone is shining. Look, the northern lights are brighter!' },
       sven: {
         lines: [

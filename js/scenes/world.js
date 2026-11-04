@@ -2,6 +2,7 @@
 
 import { createMap, cellKey } from '../world/map.js';
 import { createPlayer } from '../world/player.js';
+import { isSliding } from '../world/slide.js';
 import { BUCHT } from '../world/maps/bucht.js';
 import { TILES, BUILDINGS, PROPS, OVERLAY_TILES } from '../gfx/art/tiles.js';
 import { spriteFrom } from '../gfx/canvasSprites.js';
@@ -394,7 +395,10 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
       }
       for (const fn of [...onTick]) fn(dt);
       if (locked || opts.passive) return;
-      const intent = { dir: game.input.dir(), a: game.input.pressed('a') };
+      // Auf Rutscheis gleitet die Figur weiter; Richtung und A zählen erst, wenn sie steht.
+      const sliding = isSliding(map, player);
+      const pressedA = game.input.pressed('a');
+      const intent = { dir: sliding ? player.dir : game.input.dir(), a: !sliding && pressedA };
       const events = player.update(dt, intent, map);
       for (const ev of events) {
         if (ev.type === 'stepped') {

@@ -451,6 +451,23 @@ function tidepool() {
 }
 const tidegrass = lean => retint(tallGrass(lean), { l: 'Y', g: 't', G: 'l', F: 'y' });
 
+// Eisgrotte (Plan 4d): blankes Rutscheis mit schrägen Glanzstreifen (anders als das stumpfe Eis
+// des Sees), Wände aus dunklem Eis und Eissäulen, die beim Gleiten aufhalten
+function slideice() {
+  const g = grid(16, 16, 'L');
+  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) if (noise(x, y, 121) < 0.04) g[y][x] = 'A';
+  for (const [x0, y0, n] of [[1, 13, 5], [8, 7, 5], [11, 15, 3], [3, 4, 3]]) {
+    for (let i = 0; i < n; i++) g[(y0 - i + 16) % 16][(x0 + i) % 16] = i === 0 || i === n - 1 ? 'A' : 'w';
+  }
+  return toRows(g);
+}
+const icewall = speckled('S', 123, [['D', 0.16], ['L', 0.08], ['A', 0.03]]);
+const icepillar = (() => {
+  const g = slideice().map(r => [...r]);
+  retint(rock, { m: 'A', f: 'w', s: 'L', d: 'S', k: 'D' }).forEach((r, y) => [...r].forEach((c, x) => { if (c !== '.') g[y][x] = c; }));
+  return toRows(g);
+})();
+
 // Felder ohne eigenen Boden, unter die der Boden der Umgebung gezeichnet wird
 export const OVERLAY_TILES = new Set(['rock', 'fortree', 'mushroom', 'glowshroom', 'spire', 'snowpine', 'nightrock']);
 
@@ -526,6 +543,9 @@ export const TILES = {
   prismgrass: [prismgrass(false), prismgrass(true)],
   tidepool: [tidepool()],
   tidegrass: [tidegrass(false), tidegrass(true)],
+  slideice: [slideice()],
+  icewall: [icewall],
+  icepillar: [icepillar],
 };
 
 // ---------- Gebäude ----------
@@ -947,6 +967,37 @@ function boatPost() {
   return g.map(r => r.join(''));
 }
 
+// Die Eiskante am Nordlichtsee: eine Scholle aus glattem Eis mit Kufenspuren (Eingang zur Eisgrotte).
+function iceEdge() {
+  const g = Array.from({ length: 16 }, () => Array(16).fill('.'));
+  for (let y = 4; y < 13; y++) for (let x = 1; x < 15; x++) {
+    const edge = y === 4 || y === 12 || x === 1 || x === 14;
+    if ((y === 4 || y === 12) && (x === 1 || x === 14)) continue;
+    g[y][x] = edge ? 'S' : y > 10 ? 'L' : 'A';
+  }
+  for (let x = 3; x < 13; x++) { g[7][x] = x % 3 ? 'w' : 'A'; g[9][x] = x % 3 === 1 ? 'A' : 'w'; } // Kufenspuren
+  return g.map(r => r.join(''));
+}
+
+// Ein großer Eiskristall auf Schnee (16 × 24); leuchtet, bis man sein Geschichtsstück kennt.
+function iceCrystal(read) {
+  const g = Array.from({ length: 24 }, () => Array(16).fill('.'));
+  const spike = (cx, top, half, bottom) => {
+    for (let y = top; y <= bottom; y++) {
+      const w = Math.min(half, Math.floor((y - top) / 2));
+      for (let x = cx - w; x <= cx + w; x++) g[y][x] = x === cx - w || x === cx + w ? 'k' : x < cx ? 'w' : x === cx ? 'A' : 'L';
+    }
+    g[top][cx] = 'k';
+  };
+  spike(4, 10, 2, 21);
+  spike(11, 8, 2, 21);
+  spike(8, 2, 3, 22);
+  for (let x = 2; x < 14; x++) g[22][x] = g[22][x] === '.' ? 'k' : g[22][x];
+  for (let x = 3; x < 13; x++) g[23][x] = 'k';
+  if (!read) for (const [x, y] of [[7, 8], [8, 9], [7, 12], [8, 14], [4, 15], [11, 13]]) g[y][x] = 'H';
+  return g.map(r => r.join(''));
+}
+
 function glassTower() {
   const g = grid(16, 48, '.');
   for (let y = 0; y < 10; y++) {
@@ -1019,6 +1070,9 @@ export const PROPS = {
   hollowoak: hollowOak(),
   hookring: hookRing(),
   boatpost: boatPost(),
+  iceedge: iceEdge(),
+  icecrystal: iceCrystal(false),
+  icecrystalDone: iceCrystal(true),
   sign: [
     '................',
     '................',

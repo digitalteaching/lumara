@@ -131,6 +131,7 @@ const FILES = [
   "js/world/maps/glasturm.js",
   "js/world/maps/gezeiten.js",
   "js/world/maps/irrlicht.js",
+  "js/world/maps/eisgrotte.js",
   "js/world/maps/klippen.js",
   "js/world/maps/moor.js",
   "js/world/maps/ruinen.js",
@@ -142,6 +143,7 @@ const FILES = [
   "js/world/quests.js",
   "js/world/secrets.js",
   "js/world/puzzles.js",
+  "js/world/slide.js",
   "js/world/player.js"
 ];
 

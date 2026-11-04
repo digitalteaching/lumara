@@ -50,6 +50,13 @@ export const SEE = {
     '%': 'fog',
   },
   objects: [
+    // Geheimer Ort (Design 5.7): die Eiskante, mit den Eiskufen hinüber zur Eisgrotte
+    {
+      type: 'secret', id: 'eiskante-grotte', place: 'eisgrotte', prop: 'iceedge', x: 29, y: 4,
+      to: { map: 'eisgrotte', x: 7, y: 10, dir: 'up' },
+      lines: ['Hier endet das feste Eis. Dahinter glitzert der Eingang der Grotte.', 'Mit Eiskufen könnte man über das glatte Eis hinübergleiten.'],
+      linesOpen: ['Du schnallst die Eiskufen an und gleitest zur Eisgrotte hinüber.'],
+    },
     { type: 'beacon', number: 7, x: 30, y: 22 },
     {
       type: 'trainer', number: 7, x: 24, y: 15, dir: 'left', sight: 4, sprite: 'trainer7',
