@@ -18,6 +18,8 @@ export const ascentEnergy = floor => Math.min(A().energyMax, A().energyBase + Ma
 export const ascentSeconds = floor => (floor < A().clockFrom ? null : Math.max(A().secondsMin, A().secondsStart - (floor - A().clockFrom)));
 export const ascentXp = (floor, flawless) => xpForWin({ kind: 'ascent', floor, flawless });
 export const refillAfter = floor => floor % A().refillEvery === 0;
+// Volle Energie vor der ersten Etage (fairer Start) und nach jeder fünften.
+export const refillBefore = floor => floor === 1 || refillAfter(floor - 1);
 
 export function recordFloor(progress, floor) {
   progress.stats.floor = Math.max(progress.stats.floor ?? 0, floor);

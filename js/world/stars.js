@@ -17,3 +17,7 @@ export const nearStar = (star, x, y) => !!star && Math.abs(star.x - x) + Math.ab
 export function rareChanceAt(state, def, x, y) {
   return nearStar(fallenStarSpot(state, def), x, y) ? CONFIG.wild.starRareChance : CONFIG.wild.rareChance;
 }
+
+// Die Chance an der Stelle, die die Welt zeigt (beim Betreten der Karte bestimmt); so passen Glitzern,
+// Satz und Chance zusammen, auch wenn während des Besuchs zehn Minuten vergehen.
+export const starChance = (star, x, y) => (nearStar(star, x, y) ? CONFIG.wild.starRareChance : CONFIG.wild.rareChance);

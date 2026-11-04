@@ -31,3 +31,9 @@ export function respawnPoint(state, pack) {
 export function challengeMark(state, pack, number) {
   return state.stones.includes(number) && !packProgress(state, pack.shortId).beaten.includes(number);
 }
+
+// Nach einer Niederlage (Design 5.1): am Leuchtstein, außer im Erinnerungsduell mit Morrow, das am
+// Leuchtturm stattfindet; dort bleibt man (here) und erholt sich.
+export function respawnAfterLoss(state, pack, setup, here) {
+  return setup?.remember ? { ...here } : respawnPoint(state, pack);
+}

@@ -41,3 +41,8 @@ export function raiseTier(progress, n) {
   progress.tiers ??= {};
   progress.tiers[n] = Math.min(R().maxTier, (progress.tiers[n] ?? 0) + 1);
 }
+
+// Die Frage zum Angebot: „Stärke n von 5“; auf der höchsten Stärke ein eigener Satz ohne „stärker“.
+export function rematchQuestion(offer) {
+  return offer.max ? { key: 'rematch.offerMax', params: {} } : { key: 'rematch.offer', params: { stage: offer.stage, max: R().maxTier } };
+}

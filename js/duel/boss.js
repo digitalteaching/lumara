@@ -44,3 +44,10 @@ export function rememberSetup(pack, progress) {
     time: { seconds, setting: pack.timePressure },
   };
 }
+
+// Warum das Erinnerungsduell noch nicht geht: Dem Paket fehlen Themen, oder es sind noch nicht alle
+// Hüterinnen und Hüter damit besiegt. null: es geht.
+export function rememberBlock(state, pack) {
+  if (!ALL.every(n => pack.trainers.some(t => t.number === n))) return 'remember.needPack';
+  return rememberAvailable(state, pack) ? null : 'remember.notYet';
+}

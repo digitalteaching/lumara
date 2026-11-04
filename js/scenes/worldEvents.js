@@ -4,10 +4,10 @@
 import { CONFIG } from '../config.js';
 import { createWorldScene } from './world.js';
 import { createDuelScene, makeWildSetup, makeTrainerSetup, makeBossSetup } from './duel.js';
-import { rematchOffer, rematchSetup } from '../duel/rematch.js';
-import { rememberAvailable, rememberSetup } from '../duel/boss.js';
-import { fallenStarSpot, nearStar, rareChanceAt } from '../world/stars.js';
-import { ascentSetup, refillAfter } from '../duel/ascent.js';
+import { rematchOffer, rematchSetup, rematchQuestion } from '../duel/rematch.js';
+import { rememberBlock, rememberSetup } from '../duel/boss.js';
+import { fallenStarSpot, nearStar, starChance } from '../world/stars.js';
+import { ascentSetup, refillBefore } from '../duel/ascent.js';
 import { playTransition, reveal } from './transition.js';
 import { createEncounterCounter, wildTableFor } from '../world/encounters.js';
 import { secretOpen, takeSecretStory, takeSecretStone, blockedCells } from '../world/secrets.js';
@@ -20,7 +20,7 @@ import { withFinale, finaleDone, finishFinale } from '../world/finale.js';
 import { playFinale } from './finale.js';
 import { breakName } from '../world/islandMap.js';
 import { MAPS, areaConfig, areaOpen, exitAt, openGatesFor, resolveStart, whisperLine, beaconFront, packWorldKey, worldLines, areaOf } from '../world/network.js';
-import { visitStone, travelTargets, respawnPoint, challengeMark } from '../world/beacons.js';
+import { visitStone, travelTargets, respawnPoint, challengeMark, respawnAfterLoss } from '../world/beacons.js';
 import { playBeaconScene } from './beacon.js';
 import { bushKey, bushReady, harvest } from '../items/food.js';
 import { findKey, findReady, takeFind, stepFind, STONE_LINES } from '../items/stones.js';
@@ -91,13 +91,14 @@ export function createGameWorld(game) {
   }
 
   // Nach einer Niederlage wacht man am zuletzt besuchten Leuchtstein auf, sonst am Leuchtturm (Design 5.1).
-  async function backToWorld(report) {
+  async function backToWorld(report, setup = null) {
     const lost = report.outcome === 'lost';
-    const r = lost ? respawnPoint(game.state, game.pack.data) : null;
+    const here = { map: def.id, x: player.x, y: player.y, dir: player.dir };
+    const r = lost ? respawnAfterLoss(game.state, game.pack.data, setup, here) : null;
     if (lost) game.state.position = { ...r };
     game.save();
     await playTransition(game, 'fade', 300);
-    const atBeacon = r && !samePlace(r, { map: 'bucht', ...BUCHT.respawn });
+    const atBeacon = r && !samePlace(r, { map: 'bucht', ...BUCHT.respawn }) && !samePlace(r, here);
     const line = tr(atBeacon ? 'world.wokeAtBeacon' : 'world.wokeAtLighthouse', { name: displayName(game.state.creature) });
     if (lost && r.map !== def.id) {
       const next = createGameWorld(game);
@@ -114,7 +115,7 @@ export function createGameWorld(game) {
   }
 
   async function wildDuel() {
-    const setup = makeWildSetup(game, def.area, wildTableFor(def), rareChanceAt(game.state, def, player.x, player.y));
+    const setup = makeWildSetup(game, def.area, wildTableFor(def), starChance(star, player.x, player.y));
     if (def.arena) setup.arena = def.arena; // eigene Arena, etwa die Höhle
     const report = await runDuel(setup, 'wild');
     await backToWorld(report);
@@ -357,6 +358,11 @@ export function createGameWorld(game) {
       await reveal(game);
     };
     for (let floor = 1; ; floor++) {
+      if (refillBefore(floor)) {
+        c.energy = maxEnergy(c);
+        game.save();
+        if (floor > 1) await say(game, [tr('tower.beacon', { name: displayName(c) })]);
+      }
       await say(game, [tr('tower.floor', { n: floor })]);
       const report = await runDuel(ascentSetup(game.pack.data, floor, game.rng), 'wild');
       if (report.outcome !== 'won') {
@@ -368,11 +374,6 @@ export function createGameWorld(game) {
         return;
       }
       await back();
-      if (refillAfter(floor)) {
-        c.energy = maxEnergy(c);
-        game.save();
-        await say(game, [tr('tower.beacon', { name: displayName(c) })]);
-      }
       const pick = await choose(game, tr('tower.end', { n: floor, best: progress().stats.floor }), [tr('tower.next'), tr('tower.down')], { cancelIndex: 1 });
       if (pick !== 0) return;
     }
@@ -447,18 +448,19 @@ export function createGameWorld(game) {
     if (o?.type === 'npc' && o.id === 'morrow') {
       world.turnToward(o, OPPOSITE[player.dir]);
       await say(game, worldLines(def, o, 'lines'), { speaker: o.name });
-      if (!rememberAvailable(game.state, game.pack.data)) {
-        await say(game, [tr('remember.notYet')], { speaker: o.name });
+      const block = rememberBlock(game.state, game.pack.data);
+      if (block) {
+        await say(game, [tr(block)], { speaker: o.name });
         world.resetFacing(o);
         return true;
       }
       const setup = rememberSetup(game.pack.data, packProgress(game.state, shortId()));
-      const ask = setup.rematch ? tr('remember.offer', { stage: setup.rematch }) : tr('remember.offerFirst');
+      const ask = setup.rematch ? tr('remember.offer', { stage: setup.rematch, max: CONFIG.rematch.maxTier }) : tr('remember.offerFirst');
       const pick = await choose(game, ask, [tr('remember.yes'), tr('rematch.later')], { cancelIndex: 1 });
       world.resetFacing(o);
       if (pick !== 0) return true;
       const report = await runDuel(setup, 'trainer');
-      await backToWorld(report);
+      await backToWorld(report, setup);
       return true;
     }
     if (o?.type === 'npc' && o.id === 'ilvy' && def.cave) {
@@ -696,8 +698,8 @@ export function createGameWorld(game) {
         const offer = rematchOffer(packProgress(game.state, shortId()), trainerNumber);
         if (offer) {
           const name = packTrainer().name;
-          if (offer.max) await say(game, [tr('rematch.max')], { speaker: name });
-          const pick = await choose(game, tr('rematch.offer', { stage: offer.stage }), [tr('rematch.yes'), tr('rematch.later')], { cancelIndex: 1 });
+          const ask = rematchQuestion(offer);
+          const pick = await choose(game, tr(ask.key, ask.params), [tr('rematch.yes'), tr('rematch.later')], { cancelIndex: 1 });
           if (pick === 0) {
             const setup = rematchSetup(game.pack.data, trainerNumber, offer.stage);
             await say(game, setup.trainer.lines.hello, { speaker: name });

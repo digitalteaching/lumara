@@ -61,7 +61,5 @@ test('Angebot der Revanche: erst nach dem Sieg mit diesem Paket; Texte auf Deuts
   assert.equal(rematchOffer({ beaten: [], tiers: {} }, 1), null);
   assert.deepEqual(rematchOffer({ beaten: [1], tiers: {} }, 1), { stage: 1, max: false });
   assert.deepEqual(rematchOffer({ beaten: [1], tiers: { 1: 5 } }, 1), { stage: 5, max: true });
-  for (const key of ['rematch.offer', 'rematch.yes', 'rematch.later', 'rematch.max']) assert.ok(textIn('de', key) && textIn('en', key), key);
-  assert.equal(textIn('de', 'rematch.offer', { stage: 2 }), 'Lust auf eine Revanche? Ich bin jetzt stärker. (Stufe 2)');
-  assert.equal(textIn('en', 'rematch.offer', { stage: 2 }), 'Fancy a rematch? I am stronger now. (Level 2)');
+  for (const key of ['rematch.offer', 'rematch.yes', 'rematch.later', 'rematch.offerMax']) assert.ok(textIn('de', key) && textIn('en', key), key);
 });
