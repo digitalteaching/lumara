@@ -60,6 +60,7 @@ export const CONFIG = deepFreeze({
   world: { builtAreas: 8 }, // Gebiete, die diese Spielfassung schon hat (Nebelrand, Design 17)
   save: { autosaveMs: 30000 },
   bag: { foodMax: 10, foodMaxBag: 20 }, // mit Futterbeutel 20 (Design 8.1)
+  quests: { xp: 50 }, // Belohnung für einen erledigten Auftrag (Design 5.6)
   food: { berry: 2, berryPieks: 4, bushRegrowMs: 300000, wildDropChance: 0.2, pieksFindChance: 0.5, maxFeedPerDuel: 2 },
   // tableTimed und rewardsTimed gelten ab Gebiet time.fromArea, wo Trainer Zeitdruck haben (Zeitstein).
   finds: { stepChance: 1 / 150, respawnMs: 600000, table: { farsight: 3, shine: 2, life: 1 }, tableTimed: { farsight: 3, shine: 2, life: 1, time: 3 } },
