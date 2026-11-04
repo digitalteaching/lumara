@@ -11,6 +11,7 @@ import { BUCHT } from './world/maps/bucht.js';
 import { emptyBag, addItem } from './items/bag.js';
 import { lootRolls } from './items/food.js';
 import { t } from './i18n/i18n.js';
+import { finishFinale } from './world/finale.js';
 
 export function emptyWorld() {
   return { bushes: {}, notes: {}, finds: {} };
@@ -131,6 +132,9 @@ export function applyDuelResult(state, shortId, setup, summary, rng = null) {
     if (setup.kind === 'boss') {
       if (progress.boss) report.xp = 0;
       progress.boss = true;
+      // Das Endduell im Berg: Das Finale steht im selben Speichern wie der Sieg, samt Platz am
+      // Leuchtturm. Wer die App gleich nach dem Sieg schließt, muss Morrow nicht noch einmal besiegen.
+      if (!setup.remember && finishFinale(state)) state.position = { map: 'bucht', ...BUCHT.respawn };
     }
     // Ein eingesetzter Glanzstein verdoppelt die XP des nächsten Siegs (nach dem Makellos-Bonus).
     if (state.shineActive && report.xp > 0) {

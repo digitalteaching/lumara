@@ -8,7 +8,7 @@ import { bossSetup, foeStageForPhase } from '../duel/boss.js';
 import { stageForLevel, maxEnergy } from '../duel/progress.js';
 import { speciesName, displayName, wildName, nameAtStage, evolutionLines, AREA_WILD, TRAINER_CREATURES } from '../data/species.js';
 import { drawEvolution, evolutionAt } from '../gfx/evolution.js';
-import { ownEnergyShown } from '../duel/plates.js';
+import { ownEnergyShown, creatureAlpha, foeEnergyShown } from '../duel/plates.js';
 import { creatureRows } from '../gfx/art/creatures.js';
 import { spriteFrom, whiteOf } from '../gfx/canvasSprites.js';
 import { drawArena, ARENA } from '../gfx/arena.js';
@@ -122,12 +122,15 @@ export function createDuelScene(game, setup, onEnd) {
   let foeKey = `creature:${setup.foe.species}:${setup.foe.stage}${shiny ? ':glanz' : ''}`;
   // Endgegner (Design 7.4): In jeder Phase eine andere Gestalt, sanft übergeblendet.
   let morph = null; // { start, rows, key }: die alte Gestalt, die ausblendet
+  let phaseHold = false; // Balken leer zeigen, bis die neue Gestalt da ist
   const MORPH_MS = 900;
   function nextForm() {
     morph = game.reducedMotion ? null : { start: t, rows: foeRows, key: foeKey };
     const st = foeStageForPhase(duel.phase);
     foeRows = creatureRows(setup.foe.species, st);
     foeKey = `creature:${setup.foe.species}:${st}`;
+    phaseHold = false;
+    updatePlates();
   }
 
   let t = 0;
@@ -141,7 +144,7 @@ export function createDuelScene(game, setup, onEnd) {
     plates.foe.name.textContent = foeName;
     plates.foe.lv.textContent = `Lv ${setup.foe.level}`;
     if (shiny && !plates.foe.extra.firstChild) plates.foe.extra.append(el('span', { class: 'shiny-mark' }, tr('duel.shinyMark')));
-    setBar(plates.foe.bar, duel.foeEnergy, duel.foeMax);
+    setBar(plates.foe.bar, foeEnergyShown(duel, phaseHold), duel.foeMax);
     plates.own.name.textContent = nameAtStage(c, shownStage);
     plates.own.lv.textContent = `Lv ${c.level}`;
     const own = ownEnergyShown(duel, c, over);
@@ -347,6 +350,7 @@ export function createDuelScene(game, setup, onEnd) {
       }
       const r = duel.answer(action.response);
       if (!r) continue;
+      phaseHold = r.phaseCleared;
       await showResult(r, action.response, ctx);
       updatePlates();
       if (r.phaseCleared && alive) {
@@ -357,7 +361,7 @@ export function createDuelScene(game, setup, onEnd) {
     if (alive) await end();
   }
 
-  function drawCreature(ctx, rows, key, base, flip, who) {
+  function drawCreature(ctx, rows, key, base, flip, who, fade = 1) {
     const img = spriteFrom(key, rows, { flip });
     const size = rows.length;
     const a = anim[who];
@@ -370,8 +374,7 @@ export function createDuelScene(game, setup, onEnd) {
     if (!game.reducedMotion && hp >= 0 && hp < 1) dx -= Math.round(2 * (1 - hp)) * dir;
     const x = base.x - size / 2 + dx;
     const y = base.y - size + 3 + dy;
-    let alpha = 1;
-    if (a.faint !== null) alpha = Math.max(0, 1 - (t - a.faint) / 600);
+    const alpha = creatureAlpha(a.faint, t, fade);
     ctx.globalAlpha = alpha;
     ctx.drawImage(img, x, y);
     if (hp >= 0 && hp < 1) {
@@ -419,14 +422,8 @@ export function createDuelScene(game, setup, onEnd) {
       drawArena(ctx, setup.arena ?? setup.area, t, game.reducedMotion);
       if (morph && t - morph.start < MORPH_MS) {
         const p = (t - morph.start) / MORPH_MS;
-        ctx.save();
-        ctx.globalAlpha = 1 - p;
-        drawCreature(ctx, morph.rows, morph.key, ARENA.foe, true, 'foe');
-        ctx.restore();
-        ctx.save();
-        ctx.globalAlpha = p;
-        drawCreature(ctx, foeRows, foeKey, ARENA.foe, true, 'foe');
-        ctx.restore();
+        drawCreature(ctx, morph.rows, morph.key, ARENA.foe, true, 'foe', 1 - p);
+        drawCreature(ctx, foeRows, foeKey, ARENA.foe, true, 'foe', p);
       } else {
         morph = null;
         drawCreature(ctx, foeRows, foeKey, ARENA.foe, true, 'foe');

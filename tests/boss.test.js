@@ -8,6 +8,7 @@ import { timerFor } from '../js/duel/timing.js';
 import { newGameState, applyDuelResult, packProgress } from '../js/state.js';
 import { CONFIG } from '../js/config.js';
 import { q } from './helpers/fixtures.js';
+import { creatureAlpha, foeEnergyShown } from '../js/duel/plates.js';
 
 const deckOf = qs => {
   let i = 0;
@@ -97,4 +98,20 @@ test('Erster Sieg gegen Morrow mit einem Paket: 500 XP und „Endgegner besiegt�
   assert.equal(packProgress(s, 'ENQ9').boss, true);
   assert.equal(applyDuelResult(s, 'ENQ9', setup, won).xp, 0);
   assert.equal(applyDuelResult(s, 'MATH', setup, won).xp, 500); // anderes Paket: erster Sieg
+});
+
+test('Gestaltwechsel: Die Deckkraft eines Bildes ist das Überblenden mal das Erschöpfen', () => {
+  assert.equal(creatureAlpha(null, 0, 0.3), 0.3);
+  assert.equal(creatureAlpha(null, 0), 1);
+  assert.equal(creatureAlpha(100, 400, 0.5), 0.25);
+  assert.equal(creatureAlpha(0, 1000, 1), 0);
+});
+
+test('Beim letzten Treffer einer Phase zeigt der Balken leer, bis die neue Gestalt da ist', () => {
+  const d = boss();
+  const rs = play(d, 'ccccc'); // Schaden 1, 1, 2 (Volltreffer), 1, 1: Phase 1 ist leer, Phase 2 voll
+  assert.equal(rs[4].phaseCleared, true);
+  assert.equal(d.foeEnergy, 6);
+  assert.equal(foeEnergyShown(d, true), 0);
+  assert.equal(foeEnergyShown(d, false), d.foeEnergy);
 });

@@ -1,6 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { finaleDone, finishFinale } from '../js/world/finale.js';
+import { finaleDone, finishFinale, withFinale } from '../js/world/finale.js';
+import { applyDuelResult } from '../js/state.js';
+import { MAPS } from '../js/world/network.js';
 import { resolveStart } from '../js/world/network.js';
 import { BUCHT } from '../js/world/maps/bucht.js';
 import { HOEHLE2 } from '../js/world/maps/hoehle2.js';
@@ -42,4 +44,27 @@ test('Die Texte des Endduells und des Finales gibt es auf Deutsch und Englisch',
   }
   assert.deepEqual([DE['boss.hello'].length, EN['boss.hello'].length, DE['finale.after'].length, EN['finale.after'].length], [3, 3, 3, 3]);
   assert.ok(textIn('de', 'finale.sayName').includes('Morrow'));
+});
+
+test('Der Sieg über Morrow speichert das Finale gleich mit, samt Platz am Leuchtturm', () => {
+  const s = { ...s0(), position: { map: 'hoehle3', x: 8, y: 4, dir: 'up' } };
+  const setup = { kind: 'boss', area: 8, arena: 'cave', foe: { species: 'morrow', level: 50, maxEnergy: 6, phases: 3 }, pool: [] };
+  applyDuelResult(s, 'ENQ9', setup, { outcome: 'won', playerEnergy: 3, flawless: false, answers: [] });
+  assert.equal(finaleDone(s), true);
+  assert.deepEqual(s.position, { map: 'bucht', ...BUCHT.respawn });
+  const lost = { ...s0(), position: { map: 'hoehle3', x: 8, y: 4, dir: 'up' } };
+  applyDuelResult(lost, 'ENQ9', setup, { outcome: 'lost', playerEnergy: 0, flawless: false, answers: [] });
+  assert.equal(finaleDone(lost), false);
+  assert.equal(lost.position.map, 'hoehle3');
+});
+
+test('Nach dem Finale ist auch der Zier-Nebel neben dem Tor der Bucht fort', () => {
+  const fogCells = def => def.rows.flatMap((r, y) => [...r].map((c, x) => (def.legend[c] === 'fog' && !(def.gates ?? []).some(g => x >= g.x && x < g.x + g.w && y >= g.y && y < g.y + g.h) ? [x, y] : null)).filter(Boolean));
+  const s = s0();
+  assert.equal(fogCells(withFinale(MAPS.bucht, s)).length, 18);
+  s.finale.done = true;
+  const after = withFinale(MAPS.bucht, s);
+  assert.deepEqual(fogCells(after), []);
+  assert.equal(after.rows[0][15], 'T');
+  assert.equal(after.rows[0][18], MAPS.bucht.rows[0][18], 'das Tor selbst bleibt, wie es ist');
 });
