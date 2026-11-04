@@ -87,3 +87,31 @@ test('Das Schlagzeug ist nicht lauter als die Melodie (ruhig genug für das Lern
   // Weißes Rauschen mit der Spitze a hat einen Effektivwert von a/√3, ein Rechteck einen von a.
   for (const [kind, d] of Object.entries(DRUM)) assert.ok(d.level / Math.sqrt(3) <= VOICE.sq1[1], `${kind}: ${d.level}`);
 });
+
+test('Tonstimmen enthalten keine Schlagzeugzeichen, die Rauschstimme nur Schlagzeug', () => {
+  for (const [id, song] of Object.entries(SONGS)) {
+    for (const [voice, text] of Object.entries(song.voices)) {
+      const tokens = text.split(/[\s|]+/).filter(Boolean).map(tok => tok.split('/')[0]);
+      if (voice === 'noise') assert.ok(tokens.every(w => ['k', 's', 'h', '-'].includes(w)), `${id}.${voice}`);
+      else assert.ok(tokens.every(w => !['k', 's', 'h'].includes(w)), `${id}.${voice}`);
+    }
+  }
+});
+
+const src = p => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
+test('Ton in Szenen: Tippen ohne e.key, Abbrechen klingt anders, Probefrage stumm, Nebel später, Aufstieg durchgehend', () => {
+  const panel = src('js/ui/duelPanel.js');
+  assert.ok(panel.includes("addEventListener('input'") && panel.includes("insertText"), 'Tipp-Ton über das input-Ereignis');
+  assert.ok(!panel.includes('e.key.length'), 'kein e.key.length (Bildschirmtastatur)');
+  const dialog = src('js/ui/dialog.js');
+  assert.match(dialog, /sound\('menu'\)/, 'Abbrechen mit B klingt nach Menü');
+  const main = src('js/main.js');
+  const probe = main.slice(main.indexOf('async function probeStart'));
+  assert.ok(probe.includes('setMusicOn(false)') && probe.includes('setSfxOn(false)'), 'Probefrage stumm');
+  const beacon = src('js/scenes/beacon.js');
+  assert.ok(!/jingle\('beacon'\);\s*sound\('fog'\);/.test(beacon), 'Nebel-Ton nicht gleich am Anfang');
+  const events = src('js/scenes/worldEvents.js');
+  assert.match(events, /async function foundStone[\s\S]{0,200}jingle\('find'\)/, 'Stein im Gras mit Fund-Jingle');
+  assert.match(events, /async function levelUps[\s\S]{0,400}jingle\('levelup'\)[\s\S]{0,300}jingle\('evolution'\)/, 'Level und Entwicklung außerhalb des Duells');
+  assert.match(events, /climbing \? 'ascent'/, 'Aufstiegsmusik bleibt zwischen den Etagen');
+});

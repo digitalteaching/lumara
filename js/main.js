@@ -167,6 +167,9 @@ async function devDuel(kind) {
 // Probefrage im Rahmen der Seite für Lehrkräfte (Design 12.3). Wirkt auf jedem Host, speichert nie.
 async function probeStart() {
   game.probe = true;
+  // Die Probefrage läuft auf der Seite der Lehrkraft, oft am Beamer: ohne Musik und Effekte.
+  game.audio.setMusicOn(false);
+  game.audio.setSfxOn(false);
   if (window.parent === window) {
     game.panel.append(el('div', { class: 'box screen-card' }, el('p', {}, 'Diese Ansicht gehört zur Seite für Lehrkräfte.')));
     return;

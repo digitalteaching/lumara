@@ -33,6 +33,7 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
   let sfxOverride = null;
   const isMusicOn = () => musicOverride ?? cfg().music !== false;
   const isSfxOn = () => sfxOverride ?? cfg().sfx !== false;
+  const anyOn = () => isMusicOn() || isSfxOn();
   const cache = {};
   const parsed = id => (cache[id] ??= parseSong(songs[id]));
 
@@ -83,7 +84,7 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
   // Ton geweckt (iOS lässt ihn erst bei einer echten Berührung laufen, oder nach einem Anruf).
   function unlock() {
     if (ctx) {
-      if (!running()) quiet(ctx.resume?.());
+      if (!running() && anyOn()) quiet(ctx.resume?.());
       return;
     }
     try {
@@ -107,7 +108,8 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
       schedule: (voice, ev, when) => (voice === 'noise' ? synth.drum(ev.drum, when) : synth.note(voice, ev.freq, when, ev.dur)),
     });
     setTimer(() => seq.tick(), 25);
-    quiet(ctx.resume?.());
+    if (anyOn()) quiet(ctx.resume?.());
+    else quiet(ctx.suspend?.());
     startWanted();
   }
 
@@ -122,6 +124,7 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
     seq?.stop();
     if (ctx) cut();
     playing = null;
+    jingle = false;
   }
 
   // Ein Jingle unterbricht die Schleife; danach beginnt sie von vorn.
@@ -143,8 +146,16 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
     playSfx(synth, id, ctx.currentTime + 0.01);
   }
 
+  // Sind Musik und Effekte beide aus, schläft der Ton (spart Akku); ist eines wieder an, wacht er auf.
+  function sleepOrWake() {
+    if (!ctx) return;
+    if (!anyOn()) quiet(ctx.suspend?.());
+    else if (!running()) quiet(ctx.resume?.());
+  }
+
   function setMusicOn(on) {
     musicOverride = on;
+    sleepOrWake();
     if (!ctx) return;
     setLevel(gains.music, on ? MUSIC_LEVEL : 0);
     if (on) startWanted();
@@ -158,6 +169,7 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
 
   function setSfxOn(on) {
     sfxOverride = on;
+    sleepOrWake();
   }
 
   // Ist die App verdeckt, pausiert der Ton (spart Akku); sichtbar läuft er weiter.
@@ -165,7 +177,7 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
     quiet(ctx?.suspend?.());
   }
   function resume() {
-    quiet(ctx?.resume?.());
+    if (anyOn()) quiet(ctx?.resume?.());
   }
 
   const state = () => ({ unlocked: !!ctx, running: ctx?.state === 'running', playing, jingle, plays, musicOn: isMusicOn(), sfxOn: isSfxOn() });

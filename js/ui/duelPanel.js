@@ -52,8 +52,9 @@ function typingForm(p, onSubmit) {
     inputmode: 'text',
     'aria-label': tr('duel.answerLabel'),
   });
-  input.addEventListener('keydown', e => {
-    if (e.key.length === 1) sound('type');
+  // Ein Zeichen kam dazu (auch über Bildschirmtastaturen, die kein e.key melden).
+  input.addEventListener('input', e => {
+    if (e.inputType === 'insertText') sound('type');
   });
   const hint = el('p', { class: 'answer-hint' });
   const submit = el('button', { class: 'btn primary', type: 'submit' }, tr('duel.check'));

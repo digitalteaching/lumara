@@ -74,9 +74,11 @@ export function createGameWorld(game) {
   const { map, player } = world;
   // Musik nach Ort (Design 15): beim Betreten und nach jedem Duell wieder die Musik der Karte.
   const enterWorld = world.enter;
+  // Während des Leuchtturm-Aufstiegs bleibt die Aufstiegsmusik zwischen den Etagen.
+  let climbing = false;
   world.enter = () => {
     enterWorld();
-    musicTo(musicFor(def));
+    musicTo(climbing ? 'ascent' : musicFor(def));
   };
   const { trainerNumber } = areaConfig(def);
   const counter = createEncounterCounter(game.rng);
@@ -271,6 +273,7 @@ export function createGameWorld(game) {
   async function foundStone(item) {
     if (item == null) return; // eine leere Fundstelle bringt nichts
     game.save();
+    jingle('find');
     await say(game, [STONE_LINES[item](displayName(game.state.creature))]);
   }
 
@@ -348,8 +351,10 @@ export function createGameWorld(game) {
   async function levelUps(levelBefore) {
     const c = game.state.creature;
     const from = stageForLevel(levelBefore), to = stageForLevel(c.level);
+    if (c.level > levelBefore) jingle('levelup');
     for (let lvl = levelBefore + 1; lvl <= c.level; lvl++) await say(game, [tr('duel.levelUp', { name: nameAtStage(c, from), level: lvl })]);
     if (to > from) {
+      jingle('evolution');
       await playEvolution(game, world, { species: c.species, from, to });
       await say(game, evolutionLines(c, from, to));
     }
@@ -359,6 +364,16 @@ export function createGameWorld(game) {
   // Etage für Etage ein Duell; dazwischen steht man vor der Tür und wählt weiter oder hinunter.
   // Keine Energie zurück, außer nach jeder fünften Etage. Eine Niederlage beendet den Aufstieg.
   async function climbTower() {
+    climbing = true;
+    try {
+      await climbFloors();
+    } finally {
+      climbing = false;
+      musicTo(musicFor(def));
+    }
+  }
+
+  async function climbFloors() {
     const c = game.state.creature;
     const progress = () => packProgress(game.state, shortId());
     const back = async () => {

@@ -135,16 +135,18 @@ export function choose(game, prompt, options, { cancelIndex = options.length - 1
       game.input.on('a', () => {
         if (!fresh.isFresh()) pick(selected);
       }),
-      game.input.on('b', () => pick(cancelIndex)),
+      game.input.on('b', () => pick(cancelIndex, 'back')),
     ];
 
     let done = false;
-    const cancel = () => pick(cancelIndex);
+    const cancel = () => pick(cancelIndex, 'close');
     active.add(cancel);
-    function pick(i) {
+    // how: 'pick' (gewählt), 'back' (B: klingt nach Menü) oder 'close' (das Spiel schließt, still).
+    function pick(i, how = 'pick') {
       if (done) return;
       done = true;
-      sound('confirm');
+      if (how === 'pick') sound('confirm');
+      else if (how === 'back') sound('menu');
       active.delete(cancel);
       offs.forEach(off => off());
       box.remove();

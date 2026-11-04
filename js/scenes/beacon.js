@@ -9,7 +9,6 @@ const T = 16;
 
 export function playBeaconScene(game, world, number) {
   jingle('beacon');
-  sound('fog');
   return new Promise(resolve => {
     const map = world.map;
     const def = map.def;
@@ -31,8 +30,14 @@ export function playBeaconScene(game, world, number) {
     world.refreshFog();
 
     let t = 0;
+    let fogSounded = false;
     const tick = dt => {
       t += dt;
+      // Der Nebel-Ton kommt, wenn der Nebel wirklich zu weichen beginnt (bei 35 % der Szene).
+      if (!fogSounded && t >= ms * 0.35) {
+        fogSounded = true;
+        sound('fog');
+      }
       if (t < ms) return;
       world.onTick.splice(world.onTick.indexOf(tick), 1);
       world.afterRender.splice(world.afterRender.indexOf(draw), 1);

@@ -181,3 +181,44 @@ test('Nach einem Wechsel verklingt das alte Stück sofort, das neue hat einen ei
   later.forEach(f => f());
   assert.equal(old.connected, false, 'der alte Ausgang wird danach getrennt');
 });
+
+test('stopMusic während eines Jingles sperrt die Musik nicht', () => {
+  const { audio, tick } = recorded('running');
+  audio.unlock();
+  audio.music('a');
+  tick(0.01);
+  audio.jingle('win');
+  audio.stopMusic();
+  assert.equal(audio.state().jingle, false);
+  audio.music('b');
+  tick(0.02);
+  assert.equal(audio.state().playing, 'b');
+});
+
+test('Musik und Effekte aus: der Ton schläft (Akku); eines wieder an: er wacht auf', () => {
+  const settings = { music: true, sfx: true };
+  const { ctx, audio } = recorded('running', settings);
+  let suspends = 0;
+  ctx.suspend = () => { suspends++; ctx.state = 'suspended'; return Promise.resolve(); };
+  audio.unlock();
+  audio.setMusicOn(false);
+  assert.equal(suspends, 0);
+  audio.setSfxOn(false);
+  assert.equal(suspends, 1);
+  const r = ctx.resumes;
+  audio.resume(); // App wieder sichtbar: bleibt still, weil beides aus ist
+  assert.equal(ctx.resumes, r);
+  audio.setSfxOn(true);
+  assert.equal(ctx.resumes, r + 1);
+});
+
+test('Jingles bleiben bei Musik aus still; Effekte vor dem Entsperren still', () => {
+  const off = recorded('running', { music: false, sfx: true });
+  off.audio.unlock();
+  off.audio.jingle('win');
+  off.tick(0.1);
+  assert.equal(off.ctx.started.length, 0);
+  const early = recorded('running');
+  early.audio.sfx('menu');
+  assert.equal(early.ctx.started.length, 0);
+});
