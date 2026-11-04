@@ -9,6 +9,7 @@ const CACHE = `lumara-${VERSION}`;
 const FILES = [
   "index.html",
   "lehrkraft.html",
+  "anleitung.html",
   "manifest.webmanifest",
   "version.json",
   "pakete/vorlage.txt",
