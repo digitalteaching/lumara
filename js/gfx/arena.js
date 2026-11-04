@@ -337,11 +337,43 @@ function drawMeadowArena(ctx, t = 0, reducedMotion = false) {
   ctx.fillRect(ARENA.own.x + 12, ARENA.own.y - 5, 1, 1);
 }
 
+// Die Höhle im Berg (Plan 5a): dunkler Fels, Kristalle, die langsam glimmen, Plattformen aus Stein.
+function drawCaveArena(ctx, t = 0, reducedMotion = false) {
+  ctx.fillStyle = '#1b1a2e';
+  ctx.fillRect(0, 0, 240, 160);
+  ctx.fillStyle = '#2b2d4a';
+  for (let x = 0; x < 240; x += 30) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x + 15, 18 + ((x / 30) % 3) * 6);
+    ctx.lineTo(x + 30, 0);
+    ctx.fill();
+  }
+  ctx.fillStyle = '#46496e';
+  ctx.fillRect(0, 56, 240, 104);
+  ctx.fillStyle = '#2b2d4a';
+  for (let i = 0; i < 50; i++) ctx.fillRect((i * 47) % 240, 58 + ((i * 31) % 100), 2, 1);
+  // Kristalle an der Wand; sie glimmen langsam (bei „Bewegung reduzieren“ ruhig)
+  const glow = reducedMotion ? 0.6 : 0.45 + 0.25 * Math.sin(t / 900);
+  for (const [x, h, c] of [[18, 22, '#c49ad9'], [64, 16, '#a7dde8'], [120, 26, '#c49ad9'], [170, 18, '#ffe08a'], [214, 24, '#a7dde8']]) {
+    ctx.globalAlpha = glow;
+    ctx.fillStyle = c;
+    ctx.beginPath();
+    ctx.moveTo(x, 56);
+    ctx.lineTo(x + 5, 56 - h);
+    ctx.lineTo(x + 10, 56);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+  oval(ctx, ARENA.foe.x, ARENA.foe.y, 30, 6, '#6b6f94', '#1b1a2e');
+  oval(ctx, ARENA.own.x, ARENA.own.y, 34, 7, '#6b6f94', '#1b1a2e');
+}
+
 // Hintergrund passend zum Gebiet (Design 7.1). Gebiete ohne eigene Arena nehmen die Bucht.
 // Bei „Bewegung reduzieren“ steht jede Arena still.
 export const ARENAS = {
   2: drawForestArena, 3: drawMoorArena, 4: drawDuneArena, 5: drawCliffArena,
-  6: drawRuinArena, 7: drawLakeArena, 8: drawMeadowArena,
+  6: drawRuinArena, 7: drawLakeArena, 8: drawMeadowArena, cave: drawCaveArena,
 };
 export function drawArena(ctx, area, t = 0, reducedMotion = false) {
   (ARENAS[area] ?? drawBayArena)(ctx, t, reducedMotion);

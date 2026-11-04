@@ -468,6 +468,21 @@ const icepillar = (() => {
   return toRows(g);
 })();
 
+// Höhle im Berg (Plan 5a): dunkler Fels, Kristallmoos als hohes Gras, Treppen und stilles Wasser
+const cavefloor = speckled('d', 131, [['n', 0.12], ['s', 0.06], ['V', 0.008]]);
+const cavewall = speckled('n', 133, [['k', 0.2], ['d', 0.1], ['v', 0.012]]);
+const crystalmoss = lean => retint(tallGrass(lean), { l: 'd', g: 'v', G: 'V', F: 'n' });
+function stairs(down) {
+  const g = grid(16, 16, 'd');
+  for (let i = 0; i < 4; i++) {
+    const shade = down ? ['s', 'd', 'n', 'k'][i] : ['m', 's', 's', 'd'][i];
+    for (let y = i * 4; y < i * 4 + 4; y++) for (let x = 1; x < 15; x++) g[y][x] = y === i * 4 ? 'm' : shade;
+  }
+  for (let y = 0; y < 16; y++) { g[y][0] = 'k'; g[y][15] = 'k'; }
+  return toRows(g);
+}
+const cavewater = shift => retint(water(shift), { S: 'D', L: 'S', A: 'L', D: 'n' });
+
 // Sternwarte (Plan 4d): Tor zur Kuppel aus Bronzestäben mit einem Stern in der Mitte
 const domegate = (() => {
   const g = grid(16, 16, 'n');
@@ -561,6 +576,12 @@ export const TILES = {
   icewall: [icewall],
   icepillar: [icepillar],
   domegate: [domegate],
+  cavefloor: [cavefloor],
+  cavewall: [cavewall],
+  crystalmoss: [crystalmoss(false), crystalmoss(true)],
+  stairsdown: [stairs(true)],
+  stairsup: [stairs(false)],
+  cavewater: [cavewater(0), cavewater(5)],
 };
 
 // ---------- Gebäude ----------
@@ -1038,6 +1059,37 @@ function starPlaque() {
   return g.map(r => r.join(''));
 }
 
+// Höhle (Plan 5a): ein Echokristall (summt alte Sätze), der warme Kristall (füllt die Energie auf)
+// und Morrow als Nebelgestalt in der unteren Ebene (16 × 24).
+function caveCrystal(colors) {
+  const [light, mid, dark] = colors;
+  const g = Array.from({ length: 20 }, () => Array(16).fill('.'));
+  const spike = (cx, top, half, bottom) => {
+    for (let y = top; y <= bottom; y++) {
+      const w = Math.min(half, Math.floor((y - top) / 2));
+      for (let x = cx - w; x <= cx + w; x++) g[y][x] = x === cx - w || x === cx + w ? 'k' : x < cx ? light : x === cx ? mid : dark;
+    }
+    g[top][cx] = 'k';
+  };
+  spike(4, 9, 2, 18);
+  spike(11, 7, 2, 18);
+  spike(8, 2, 3, 18);
+  for (let x = 2; x < 14; x++) g[19][x] = 'k';
+  return g.map(r => r.join(''));
+}
+
+function morrowMist() {
+  const g = Array.from({ length: 24 }, () => Array(16).fill('.'));
+  for (let y = 0; y < 24; y++) for (let x = 0; x < 16; x++) {
+    const head = ((x - 8) / 6) ** 2 + ((y - 8) / 6) ** 2 <= 1;
+    const body = y >= 10 && y <= 22 && Math.abs(x - 7.5) <= 3 + (y - 10) / 3;
+    if (head || body) g[y][x] = y > 18 ? 'f' : (x + y) % 5 === 0 ? 'V' : 'm';
+  }
+  for (const [x, y] of [[6, 7], [10, 7]]) { g[y][x] = 'H'; g[y][x + 1] = 'H'; g[y + 1][x] = 'h'; g[y + 1][x + 1] = 'w'; }
+  for (const [x, y] of [[1, 3], [14, 5], [2, 15], [13, 13], [8, 0]]) g[y][x] = 'H';
+  return g.map(r => r.join(''));
+}
+
 function glassTower() {
   const g = grid(16, 48, '.');
   for (let y = 0; y < 10; y++) {
@@ -1118,6 +1170,9 @@ export const PROPS = {
   stargear2: starGear(2),
   stargear3: starGear(3),
   starplaque: starPlaque(),
+  echocrystal: caveCrystal(['V', 'v', 'P']),
+  warmcrystal: caveCrystal(['H', 'h', 'r']),
+  morrowmist: morrowMist(),
   sign: [
     '................',
     '................',

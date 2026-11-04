@@ -402,7 +402,7 @@ export function createDuelScene(game, setup, onEnd) {
       else panel.setTime(duel.timeLeft, duel.timeLimit, duel.frozen);
     },
     render(ctx) {
-      drawArena(ctx, setup.area, t, game.reducedMotion);
+      drawArena(ctx, setup.arena ?? setup.area, t, game.reducedMotion);
       drawCreature(ctx, foeRows, foeKey, ARENA.foe, true, 'foe');
       const fs = (t - anim.foeSparkle) / 1200;
       if (fs >= 0 && fs < 1) {

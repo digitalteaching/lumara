@@ -650,6 +650,86 @@ function zeitschnecke() {
   return done(g);
 }
 
+// ---------- Die Höhle (Plan 5a) ----------
+
+// Echomaus: eine kleine Maus mit großen Ohren, die jedes Geräusch leise wiederholt.
+function echomaus() {
+  const g = canvas(32);
+  poly(g, [[2, 25], [9, 21], [10, 23], [3, 28]], ['m', 's', 'd']); // Schwanz
+  poly(g, [[10, 25], [13, 25], [13, 29], [10, 29]], ['m', 's', 'd']); // Füße
+  poly(g, [[17, 25], [20, 25], [20, 29], [17, 29]], ['m', 's', 'd']);
+  ellipse(g, 14, 22, 7, 5, ['f', 'm', 's']); // Körper
+  ellipse(g, 22, 17, 5, 4.5, ['f', 'm', 's']); // Kopf
+  ellipse(g, 17, 9, 4, 5.5, ['R', 'p', 's']); // Ohren
+  ellipse(g, 25, 8, 4, 5.5, ['R', 'p', 's']);
+  outline(g);
+  eye(g, 23, 15, 2, 2);
+  dots(g, [[27, 18, 'R'], [26, 19, 'k'], [17, 10, 'R'], [25, 9, 'R'], [12, 20, 'w'], [21, 14, 'w'],
+    [30, 6, 'A'], [31, 8, 'A'], [30, 10, 'A'], [13, 2, 'A'], [11, 4, 'A']]);
+  return done(g);
+}
+
+// Kristallraupe: eine Raupe mit bunten Kristallen auf dem Rücken.
+function kristallraupe() {
+  const g = canvas(32);
+  for (const [x, y] of [[5, 23], [10, 22], [15, 21], [20, 21]]) ellipse(g, x, y, 3.5, 3.5, ['G', 'g', 'l']); // Körperringe
+  ellipse(g, 25.5, 19, 4.5, 4.5, ['G', 'g', 'l']); // Kopf
+  poly(g, [[3, 20], [5, 13], [7, 20]], ['w', 'A', 'L']); // Kristalle
+  poly(g, [[8, 19], [10, 11], [12, 19]], ['V', 'v', 'P']);
+  poly(g, [[13, 18], [15, 12], [17, 18]], ['H', 'h', 'r']);
+  poly(g, [[18, 18], [20, 13], [22, 18]], ['w', 'A', 'L']);
+  outline(g);
+  eye(g, 26, 17, 2, 2);
+  dots(g, [[29, 20, 'k'], [28, 21, 'k'], [27, 13, 'k'], [28, 12, 'k'], [5, 27, 'k'], [10, 26, 'k'], [15, 25, 'k'], [20, 25, 'k'],
+    [5, 16, 'w'], [10, 14, 'w'], [15, 15, 'w'], [20, 15, 'w'], [24, 21, 'R']]);
+  return done(g);
+}
+
+// Morrow, Phase 3 und im Buch: ein kleines Wesen aus Nebel und Sternenstaub.
+function morrow1() {
+  const g = canvas(32);
+  ellipse(g, 8, 25, 5, 3, ['f', 'm', 's']); // Nebelschweif
+  ellipse(g, 4, 28, 3, 2, ['f', 'm', 's']);
+  ellipse(g, 17, 19, 9, 8, ['w', 'f', 'V']); // Körper aus Nebel
+  ellipse(g, 22, 11, 4, 3, ['w', 'f', 'V']); // Wölkchen auf dem Kopf
+  ellipse(g, 12, 12, 3, 2.5, ['w', 'f', 'V']);
+  outline(g, 'd');
+  eye(g, 18, 16, 2, 3);
+  eye(g, 23, 16, 2, 3);
+  dots(g, [[21, 21, 'k'], [22, 22, 'k'], [23, 21, 'k'], [16, 20, 'R'], [25, 20, 'R'],
+    [10, 18, 'H'], [14, 24, 'H'], [20, 25, 'H'], [9, 22, 'w'], [26, 6, 'H'], [8, 7, 'H'], [29, 13, 'H']]);
+  return done(g);
+}
+
+// Morrow, Phase 2: ein Schwarm aus Echos, viele kleine Nebelwesen.
+function morrow2() {
+  const g = canvas(40);
+  const blobs = [[21, 20, 8], [9, 11, 5], [32, 10, 5], [8, 30, 4.5], [33, 30, 4.5], [20, 35, 4]];
+  for (const [x, y, r] of blobs) ellipse(g, x, y, r, r * 0.85, ['f', 'V', 'v']);
+  outline(g, 'n');
+  for (const [x, y, r] of blobs.slice(1)) eye(g, Math.round(x), Math.round(y - r * 0.3), 1, 2);
+  eye(g, 22, 17, 2, 3);
+  eye(g, 27, 17, 2, 3);
+  dots(g, [[25, 23, 'k'], [24, 24, 'k'], [26, 24, 'k'], [15, 21, 'w'], [6, 9, 'w'], [29, 8, 'w'],
+    [2, 20, 'm'], [3, 21, 'm'], [38, 20, 'm'], [37, 19, 'm'], [20, 4, 'm'], [21, 3, 'm']]);
+  return done(g);
+}
+
+// Morrow, Phase 1: ein Riese aus Nebel mit leuchtenden Augen.
+function morrow3() {
+  const g = canvas(48);
+  poly(g, [[7, 46], [14, 22], [34, 22], [42, 46]], ['m', 's', 'd']); // Nebelleib
+  poly(g, [[13, 24], [2, 35], [6, 39], [16, 30]], ['m', 's', 'd']); // Arme
+  poly(g, [[35, 24], [46, 32], [42, 37], [32, 30]], ['m', 's', 'd']);
+  ellipse(g, 25, 16, 11, 10, ['m', 's', 'd']); // Kopf
+  ellipse(g, 24, 42, 15, 5, ['f', 'm', 's']); // Nebelsaum
+  outline(g, 'n');
+  for (const [x, y] of [[26, 13], [32, 13]]) dots(g, [[x, y, 'H'], [x + 1, y, 'H'], [x + 2, y, 'H'], [x, y + 1, 'h'], [x + 1, y + 1, 'w'], [x + 2, y + 1, 'h']]);
+  dots(g, [[28, 20, 'n'], [29, 20, 'n'], [30, 20, 'n'], [31, 20, 'n'], [18, 12, 'f'], [17, 14, 'f'], [12, 33, 'f'], [36, 36, 'f'],
+    [20, 30, 'f'], [27, 34, 'f'], [5, 36, 'f'], [44, 33, 'f']]);
+  return done(g);
+}
+
 // ---------- Gebiet 1 ----------
 
 function gischtling() {
@@ -1268,6 +1348,9 @@ export const CREATURE_ART = {
   irrlichtfee: { 1: irrlichtfee() },
   kristallotter: { 1: kristallotter() },
   zeitschnecke: { 1: zeitschnecke() },
+  echomaus: { 1: echomaus() },
+  kristallraupe: { 1: kristallraupe() },
+  morrow: { 1: morrow1(), 2: morrow2(), 3: morrow3() },
 };
 
 // Höchste vorhandene Stufe ≤ der gewünschten: Wilde Arten haben ein oder zwei Stufen.

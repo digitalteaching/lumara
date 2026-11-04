@@ -11,7 +11,7 @@ test('Das Buch hat 33 Plätze: 1 bis 24 die wilden Arten nach Gebiet, 25 bis 33 
   assert.equal(BOOK_SLOTS.length, 33);
   assert.deepEqual(BOOK_SLOTS.slice(0, 24), [1, 2, 3, 4, 5, 6, 7, 8].flatMap(a => [...AREA_WILD[a].common, AREA_WILD[a].rare]));
   assert.deepEqual(BOOK_SLOTS.slice(24, 30), ['wurzelgeist', 'prismalibelle', 'perlkrabbe', 'irrlichtfee', 'kristallotter', 'zeitschnecke']); // geheime Orte ab Platz 25
-  assert.deepEqual(BOOK_SLOTS.slice(30), Array(3).fill(null));
+  assert.deepEqual(BOOK_SLOTS.slice(30), ['echomaus', 'kristallraupe', 'morrow']);
 });
 
 test('Eintragen: erst gesehen, dann besiegt und Glanz, nichts wird zurückgenommen', () => {
@@ -34,7 +34,7 @@ test('Ansicht: Zähler, Zustand, und Name, Fundort, Beschreibung erst, wenn man 
   assert.deepEqual(v.entries[0], { number: 1, id: 'gischtling', status: 'beaten', shiny: false, name: 'Gischtling', place: 'Leuchtturmbucht', description: SPECIES.gischtling.description });
   assert.deepEqual(v.entries[5], { number: 6, id: 'rindenwicht', status: 'seen', shiny: true, name: 'Rindenwicht', place: 'Flüsterwald', description: null });
   assert.deepEqual(v.entries[1], { number: 2, id: 'haeuschel', status: 'unknown', shiny: false, name: null, place: null, description: null });
-  assert.deepEqual(v.entries[32], { number: 33, id: null, status: 'unknown', shiny: false, name: null, place: null, description: null });
+  assert.deepEqual(v.entries[32], { number: 33, id: 'morrow', status: 'unknown', shiny: false, name: null, place: null, description: null });
   setLanguage('en');
   try {
     assert.deepEqual([bookView(s).entries[0].name, bookView(s).entries[0].place], ['Sprayling', 'Lighthouse Bay']);

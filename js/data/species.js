@@ -340,10 +340,43 @@ export const SPECIES = {
     names: ['Zeitschnecke'],
     description: 'Eine Schnecke mit einem Haus wie ein Uhrwerk. Sie ist langsam, aber sie kommt nie zu spät.',
   },
+  echomaus: {
+    id: 'echomaus',
+    kind: 'cave',
+    gender: 'f',
+    area: 8,
+    home: 'hoehle1',
+    rarity: 'common',
+    names: ['Echomaus'],
+    description: 'Eine kleine Maus mit großen Ohren. Sie wiederholt jedes Geräusch, das sie hört, ganz leise.',
+  },
+  kristallraupe: {
+    id: 'kristallraupe',
+    kind: 'cave',
+    gender: 'f',
+    area: 8,
+    home: 'hoehle1',
+    rarity: 'rare',
+    names: ['Kristallraupe'],
+    description: 'Eine Raupe, deren Rücken aus bunten Kristallen besteht. Sie frisst nur Steine, die im Dunkeln leuchten.',
+  },
+  morrow: {
+    id: 'morrow',
+    kind: 'boss',
+    gender: 'n',
+    area: 8,
+    home: 'hoehle3',
+    rarity: 'rare',
+    names: ['Morrow', 'Morrow', 'Morrow'],
+    description: 'Ein kleines Wesen aus Nebel und Sternenstaub. Es sammelte die Echos vergessener Wörter, bis jemand seinen Namen sagte.',
+  },
 };
 
 // Die seltenen Arten der geheimen Orte in der Reihenfolge des Wesen-Buchs (Plätze 25 bis 30).
 export const SECRET_SPECIES = ['wurzelgeist', 'prismalibelle', 'perlkrabbe', 'irrlichtfee', 'kristallotter', 'zeitschnecke'];
+// Die Höhle im Berg (Plan 5a): zwei eigene Arten, dazu Morrow, der Endgegner.
+export const CAVE_SPECIES = ['echomaus', 'kristallraupe'];
+export const BOSS_SPECIES = ['morrow'];
 
 export const AREA_WILD = {
   1: { common: ['gischtling', 'haeuschel'], rare: 'glimmqualle' },

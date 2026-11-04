@@ -1,4 +1,5 @@
 import { test } from 'node:test';
+import { SPECIES } from '../js/data/species.js';
 import assert from 'node:assert/strict';
 import { CONFIG } from '../js/config.js';
 import { rollShiny } from '../js/world/encounters.js';
@@ -13,7 +14,7 @@ test('Glanzform: 1 zu 64', () => {
 });
 
 test('Jede Art im Buch sieht als Glanzform deutlich anders aus; Umriss und Leere bleiben', () => {
-  for (const id of BOOK_SLOTS.filter(Boolean)) {
+  for (const id of BOOK_SLOTS.filter(id => id && SPECIES[id].kind !== 'boss')) { // Morrow glänzt nie
     for (const [stage, rows] of Object.entries(CREATURE_ART[id])) {
       const out = shinyRows(rows, id);
       assert.equal(out.length, rows.length);

@@ -2,8 +2,8 @@
 // (Silhouette und Fundort) und „besiegt“ nach dem ersten Sieg (Bild in Farbe und Beschreibung).
 // Eine gesehene Glanzform bekommt einen Stern. Das Buch gehört dem Kind (Design 10.4). DOM-frei.
 
-import { AREA_WILD, SECRET_SPECIES, speciesText } from './species.js';
-import { mapOfArea, areaName } from '../world/network.js';
+import { AREA_WILD, SECRET_SPECIES, CAVE_SPECIES, BOSS_SPECIES, speciesText } from './species.js';
+import { MAPS, mapOfArea, areaName } from '../world/network.js';
 import { t } from '../i18n/i18n.js';
 import { SPECIES } from './species.js';
 
@@ -14,7 +14,9 @@ export const BOOK_SIZE = 33;
 export const BOOK_SLOTS = [
   ...[1, 2, 3, 4, 5, 6, 7, 8].flatMap(a => [...AREA_WILD[a].common, AREA_WILD[a].rare]),
   ...SECRET_SPECIES,
-  ...Array(BOOK_SIZE - 24 - SECRET_SPECIES.length).fill(null),
+  ...CAVE_SPECIES,
+  ...BOSS_SPECIES,
+  ...Array(Math.max(0, BOOK_SIZE - 24 - SECRET_SPECIES.length - CAVE_SPECIES.length - BOSS_SPECIES.length)).fill(null),
 ];
 const IN_BOOK = new Set(BOOK_SLOTS.filter(Boolean));
 
@@ -33,7 +35,8 @@ export function bookView(state) {
     const e = id ? book[id] : null;
     const status = !e ? 'unknown' : e.beaten ? 'beaten' : 'seen';
     const text = e ? speciesText(id) : null;
-    const place = e ? mapOfArea(SPECIES[id].area) : null;
+    // Fundort: die eigene Karte der Art (etwa die Höhle), sonst die Karte ihres Gebiets.
+    const place = e ? (MAPS[SPECIES[id].home] ?? mapOfArea(SPECIES[id].area)) : null;
     return {
       number: i + 1,
       id,
