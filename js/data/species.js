@@ -331,10 +331,19 @@ export const SPECIES = {
     names: ['Kristallotter'],
     description: 'Ein Otter mit Fell wie Raureif. Auf seinem Rücken wachsen kleine Eiskristalle, die im Nordlicht funkeln.',
   },
+  zeitschnecke: {
+    id: 'zeitschnecke',
+    kind: 'secret',
+    gender: 'f',
+    area: 6,
+    rarity: 'rare',
+    names: ['Zeitschnecke'],
+    description: 'Eine Schnecke mit einem Haus wie ein Uhrwerk. Sie ist langsam, aber sie kommt nie zu spät.',
+  },
 };
 
 // Die seltenen Arten der geheimen Orte in der Reihenfolge des Wesen-Buchs (Plätze 25 bis 30).
-export const SECRET_SPECIES = ['wurzelgeist', 'prismalibelle', 'perlkrabbe', 'irrlichtfee', 'kristallotter'];
+export const SECRET_SPECIES = ['wurzelgeist', 'prismalibelle', 'perlkrabbe', 'irrlichtfee', 'kristallotter', 'zeitschnecke'];
 
 export const AREA_WILD = {
   1: { common: ['gischtling', 'haeuschel'], rare: 'glimmqualle' },

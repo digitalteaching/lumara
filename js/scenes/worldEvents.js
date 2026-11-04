@@ -7,6 +7,7 @@ import { createDuelScene, makeWildSetup, makeTrainerSetup } from './duel.js';
 import { playTransition, reveal } from './transition.js';
 import { createEncounterCounter, wildTableFor } from '../world/encounters.js';
 import { secretOpen, takeSecretStory, takeSecretStone } from '../world/secrets.js';
+import { turnGear, gearsOf } from '../world/puzzles.js';
 import { SECRET_PLACES } from '../data/secrets.js';
 import { trainerSees } from '../world/map.js';
 import { fogEdgeLines, fogSignLines, fogSignFor } from '../world/fogEdge.js';
@@ -367,6 +368,39 @@ export function createGameWorld(game) {
     } else {
       await say(game, [tr('secret.knownStory')]);
     }
+    return true;
+  });
+
+  // Zahnrad-Rätsel der Sternwarte: A dreht ein Rad eine Vierteldrehung weiter, der Satz nennt die
+  // Stellung. Stehen alle wie auf der Sternkarte, öffnet sich das Tor zur Kuppel sofort.
+  world.propVariant.gear = o => `stargear${gearsOf(game.state, def.secret)[o.index]}`;
+  world.propVariant.gearhint = () => 'starplaque';
+  const openPuzzleGates = () => {
+    const open = openGatesFor(def, game.state, game.pack.data);
+    for (const g of def.gates ?? []) {
+      if (!g.afterPuzzle || !open.includes(g.id)) continue;
+      for (let y = g.y; y < g.y + g.h; y++) for (let x = g.x; x < g.x + g.w; x++) world.map.setTile(x, y, g.ground);
+    }
+    world.refreshFog();
+  };
+  world.onInteract.unshift(async ev => {
+    const o = ev.target;
+    if (o?.type === 'gearhint') {
+      const goal = SECRET_PLACES[def.secret]?.gears ?? [];
+      const dir = i => tr(`gear.dir.${goal[i]}`);
+      await say(game, [tr('gear.hint1'), tr('gear.hint2', { a: dir(0) }), tr('gear.hint3', { b: dir(1), c: dir(2) })]);
+      return true;
+    }
+    if (o?.type !== 'gear') return false;
+    const turned = turnGear(game.state, def.secret, o.index);
+    if (!turned) return false;
+    game.save();
+    const lines = [tr('gear.turned', { n: o.index + 1, dir: tr(`gear.dir.${turned.dir}`) })];
+    if (turned.solvedNow) {
+      openPuzzleGates();
+      lines.push(tr('gear.solved'));
+    }
+    await say(game, lines);
     return true;
   });
 

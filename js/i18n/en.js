@@ -380,4 +380,9 @@ export const EN = {
   'gear.dir.1': 'right',
   'gear.dir.2': 'down',
   'gear.dir.3': 'left',
+  'gear.turned': 'Gear {n}: The star points {dir}.',
+  'gear.solved': 'With a deep click, the dome opens!',
+  'gear.hint1': 'Next to the gears hangs a plaque with three star pictures. You compare it with the star map.',
+  'gear.hint2': 'On the star map, the star of the first gear points {a}.',
+  'gear.hint3': 'For the second it points {b}, for the third {c}.',
 };

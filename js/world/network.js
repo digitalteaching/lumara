@@ -16,11 +16,13 @@ import { GLASTURM } from './maps/glasturm.js';
 import { GEZEITEN } from './maps/gezeiten.js';
 import { IRRLICHT } from './maps/irrlicht.js';
 import { EISGROTTE } from './maps/eisgrotte.js';
+import { STERNWARTE } from './maps/sternwarte.js';
+import { puzzleSolved } from './puzzles.js';
 import { language, mark } from '../i18n/i18n.js';
 import { EN_WORLD } from '../i18n/en-world.js';
 
 // Die Gebiete, dahinter die geheimen Orte (secret: eigene kleine Karten, Design 5.7).
-export const MAPS = { bucht: BUCHT, wald: WALD, moor: MOOR, duenen: DUENEN, klippen: KLIPPEN, ruinen: RUINEN, see: SEE, wiese: WIESE, eiche: EICHE, glasturm: GLASTURM, gezeiten: GEZEITEN, irrlicht: IRRLICHT, eisgrotte: EISGROTTE };
+export const MAPS = { bucht: BUCHT, wald: WALD, moor: MOOR, duenen: DUENEN, klippen: KLIPPEN, ruinen: RUINEN, see: SEE, wiese: WIESE, eiche: EICHE, glasturm: GLASTURM, gezeiten: GEZEITEN, irrlicht: IRRLICHT, eisgrotte: EISGROTTE, sternwarte: STERNWARTE };
 
 const hasTrainer = (pack, n) => pack.trainers.some(t => t.number === n);
 
@@ -35,9 +37,12 @@ export function areaOpen(state, pack, area) {
 
 // Ein Tor mit afterStone öffnet sich erst, wenn auch dieser Stein leuchtet (der Pfad zwischen
 // Sternenwiese und Bucht nach dem Sieg über Trainer 8, Design 5.2).
+// Ein Tor mit afterPuzzle (die Kuppel der Sternwarte) öffnet sich, sobald das Rätsel des Ortes gelöst ist.
 export function openGatesFor(def, state, pack) {
   return (def.gates ?? [])
-    .filter(g => areaOpen(state, pack, g.leadsTo) && (g.afterStone == null || state.stones.includes(g.afterStone)))
+    .filter(g => (g.afterPuzzle
+      ? puzzleSolved(state, g.afterPuzzle)
+      : areaOpen(state, pack, g.leadsTo) && (g.afterStone == null || state.stones.includes(g.afterStone))))
     .map(g => g.id);
 }
 

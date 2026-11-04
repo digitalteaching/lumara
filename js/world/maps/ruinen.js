@@ -51,6 +51,13 @@ export const RUINEN = {
     '%': 'fog',
   },
   objects: [
+    // Geheimer Ort (Design 5.7): die Sternentafel am Kanal, mit der Sternkarte hinüber zur Sternwarte
+    {
+      type: 'secret', id: 'tafel-sternwarte', place: 'sternwarte', prop: 'starplaque', x: 28, y: 7,
+      to: { map: 'sternwarte', x: 9, y: 10, dir: 'up' },
+      lines: ['Eine Tafel aus Stein mit Sternbildern. Hinter dem Kanal wartet die Sternwarte.', 'Wer eine Sternkarte hätte, könnte die Tafel lesen.'],
+      linesOpen: ['Du hältst die Sternkarte an die Tafel. Die Sterne darauf leuchten auf.', 'Eine schmale Brücke schiebt sich über den Kanal.'],
+    },
     { type: 'beacon', number: 6, x: 33, y: 22 },
     {
       type: 'trainer', number: 6, x: 18, y: 15, dir: 'left', sight: 4, sprite: 'trainer6',
@@ -92,7 +99,7 @@ export const RUINEN = {
     { type: 'deco', id: 'zahnrad-nord-3', x: 21, y: 3, prop: 'gear', anim: true },
     { type: 'deco', id: 'zahnrad-ost', x: 36, y: 12, prop: 'gear', anim: true },
     { type: 'deco', id: 'zahnrad-sued', x: 27, y: 26, prop: 'gear', anim: true },
-    // Die Sternwarte auf ihrer Insel: zu sehen, aber noch nicht erreichbar (Plan 4)
+    // Die Sternwarte hinter dem Kanal: mit der Sternkarte über die Tafel am Kanal erreichbar
     { type: 'deco', id: 'sternwarte', x: 33, y: 6, prop: 'observatory' },
 
     { type: 'notestone', id: 'zettel-nord', x: 20, y: 6 },

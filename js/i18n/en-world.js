@@ -21,6 +21,7 @@ export const EN_WORLD = {
     gezeiten: { name: 'Tide Island', of: 'of Tide Island', the: 'Tide Island' },
     irrlicht: { name: 'Wisp Island', of: 'of Wisp Island', the: 'Wisp Island' },
     eisgrotte: { name: 'Ice Cave', of: 'of the Ice Cave', the: 'the Ice Cave' },
+    sternwarte: { name: 'Observatory', of: 'of the Observatory', the: 'the Observatory' },
   },
 
   objects: {
@@ -243,6 +244,10 @@ export const EN_WORLD = {
     },
 
     ruinen: {
+      'tafel-sternwarte': {
+        lines: ['A stone plaque with star pictures. The observatory waits behind the canal.', 'Someone with a star map could read the plaque.'],
+        linesOpen: ['You hold the star map up to the plaque. The stars on it light up.', 'A narrow bridge slides out across the canal.'],
+      },
       trainer: { afterWin: 'Your light stone is shining. Can you hear it? All the cogs tick in time again.' },
       greta: {
         lines: [

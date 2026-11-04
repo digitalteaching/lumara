@@ -468,6 +468,20 @@ const icepillar = (() => {
   return toRows(g);
 })();
 
+// Sternwarte (Plan 4d): Tor zur Kuppel aus Bronzestäben mit einem Stern in der Mitte
+const domegate = (() => {
+  const g = grid(16, 16, 'n');
+  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) {
+    if (y === 0 || y === 15) g[y][x] = 'k';
+    else if (y === 1 || y === 14) g[y][x] = 'r';
+    else if (x % 4 === 1) g[y][x] = 'h';
+    else if (x % 4 === 2) g[y][x] = 'r';
+  }
+  for (const [x, y] of [[7, 5], [8, 5], [6, 7], [7, 7], [8, 7], [9, 7], [7, 6], [8, 6], [7, 8], [8, 8], [7, 9], [8, 9], [6, 6], [9, 6]]) g[y][x] = 'H';
+  g[7][7] = 'w';
+  return toRows(g);
+})();
+
 // Felder ohne eigenen Boden, unter die der Boden der Umgebung gezeichnet wird
 export const OVERLAY_TILES = new Set(['rock', 'fortree', 'mushroom', 'glowshroom', 'spire', 'snowpine', 'nightrock']);
 
@@ -546,6 +560,7 @@ export const TILES = {
   slideice: [slideice()],
   icewall: [icewall],
   icepillar: [icepillar],
+  domegate: [domegate],
 };
 
 // ---------- Gebäude ----------
@@ -998,6 +1013,31 @@ function iceCrystal(read) {
   return g.map(r => r.join(''));
 }
 
+// Zahnrad der Sternwarte (16 × 16): wie die Räder der Ruinen, mit einem Zeiger und einem hellen Stern,
+// der nach oben (0), rechts (1), unten (2) oder links (3) zeigt.
+function starGear(dir) {
+  const up = gear(0).slice(0, 16).map(r => [...r]);
+  // Blauer Zeiger und weißblauer Stern, damit die Stellung sich deutlich vom Gold abhebt
+  for (let y = 4; y <= 6; y++) for (const x of [7, 8]) up[y][x] = 'D'; // Zeiger
+  for (const [x, y] of [[7, 1], [8, 1], [7, 2], [8, 2]]) up[y][x] = 'w'; // Stern
+  for (const [x, y] of [[7, 0], [8, 0], [5, 1], [6, 1], [5, 2], [6, 2], [9, 1], [10, 1], [9, 2], [10, 2], [7, 3], [8, 3]]) up[y][x] = 'L';
+  for (const [x, y] of [[4, 1], [4, 2], [11, 1], [11, 2], [5, 0], [6, 0], [9, 0], [10, 0], [5, 3], [6, 3], [9, 3], [10, 3]]) up[y][x] = 'D';
+  const at = [(x, y) => up[y][x], (x, y) => up[15 - x][y], (x, y) => up[15 - y][15 - x], (x, y) => up[x][15 - y]][dir];
+  return Array.from({ length: 16 }, (_, y) => Array.from({ length: 16 }, (_, x) => at(x, y)).join(''));
+}
+
+// Eine Tafel aus Stein mit Sternbildern (Eingang der Sternwarte und Hinweis neben den Rädern).
+function starPlaque() {
+  const g = Array.from({ length: 16 }, () => Array(16).fill('.'));
+  for (let y = 2; y < 15; y++) for (let x = 2; x < 14; x++) {
+    g[y][x] = y === 2 || y === 14 || x === 2 || x === 13 ? 'k' : y > 11 ? 's' : 'D';
+  }
+  for (const [x, y] of [[4, 4], [7, 5], [10, 4], [5, 8], [9, 9], [11, 7]]) g[y][x] = 'H';
+  for (const [x, y] of [[5, 4], [6, 5], [8, 5], [9, 4], [5, 7], [6, 6], [7, 8], [8, 9], [10, 8], [11, 8]]) g[y][x] = 'L';
+  g[15][3] = 'k'; g[15][12] = 'k';
+  return g.map(r => r.join(''));
+}
+
 function glassTower() {
   const g = grid(16, 48, '.');
   for (let y = 0; y < 10; y++) {
@@ -1073,6 +1113,11 @@ export const PROPS = {
   iceedge: iceEdge(),
   icecrystal: iceCrystal(false),
   icecrystalDone: iceCrystal(true),
+  stargear0: starGear(0),
+  stargear1: starGear(1),
+  stargear2: starGear(2),
+  stargear3: starGear(3),
+  starplaque: starPlaque(),
   sign: [
     '................',
     '................',

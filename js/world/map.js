@@ -11,7 +11,7 @@ export const BLOCKED = new Set([
   'water', 'tree', 'rock', 'fence', 'fog', 'cliff', 'fortree', 'mushroom',
   'bog', 'glowshroom', 'dune', 'mirage', 'clouds', 'spire',
   'canal', 'ruinwall', 'icewater', 'snowpine', 'nightrock', 'nightcliff', 'nightstone',
-  'rootwall', 'glasswall', 'tidepool', 'icewall', 'icepillar',
+  'rootwall', 'glasswall', 'tidepool', 'icewall', 'icepillar', 'domegate',
 ]);
 // Hohes Gras, in dem wilde Wesen und Steine warten: Farn im Wald, Schilf im Moor, Dünengras, Windgras,
 // Efeu in den Ruinen, Schneegras am See und Sternengras auf der Wiese.

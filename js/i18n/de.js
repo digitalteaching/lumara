@@ -380,4 +380,9 @@ export const DE = {
   'gear.dir.1': 'rechts',
   'gear.dir.2': 'unten',
   'gear.dir.3': 'links',
+  'gear.turned': 'Zahnrad {n}: Der Stern zeigt nach {dir}.',
+  'gear.solved': 'Mit einem tiefen Klicken öffnet sich die Kuppel!',
+  'gear.hint1': 'Neben den Rädern hängt eine Tafel mit drei Sternbildern. Du vergleichst sie mit der Sternkarte.',
+  'gear.hint2': 'Auf der Sternkarte zeigt der Stern beim ersten Rad nach {a}.',
+  'gear.hint3': 'Beim zweiten zeigt er nach {b}, beim dritten nach {c}.',
 };

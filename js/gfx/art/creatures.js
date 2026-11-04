@@ -632,6 +632,24 @@ function kristallotter() {
   return done(g);
 }
 
+// Zeitschnecke: eine Schnecke mit einem Haus wie ein Uhrwerk (Sternwarte).
+function zeitschnecke() {
+  const g = canvas(32);
+  poly(g, [[3, 27], [24, 27], [29, 24], [25, 21], [5, 24]], ['T', 'g', 'l']); // Fuß
+  ellipse(g, 26, 18, 3.5, 5, ['T', 'g', 'l']); // Kopf
+  ellipse(g, 24.5, 10, 0.8, 3.5, ['g', 'g', 'l']); // Fühler
+  ellipse(g, 28.5, 10, 0.8, 3.5, ['g', 'g', 'l']);
+  ellipse(g, 13, 16, 9, 9, ['H', 'h', 'r']); // Uhrwerkhaus
+  ellipse(g, 13, 16, 5.5, 5.5, ['c', 'Y', 'y']); // Zifferblatt
+  outline(g);
+  eye(g, 24, 6, 2, 2);
+  eye(g, 28, 6, 2, 2);
+  dots(g, [[13, 12, 'k'], [13, 13, 'k'], [13, 14, 'k'], [13, 15, 'k'], [14, 16, 'k'], [15, 16, 'k'], [16, 16, 'k'], [13, 16, 'e'],
+    [13, 11, 'b'], [18, 16, 'b'], [13, 21, 'b'], [8, 16, 'b'], [6, 9, 'w'], [7, 8, 'w'], [20, 9, 'r'], [21, 13, 'r'],
+    [29, 21, 'k'], [27, 21, 'R'], [10, 26, 'G'], [18, 26, 'G']]);
+  return done(g);
+}
+
 // ---------- Gebiet 1 ----------
 
 function gischtling() {
@@ -1249,6 +1267,7 @@ export const CREATURE_ART = {
   perlkrabbe: { 1: perlkrabbe() },
   irrlichtfee: { 1: irrlichtfee() },
   kristallotter: { 1: kristallotter() },
+  zeitschnecke: { 1: zeitschnecke() },
 };
 
 // Höchste vorhandene Stufe ≤ der gewünschten: Wilde Arten haben ein oder zwei Stufen.
