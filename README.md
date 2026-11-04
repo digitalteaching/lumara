@@ -4,7 +4,7 @@
 
 Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, erkundet eine geheimnisvolle Insel unter einem Nebel des Vergessens und besteht Duelle mit Aufgaben aus dem Unterricht. Dafür bekommt es Punkte, und sein Wesen entwickelt sich weiter. Die Inhalte kommen aus einem Lernpaket, einer Textdatei, die die Lehrkraft selbst schreibt. Dadurch funktioniert das Spiel in jedem Fach. Das erste Beispielpaket ist für Jahrgang 6 Englisch.
 
-**Status:** Plan 1, Plan 2, Plan 3a, Plan 3b, Plan 3c, Plan 4a, Plan 4b, Plan 4c, Plan 4d, Plan 5a, Plan 5b und Plan 6 sind gebaut (Spielfassung 0.12.0).
+**Status:** Plan 1, Plan 2, Plan 3a, Plan 3b, Plan 3c, Plan 4a, Plan 4b, Plan 4c, Plan 4d, Plan 5a, Plan 5b, Plan 6 und Plan 7 sind gebaut (Spielfassung 0.13.0).
 
 - **Plan 1**, spielbarer Kern:
   - Leuchtturmbucht, Lernpaket, fünf Startwesen
@@ -42,7 +42,7 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
   - Mit `ZEITDRUCK: aus` gibt es keine Zeitsteine, und nach einem Zeitstein ist Füttern gesperrt.
 - **Plan 4a**, die Spielsprache (Design 10.6):
   - Ist das Lernpaket für Englisch, ist das ganze Spiel auf Englisch: Oberfläche, Duelle, Bewohner, Schilder, Geschichte und die Namen der Gebiete und Wesen. Jedes andere Paket läuft auf Deutsch.
-  - Die Sprache kommt aus `SPIELSPRACHE:` oder, ohne diese Zeile, aus `FACH:`. Französisch und Spanisch erkennt das Spiel schon; sie kommen in einem späteren Plan und laufen bis dahin auf Deutsch.
+  - Die Sprache kommt aus `SPIELSPRACHE:` oder, ohne diese Zeile, aus `FACH:`. Das Spiel kann Deutsch, Englisch, Französisch und Spanisch.
   - Auf Deutsch bleibt alles für die Lehrkraft: `lehrkraft.html`, die Seite „Für die Lehrkraft“ im Spiel und die Fehlerliste beim Laden eines Pakets.
 - **Plan 4b**, Entwicklungen und Wesen-Buch:
   - Die fünf Startwesen haben Bilder für alle vier Stufen (32, 40, 48 und 64 Pixel).
@@ -83,8 +83,12 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
   - Effekte für Menü, Bestätigen, richtig, falsch, Treffer, Volltreffer, Kärtchen, Tippen, Stein anheben, Übergang und Nebel.
   - Unter Einstellungen → Ton lassen sich Musik und Effekte getrennt ausschalten. Die Musik startet leise und erst nach der ersten Berührung (iOS).
   - Spielstand-Format 8 (`settings.music`, `settings.sfx`).
+- **Plan 7**, Französisch und Spanisch:
+  - Ist das Lernpaket für Französisch oder Spanisch, läuft das ganze Spiel in dieser Sprache, auf A1: Oberfläche, Duelle, Bewohner, Schilder, Geschichte und Aufträge.
+  - Gebiete und Wesen haben eigene, kindgerechte Namen (etwa Baie du Phare, Bosque Susurrante, Coquillou, Espumín). Bewohner und Morrow behalten ihre Namen; alles für die Lehrkraft bleibt Deutsch.
+  - Beim Eintippen zählen ¿ und ¡ nicht, « » gilt wie " ".
 
-Französisch und Spanisch kommen mit dem nächsten Plan.
+Der Abschluss (KI-Prompt, Anleitung, Vorlage, offline, iPad) kommt mit dem nächsten Plan.
 
 - Design: [docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md](docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md)
 - Bauplan 1: [docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md](docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md)
@@ -99,6 +103,7 @@ Französisch und Spanisch kommen mit dem nächsten Plan.
 - Bauplan 5a: [docs/superpowers/plans/2026-11-04-lumara-plan-5a-hoehle-morrow.md](docs/superpowers/plans/2026-11-04-lumara-plan-5a-hoehle-morrow.md)
 - Bauplan 5b: [docs/superpowers/plans/2026-11-04-lumara-plan-5b-revanchen-aufstieg.md](docs/superpowers/plans/2026-11-04-lumara-plan-5b-revanchen-aufstieg.md)
 - Bauplan 6: [docs/superpowers/plans/2026-11-04-lumara-plan-6-musik-ton.md](docs/superpowers/plans/2026-11-04-lumara-plan-6-musik-ton.md)
+- Bauplan 7: [docs/superpowers/plans/2026-11-04-lumara-plan-7-sprachen.md](docs/superpowers/plans/2026-11-04-lumara-plan-7-sprachen.md)
 - Frühere Ideensammlung: [docs/2026-10-17-zwischenstand-ideensammlung.md](docs/2026-10-17-zwischenstand-ideensammlung.md)
 
 ## Für Lehrkräfte

@@ -29,7 +29,8 @@
 # SPIELSPRACHE: deutsch, englisch, französisch oder spanisch (freiwillig).
 #             Ist das Paket für eine Sprache, ist das ganze Spiel in dieser Sprache, sonst auf
 #             Deutsch. Ohne SPIELSPRACHE entscheidet FACH: Bei „FACH: Englisch“ läuft das Spiel
-#             auf Englisch. Französisch und Spanisch kommen in einer späteren Spielfassung.
+#             auf Englisch, bei „FACH: Französisch“ auf Französisch, bei „FACH: Spanisch“
+#             auf Spanisch.
 
 PAKET:
 KENNUNG: fach-jahrgang-name
