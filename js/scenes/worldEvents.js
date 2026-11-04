@@ -11,7 +11,8 @@ import { turnGear, gearsOf } from '../world/puzzles.js';
 import { SECRET_PLACES } from '../data/secrets.js';
 import { trainerSees } from '../world/map.js';
 import { fogEdgeLines, fogSignLines, fogSignFor } from '../world/fogEdge.js';
-import { caveGateLines, caveSocketLights } from '../world/caveGate.js';
+import { caveGateLines, caveSocketLights, caveOpen, ilvyCaveLines } from '../world/caveGate.js';
+import { withFinale } from '../world/finale.js';
 import { breakName } from '../world/islandMap.js';
 import { MAPS, areaConfig, areaOpen, exitAt, openGatesFor, resolveStart, whisperLine, beaconFront, packWorldKey, worldLines, areaOf } from '../world/network.js';
 import { visitStone, travelTargets, respawnPoint, challengeMark } from '../world/beacons.js';
@@ -59,8 +60,9 @@ function withGuests(base, state) {
 }
 
 export function createGameWorld(game) {
-  // Gäste eines Auftrags (etwa Flo) stehen nur, solange ihr Schritt dran ist.
-  const def = withGuests(MAPS[game.state.position.map] ?? BUCHT, game.state);
+  // Gäste eines Auftrags (etwa Flo) stehen nur, solange ihr Schritt dran ist; Objekte mit when nur
+  // vor oder nach dem Finale (Ilvy in der Höhle, Morrow).
+  const def = withFinale(withGuests(MAPS[game.state.position.map] ?? BUCHT, game.state), game.state);
   const world = createWorldScene(game, def, { openGates: openGatesFor(def, game.state, game.pack.data) });
   const { map, player } = world;
   const { trainerNumber } = areaConfig(def);
@@ -107,7 +109,9 @@ export function createGameWorld(game) {
   }
 
   async function wildDuel() {
-    const report = await runDuel(makeWildSetup(game, def.area, wildTableFor(def)), 'wild');
+    const setup = makeWildSetup(game, def.area, wildTableFor(def));
+    if (def.arena) setup.arena = def.arena; // eigene Arena, etwa die Höhle
+    const report = await runDuel(setup, 'wild');
     await backToWorld(report);
   }
 
@@ -335,6 +339,28 @@ export function createGameWorld(game) {
     }
   }
 
+  // ---------- Höhle (Plan 5a) ----------
+  // Der warme Kristall füllt die Energie auf; Ilvy nennt am Eingang Morrows Namen (Design 5.4).
+  world.propVariant.heal = () => 'warmcrystal';
+  world.propVariant.boss = () => 'morrowmist';
+  world.onInteract.unshift(async ev => {
+    const o = ev.target;
+    if (o?.type === 'heal') {
+      const c = game.state.creature;
+      c.energy = maxEnergy(c);
+      game.save();
+      await say(game, [tr('cave.warm', { name: displayName(c) })]);
+      return true;
+    }
+    if (o?.type === 'npc' && o.id === 'ilvy' && def.cave) {
+      world.turnToward(o, OPPOSITE[player.dir]);
+      await say(game, ilvyCaveLines(game.state), { speaker: o.name });
+      world.resetFacing(o);
+      return true;
+    }
+    return false;
+  });
+
   // ---------- Geheime Orte (Design 5.7) ----------
   // Eingang: nur mit dem Schlüsselgegenstand des Ortes, sonst ein Hinweis (lines). Mit ihm erst
   // linesOpen, dann geht es hinein.
@@ -518,7 +544,9 @@ export function createGameWorld(game) {
   if (caveGate) {
     world.onInteract.unshift(async ev => {
       if (ev.target !== caveGate || player.dir !== 'up' || ev.y !== caveGate.y + caveGate.h - 1) return false;
-      await say(game, caveGateLines(Math.min(8, game.state.stones.length)));
+      const open = caveOpen(game.state, game.pack.data);
+      await say(game, caveGateLines(Math.min(8, game.state.stones.length), { packFull: open }));
+      if (open) await travelTo(game, caveGate.to);
       return true;
     });
     world.afterRender.push((ctx, cam) => {

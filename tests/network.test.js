@@ -43,8 +43,8 @@ test('Ausgänge führen auf begehbare Felder und zurück', () => {
       const open = createMap(target, { openGates: (target.gates ?? []).map(g => g.id) });
       assert.ok(open.canEnter(e.at.x, e.at.y), `${def.id} → ${e.to}`);
       assert.equal(exitAt(target, e.at.x, e.at.y), null, `Ankunft auf einem Ausgang: ${e.to}`);
-      // Zu einem geheimen Ort führt statt eines Ausgangs ein Eingang (type secret) zurück.
-      const back = target.exits.some(b => b.to === def.id) || (def.secret && target.objects.some(o => o.type === 'secret' && o.to?.map === def.id));
+      // Zu einem geheimen Ort führt statt eines Ausgangs ein Eingang (type secret) zurück, in die Höhle das Höhlentor.
+      const back = target.exits.some(b => b.to === def.id) || ((def.secret || def.cave) && target.objects.some(o => o.to?.map === def.id));
       assert.ok(back, `kein Rückweg von ${e.to}`);
       assert.equal(exitAt(def, e.x, e.y), e);
     }

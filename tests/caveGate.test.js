@@ -9,7 +9,7 @@ test('Höhlentor: die Zahl der leuchtenden Fassungen, bei acht „entsteht gerad
   assert.equal(caveGateLines(1)[1], 'Eine davon leuchtet.');
   assert.equal(caveGateLines(5)[1], '5 davon leuchten.');
   assert.equal(caveGateLines(7)[2], 'Vielleicht öffnet es sich, wenn alle acht Leuchtsteine wieder leuchten.');
-  assert.deepEqual(caveGateLines(8), ['Ein großes Tor im Berg mit acht Fassungen.', 'Alle acht leuchten!', 'Hinter dem Tor ist es still. Der Weg hinein entsteht gerade.', 'In einer der nächsten Spielfassungen kannst du hindurch.']);
+  assert.deepEqual(caveGateLines(8), ['Ein großes Tor im Berg mit acht Fassungen.', 'Alle acht Fassungen leuchten. Das Tor öffnet sich, sobald deine Lehrkraft alle acht Themen freigibt.']);
 });
 
 test('Höhlentor: Jeder entzündete Stein lässt seine Fassung in der Farbe seines Rings leuchten', () => {

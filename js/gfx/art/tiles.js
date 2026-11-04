@@ -469,8 +469,8 @@ const icepillar = (() => {
 })();
 
 // Höhle im Berg (Plan 5a): dunkler Fels, Kristallmoos als hohes Gras, Treppen und stilles Wasser
-const cavefloor = speckled('d', 131, [['n', 0.12], ['s', 0.06], ['V', 0.008]]);
-const cavewall = speckled('n', 133, [['k', 0.2], ['d', 0.1], ['v', 0.012]]);
+const cavefloor = speckled('s', 131, [['d', 0.14], ['m', 0.04], ['V', 0.008]]);
+const cavewall = speckled('n', 133, [['k', 0.45], ['d', 0.05], ['v', 0.012]]);
 const crystalmoss = lean => retint(tallGrass(lean), { l: 'd', g: 'v', G: 'V', F: 'n' });
 function stairs(down) {
   const g = grid(16, 16, 'd');

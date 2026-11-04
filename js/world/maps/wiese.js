@@ -76,7 +76,8 @@ export const WIESE = {
       linesLit: ['Alle acht Fassungen? Das muss ich sehen! Meine Schafe kommen auch mit.'],
     },
 
-    { type: 'building', id: 'hoehlentor', x: 7, y: 5, w: 3, h: 3, sprite: 'cavegate', door: { dx: 1, dy: 2 }, onDoor: 'locked' },
+    // Das Höhlentor: offen mit allen acht Steinen und einem Paket mit allen acht Trainern (caveOpen)
+    { type: 'building', id: 'hoehlentor', x: 7, y: 5, w: 3, h: 3, sprite: 'cavegate', door: { dx: 1, dy: 2 }, onDoor: 'locked', to: { map: 'hoehle1', x: 9, y: 13, dir: 'up' } },
 
     { type: 'notestone', id: 'zettel-nord', x: 26, y: 4 },
     { type: 'notestone', id: 'zettel-west', x: 5, y: 19 },

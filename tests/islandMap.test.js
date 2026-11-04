@@ -41,7 +41,7 @@ test('Gebietsnamen trennen an der richtigen Stelle (weicher Trennstrich), etwa â
   assert.equal(breakName('Uhrwerkruinen'), 'Uhrwerk\u00adruinen');
   assert.equal(breakName('Leuchtturmbucht'), 'Leucht\u00adturm\u00adbucht');
   assert.equal(breakName('Hierbleiben'), 'Hierbleiben');
-  for (const d of Object.values(MAPS).filter(m => !m.secret)) {
+  for (const d of Object.values(MAPS).filter(m => !m.secret && !m.cave)) {
     assert.ok(breakName(d.name).includes('\u00ad'), d.name);
     assert.equal(breakName(d.name).replaceAll('\u00ad', ''), d.name);
   }

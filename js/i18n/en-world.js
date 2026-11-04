@@ -22,6 +22,9 @@ export const EN_WORLD = {
     irrlicht: { name: 'Wisp Island', of: 'of Wisp Island', the: 'Wisp Island' },
     eisgrotte: { name: 'Ice Cave', of: 'of the Ice Cave', the: 'the Ice Cave' },
     sternwarte: { name: 'Observatory', of: 'of the Observatory', the: 'the Observatory' },
+    hoehle1: { name: 'Cave in the Mountain', of: 'of the cave', the: 'the cave' },
+    hoehle2: { name: 'Cave in the Mountain', of: 'of the cave', the: 'the cave' },
+    hoehle3: { name: 'Cave in the Mountain', of: 'of the cave', the: 'the cave' },
   },
 
   objects: {
@@ -243,6 +246,17 @@ export const EN_WORLD = {
       },
     },
 
+    hoehle1: {
+      'echo-1': { lines: ['A soft echo sounds from the crystal: “… and then she sang the song of the sea …”'] },
+      'echo-2': { lines: ['A soft echo sounds from the crystal: “… what was it called again? …”'] },
+    },
+    hoehle2: {
+      'echo-3': { lines: ['A soft echo sounds from the crystal: “… don’t forget me …”'] },
+      'echo-4': { lines: ['A soft echo sounds from the crystal: “… tomorrow I will tell you the rest …”'] },
+    },
+    hoehle3: {
+      'morrows-kristall': { lines: ['Morrow used to live here. Now the crystal hums a happy tune.'] },
+    },
     ruinen: {
       'tafel-sternwarte': {
         lines: ['A stone plaque with star pictures. The observatory waits behind the canal.', 'Someone with a star map could read the plaque.'],

@@ -1,0 +1,42 @@
+// Die Höhle im Berg, mittlere Ebene (Plan 5a): ein unterirdischer Bach mit einer Brücke,
+// Kristallmoos und zwei Echokristalle. Links oben die Treppe hinauf, rechts unten hinab.
+
+export const HOEHLE2 = {
+  id: 'hoehle2',
+  name: 'Höhle im Berg',
+  genitive: 'der Höhle',
+  area: 8,
+  cave: 2,
+  arena: 'cave',
+  ground: 'cavefloor',
+  rows: [
+    'WWWWWWWWWWWWWWWWWWWW',
+    'WW^.....,,,,....WWWW',
+    'WW......,,,,,.....WW',
+    'WW...WW..,,,......WW',
+    'WW...WW.......WW..WW',
+    'WW~~~~~~~=~~~~~~~~WW',
+    'WW~~~~~~~=~~~~~~~~WW',
+    'WW................WW',
+    'WW,,,....WW...,,,.WW',
+    'WW,,,,...WW..,,,,.WW',
+    'WW..,,.........,,.WW',
+    'WWW.......WW......WW',
+    'WWWW......WW......WW',
+    'WWWWW............vWW',
+    'WWWWWWWWWWWWWWWWWWWW',
+  ],
+  legend: { W: 'cavewall', '.': 'cavefloor', ',': 'crystalmoss', v: 'stairsdown', '^': 'stairsup', '~': 'cavewater', '=': 'bridgev' },
+  objects: [
+    { type: 'deco', id: 'echo-3', x: 17, y: 4, prop: 'echocrystal', lines: ['Aus dem Kristall klingt ein leises Echo: „… vergiss mich nicht …“'] },
+    { type: 'deco', id: 'echo-4', x: 12, y: 12, prop: 'echocrystal', lines: ['Aus dem Kristall klingt ein leises Echo: „… morgen erzähle ich dir den Rest …“'] },
+  ],
+  wild: { common: ['echomaus'], rare: 'kristallraupe' },
+  exits: [
+    { x: 2, y: 1, w: 1, h: 1, to: 'hoehle1', at: { x: 17, y: 2, dir: 'down' } },
+    { x: 17, y: 13, w: 1, h: 1, to: 'hoehle3', at: { x: 8, y: 10, dir: 'up' } },
+  ],
+  spawn: { x: 2, y: 2, dir: 'down' },
+  respawn: { x: 2, y: 2, dir: 'down' },
+  particles: ['glimmer'],
+};

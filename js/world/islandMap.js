@@ -11,7 +11,7 @@ const LAYOUT = { 1: [2, 5], 2: [1, 4], 3: [1, 3], 4: [1, 2], 5: [2, 1], 6: [3, 2
 const CAVE = { col: 2, row: 3 };
 
 export function islandMap(state, pack) {
-  const defs = Object.values(MAPS).filter(d => !d.secret);
+  const defs = Object.values(MAPS).filter(d => !d.secret && !d.cave);
   const hereArea = MAPS[state.position?.map]?.area ?? null;
   const areas = Object.entries(LAYOUT).map(([key, [col, row]]) => {
     const area = Number(key);
