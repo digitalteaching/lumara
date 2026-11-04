@@ -204,7 +204,7 @@ REVANCHE:
 # ------------------------------------------------------------
 # Morrow, ein einsames Wesen tief im Berg. Hier stehen nur Dialogzeilen,
 # die Fragen kommen gemischt aus allen Themen. Ohne diesen Abschnitt spricht
-# Morrow feste deutsche Texte.
+# Morrow feste Texte in der Spielsprache.
 
 === ENDGEGNER ===
 HALLO:

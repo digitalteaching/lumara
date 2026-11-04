@@ -16,7 +16,7 @@ test('die Version steht überall gleich', () => {
 
 test('der Service Worker speichert genau die Dateien des Spiels', () => {
   const files = JSON.parse(read('sw.js').match(/const FILES = (\[[\s\S]*?\]);/)[1]);
-  const expected = [...walk('js'), ...walk('css'), ...walk('icons'), 'index.html', 'lehrkraft.html', 'manifest.webmanifest', 'version.json', 'pakete/vorlage.txt', 'pakete/englisch-6-beispiel.txt'];
+  const expected = [...walk('js'), ...walk('css'), ...walk('icons'), 'index.html', 'lehrkraft.html', 'manifest.webmanifest', 'version.json', 'pakete/vorlage.txt', 'pakete/englisch-6-beispiel.txt', 'pakete/KI-PROMPT-Lernpaket.md'];
   assert.deepEqual([...files].sort(), expected.sort());
   for (const f of files) assert.ok(existsSync(new URL(f, root)), f);
 });

@@ -13,6 +13,7 @@ const FILES = [
   "version.json",
   "pakete/vorlage.txt",
   "pakete/englisch-6-beispiel.txt",
+  "pakete/KI-PROMPT-Lernpaket.md",
   "css/lehrkraft.css",
   "css/spiel.css",
   "icons/icon-180.png",
