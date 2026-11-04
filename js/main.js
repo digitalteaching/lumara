@@ -100,9 +100,10 @@ const AudioCtor = window.AudioContext || window.webkitAudioContext;
 let bootSettings = null;
 game.audio = createAudio({ makeContext: () => (AudioCtor ? new AudioCtor() : null), settings: () => game.state?.settings ?? bootSettings, songs: SONGS });
 setAudio(game.audio);
+// iOS lässt den Ton erst bei einer echten Berührung laufen (pointerup, touchend, click), nicht schon
+// beim Aufsetzen des Fingers. Jede Eingabe versucht es, bis er läuft.
 const unlockAudio = () => game.audio.unlock();
-window.addEventListener('pointerdown', unlockAudio, { capture: true });
-window.addEventListener('keydown', unlockAudio, { capture: true });
+for (const type of ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown']) window.addEventListener(type, unlockAudio, { capture: true });
 document.addEventListener('visibilitychange', () => (document.hidden ? game.audio.suspend() : game.audio.resume()));
 
 // Spielzeit für die Lehrkraft: jede Eingabe zählt als „das Kind ist dabei“.

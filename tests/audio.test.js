@@ -109,3 +109,75 @@ test('Ohne Web Audio bleibt alles still und wirft keinen Fehler', () => {
   audio.jingle('win');
   assert.equal(audio.state().unlocked, false);
 });
+
+// Ein AudioContext, der mitschreibt, wohin jeder Knoten führt und was mit den Lautstärken passiert.
+function recordingContext(state = 'running') {
+  const param = v => {
+    const p = { value: v, calls: [] };
+    for (const m of ['setValueAtTime', 'linearRampToValueAtTime', 'exponentialRampToValueAtTime', 'setTargetAtTime', 'cancelScheduledValues']) p[m] = (...a) => p.calls.push([m, ...a]);
+    return p;
+  };
+  const node = extra => ({ dest: null, connected: true, connect(d) { this.dest = d; }, disconnect() { this.connected = false; }, ...extra });
+  const ctx = {
+    state,
+    currentTime: 0,
+    sampleRate: 8000,
+    destination: node(),
+    resumes: 0,
+    started: [],
+    gains: [],
+    createOscillator() { const o = node({ type: 'square', frequency: param(440), start() { ctx.started.push(o); }, stop() {} }); return o; },
+    createGain() { const g = node({ gain: param(1) }); ctx.gains.push(g); return g; },
+    createBuffer(ch, len) { return { getChannelData: () => new Float32Array(len) }; },
+    createBufferSource() { const s = node({ buffer: null, playbackRate: param(1), start() { ctx.started.push(s); }, stop() {} }); return s; },
+    resume() { ctx.resumes++; return Promise.resolve(); },
+    suspend() { return Promise.resolve(); },
+  };
+  return ctx;
+}
+const recorded = (state, settings = { music: true, sfx: true }) => {
+  const ctx = recordingContext(state);
+  const ticks = [];
+  const later = [];
+  const audio = createAudio({ makeContext: () => ctx, settings, songs: SONGS, setTimer: fn => ticks.push(fn), later: fn => later.push(fn) });
+  const tick = t => { ctx.currentTime = t; ticks.forEach(f => f()); };
+  return { ctx, audio, tick, later };
+};
+// Der Ausgang, an dem die Hüllkurve eines Tons hängt (Ton → Hüllkurve → Stück → Musik).
+const songOf = src => src.dest?.dest;
+
+test('iPad: Jede weitere Berührung weckt einen schlafenden Ton; solange er schläft, stauen sich keine Effekte', () => {
+  const { ctx, audio } = recorded('suspended');
+  audio.unlock();
+  assert.equal(ctx.resumes, 1);
+  audio.sfx('menu');
+  audio.sfx('confirm');
+  audio.jingle('win');
+  assert.equal(ctx.started.length, 0, 'nichts wird für später aufgestaut');
+  audio.unlock();
+  assert.equal(ctx.resumes, 2, 'die nächste Berührung versucht es wieder');
+  ctx.state = 'running';
+  audio.unlock();
+  assert.equal(ctx.resumes, 2, 'läuft er, passiert nichts');
+  audio.sfx('menu');
+  assert.ok(ctx.started.length > 0);
+});
+
+test('Nach einem Wechsel verklingt das alte Stück sofort, das neue hat einen eigenen Ausgang', () => {
+  const { ctx, audio, tick, later } = recorded('running');
+  audio.unlock();
+  audio.music('a');
+  tick(0.01);
+  const old = songOf(ctx.started[0]);
+  assert.ok(old && old !== ctx.gains[0], 'das Stück hängt nicht direkt an der Gesamtlautstärke');
+  const n = ctx.started.length;
+  tick(0.5);
+  audio.music('b');
+  tick(0.51);
+  const fade = old.gain.calls.find(c => (c[0] === 'setTargetAtTime' || c[0] === 'setValueAtTime') && c[1] === 0);
+  assert.ok(fade && fade[2] <= 0.51 && (fade[0] === 'setValueAtTime' || fade[3] <= 0.05), 'das alte Stück wird sofort leise');
+  const fresh = ctx.started.slice(n).map(songOf).filter(g => g !== old);
+  assert.ok(fresh.length > 0 && fresh.every(g => g === fresh[0]), 'neue Töne laufen über einen neuen Ausgang');
+  later.forEach(f => f());
+  assert.equal(old.connected, false, 'der alte Ausgang wird danach getrennt');
+});

@@ -9,3 +9,8 @@ export const setAudio = audio => {
 export const sound = id => current?.sfx(id);
 export const jingle = id => current?.jingle(id);
 export const musicTo = id => current?.music(id);
+// Sieg oder Niederlage: Die Schleife endet, danach bleibt es still, bis die Welt ihre Musik wünscht.
+export const fanfare = id => {
+  current?.music(null);
+  current?.jingle(id);
+};

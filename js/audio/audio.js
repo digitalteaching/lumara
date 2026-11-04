@@ -10,11 +10,18 @@ import { SFX, playSfx } from './sfx.js';
 export const MUSIC_LEVEL = 0.18; // die Musik startet leise
 export const SFX_LEVEL = 0.35;
 
-export function createAudio({ makeContext, settings = {}, songs = {}, setTimer = (fn, ms) => setInterval(fn, ms) }) {
+// resume() und suspend() geben ein Promise, das abgelehnt werden kann (ohne Berührung): kein Fehler.
+const quiet = p => p?.catch?.(() => {});
+
+export function createAudio({ makeContext, settings = {}, songs = {}, setTimer = (fn, ms) => setInterval(fn, ms), later = (fn, ms) => setTimeout(fn, ms) }) {
   let ctx = null;
   let synth = null;
   let seq = null;
   let gains = null;
+  // Jedes Stück hat einen eigenen Ausgang vor der Musiklautstärke. Beim Wechsel wird er sofort
+  // leise, sonst klängen schon eingeplante Töne (Bordun, lange Bassnoten) noch Sekunden nach.
+  let song = null;
+  const route = { music: null, sfx: null };
   let wanted = null; // gewünschte Schleife (auch vor dem Entsperren)
   let playing = null;
   let jingle = false;
@@ -34,22 +41,51 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
     node.gain.setValueAtTime(value, ctx.currentTime);
   }
 
+  // Läuft der Ton (noch) nicht, etwa auf dem iPad vor der ersten echten Berührung, wird nichts
+  // eingeplant: Die Uhr steht dann, und alles käme später auf einmal.
+  const running = () => !!ctx && (ctx.state === undefined || ctx.state === 'running');
+
+  function cut() {
+    if (!song) return;
+    const old = song;
+    song = null;
+    old.gain.cancelScheduledValues?.(ctx.currentTime);
+    if (old.gain.setTargetAtTime) old.gain.setTargetAtTime(0, ctx.currentTime, 0.015);
+    else old.gain.setValueAtTime(0, ctx.currentTime);
+    later(() => old.disconnect(), 150);
+  }
+
+  function begin(id, opts) {
+    cut();
+    song = ctx.createGain();
+    song.gain.setValueAtTime(1, ctx.currentTime);
+    song.connect(gains.music);
+    route.music = song;
+    seq.play(parsed(id), opts);
+  }
+
   function startWanted() {
     if (!seq) return;
     setLevel(gains.music, isMusicOn() ? MUSIC_LEVEL : 0);
     if (!isMusicOn() || !wanted || !songs[wanted]) {
       seq.stop();
+      cut();
       playing = null;
       return;
     }
     if (playing === wanted) return;
-    seq.play(parsed(wanted), { loop: true });
+    begin(wanted, { loop: true });
     playing = wanted;
     plays++;
   }
 
+  // Bei jeder Berührung oder Taste: beim ersten Mal entsteht der Ton, danach wird ein schlafender
+  // Ton geweckt (iOS lässt ihn erst bei einer echten Berührung laufen, oder nach einem Anruf).
   function unlock() {
-    if (ctx) return;
+    if (ctx) {
+      if (!running()) quiet(ctx.resume?.());
+      return;
+    }
     try {
       ctx = makeContext();
     } catch {
@@ -63,13 +99,15 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
       return g;
     };
     gains = { music: out(isMusicOn() ? MUSIC_LEVEL : 0), sfx: out(SFX_LEVEL) };
-    synth = createSynth(ctx, gains);
+    route.music = gains.music;
+    route.sfx = gains.sfx;
+    synth = createSynth(ctx, route);
     seq = createSequencer({
       now: () => ctx.currentTime,
       schedule: (voice, ev, when) => (voice === 'noise' ? synth.drum(ev.drum, when) : synth.note(voice, ev.freq, when, ev.dur)),
     });
     setTimer(() => seq.tick(), 25);
-    ctx.resume?.();
+    quiet(ctx.resume?.());
     startWanted();
   }
 
@@ -82,15 +120,16 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
   function stopMusic() {
     wanted = null;
     seq?.stop();
+    if (ctx) cut();
     playing = null;
   }
 
   // Ein Jingle unterbricht die Schleife; danach beginnt sie von vorn.
   function playJingle(id) {
-    if (!seq || !isMusicOn() || !songs[id]) return;
+    if (!seq || !running() || !isMusicOn() || !songs[id]) return;
     jingle = true;
     playing = null;
-    seq.play(parsed(id), {
+    begin(id, {
       loop: false,
       onEnd: () => {
         jingle = false;
@@ -100,7 +139,7 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
   }
 
   function sfx(id) {
-    if (!synth || !isSfxOn() || !SFX[id]) return;
+    if (!synth || !running() || !isSfxOn() || !SFX[id]) return;
     playSfx(synth, id, ctx.currentTime + 0.01);
   }
 
@@ -111,6 +150,7 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
     if (on) startWanted();
     else {
       seq.stop();
+      cut();
       playing = null;
       jingle = false;
     }
@@ -122,10 +162,10 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
 
   // Ist die App verdeckt, pausiert der Ton (spart Akku); sichtbar läuft er weiter.
   function suspend() {
-    ctx?.suspend?.();
+    quiet(ctx?.suspend?.());
   }
   function resume() {
-    ctx?.resume?.();
+    quiet(ctx?.resume?.());
   }
 
   const state = () => ({ unlocked: !!ctx, running: ctx?.state === 'running', playing, jingle, plays, musicOn: isMusicOn(), sfxOn: isSfxOn() });

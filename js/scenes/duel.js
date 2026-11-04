@@ -6,7 +6,7 @@ import { timerFor } from '../duel/timing.js';
 import { createDeck, poolFor } from '../duel/questions.js';
 import { bossSetup, foeStageForPhase } from '../duel/boss.js';
 import { duelMusic } from '../audio/choose.js';
-import { sound, jingle, musicTo } from '../audio/bus.js';
+import { sound, jingle, musicTo, fanfare } from '../audio/bus.js';
 import { stageForLevel, maxEnergy } from '../duel/progress.js';
 import { speciesName, displayName, wildName, nameAtStage, evolutionLines, AREA_WILD, TRAINER_CREATURES } from '../data/species.js';
 import { drawEvolution, evolutionAt } from '../gfx/evolution.js';
@@ -250,13 +250,13 @@ export function createDuelScene(game, setup, onEnd) {
     const report = applyDuelResult(game.state, game.pack.data.shortId, setup, s, game.rng);
     game.save?.();
     if (s.outcome === 'won') {
-      jingle('victory');
+      fanfare('victory');
       anim.foe.faint = t;
       if (setup.trainer) await say(game, [setup.trainer.lines.win], { speaker: setup.trainer.name });
       else if (setup.kind === 'boss') await say(game, [tr('boss.tired')]);
       else await say(game, [tr('duel.foeTired', { wild: wildName(setup.foe.species, setup.foe.stage, 'the') })]);
     } else if (s.outcome === 'lost') {
-      jingle('defeat');
+      fanfare('defeat');
       anim.own.faint = t;
       if (setup.trainer) await say(game, [setup.trainer.lines.loss], { speaker: setup.trainer.name });
       await say(game, [tr('duel.ownTired', { name: own })]);

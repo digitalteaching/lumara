@@ -2,8 +2,10 @@
 // und Rauschen. Jede Note hat eine kurze Hüllkurve (5 ms an, 30 ms aus), damit nichts knackt.
 // Bekommt den AudioContext und die Ausgänge (music, sfx) von außen.
 
-const VOICE = { sq1: ['square', 0.2], sq2: ['square', 0.12], tri: ['triangle', 0.32] };
-const DRUM = { k: { dur: 0.14, rate: 0.35, level: 0.55 }, s: { dur: 0.1, rate: 1, level: 0.35 }, h: { dur: 0.035, rate: 1.6, level: 0.2 } };
+export const VOICE = { sq1: ['square', 0.2], sq2: ['square', 0.12], tri: ['triangle', 0.32] };
+// Das Rauschen bleibt höchstens so laut wie die Melodie (Effektivwert Spitze/√3 ≤ 0,2), damit die
+// Schleifen ruhig genug für das Lernen sind.
+export const DRUM = { k: { dur: 0.14, rate: 0.35, level: 0.34 }, s: { dur: 0.1, rate: 1, level: 0.3 }, h: { dur: 0.035, rate: 1.6, level: 0.2 } };
 const ATTACK = 0.005;
 const RELEASE = 0.03;
 
