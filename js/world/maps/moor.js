@@ -73,7 +73,10 @@ export const MOOR = {
         'Siehst du die kleine Insel im Westen? Dort tanzen nachts die Irrlichter.',
         'Ohne Boot kommt da niemand hin. Vielleicht findet sich eines Tages eins.',
       ],
-      linesLit: ['Seit der Stein wieder leuchtet, knarren meine Stege richtig fröhlich.'],
+      linesLit: [
+        'Seit der Stein wieder leuchtet, knarren meine Stege richtig fröhlich.',
+        'Vom Pfahl am Südufer ist es nicht weit zur Irrlichtinsel. Mit einem Boot natürlich.',
+      ],
     },
     {
       type: 'npc', id: 'nele', name: 'Nele', x: 24, y: 21, dir: 'down', sprite: 'nele',

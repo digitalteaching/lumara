@@ -144,5 +144,92 @@ export const EN_QUEST_TEXT = {
       "Talia is drawing my kite dragon? Great!",
       "Take my climbing hook. With it you can climb up any steep wall."
     ]
+  },
+  "q6": {
+    "title": "Pino’s boat",
+    "offer": [
+      "My boat has floated away, a little wooden nutshell.",
+      "The canals flow all the way to the Mushroom Marsh. Maybe it got stuck there?"
+    ],
+    "remind": [
+      "Have you seen my boat? Look in the reeds in the south-west of the Mushroom Marsh."
+    ],
+    "hints": [
+      "Pino’s boat drifted to the Mushroom Marsh, into the reeds in the south-west.",
+      "Take the boat back to Pino in the Clockwork Ruins."
+    ],
+    "steps": [
+      [
+        "Between the reeds and the water, a little boat is rocking, round like a nutshell.",
+        "“Pino” is written on its side. You pull it out."
+      ]
+    ],
+    "locked": [
+      "My boat! Thank you!",
+      "I have something for you when the light stone of the ruins glows."
+    ],
+    "finish": [
+      "My boat! You know what? Keep the nutshell. I will build myself a bigger ferry.",
+      "With it you can reach little islands: off the bay and in the middle of the marsh."
+    ]
+  },
+  "q7": {
+    "title": "Tea for Greta",
+    "offer": [
+      "Greta in the Clockwork Ruins always gets cold when a gear stops turning.",
+      "Will you take her my pot of tea? It stays warm for a long time."
+    ],
+    "remind": [
+      "Have you taken Greta the tea? She oils the gears in the south of the ruins."
+    ],
+    "hints": [
+      "Sven is sending a pot of tea to Greta in the Clockwork Ruins.",
+      "Greta has the tea. Go back to Sven at Aurora Lake."
+    ],
+    "steps": [
+      [
+        "Tea from Sven? That old fisher always thinks of me!",
+        "Tell him it warms me right down to my toes."
+      ]
+    ],
+    "locked": [
+      "Greta was happy? Good!",
+      "I have something for you when the light stone of the lake glows."
+    ],
+    "finish": [
+      "Greta was happy? Good! Take my old ice skates.",
+      "With them you glide over the ice until something stops you. Try it at the ice cave!"
+    ]
+  },
+  "q8": {
+    "title": "Where is Jonte?",
+    "offer": [
+      "My friend Jonte counts the stars every night.",
+      "Yesterday he went to Aurora Lake and did not come back. Will you look for him?"
+    ],
+    "remind": [
+      "Have you found Jonte? He wanted to count the stars at Aurora Lake."
+    ],
+    "hints": [
+      "Selma’s friend Jonte is counting stars at Aurora Lake.",
+      "Jonte is on the way home. Tell Selma in the Starlight Meadow."
+    ],
+    "steps": [
+      [
+        "Oh! I was counting the stars over the lake and forgot all about the time.",
+        "Selma is waiting? Then I will go home right away!"
+      ]
+    ],
+    "guest": [
+      "I am going home to Selma now. Thank you!"
+    ],
+    "locked": [
+      "Jonte is back! Thank you!",
+      "I have something for you when the light stone of the meadow glows."
+    ],
+    "finish": [
+      "Jonte is back! Here is his star map. He drew it himself.",
+      "It shows the stars over the old observatory. Maybe it will open the door for you."
+    ]
   }
 };

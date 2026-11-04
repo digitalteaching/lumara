@@ -32,11 +32,27 @@ export const QUESTS = [
     steps: [{ kind: 'talk', map: 'duenen', npc: 'talia' }, { kind: 'talk', map: 'klippen', npc: 'tamo' }],
     reward: { key: 'hook' },
   },
+  {
+    id: 'q6', area: 6, giver: { map: 'ruinen', npc: 'pino' },
+    steps: [{ kind: 'pickup', id: 'boot', map: 'moor', x: 6, y: 23 }, { kind: 'talk', map: 'ruinen', npc: 'pino' }],
+    reward: { key: 'nutshell' },
+  },
+  {
+    id: 'q7', area: 7, giver: { map: 'see', npc: 'sven' },
+    steps: [{ kind: 'talk', map: 'ruinen', npc: 'greta' }, { kind: 'talk', map: 'see', npc: 'sven' }],
+    reward: { key: 'skates' },
+  },
+  {
+    id: 'q8', area: 8, giver: { map: 'wiese', npc: 'selma' },
+    steps: [{ kind: 'talk', map: 'see', npc: 'jonte' }, { kind: 'talk', map: 'wiese', npc: 'selma' }],
+    reward: { key: 'starmap' },
+  },
 ];
 
 // Bewohner, die nur während eines Schritts irgendwo stehen (etwa der gesuchte Lehrling).
 export const GUESTS = [
   { id: 'flo', name: 'Flo', map: 'wald', x: 24, y: 13, dir: 'left', sprite: 'flo', quest: 'q3', step: 0 },
+  { id: 'jonte', name: 'Jonte', map: 'see', x: 16, y: 24, dir: 'up', sprite: 'jonte', quest: 'q8', step: 0 },
 ];
 
 export const questById = id => QUESTS.find(q => q.id === id) ?? null;
@@ -187,6 +203,93 @@ export const QUEST_TEXT = {
     "finish": [
       "Talia zeichnet meinen Drachen? Toll!",
       "Nimm meinen Kletterhaken. Damit kommst du an jeder steilen Wand hinauf."
+    ]
+  },
+  "q6": {
+    "title": "Pinos Boot",
+    "offer": [
+      "Mein Boot ist davongeschwommen, eine kleine Nussschale aus Holz.",
+      "Die Kanäle fließen bis ins Pilzmoor. Vielleicht ist es dort hängen geblieben?"
+    ],
+    "remind": [
+      "Hast du mein Boot gesehen? Schau im Schilf im Südwesten des Pilzmoors."
+    ],
+    "hints": [
+      "Pinos Boot ist ins Pilzmoor getrieben, ins Schilf im Südwesten.",
+      "Bring das Boot zurück zu Pino in die Uhrwerkruinen."
+    ],
+    "steps": [
+      [
+        "Zwischen Schilf und Wasser schaukelt ein kleines Boot, rund wie eine Nussschale.",
+        "Auf dem Rand steht „Pino“. Du ziehst es heraus."
+      ]
+    ],
+    "locked": [
+      "Mein Boot! Danke!",
+      "Ich habe etwas für dich, wenn der Leuchtstein der Ruinen leuchtet."
+    ],
+    "finish": [
+      "Mein Boot! Weißt du was? Behalte die Nussschale. Ich baue mir eine größere Fähre.",
+      "Mit ihr kommst du zu kleinen Inseln: vor der Bucht und mitten im Pilzmoor."
+    ]
+  },
+  "q7": {
+    "title": "Tee für Greta",
+    "offer": [
+      "Greta in den Uhrwerkruinen friert immer, wenn ein Zahnrad stehen bleibt.",
+      "Bringst du ihr meine Kanne Tee? Sie hält lange warm."
+    ],
+    "remind": [
+      "Hast du Greta den Tee gebracht? Sie ölt die Zahnräder im Süden der Ruinen."
+    ],
+    "hints": [
+      "Sven schickt Greta in den Uhrwerkruinen eine Kanne Tee.",
+      "Greta hat den Tee. Geh zurück zu Sven an den Nordlichtsee."
+    ],
+    "steps": [
+      [
+        "Tee von Sven? Der alte Fischer denkt immer an mich!",
+        "Sag ihm, er wärmt mich bis in die Zehen."
+      ]
+    ],
+    "locked": [
+      "Greta hat sich gefreut? Gut!",
+      "Ich habe etwas für dich, wenn der Leuchtstein des Sees leuchtet."
+    ],
+    "finish": [
+      "Greta hat sich gefreut? Gut! Nimm meine alten Eiskufen.",
+      "Damit gleitest du über das Eis, bis dich etwas aufhält. Probier es an der Eisgrotte!"
+    ]
+  },
+  "q8": {
+    "title": "Wo ist Jonte?",
+    "offer": [
+      "Mein Freund Jonte zählt jede Nacht die Sterne.",
+      "Gestern ist er zum Nordlichtsee gegangen und nicht wiedergekommen. Suchst du ihn?"
+    ],
+    "remind": [
+      "Hast du Jonte gefunden? Er wollte am Nordlichtsee die Sterne zählen."
+    ],
+    "hints": [
+      "Selmas Freund Jonte zählt Sterne am Nordlichtsee.",
+      "Jonte ist auf dem Heimweg. Sag Selma auf der Sternenwiese Bescheid."
+    ],
+    "steps": [
+      [
+        "Oh! Ich habe die Sterne über dem See gezählt und ganz die Zeit vergessen.",
+        "Selma wartet? Dann gehe ich sofort heim!"
+      ]
+    ],
+    "guest": [
+      "Ich gehe jetzt heim zu Selma. Danke!"
+    ],
+    "locked": [
+      "Jonte ist wieder da! Danke!",
+      "Ich habe etwas für dich, wenn der Leuchtstein der Wiese leuchtet."
+    ],
+    "finish": [
+      "Jonte ist wieder da! Hier, seine Sternkarte. Er hat sie selbst gezeichnet.",
+      "Sie zeigt die Sterne über der alten Sternwarte. Vielleicht öffnet sie dir die Tür."
     ]
   }
 };

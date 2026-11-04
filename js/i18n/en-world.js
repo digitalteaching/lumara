@@ -128,7 +128,10 @@ export const EN_WORLD = {
           'Do you see the little island in the west? Will-o’-the-wisps dance there at night.',
           'Nobody can get there without a boat. Maybe one will turn up one day.',
         ],
-        linesLit: ['Since the stone is shining again, my boardwalks creak very happily.'],
+        linesLit: [
+          'Since the stone is shining again, my boardwalks creak very happily.',
+          'From the post on the south shore, it is not far to Wisp Island. By boat, of course.',
+        ],
       },
       nele: {
         lines: [
@@ -241,10 +244,13 @@ export const EN_WORLD = {
       pino: {
         lines: [
           'I am Pino, the ferryman. But my boat has floated away.',
-          'Do you see the observatory over there? It stands on an island in the canal.',
-          'You can only get there by boat. Maybe I will find mine again one day.',
+          'Do you see the observatory behind the canal? Star pictures shine on its plaque.',
+          'Whoever can read the stars there finds the way across. I cannot, sadly.',
         ],
-        linesLit: ['Since the stone is shining, the dome of the observatory shines again. Nice, isn’t it?'],
+        linesLit: [
+          'Since the stone is shining, the dome of the observatory shines again. Nice, isn’t it?',
+          'With the nutshell you can reach the little islands: off the bay and in the marsh.',
+        ],
       },
       bo: {
         lines: [
@@ -276,7 +282,10 @@ export const EN_WORLD = {
           'Do you see the ice cave behind the open water?',
           'Only someone who can glide over the ice can get there. I cannot, sadly.',
         ],
-        linesLit: ['Since the stone is shining, the ice cave sparkles like a crystal.'],
+        linesLit: [
+          'Since the stone is shining, the ice cave sparkles like a crystal.',
+          'With ice skates, you could glide across from the ice edge next to me.',
+        ],
       },
       ari: {
         lines: [

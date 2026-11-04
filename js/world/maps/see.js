@@ -72,7 +72,10 @@ export const SEE = {
         'Siehst du die Eisgrotte dort hinter dem offenen Wasser?',
         'Hin kommt nur, wer über das Eis gleiten kann. Ich kann es leider nicht.',
       ],
-      linesLit: ['Seit der Stein leuchtet, glitzert die Eisgrotte wie ein Kristall.'],
+      linesLit: [
+        'Seit der Stein leuchtet, glitzert die Eisgrotte wie ein Kristall.',
+        'Mit Eiskufen könntest du von der Eiskante neben mir hinübergleiten.',
+      ],
     },
     {
       type: 'npc', id: 'ari', name: 'Ari', x: 8, y: 23, dir: 'right', sprite: 'ari',

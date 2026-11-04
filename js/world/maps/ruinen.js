@@ -70,10 +70,13 @@ export const RUINEN = {
       type: 'npc', id: 'pino', name: 'Pino', x: 28, y: 5, dir: 'right', sprite: 'pino',
       lines: [
         'Ich bin Pino, der Fährmann. Nur mein Boot ist mir leider davongeschwommen.',
-        'Siehst du die Sternwarte dort drüben? Sie steht auf einer Insel im Kanal.',
-        'Hin kommt man nur mit einem Boot. Vielleicht finde ich meins eines Tages wieder.',
+        'Siehst du die Sternwarte hinter dem Kanal? An ihrer Tafel leuchten Sternbilder.',
+        'Wer die Sterne dort lesen kann, findet den Weg hinüber. Ich kann es leider nicht.',
       ],
-      linesLit: ['Seit der Stein leuchtet, glänzt die Kuppel der Sternwarte wieder. Schön, oder?'],
+      linesLit: [
+        'Seit der Stein leuchtet, glänzt die Kuppel der Sternwarte wieder. Schön, oder?',
+        'Mit der Nussschale kommst du zu den kleinen Inseln: vor der Bucht und im Moor.',
+      ],
     },
     {
       type: 'npc', id: 'bo', name: 'Bo', x: 5, y: 17, dir: 'right', sprite: 'bo',

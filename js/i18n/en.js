@@ -372,7 +372,7 @@ export const EN = {
   'secret.name.glasturm': 'Glass Tower',
   'secret.name.gezeiten': 'Tide Island',
   'secret.name.irrlicht': 'Wisp Island',
-  'secret.name.eisgrotte': 'Ice Grotto',
+  'secret.name.eisgrotte': 'Ice Cave',
   'secret.name.sternwarte': 'Observatory',
 
   // Zahnräder der Sternwarte: wohin der Stern zeigt

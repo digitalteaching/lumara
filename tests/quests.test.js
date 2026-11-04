@@ -9,6 +9,7 @@ import { questFor, acceptQuest, advanceQuest, finishQuest, activePickups, active
 import { hasKey } from '../js/items/keys.js';
 import { newGameState } from '../js/state.js';
 import { CONFIG } from '../js/config.js';
+import { CHARACTERS } from '../js/gfx/art/characters.js';
 
 const s0 = () => newGameState({ name: 'A', species: 'nixi', nickname: null });
 
@@ -31,6 +32,46 @@ test('Ein Auftrag: annehmen, Schritt für Schritt, Abschluss erst nach dem Stein
   assert.equal(CONFIG.quests.xp, 50);
   assert.equal(finishQuest(s, 'q1'), null);
   assert.equal(questFor(s, 'bucht', 'bram').role, 'done');
+});
+
+test('Acht Aufträge, einer je Gebiet; die Gebiete 6 bis 8 geben Nussschale, Eiskufen und Sternkarte', () => {
+  assert.equal(QUESTS.length, 8);
+  assert.deepEqual(QUESTS.map(q => q.area), [1, 2, 3, 4, 5, 6, 7, 8]);
+  assert.deepEqual(QUESTS.slice(5).map(q => [q.giver.map, q.giver.npc, q.reward.key]), [
+    ['ruinen', 'pino', 'nutshell'],
+    ['see', 'sven', 'skates'],
+    ['wiese', 'selma', 'starmap'],
+  ]);
+  for (const g of GUESTS) assert.ok(CHARACTERS[g.sprite], g.sprite);
+});
+
+test('Pinos Boot liegt im Schilf des Pilzmoors; Sven schickt Tee zu Greta', () => {
+  const s = s0();
+  acceptQuest(s, 'q6');
+  assert.deepEqual(activePickups(s, 'moor').map(p => p.id), ['boot']);
+  advanceQuest(s, 'q6', 0);
+  acceptQuest(s, 'q7');
+  assert.equal(questFor(s, 'ruinen', 'greta').role, 'step');
+  assert.equal(questFor(s, 'ruinen', 'pino').role, 'locked');
+  s.stones = [1, 2, 3, 4, 5, 6, 7];
+  assert.equal(finishQuest(s, 'q6').key, 'nutshell');
+  advanceQuest(s, 'q7', 0);
+  assert.equal(finishQuest(s, 'q7').key, 'skates');
+  assert.deepEqual([hasKey(s, 'nutshell'), hasKey(s, 'skates')], [true, true]);
+});
+
+test('Selma sucht Jonte: er steht am Nordlichtsee, solange er gesucht wird, dann gibt es die Sternkarte', () => {
+  const s = s0();
+  assert.deepEqual(activeGuests(s, 'see'), []);
+  acceptQuest(s, 'q8');
+  assert.deepEqual(activeGuests(s, 'see').map(g => [g.id, g.x, g.y, g.dir]), [['jonte', 16, 24, 'up']]);
+  assert.equal(questFor(s, 'see', 'jonte').role, 'step');
+  advanceQuest(s, 'q8', 0);
+  assert.deepEqual(activeGuests(s, 'see'), []);
+  assert.equal(questFor(s, 'wiese', 'selma').role, 'locked');
+  s.stones = [1, 2, 3, 4, 5, 6, 7, 8];
+  assert.equal(finishQuest(s, 'q8').key, 'starmap');
+  assert.equal(hasKey(s, 'starmap'), true);
 });
 
 test('Gast-Bewohner und Zwischenschritte: Flo steht nur im Wald, solange er gesucht wird', () => {
