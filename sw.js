@@ -27,6 +27,7 @@ const FILES = [
   "js/audio/audio.js",
   "js/audio/sequencer.js",
   "js/audio/sfx.js",
+  "js/audio/songs.js",
   "js/audio/synth.js",
   "js/core/hash.js",
   "js/core/input.js",
