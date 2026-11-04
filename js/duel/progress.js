@@ -54,7 +54,9 @@ export function gainXp(creature, amount) {
   return r;
 }
 
-export function xpForWin({ kind, area, trainerNumber, flawless }) {
-  const base = kind === 'boss' ? X.bossFirst : kind === 'trainer' ? X.trainerBase + X.trainerPerNumber * trainerNumber : X.wildBase + X.wildPerArea * area;
-  return flawless ? Math.round(base * (1 + X.flawlessBonus)) : base;
+// rematch: Stufe einer Revanche (Design 7.5), Grundwert × (1 + 0,25·Stufe), danach der Makellos-Bonus.
+export function xpForWin({ kind, area, trainerNumber, flawless, rematch = 0 }) {
+  const raw = kind === 'boss' ? X.bossFirst : kind === 'trainer' ? X.trainerBase + X.trainerPerNumber * trainerNumber : X.wildBase + X.wildPerArea * area;
+  const base = raw * (1 + CONFIG.rematch.xpPerTier * rematch);
+  return Math.round(flawless ? base * (1 + X.flawlessBonus) : base);
 }

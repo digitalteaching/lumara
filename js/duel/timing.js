@@ -7,9 +7,10 @@ const FORM_FACTOR = { choice: 1, typing: CONFIG.time.typing, tiles: CONFIG.time.
 
 // Grundzeit des Trainers × Antwortform × Paketeinstellung × Flausch, in ganzen Millisekunden.
 // null: keine Uhr (kein Trainer, Trainer ohne Zeit oder ZEITDRUCK: aus).
-export function questionTimeMs({ trainerNumber, form, setting, species }) {
-  if (trainerNumber == null || setting === 'aus') return null;
-  const base = CONFIG.trainers[trainerNumber - 1]?.time;
+// seconds: eigene Grundzeit (Revanche, Aufstieg) statt der des Trainers.
+export function questionTimeMs({ trainerNumber, seconds, form, setting, species }) {
+  if (setting === 'aus' || (trainerNumber == null && seconds == null)) return null;
+  const base = seconds ?? CONFIG.trainers[trainerNumber - 1]?.time;
   if (!base) return null;
   let s = base * (FORM_FACTOR[form] ?? 1);
   if (setting === 'lang') s *= CONFIG.time.long;
@@ -21,5 +22,5 @@ export function questionTimeMs({ trainerNumber, form, setting, species }) {
 export function timerFor(setup, species) {
   const time = setup?.time;
   if (!time) return () => null;
-  return presented => questionTimeMs({ trainerNumber: time.trainerNumber, form: presented.form, setting: time.setting, species });
+  return presented => questionTimeMs({ trainerNumber: time.trainerNumber, seconds: time.seconds, form: presented.form, setting: time.setting, species });
 }

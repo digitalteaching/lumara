@@ -12,6 +12,7 @@ import { emptyBag, addItem } from './items/bag.js';
 import { lootRolls } from './items/food.js';
 import { t } from './i18n/i18n.js';
 import { finishFinale } from './world/finale.js';
+import { raiseTier } from './duel/rematch.js';
 
 export function emptyWorld() {
   return { bushes: {}, notes: {}, finds: {} };
@@ -129,7 +130,7 @@ export function applyDuelResult(state, shortId, setup, summary, rng = null) {
   };
 
   if (summary.outcome === 'won') {
-    report.xp = xpForWin({ kind: setup.kind, area: setup.area, trainerNumber: setup.trainer?.number, flawless: summary.flawless });
+    report.xp = xpForWin({ kind: setup.kind, area: setup.area, trainerNumber: setup.trainer?.number, flawless: summary.flawless, rematch: setup.rematch ?? 0 });
     // Der Endgegner bringt seine 500 XP nur beim ersten Sieg mit dem aktuellen Paket (Design 6.3).
     if (setup.kind === 'boss') {
       if (progress.boss) report.xp = 0;
@@ -148,6 +149,7 @@ export function applyDuelResult(state, shortId, setup, summary, rng = null) {
     c.energy = summary.playerEnergy;
     const r = gainXp(c, report.xp);
     Object.assign(report, { levelsGained: r.levelsGained, levelAfter: r.level, stageBefore: r.stageBefore, stageAfter: r.stageAfter });
+    if (setup.kind === 'trainer' && setup.rematch) raiseTier(progress, setup.trainer.number); // Revanche gewonnen
     if (setup.kind === 'trainer') {
       if (!progress.beaten.includes(setup.trainer.number)) progress.beaten.push(setup.trainer.number);
       report.stoneLit = lightStone(state, setup.trainer.number);

@@ -36,6 +36,7 @@ const FILES = [
   "js/duel/answers.js",
   "js/duel/duel.js",
   "js/duel/boss.js",
+  "js/duel/rematch.js",
   "js/duel/plates.js",
   "js/duel/progress.js",
   "js/duel/questions.js",
