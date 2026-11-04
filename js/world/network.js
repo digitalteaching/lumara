@@ -11,10 +11,12 @@ import { KLIPPEN } from './maps/klippen.js';
 import { RUINEN } from './maps/ruinen.js';
 import { SEE } from './maps/see.js';
 import { WIESE } from './maps/wiese.js';
+import { EICHE } from './maps/eiche.js';
 import { language, mark } from '../i18n/i18n.js';
 import { EN_WORLD } from '../i18n/en-world.js';
 
-export const MAPS = { bucht: BUCHT, wald: WALD, moor: MOOR, duenen: DUENEN, klippen: KLIPPEN, ruinen: RUINEN, see: SEE, wiese: WIESE };
+// Die Gebiete, dahinter die geheimen Orte (secret: eigene kleine Karten, Design 5.7).
+export const MAPS = { bucht: BUCHT, wald: WALD, moor: MOOR, duenen: DUENEN, klippen: KLIPPEN, ruinen: RUINEN, see: SEE, wiese: WIESE, eiche: EICHE };
 
 const hasTrainer = (pack, n) => pack.trainers.some(t => t.number === n);
 
@@ -76,7 +78,7 @@ export function npcLines(o, state, area, pack) {
 const LOCAL_WORLD = { en: EN_WORLD };
 const localWorld = () => LOCAL_WORLD[language()] ?? null;
 
-export const mapOfArea = area => Object.values(MAPS).find(d => d.area === area) ?? null;
+export const mapOfArea = area => Object.values(MAPS).find(d => d.area === area && !d.secret) ?? null;
 
 // Ein Textfeld eines Objekts (lines, linesLit, linesOpen, linesNoClock, afterWin) in der Spielsprache.
 export function worldLines(def, o, field) {

@@ -534,6 +534,27 @@ function waldhueter() {
   return done(g);
 }
 
+// ---------- Geheime Orte ----------
+
+// Wurzelgeist: ein kleiner Geist aus Wurzeln mit einer Laternenblüte auf dem Kopf (Hohle Eiche).
+function wurzelgeist() {
+  const g = canvas(32);
+  poly(g, [[8, 22], [12, 22], [10, 29], [5, 30]], ['o', 'b', 'b']); // Wurzelbeine
+  poly(g, [[17, 22], [21, 22], [25, 30], [19, 29]], ['o', 'b', 'b']);
+  poly(g, [[6, 17], [9, 16], [4, 23], [2, 22]], ['o', 'b', 'b']); // Wurzelarm
+  ellipse(g, 15, 17, 9, 7, ['r', 'o', 'b']); // Körper aus Rinde
+  ellipse(g, 17, 9, 1.5, 4, ['G', 'g', 'l']); // Stängel
+  ellipse(g, 18, 5, 5, 3, ['w', 'H', 'h']); // Laternenblüte
+  ellipse(g, 12, 11, 3, 2, ['G', 'g', 'l']); // Blatt
+  outline(g);
+  eye(g, 15, 15, 2, 3);
+  eye(g, 20, 15, 2, 3);
+  dots(g, [[17, 20, 'k'], [18, 21, 'k'], [19, 20, 'k'], [13, 19, 'R'], [22, 19, 'R'],
+    [10, 15, 'b'], [11, 18, 'b'], [9, 20, 'g'], [16, 23, 'g'], [21, 23, 'b'],
+    [17, 4, 'w'], [19, 3, 'w'], [15, 6, 'H'], [22, 6, 'H'], [24, 3, 'H'], [12, 3, 'H']]);
+  return done(g);
+}
+
 // ---------- Gebiet 1 ----------
 
 function gischtling() {
@@ -1146,6 +1167,7 @@ export const CREATURE_ART = {
   gischtling: { 1: gischtling() },
   haeuschel: { 1: haeuschel1(), 2: haeuschel2() },
   glimmqualle: { 1: glimmqualle() },
+  wurzelgeist: { 1: wurzelgeist() },
 };
 
 // Höchste vorhandene Stufe ≤ der gewünschten: Wilde Arten haben ein oder zwei Stufen.

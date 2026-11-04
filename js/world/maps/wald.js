@@ -89,6 +89,13 @@ export const WALD = {
     { type: 'whisper', id: 'baum-nord', x: 15, y: 8, lines: ['… früher war der Wald hell … dann kam der Nebel vom Berg …', '… jemand im Berg ist sehr allein …'] },
     { type: 'whisper', id: 'baum-farn', x: 23, y: 24, lines: ['… im Farn glitzert manchmal etwas … schau genau hin …', '… Beeren wachsen wieder, wenn man Geduld hat …'] },
 
+    // Geheimer Ort (Design 5.7): die hohle Eiche, nur mit der Laterne zu betreten
+    {
+      type: 'secret', id: 'hohle-eiche', place: 'eiche', prop: 'hollowoak', x: 5, y: 12,
+      to: { map: 'eiche', x: 2, y: 10, dir: 'up' },
+      lines: ['In der alten Eiche ist ein Loch, so groß wie eine Tür.', 'Drinnen ist es stockdunkel. Mit einer Laterne könntest du hineingehen.'],
+      linesOpen: ['Du zündest die Laterne an und kletterst in die Eiche.'],
+    },
     { type: 'notestone', id: 'zettel-farn', x: 5, y: 24 },
     { type: 'notestone', id: 'zettel-bach', x: 33, y: 16 },
     { type: 'notestone', id: 'zettel-lichtung', x: 12, y: 4 },

@@ -16,6 +16,7 @@ export const EN_WORLD = {
     ruinen: { name: 'Clockwork Ruins', of: 'of the Clockwork Ruins', the: 'the Clockwork Ruins' },
     see: { name: 'Aurora Lake', of: 'of Aurora Lake', the: 'Aurora Lake' },
     wiese: { name: 'Starlight Meadow', of: 'of the Starlight Meadow', the: 'the Starlight Meadow' },
+    eiche: { name: 'Hollow Oak', of: 'of the Hollow Oak', the: 'the Hollow Oak' },
   },
 
   objects: {
@@ -99,6 +100,10 @@ export const EN_WORLD = {
       'baum-mitte': { lines: ['… the ranger waits in the clearing … he tests what you know …', '… a light stone gives your creature new strength …'] },
       'baum-nord': { lines: ['… once the woods were bright … then the mist came from the mountain …', '… someone in the mountain is very lonely …'] },
       'baum-farn': { lines: ['… sometimes something sparkles in the ferns … look closely …', '… berries grow back if you are patient …'] },
+      'hohle-eiche': {
+        lines: ['There is a hole in the old oak, as big as a door.', 'It is pitch dark inside. With a lantern you could go in.'],
+        linesOpen: ['You light the lantern and climb into the oak.'],
+      },
       'schild-eingang': { lines: ['Whispering Woods', 'Stay on the path, and you will hear the old trees whisper.'] },
       'nebel-nord': {
         lines: [FOG_CLOSED, 'Maybe it moves back when the light stone of the woods glows again.'],

@@ -4,16 +4,18 @@ export const WALKABLE = new Set([
   'grass', 'tallgrass', 'path', 'sand', 'flowers', 'pier', 'moss', 'fern',
   'peat', 'reed', 'glasssand', 'dunegrass', 'cliffrock', 'windgrass', 'bridge', 'bridgev',
   'cobble', 'ivy', 'snow', 'ice', 'snowgrass', 'nightgrass', 'startall',
+  'rootfloor', 'rootmoss', 'glassfloor', 'prismgrass',
 ]);
 // Luftspiegelungen sehen aus wie ein Weg, sind aber blockiert (Design 5.3).
 export const BLOCKED = new Set([
   'water', 'tree', 'rock', 'fence', 'fog', 'cliff', 'fortree', 'mushroom',
   'bog', 'glowshroom', 'dune', 'mirage', 'clouds', 'spire',
   'canal', 'ruinwall', 'icewater', 'snowpine', 'nightrock', 'nightcliff', 'nightstone',
+  'rootwall', 'glasswall',
 ]);
 // Hohes Gras, in dem wilde Wesen und Steine warten: Farn im Wald, Schilf im Moor, Dünengras, Windgras,
 // Efeu in den Ruinen, Schneegras am See und Sternengras auf der Wiese.
-export const TALL_GRASS = new Set(['tallgrass', 'fern', 'reed', 'dunegrass', 'windgrass', 'ivy', 'snowgrass', 'startall']);
+export const TALL_GRASS = new Set(['tallgrass', 'fern', 'reed', 'dunegrass', 'windgrass', 'ivy', 'snowgrass', 'startall', 'rootmoss', 'prismgrass']);
 
 const DELTA = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 

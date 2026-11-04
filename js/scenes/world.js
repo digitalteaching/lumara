@@ -118,7 +118,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
   // Boden unter Steinen: der häufigste flache Boden der Nachbarfelder. Ohne einen solchen
   // (etwa eine Felsnadel mitten in den Wolken) die häufigste Nachbarkachel, die selbst Boden hat,
   // sonst der Grundboden der Karte (def.ground, etwa Torf im Moor).
-  const GROUNDS = new Set(['grass', 'sand', 'path', 'flowers', 'moss', 'peat', 'glasssand', 'cliffrock', 'cobble', 'snow', 'ice', 'nightgrass']);
+  const GROUNDS = new Set(['grass', 'sand', 'path', 'flowers', 'moss', 'peat', 'glasssand', 'cliffrock', 'cobble', 'snow', 'ice', 'nightgrass', 'rootfloor', 'glassfloor']);
   // Eine Felsnadel ragt immer aus den Wolken.
   const FIXED_GROUND = { spire: 'clouds' };
   function groundAt(x, y) {
@@ -519,6 +519,17 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
       // Nach den Figuren und vor dem Nebel
       if (particles) drawParticles(ctx);
       drawFog(ctx, cam);
+      // Dunkle Gänge (Hohle Eiche): Nur um die Spielfigur leuchtet die Laterne. Ihr Licht flackert
+      // leicht (unter 1 Hz), bei „Bewegung reduzieren“ steht es still.
+      if (def.dark) {
+        const cx = pp.x - cam.x + 8, cy = pp.y - cam.y + 6;
+        const r = 40 + (game.reducedMotion ? 0 : Math.sin(time / 250) * 1.5);
+        const g = ctx.createRadialGradient(cx, cy, r * 0.35, cx, cy, r);
+        g.addColorStop(0, 'rgba(12, 10, 24, 0)');
+        g.addColorStop(1, 'rgba(12, 10, 24, 0.86)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, SCREEN_W, SCREEN_H);
+      }
       for (const fn of afterRender) fn(ctx, cam);
     },
   };

@@ -284,7 +284,21 @@ export const SPECIES = {
     names: ['Sternhirsch'],
     description: 'Ein Hirsch mit einem Geweih aus Sternenlicht. Man sieht ihn nur in klaren Nächten.',
   },
+
+  // Geheime Orte (Design 5.7, 6.4): je eine seltene Art, Buchplätze 25 bis 30
+  wurzelgeist: {
+    id: 'wurzelgeist',
+    kind: 'secret',
+    gender: 'm',
+    area: 2,
+    rarity: 'rare',
+    names: ['Wurzelgeist'],
+    description: 'Ein kleiner Geist aus Wurzeln. Auf dem Kopf trägt er eine Blüte, die im Dunkeln leuchtet.',
+  },
 };
+
+// Die seltenen Arten der geheimen Orte in der Reihenfolge des Wesen-Buchs (Plätze 25 bis 30).
+export const SECRET_SPECIES = ['wurzelgeist'];
 
 export const AREA_WILD = {
   1: { common: ['gischtling', 'haeuschel'], rare: 'glimmqualle' },

@@ -427,6 +427,16 @@ const nightstone = speckled('d', 95, [['s', 0.12], ['n', 0.1], ['m', 0.02]]);
 // Sternengras: Halme mit goldenen Spitzen
 const startall = lean => retint(tallGrass(lean), { l: 'F', g: 'l', G: 'H', F: 'n' });
 
+// Hohle Eiche (Plan 4c): Wurzelwände, dunkle Erde, Wurzelmoos als hohes Gras
+const rootwall = speckled('n', 103, [['b', 0.22], ['o', 0.08], ['F', 0.04], ['k', 0.05]]);
+const rootfloor = speckled('b', 101, [['o', 0.12], ['F', 0.05], ['n', 0.04]]);
+const rootmoss = lean => retint(tallGrass(lean), { l: 'F', g: 'l', G: 'g', F: 'b' });
+
+// Glasturm (Plan 4c): Glasboden mit Lichtbrechungen, Glaswand am Rand, Prismengras
+const glassfloor = speckled('A', 111, [['w', 0.08], ['L', 0.06], ['V', 0.02], ['T', 0.02]]);
+const glasswall = speckled('L', 113, [['S', 0.18], ['A', 0.1], ['w', 0.04]]);
+const prismgrass = lean => retint(tallGrass(lean), { l: 'L', g: 'A', G: 'V', F: 'S' });
+
 // Felder ohne eigenen Boden, unter die der Boden der Umgebung gezeichnet wird
 export const OVERLAY_TILES = new Set(['rock', 'fortree', 'mushroom', 'glowshroom', 'spire', 'snowpine', 'nightrock']);
 
@@ -494,6 +504,12 @@ export const TILES = {
   nightcliff: [nightcliff],
   startall: [startall(false), startall(true)],
   nightstone: [nightstone],
+  rootwall: [rootwall],
+  rootfloor: [rootfloor],
+  rootmoss: [rootmoss(false), rootmoss(true)],
+  glassfloor: [glassfloor],
+  glasswall: [glasswall],
+  prismgrass: [prismgrass(false), prismgrass(true)],
 };
 
 // ---------- Gebäude ----------
@@ -876,6 +892,31 @@ function statue() {
 }
 
 // Glasturm (16 × 48): hoch und schmal, mit Spitze; steht auf einem unerreichbaren Plateau.
+// Eine alte Eiche mit einem Loch wie eine Tür (Eingang zur Hohlen Eiche).
+function hollowOak() {
+  const rows = oldTree().map(r => [...r]);
+  const h = rows.length, w = rows[0].length;
+  const cx = Math.floor(w / 2), bottom = h - 2;
+  for (let y = bottom - 9; y <= bottom; y++) {
+    for (let x = cx - 3; x <= cx + 2; x++) {
+      const dy = (bottom - y) / 9, dx = (x - cx + 0.5) / 3;
+      if (dx * dx + (dy > 0.6 ? ((dy - 0.6) / 0.4) ** 2 : 0) <= 1) rows[y][x] = y === bottom - 9 || Math.abs(x - cx + 0.5) > 2.2 ? 'b' : 'k';
+    }
+  }
+  return rows.map(r => r.join(''));
+}
+
+// Eine Öse aus Metall in der Glaswand (Eingang zum Glasturm mit dem Kletterhaken).
+function hookRing() {
+  const g = Array.from({ length: 16 }, () => Array(16).fill('.'));
+  const ring = [[6, 4], [7, 3], [8, 3], [9, 4], [10, 5], [10, 6], [9, 7], [8, 8], [7, 8], [6, 7], [5, 6], [5, 5]];
+  for (const [x, y] of ring) g[y][x] = 's';
+  for (const [x, y] of [[7, 4], [8, 4], [6, 5]]) g[y][x] = 'f';
+  for (let y = 9; y < 15; y++) g[y][8] = 'd';
+  g[15][7] = 'd'; g[15][8] = 'd'; g[15][9] = 'd';
+  return g.map(r => r.join(''));
+}
+
 function glassTower() {
   const g = grid(16, 48, '.');
   for (let y = 0; y < 10; y++) {
@@ -945,6 +986,8 @@ export const PROPS = {
   beaconDark: beacon(false),
   beaconLit: beacon(true),
   oldtree: oldTree(),
+  hollowoak: hollowOak(),
+  hookring: hookRing(),
   sign: [
     '................',
     '................',

@@ -69,4 +69,6 @@ export const EN_SPECIES = {
   schnuppling: { names: ['Wishling', 'Cometling'], description: 'A little star that fell from the sky. A tail of stardust glows behind it.' },
   nachtschaf: { names: ['Nightsheep'], description: 'A sheep with wool like a summer night. Little stars sparkle in its fur.' },
   sternhirsch: { names: ['Starstag'], description: 'A deer with antlers made of starlight. You only see it on clear nights.' },
+  // Geheime Orte
+  wurzelgeist: { names: ['Rootling'], description: 'A little spirit made of roots. On its head grows a flower that glows in the dark.' },
 };
