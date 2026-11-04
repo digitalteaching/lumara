@@ -34,6 +34,30 @@ function textSpeed(game, nav) {
   );
 }
 
+// Musik und Effekte getrennt ein und aus (Design 15); der Zustand steht am Knopf (aria-pressed).
+function sound(game, nav) {
+  const toggle = (key, label, apply) => {
+    const on = game.state.settings[key] !== false;
+    return el('button', {
+      class: 'btn',
+      type: 'button',
+      'aria-pressed': on ? 'true' : 'false',
+      onclick: () => {
+        game.state.settings[key] = !on;
+        apply(!on);
+        game.save();
+        nav.refresh();
+      },
+    }, `${t(label)}: ${t(on ? 'settings.on' : 'settings.off')}`);
+  };
+  return section(
+    t('settings.sound'),
+    el('div', { class: 'row seg' },
+      toggle('music', 'settings.music', on => game.audio?.setMusicOn(on)),
+      toggle('sfx', 'settings.sfx', on => game.audio?.setSfxOn(on))),
+  );
+}
+
 function newGamePages(game) {
   const second = confirmPage({
     title: t('settings.newGame'),
@@ -57,6 +81,7 @@ export function settingsPage(game) {
     render(body, nav) {
       appendAll(body,
         textSpeed(game, nav),
+        sound(game, nav),
         game.state && game.pack ? section(t('settings.pack'), el('div', { class: 'sheet-list' }, entry(t('settings.switchPack'), () => nav.push(packSwitchPage(game))))) : null,
         section(
           t('settings.savedGame'),

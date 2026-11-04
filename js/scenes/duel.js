@@ -5,6 +5,8 @@ import { createDuel } from '../duel/duel.js';
 import { timerFor } from '../duel/timing.js';
 import { createDeck, poolFor } from '../duel/questions.js';
 import { bossSetup, foeStageForPhase } from '../duel/boss.js';
+import { duelMusic } from '../audio/choose.js';
+import { sound, jingle, musicTo } from '../audio/bus.js';
 import { stageForLevel, maxEnergy } from '../duel/progress.js';
 import { speciesName, displayName, wildName, nameAtStage, evolutionLines, AREA_WILD, TRAINER_CREATURES } from '../data/species.js';
 import { drawEvolution, evolutionAt } from '../gfx/evolution.js';
@@ -182,9 +184,11 @@ export function createDuelScene(game, setup, onEnd) {
 
   async function showResult(r, response, ctx) {
     if (r.correct) {
+      sound('correct');
       anim.own.lunge = t;
       await wait(150);
       anim.foe.hit = t;
+      sound(r.crit ? 'crit' : 'hit');
       updatePlates();
       const lines = r.healed ? [tr('duel.springHeal')] : [];
       await panel.feedback({ ok: true, title: r.crit ? tr('duel.crit') : tr('duel.right'), lines, autoMs: 1100 });
@@ -196,6 +200,7 @@ export function createDuelScene(game, setup, onEnd) {
       ctx.notice = r.timedOut ? tr('duel.secondChanceTime') : tr('duel.secondChanceWrong');
       return;
     }
+    sound('wrong');
     const lines = [tr('duel.correctIs', { answer: r.correctText })];
     if (r.shielded) lines.push(tr('duel.shield'));
     await panel.feedback({
@@ -245,11 +250,13 @@ export function createDuelScene(game, setup, onEnd) {
     const report = applyDuelResult(game.state, game.pack.data.shortId, setup, s, game.rng);
     game.save?.();
     if (s.outcome === 'won') {
+      jingle('victory');
       anim.foe.faint = t;
       if (setup.trainer) await say(game, [setup.trainer.lines.win], { speaker: setup.trainer.name });
       else if (setup.kind === 'boss') await say(game, [tr('boss.tired')]);
       else await say(game, [tr('duel.foeTired', { wild: wildName(setup.foe.species, setup.foe.stage, 'the') })]);
     } else if (s.outcome === 'lost') {
+      jingle('defeat');
       anim.own.faint = t;
       if (setup.trainer) await say(game, [setup.trainer.lines.loss], { speaker: setup.trainer.name });
       await say(game, [tr('duel.ownTired', { name: own })]);
@@ -264,9 +271,11 @@ export function createDuelScene(game, setup, onEnd) {
         if (!alive) return;
         anim.sparkle = t;
         updatePlates();
+        if (lvl === report.levelAfter - report.levelsGained + 1) jingle('levelup');
         await say(game, [tr('duel.levelUp', { name: nameAtStage(c, shownStage), level: lvl })]);
       }
       if (report.stageAfter > report.stageBefore) {
+        jingle('evolution');
         await evolveInArena(report.stageBefore, report.stageAfter);
         if (!alive) return;
         await say(game, evolutionLines(c, report.stageBefore, report.stageAfter));
@@ -388,6 +397,7 @@ export function createDuelScene(game, setup, onEnd) {
     duel,
     enter() {
       game.mode = 'duel';
+      musicTo(duelMusic(setup));
       game.ui.append(plates.foe.node, plates.own.node);
       updatePlates();
       stopKeyboard = watchKeyboard();

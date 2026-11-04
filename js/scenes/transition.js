@@ -1,3 +1,4 @@
+import { sound } from '../audio/bus.js';
 // Übergänge zwischen Welt und Duell (Design 7.1). Erst wird das Bild abgedeckt, dann aufgedeckt.
 // Bei reduzierter Bewegung gibt es immer eine einfache Überblendung.
 
@@ -24,6 +25,7 @@ function draw(ctx, style, p) {
 
 // Deckt das Bild in 500 ms ab und bleibt abgedeckt, bis reveal() kommt.
 export function playTransition(game, style, ms = 500) {
+  sound('transition');
   const s = game.reducedMotion ? 'fade' : style;
   return new Promise(resolve => {
     const start = performance.now();

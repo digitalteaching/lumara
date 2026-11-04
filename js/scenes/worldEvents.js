@@ -8,6 +8,8 @@ import { rematchOffer, rematchSetup, rematchQuestion } from '../duel/rematch.js'
 import { rememberBlock, rememberSetup } from '../duel/boss.js';
 import { fallenStarSpot, nearStar, starChance } from '../world/stars.js';
 import { ascentSetup, refillBefore } from '../duel/ascent.js';
+import { musicFor } from '../audio/choose.js';
+import { sound, jingle, musicTo } from '../audio/bus.js';
 import { playTransition, reveal } from './transition.js';
 import { createEncounterCounter, wildTableFor } from '../world/encounters.js';
 import { secretOpen, takeSecretStory, takeSecretStone, blockedCells } from '../world/secrets.js';
@@ -70,6 +72,12 @@ export function createGameWorld(game) {
   const def = withFinale(withGuests(MAPS[game.state.position.map] ?? BUCHT, game.state), game.state);
   const world = createWorldScene(game, def, { openGates: openGatesFor(def, game.state, game.pack.data) });
   const { map, player } = world;
+  // Musik nach Ort (Design 15): beim Betreten und nach jedem Duell wieder die Musik der Karte.
+  const enterWorld = world.enter;
+  world.enter = () => {
+    enterWorld();
+    musicTo(musicFor(def));
+  };
   const { trainerNumber } = areaConfig(def);
   const counter = createEncounterCounter(game.rng);
   const trainer = def.objects.find(o => o.type === 'trainer');
@@ -301,6 +309,7 @@ export function createGameWorld(game) {
     const f = findAt(ev.x, ev.y);
     if (!f) return false;
     const { item } = takeFind(game.state, findKey(def.id, f), game.rng, def.area, timePressure());
+    jingle('find');
     await foundStone(item);
     return true;
   });
@@ -312,6 +321,7 @@ export function createGameWorld(game) {
   world.propVariant.notestone = o => (noteReady(game.state, noteKey(def.id, o)) ? 'noteStone' : 'noteStoneDone');
 
   async function useNoteStone(o) {
+    sound('lift');
     const key = noteKey(def.id, o);
     if (!noteReady(game.state, key)) {
       await say(game, [tr('world.noteEmpty')]);
@@ -560,6 +570,7 @@ export function createGameWorld(game) {
   world.onInteract.push(async ev => {
     if (ev.target || !stoneThere() || ev.x !== secretStone.x || ev.y !== secretStone.y) return false;
     const item = takeSecretStone(game.state, secretStone.place);
+    jingle('find');
     world.blocked.clear(); // das Feld ist wieder frei
     game.save();
     if (item) await say(game, [STONE_LINES[item](displayName(game.state.creature))]);

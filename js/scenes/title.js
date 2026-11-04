@@ -1,5 +1,6 @@
 // Titelbildschirm: der Leuchtturm im Nebel, das Meer, ein kreisender Lichtstrahl (Design 4).
 
+import { musicTo } from '../audio/bus.js';
 import { BUILDINGS } from '../gfx/art/tiles.js';
 import { spriteFrom } from '../gfx/canvasSprites.js';
 import { el } from '../ui/dom.js';
@@ -142,6 +143,7 @@ export function createTitleScene(game, next, { hint = tr('title.tapStart') } = {
   return {
     enter() {
       game.mode = 'screen';
+      musicTo('title');
       root = el(
         'div',
         { class: 'title-screen passive' },

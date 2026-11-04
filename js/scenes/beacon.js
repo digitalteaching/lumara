@@ -3,10 +3,13 @@
 
 import { CONFIG } from '../config.js';
 import { beaconOf, openGatesFor } from '../world/network.js';
+import { sound, jingle } from '../audio/bus.js';
 
 const T = 16;
 
 export function playBeaconScene(game, world, number) {
+  jingle('beacon');
+  sound('fog');
   return new Promise(resolve => {
     const map = world.map;
     const def = map.def;

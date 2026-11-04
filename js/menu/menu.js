@@ -1,5 +1,6 @@
 // Menü (Design 13): Wesen, Rucksack, Wesen-Buch, Karte, Tagebuch und Einstellungen (js/menu/items.js).
 
+import { sound } from '../audio/bus.js';
 import { el } from '../ui/dom.js';
 import { openSheet } from '../ui/sheet.js';
 import { speciesText, speciesName, displayName, abilityRows } from '../data/species.js';
@@ -72,5 +73,6 @@ function menuPage(game) {
 }
 
 export function openMenu(game) {
+  sound('menu');
   return openSheet(game, menuPage(game));
 }

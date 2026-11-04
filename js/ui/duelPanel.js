@@ -4,6 +4,7 @@
 
 import { CONFIG } from '../config.js';
 import { el, clear } from './dom.js';
+import { sound } from '../audio/bus.js';
 import { createFreshGuard, guardClicks } from './freshGuard.js';
 import { t as tr } from '../i18n/i18n.js'; // t ist hier ein eigener Name
 
@@ -51,6 +52,9 @@ function typingForm(p, onSubmit) {
     inputmode: 'text',
     'aria-label': tr('duel.answerLabel'),
   });
+  input.addEventListener('keydown', e => {
+    if (e.key.length === 1) sound('type');
+  });
   const hint = el('p', { class: 'answer-hint' });
   const submit = el('button', { class: 'btn primary', type: 'submit' }, tr('duel.check'));
   const form = el('form', { class: 'typing', novalidate: true }, el('div', { class: 'typing-row' }, input, submit), hint);
@@ -88,6 +92,7 @@ function tilesForm(p, onSubmit) {
         type: 'button',
         disabled: i === locked,
         onclick: () => {
+          sound('tile');
           placed = placed.filter(x => x !== i);
           render();
         },
@@ -99,6 +104,7 @@ function tilesForm(p, onSubmit) {
         class: 'btn tile',
         type: 'button',
         onclick: () => {
+          sound('tile');
           placed.push(i);
           render();
         },

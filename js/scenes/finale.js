@@ -5,6 +5,7 @@
 import { say, choose } from '../ui/dialog.js';
 import { tl, t as tr } from '../i18n/i18n.js';
 import { speciesName } from '../data/species.js';
+import { jingle } from '../audio/bus.js';
 
 const RISE_MS = 2000;
 
@@ -21,6 +22,7 @@ export async function playFinale(game, world) {
     ctx.fillRect(0, 0, 240, 160);
     ctx.globalAlpha = 1;
   };
+  jingle('finale');
   world.onTick.push(tick);
   world.afterRender.push(draw);
   const [first, ...rest] = tl('finale.after');

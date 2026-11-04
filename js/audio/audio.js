@@ -19,8 +19,13 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
   let playing = null;
   let jingle = false;
   let plays = 0;
-  let musicOn = settings.music !== false;
-  let sfxOn = settings.sfx !== false;
+  // settings: ein Objekt oder eine Funktion (der Spielstand wird oft erst nach dem Start geladen).
+  // setMusicOn/setSfxOn überschreiben; sonst gilt, was in den Einstellungen steht.
+  const cfg = () => (typeof settings === 'function' ? settings() : settings) ?? {};
+  let musicOverride = null;
+  let sfxOverride = null;
+  const isMusicOn = () => musicOverride ?? cfg().music !== false;
+  const isSfxOn = () => sfxOverride ?? cfg().sfx !== false;
   const cache = {};
   const parsed = id => (cache[id] ??= parseSong(songs[id]));
 
@@ -31,7 +36,8 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
 
   function startWanted() {
     if (!seq) return;
-    if (!musicOn || !wanted || !songs[wanted]) {
+    setLevel(gains.music, isMusicOn() ? MUSIC_LEVEL : 0);
+    if (!isMusicOn() || !wanted || !songs[wanted]) {
       seq.stop();
       playing = null;
       return;
@@ -56,7 +62,7 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
       g.connect(ctx.destination);
       return g;
     };
-    gains = { music: out(musicOn ? MUSIC_LEVEL : 0), sfx: out(SFX_LEVEL) };
+    gains = { music: out(isMusicOn() ? MUSIC_LEVEL : 0), sfx: out(SFX_LEVEL) };
     synth = createSynth(ctx, gains);
     seq = createSequencer({
       now: () => ctx.currentTime,
@@ -81,7 +87,7 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
 
   // Ein Jingle unterbricht die Schleife; danach beginnt sie von vorn.
   function playJingle(id) {
-    if (!seq || !musicOn || !songs[id]) return;
+    if (!seq || !isMusicOn() || !songs[id]) return;
     jingle = true;
     playing = null;
     seq.play(parsed(id), {
@@ -94,12 +100,12 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
   }
 
   function sfx(id) {
-    if (!synth || !sfxOn || !SFX[id]) return;
+    if (!synth || !isSfxOn() || !SFX[id]) return;
     playSfx(synth, id, ctx.currentTime + 0.01);
   }
 
   function setMusicOn(on) {
-    musicOn = on;
+    musicOverride = on;
     if (!ctx) return;
     setLevel(gains.music, on ? MUSIC_LEVEL : 0);
     if (on) startWanted();
@@ -111,7 +117,7 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
   }
 
   function setSfxOn(on) {
-    sfxOn = on;
+    sfxOverride = on;
   }
 
   // Ist die App verdeckt, pausiert der Ton (spart Akku); sichtbar läuft er weiter.
@@ -122,7 +128,7 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
     ctx?.resume?.();
   }
 
-  const state = () => ({ unlocked: !!ctx, playing, jingle, plays, musicOn, sfxOn });
+  const state = () => ({ unlocked: !!ctx, running: ctx?.state === 'running', playing, jingle, plays, musicOn: isMusicOn(), sfxOn: isSfxOn() });
 
   return { unlock, music, stopMusic, jingle: playJingle, sfx, setMusicOn, setSfxOn, suspend, resume, state };
 }

@@ -1,6 +1,7 @@
 // Textfenster und Auswahlfragen im Pixel-Stil (Design 13, 14).
 // A, Enter, Leertaste oder ein Tipp: erst die ganze Zeile zeigen, dann weiter.
 
+import { sound } from '../audio/bus.js';
 import { el } from './dom.js';
 import { createFreshGuard, guardClicks } from './freshGuard.js';
 import { textSpeedCps } from '../state.js';
@@ -143,6 +144,7 @@ export function choose(game, prompt, options, { cancelIndex = options.length - 1
     function pick(i) {
       if (done) return;
       done = true;
+      sound('confirm');
       active.delete(cancel);
       offs.forEach(off => off());
       box.remove();

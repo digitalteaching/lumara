@@ -27,6 +27,9 @@ import { MAPS } from './world/network.js';
 import { el } from './ui/dom.js';
 import { setGamePack } from './app/gamePack.js';
 import { setPseudo, t } from './i18n/i18n.js';
+import { createAudio } from './audio/audio.js';
+import { SONGS } from './audio/songs.js';
+import { setAudio } from './audio/bus.js';
 
 const screen = createScreen(document.getElementById('screen'), document.getElementById('stage'));
 const input = createInput();
@@ -89,6 +92,18 @@ watchOtherTabs(game, window, {
     document.body.append(el('div', { class: 'sheet' }, card));
   },
 });
+
+// Musik und Ton (Design 15): im Browser erzeugt, erst nach der ersten Berührung oder Taste (iOS).
+// Ist die App verdeckt, pausiert der Ton.
+const AudioCtor = window.AudioContext || window.webkitAudioContext;
+// Bis der Stand übernommen ist (nach dem Titel), gelten die Einstellungen des gespeicherten Stands.
+let bootSettings = null;
+game.audio = createAudio({ makeContext: () => (AudioCtor ? new AudioCtor() : null), settings: () => game.state?.settings ?? bootSettings, songs: SONGS });
+setAudio(game.audio);
+const unlockAudio = () => game.audio.unlock();
+window.addEventListener('pointerdown', unlockAudio, { capture: true });
+window.addEventListener('keydown', unlockAudio, { capture: true });
+document.addEventListener('visibilitychange', () => (document.hidden ? game.audio.suspend() : game.audio.resume()));
 
 // Spielzeit für die Lehrkraft: jede Eingabe zählt als „das Kind ist dabei“.
 const markActivity = () => game.clock.activity(performance.now());
@@ -183,7 +198,11 @@ if (params.has('probe')) probeStart();
 else if (isLocal && params.has('galerie')) game.go(createGalleryScene(game, { shiny: params.has('glanz') }));
 else if (isLocal && params.has('duell')) devDuel(params.get('duell'));
 else if (isLocal && params.has('dev')) devStart();
-else startFlow(game, game.store.load());
+else {
+  const loaded = game.store.load();
+  bootSettings = loaded.state?.settings ?? null;
+  startFlow(game, loaded);
+}
 
 // Offline und Updates (Design 16). Auf dem eigenen Rechner nur mit ?sw, sonst immer frische Dateien.
 const UPDATE_TEXT = () => t('app.updateReady');
