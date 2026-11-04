@@ -13,6 +13,7 @@ import { lootRolls } from './items/food.js';
 import { t } from './i18n/i18n.js';
 import { finishFinale } from './world/finale.js';
 import { raiseTier } from './duel/rematch.js';
+import { recordFloor } from './duel/ascent.js';
 
 export function emptyWorld() {
   return { bushes: {}, notes: {}, finds: {} };
@@ -130,7 +131,8 @@ export function applyDuelResult(state, shortId, setup, summary, rng = null) {
   };
 
   if (summary.outcome === 'won') {
-    report.xp = xpForWin({ kind: setup.kind, area: setup.area, trainerNumber: setup.trainer?.number, flawless: summary.flawless, rematch: setup.rematch ?? 0 });
+    report.xp = xpForWin({ kind: setup.kind, area: setup.area, trainerNumber: setup.trainer?.number, flawless: summary.flawless, rematch: setup.rematch ?? 0, floor: setup.floor ?? 0 });
+    if (setup.kind === 'ascent') recordFloor(progress, setup.floor); // Bestmarke (Design 12.1)
     // Der Endgegner bringt seine 500 XP nur beim ersten Sieg mit dem aktuellen Paket (Design 6.3).
     if (setup.kind === 'boss') {
       // Erinnerungsduell: nach dem ersten Sieg mit dem Paket steigt Morrows Stufe (tiers[9]).

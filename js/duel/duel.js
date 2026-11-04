@@ -201,7 +201,7 @@ export function createDuel({ kind, player, foe, deck, rng, timeFor = () => null 
   };
 
   d.surrender = () => {
-    if ((kind === 'trainer' || kind === 'boss') && !FINAL.has(d.state)) d.state = 'lost';
+    if ((kind === 'trainer' || kind === 'boss' || kind === 'ascent') && !FINAL.has(d.state)) d.state = 'lost';
   };
 
   d.summary = () => ({

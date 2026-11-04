@@ -369,11 +369,40 @@ function drawCaveArena(ctx, t = 0, reducedMotion = false) {
   oval(ctx, ARENA.own.x, ARENA.own.y, 34, 7, '#6b6f94', '#1b1a2e');
 }
 
+// Im Leuchtturm (Plan 5b, Aufstieg): Steinmauer mit rundem Fenster in die Nacht, Holzboden, Treppe.
+function drawTowerArena(ctx) {
+  ctx.fillStyle = '#7a5236';
+  ctx.fillRect(0, 0, 240, 160);
+  ctx.fillStyle = '#a3a7c4';
+  ctx.fillRect(0, 0, 240, 56);
+  ctx.fillStyle = '#6b6f94';
+  for (let y = 0; y < 56; y += 8) for (let x = (y / 8) % 2 ? 0 : 12; x < 240; x += 24) ctx.fillRect(x, y + 7, 22, 1);
+  for (let y = 0; y < 56; y += 8) for (let x = (y / 8) % 2 ? 22 : 10; x < 240; x += 24) ctx.fillRect(x, y, 1, 8);
+  // rundes Fenster mit Sternen
+  ctx.fillStyle = '#2b2d4a';
+  ctx.beginPath();
+  ctx.arc(120, 26, 15, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#ffe08a';
+  for (const [x, y] of [[112, 20], [126, 16], [118, 32], [129, 28]]) ctx.fillRect(x, y, 1, 1);
+  ctx.fillStyle = '#4a3328';
+  ctx.fillRect(104, 26, 32, 1);
+  ctx.fillRect(120, 11, 1, 30);
+  // Holzboden
+  ctx.fillStyle = '#4a3328';
+  for (let y = 60; y < 160; y += 10) ctx.fillRect(0, y, 240, 1);
+  // Treppenstufen rechts
+  ctx.fillStyle = '#a8743a';
+  for (let i = 0; i < 5; i++) ctx.fillRect(206 + i * 6, 56 - i * 8, 34 - i * 6, 4);
+  oval(ctx, ARENA.foe.x, ARENA.foe.y, 30, 6, '#a8743a', '#1b1a2e');
+  oval(ctx, ARENA.own.x, ARENA.own.y, 34, 7, '#a8743a', '#1b1a2e');
+}
+
 // Hintergrund passend zum Gebiet (Design 7.1). Gebiete ohne eigene Arena nehmen die Bucht.
 // Bei „Bewegung reduzieren“ steht jede Arena still.
 export const ARENAS = {
   2: drawForestArena, 3: drawMoorArena, 4: drawDuneArena, 5: drawCliffArena,
-  6: drawRuinArena, 7: drawLakeArena, 8: drawMeadowArena, cave: drawCaveArena,
+  6: drawRuinArena, 7: drawLakeArena, 8: drawMeadowArena, cave: drawCaveArena, tower: drawTowerArena,
 };
 export function drawArena(ctx, area, t = 0, reducedMotion = false) {
   (ARENAS[area] ?? drawBayArena)(ctx, t, reducedMotion);

@@ -33,6 +33,9 @@ export const CONFIG = deepFreeze({
   boss: { phases: 3, energy: 6, level: 50, timeAs: 8, rememberFactor: 0.5 },
   // Revanchen (Design 7.5): Stufen 1 bis 5; Energie und Anzeige-Level je Stufe, Zeitfaktor je Stufe,
   // Grundzeit für Trainer ohne Uhr, kürzeste Zeit, XP-Aufschlag je Stufe
+  // Leuchtturm-Aufstieg (Design 9): Energie 4 + Etage/3 bis 15, Uhr ab Etage 5 (35 s, je Etage 1 s weniger,
+  // nie unter 15 s), Anzeige-Level 10 + 3·Etage, Auffüllen alle 5 Etagen, XP 20 + 2·Etage
+  ascent: { energyBase: 4, energyPer: 3, energyMax: 15, clockFrom: 5, secondsStart: 35, secondsMin: 15, levelBase: 10, levelPer: 3, refillEvery: 5, xpBase: 20, xpPer: 2 },
   rematch: { maxTier: 5, energyPerTier: 2, levelPerTier: 3, timeFactor: 0.9, baseSeconds: 40, minSeconds: 10, xpPerTier: 0.25 },
   duel: { critEvery: 3, critEveryFromStage3: 2, nixiEvery: 3, wrongMinMs: 1500 },
   // Zeitdruck (Design 7.4): Faktoren auf die Grundzeit des Trainers; lowShare: ab diesem Rest wird der Balken knapp.

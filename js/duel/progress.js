@@ -55,7 +55,9 @@ export function gainXp(creature, amount) {
 }
 
 // rematch: Stufe einer Revanche (Design 7.5), Grundwert × (1 + 0,25·Stufe), danach der Makellos-Bonus.
-export function xpForWin({ kind, area, trainerNumber, flawless, rematch = 0 }) {
+export function xpForWin({ kind, area, trainerNumber, flawless, rematch = 0, floor = 0 }) {
+  // Leuchtturm-Aufstieg (Design 6.3): 20 + 2·Etage, mit Makellos-Bonus
+  if (kind === 'ascent') return Math.round((CONFIG.ascent.xpBase + CONFIG.ascent.xpPer * floor) * (flawless ? 1 + X.flawlessBonus : 1));
   const raw = kind === 'boss' ? X.bossFirst * (rematch > 0 ? CONFIG.boss.rememberFactor : 1) : kind === 'trainer' ? X.trainerBase + X.trainerPerNumber * trainerNumber : X.wildBase + X.wildPerArea * area;
   const base = raw * (1 + CONFIG.rematch.xpPerTier * rematch);
   return Math.round(flawless ? base * (1 + X.flawlessBonus) : base);

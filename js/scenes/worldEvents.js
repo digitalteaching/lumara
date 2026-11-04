@@ -7,6 +7,7 @@ import { createDuelScene, makeWildSetup, makeTrainerSetup, makeBossSetup } from 
 import { rematchOffer, rematchSetup } from '../duel/rematch.js';
 import { rememberAvailable, rememberSetup } from '../duel/boss.js';
 import { fallenStarSpot, nearStar, rareChanceAt } from '../world/stars.js';
+import { ascentSetup, refillAfter } from '../duel/ascent.js';
 import { playTransition, reveal } from './transition.js';
 import { createEncounterCounter, wildTableFor } from '../world/encounters.js';
 import { secretOpen, takeSecretStory, takeSecretStone, blockedCells } from '../world/secrets.js';
@@ -340,6 +341,40 @@ export function createGameWorld(game) {
     if (to > from) {
       await playEvolution(game, world, { species: c.species, from, to });
       await say(game, evolutionLines(c, from, to));
+    }
+  }
+
+  // ---------- Leuchtturm-Aufstieg (Design 9) ----------
+  // Etage für Etage ein Duell; dazwischen steht man vor der Tür und wählt weiter oder hinunter.
+  // Keine Energie zurück, außer nach jeder fünften Etage. Eine Niederlage beendet den Aufstieg.
+  async function climbTower() {
+    const c = game.state.creature;
+    const progress = () => packProgress(game.state, shortId());
+    const back = async () => {
+      game.save();
+      await playTransition(game, 'fade', 300);
+      game.go(world);
+      await reveal(game);
+    };
+    for (let floor = 1; ; floor++) {
+      await say(game, [tr('tower.floor', { n: floor })]);
+      const report = await runDuel(ascentSetup(game.pack.data, floor, game.rng), 'wild');
+      if (report.outcome !== 'won') {
+        c.energy = maxEnergy(c);
+        await back();
+        const lines = [tr('tower.lost', { name: displayName(c) })];
+        if (floor > 1) lines.push(tr('tower.end', { n: floor - 1, best: progress().stats.floor }));
+        await say(game, lines);
+        return;
+      }
+      await back();
+      if (refillAfter(floor)) {
+        c.energy = maxEnergy(c);
+        game.save();
+        await say(game, [tr('tower.beacon', { name: displayName(c) })]);
+      }
+      const pick = await choose(game, tr('tower.end', { n: floor, best: progress().stats.floor }), [tr('tower.next'), tr('tower.down')], { cancelIndex: 1 });
+      if (pick !== 0) return;
     }
   }
 
@@ -694,6 +729,14 @@ export function createGameWorld(game) {
     }
     if (o?.type === 'building' && o.onDoor === 'heal' && player.dir === 'up' && ev.y === o.y + o.h - 1) {
       const c = game.state.creature;
+      // Nach dem Finale führt die Tür auch zum Aufstieg (Design 9).
+      if (finaleDone(game.state)) {
+        const pick = await choose(game, tr('tower.door'), [tr('tower.rest'), tr('tower.climb')], { cancelIndex: 0 });
+        if (pick === 1) {
+          await climbTower();
+          return true;
+        }
+      }
       c.energy = maxEnergy(c);
       await say(game, [tr('world.lighthouseHeal', { name: displayName(c) })]);
       return true;
