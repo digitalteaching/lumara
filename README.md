@@ -4,7 +4,7 @@
 
 Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, erkundet eine geheimnisvolle Insel unter einem Nebel des Vergessens und besteht Duelle mit Aufgaben aus dem Unterricht. Dafür bekommt es Punkte, und sein Wesen entwickelt sich weiter. Die Inhalte kommen aus einem Lernpaket, einer Textdatei, die die Lehrkraft selbst schreibt. Dadurch funktioniert das Spiel in jedem Fach. Das erste Beispielpaket ist für Jahrgang 6 Englisch.
 
-**Status:** Das Spiel ist fertig (Spielfassung 1.0.3). Gebaut in den Plänen 1 bis 8. Es läuft unter https://digitalteaching.github.io/lumara/.
+**Status:** Das Spiel ist fertig (Spielfassung 1.0.4). Gebaut in den Plänen 1 bis 8. Es läuft unter https://digitalteaching.github.io/lumara/.
 
 **Für Lehrkräfte:** Die [Anleitung](anleitung.html) erklärt, wie man ein Lernpaket erstellt, prüft und an die Klasse verteilt. Auf der [Seite für Lehrkräfte](lehrkraft.html) prüft man Pakete und Statistiken. Dazu gibt es die [Vorlage](pakete/vorlage.txt), das [Beispielpaket](pakete/englisch-6-beispiel.txt), einen [KI-Prompt](pakete/KI-PROMPT-Lernpaket.md), mit dem eine KI ein gültiges Paket schreibt, und eine [Kurzanleitung als PDF](pakete/Lumara-Kurzanleitung.pdf) zum Ausdrucken.
 
@@ -96,6 +96,7 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
   - Geprüft im iPad-Quer- und Hochformat mit Touch-Steuerung und offline mit allen Dateien im Zwischenspeicher.
 - **1.0.1**, Kurzanleitung:
   - Kurzanleitung für Lehrkräfte als PDF (`pakete/Lumara-Kurzanleitung.pdf`) mit Bildern aus dem Spiel und dem KI-Prompt im Anhang, verlinkt in der Anleitung und auf der Seite für Lehrkräfte. Sie liegt nicht im Zwischenspeicher, damit die iPads der Kinder sie nicht mitladen.
+- **1.0.4**, Seite für Lehrkräfte ohne „null“: Unter dem Paketnamen stand nach dem Prüfen das Wort „null“ (ein natives append mit einem leeren Zweig). Ein Test sucht jetzt im ganzen Code nach solchen Aufrufen.
 - **1.0.3**, Namensfeld mit Doppeltipp-Schutz: Der Tipp, der Ilvys letzten Satz schließt, landete auf iPads auf „Weiter“ im gerade erschienenen Namensfeld, und das Kind sah „Bitte gib einen Namen ein“, bevor es tippen konnte. Das Namensfeld nimmt jetzt wie Eier und Paket-Bildschirm 350 ms lang keinen Tipp an.
 - **1.0.2**, ohne Copyright-Hinweis: Die Hinweise mit Namen sind aus den Seiten, dem README, dem PDF und den Plänen entfernt. Ein Test sorgt dafür, dass keiner zurückkommt.
 

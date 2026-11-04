@@ -1,7 +1,7 @@
 // Seite für Lehrkräfte (Design 12.3): Statistik prüfen, Lernpaket prüfen, Probefrage.
 // Speichert nichts und lädt nichts hoch.
 
-import { el, clear } from '../ui/dom.js';
+import { el, clear, appendAll } from '../ui/dom.js';
 import { CONFIG } from '../config.js';
 import { parsePack } from '../pack/parser.js';
 import { decodePackBytes } from '../pack/decode.js';
@@ -51,7 +51,7 @@ function showPack(text, parsed) {
     return;
   }
   const o = packOverview(parsed.pack);
-  packResult.append(
+  appendAll(packResult,
     el('p', { class: 'result ok' }, '✓ Das Paket lässt sich laden.'),
     el('p', {}, el('b', {}, o.title), ` (${o.subject}) · Kennung `, el('b', {}, o.shortId)),
     o.hasKennung ? null : el('p', { class: 'warn' }, '⚠ Keine KENNUNG angegeben. Jede Änderung an der Datei setzt die Statistik der Kinder zurück.'),
