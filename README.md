@@ -4,7 +4,7 @@
 
 Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, erkundet eine geheimnisvolle Insel unter einem Nebel des Vergessens und besteht Duelle mit Aufgaben aus dem Unterricht. Dafür bekommt es Punkte, und sein Wesen entwickelt sich weiter. Die Inhalte kommen aus einem Lernpaket, einer Textdatei, die die Lehrkraft selbst schreibt. Dadurch funktioniert das Spiel in jedem Fach. Das erste Beispielpaket ist für Jahrgang 6 Englisch.
 
-**Status:** Plan 1, Plan 2, Plan 3a, Plan 3b, Plan 3c, Plan 4a, Plan 4b, Plan 4c, Plan 4d, Plan 5a und Plan 5b sind gebaut (Spielfassung 0.11.0).
+**Status:** Plan 1, Plan 2, Plan 3a, Plan 3b, Plan 3c, Plan 4a, Plan 4b, Plan 4c, Plan 4d, Plan 5a, Plan 5b und Plan 6 sind gebaut (Spielfassung 0.12.0).
 
 - **Plan 1**, spielbarer Kern:
   - Leuchtturmbucht, Lernpaket, fünf Startwesen
@@ -77,8 +77,14 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
   - Sternschnuppen: Nach dem Finale liegt auf der Sternenwiese eine gefallene Sternschnuppe; in ihrer Nähe sind seltene Wesen fünfmal so häufig.
   - Der Leuchtturm-Aufstieg: Etage für Etage ein Duell mit Fragen aus allen Themen, Energie nur alle fünf Etagen zurück. Die höchste Etage steht in der Statistik.
   - Spielstand-Format 7 (`tiers` je Paket).
+- **Plan 6**, Musik und Ton:
+  - Alles wird im Browser erzeugt (Web Audio): zwei Rechteck-Stimmen, eine Dreieck-Stimme und Rauschen, wie bei einem alten Handheld. Keine Audiodateien.
+  - Eine eigene Musikschleife für den Titel, jedes der acht Gebiete, die Höhle, wilde Duelle, Trainerduelle, Morrow und den Leuchtturm-Aufstieg; Jingles für Sieg, Niederlage, Level, Entwicklung, Fund, Leuchtstein und Finale.
+  - Effekte für Menü, Bestätigen, richtig, falsch, Treffer, Volltreffer, Kärtchen, Tippen, Stein anheben, Übergang und Nebel.
+  - Unter Einstellungen → Ton lassen sich Musik und Effekte getrennt ausschalten. Die Musik startet leise und erst nach der ersten Berührung (iOS).
+  - Spielstand-Format 8 (`settings.music`, `settings.sfx`).
 
-Musik und Ton kommen mit dem nächsten Plan.
+Französisch und Spanisch kommen mit dem nächsten Plan.
 
 - Design: [docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md](docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md)
 - Bauplan 1: [docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md](docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md)
@@ -92,6 +98,7 @@ Musik und Ton kommen mit dem nächsten Plan.
 - Bauplan 4d: [docs/superpowers/plans/2026-11-04-lumara-plan-4d-auftraege-boot-eis-sterne.md](docs/superpowers/plans/2026-11-04-lumara-plan-4d-auftraege-boot-eis-sterne.md)
 - Bauplan 5a: [docs/superpowers/plans/2026-11-04-lumara-plan-5a-hoehle-morrow.md](docs/superpowers/plans/2026-11-04-lumara-plan-5a-hoehle-morrow.md)
 - Bauplan 5b: [docs/superpowers/plans/2026-11-04-lumara-plan-5b-revanchen-aufstieg.md](docs/superpowers/plans/2026-11-04-lumara-plan-5b-revanchen-aufstieg.md)
+- Bauplan 6: [docs/superpowers/plans/2026-11-04-lumara-plan-6-musik-ton.md](docs/superpowers/plans/2026-11-04-lumara-plan-6-musik-ton.md)
 - Frühere Ideensammlung: [docs/2026-10-17-zwischenstand-ideensammlung.md](docs/2026-10-17-zwischenstand-ideensammlung.md)
 
 ## Für Lehrkräfte
