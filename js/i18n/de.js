@@ -364,4 +364,10 @@ export const DE = {
   // Tagebuch: Aufträge
   'diary.quests': 'Aufträge',
   'diary.noQuests': 'Noch keine Aufträge. Sprich mit den Leuten auf der Insel!',
+
+  // Geheime Orte
+  'secret.knownStory': 'Die Inschrift kennst du schon.',
+  'diary.secrets': 'Geheime Orte',
+  'secret.name.eiche': 'Hohle Eiche',
+  'secret.name.glasturm': 'Glasturm',
 };

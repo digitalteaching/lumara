@@ -136,6 +136,7 @@ const FILES = [
   "js/world/network.js",
   "js/world/notes.js",
   "js/world/quests.js",
+  "js/world/secrets.js",
   "js/world/player.js"
 ];
 

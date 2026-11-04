@@ -2,7 +2,8 @@
 // Fehlende Stücke stehen als „Noch nicht gefunden“ da.
 
 import { el } from '../ui/dom.js';
-import { STORY, storyPieces } from '../data/story.js';
+import { STORY, storyPieces, secretStory } from '../data/story.js';
+import { SECRET_PLACES } from '../data/secrets.js';
 import { MAPS, mapOfArea, areaName as nameOf } from '../world/network.js';
 import { t } from '../i18n/i18n.js';
 import { questLog } from '../world/quests.js';
@@ -34,6 +35,15 @@ export function diaryPage(game) {
                   : el('p', { class: 'diary-piece missing' }, t('diary.missing'))),
             )),
         ),
+        // Die Geheimstücke der Geschichte (Design 5.5), je geheimem Ort eines
+        el('div', { class: 'sheet-section diary' },
+          el('h3', {}, t('diary.secrets')),
+          Object.keys(SECRET_PLACES).map(place =>
+            el('div', { class: 'diary-area' },
+              el('h4', {}, game.state.secrets?.[place]?.story ? t(`secret.name.${place}`) : '???'),
+              game.state.secrets?.[place]?.story
+                ? el('p', { class: 'diary-piece' }, secretStory(place))
+                : el('p', { class: 'diary-piece missing' }, t('diary.missing'))))),
       );
     },
   };

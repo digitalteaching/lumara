@@ -5,7 +5,9 @@ import { CONFIG } from '../config.js';
 import { createWorldScene } from './world.js';
 import { createDuelScene, makeWildSetup, makeTrainerSetup } from './duel.js';
 import { playTransition, reveal } from './transition.js';
-import { createEncounterCounter } from '../world/encounters.js';
+import { createEncounterCounter, wildTableFor } from '../world/encounters.js';
+import { secretOpen, takeSecretStory, takeSecretStone } from '../world/secrets.js';
+import { SECRET_PLACES } from '../data/secrets.js';
 import { trainerSees } from '../world/map.js';
 import { fogEdgeLines, fogSignLines, fogSignFor } from '../world/fogEdge.js';
 import { caveGateLines, caveSocketLights } from '../world/caveGate.js';
@@ -104,7 +106,7 @@ export function createGameWorld(game) {
   }
 
   async function wildDuel() {
-    const report = await runDuel(makeWildSetup(game, def.area), 'wild');
+    const report = await runDuel(makeWildSetup(game, def.area, wildTableFor(def)), 'wild');
     await backToWorld(report);
   }
 
@@ -331,6 +333,60 @@ export function createGameWorld(game) {
       await say(game, evolutionLines(c, from, to));
     }
   }
+
+  // ---------- Geheime Orte (Design 5.7) ----------
+  // Eingang: nur mit dem Schlüsselgegenstand des Ortes, sonst ein Hinweis (lines). Mit ihm erst
+  // linesOpen, dann geht es hinein.
+  world.propVariant.secret = o => o.prop;
+  world.onInteract.unshift(async ev => {
+    const o = ev.target;
+    if (o?.type !== 'secret') return false;
+    if (!secretOpen(game.state, o)) {
+      await say(game, worldLines(def, o, 'lines'));
+      return true;
+    }
+    await say(game, worldLines(def, o, 'linesOpen'));
+    await travelTo(game, o.to);
+    return true;
+  });
+
+  // Geschichtsstein: beim ersten Mal das Geheimstück, danach nur ein Satz.
+  world.propVariant.storystone = o => (game.state.secrets?.[o.place]?.story ? 'noteStoneDone' : 'noteStone');
+  world.onInteract.push(async ev => {
+    const o = ev.target;
+    if (o?.type !== 'storystone') return false;
+    const text = takeSecretStory(game.state, o.place);
+    if (text) {
+      game.save();
+      await say(game, [text], { speaker: tr('world.storySpeaker') });
+    } else {
+      await say(game, [tr('secret.knownStory')]);
+    }
+    return true;
+  });
+
+  // Der seltene Stein des Ortes: glitzert, bis er aufgehoben ist (einmal).
+  const secretStone = def.secretStone ?? null;
+  const stoneThere = () => secretStone && !game.state.secrets?.[secretStone.place]?.stone;
+  world.groundRender.push((ctx, cam) => {
+    if (!stoneThere()) return;
+    const x = secretStone.x * 16 - cam.x + 8, y = secretStone.y * 16 - cam.y + 9;
+    const flash = !game.reducedMotion && world.time % 1400 < 350;
+    ctx.fillStyle = '#c49ad9';
+    ctx.globalAlpha = flash ? 1 : 0.8;
+    ctx.fillRect(x - 1, y, 3, 1);
+    ctx.fillRect(x, y - 1, 1, 3);
+    ctx.fillStyle = '#fffaf0';
+    ctx.fillRect(x, y, 1, 1);
+    ctx.globalAlpha = 1;
+  });
+  world.onInteract.push(async ev => {
+    if (ev.target || !stoneThere() || ev.x !== secretStone.x || ev.y !== secretStone.y) return false;
+    const item = takeSecretStone(game.state, secretStone.place);
+    game.save();
+    if (item) await say(game, [STONE_LINES[item](displayName(game.state.creature))]);
+    return true;
+  });
 
   // ---------- Aufträge (Design 5.6, 5.7) ----------
   // Vor dem allgemeinen Gespräch: Hat ein Bewohner etwas zu einem Auftrag zu sagen, sagt er das.

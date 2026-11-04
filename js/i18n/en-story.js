@@ -43,3 +43,9 @@ export const EN_STORY = {
     'The little creature in the mountain has a name that everyone forgot: Morrow. Whoever says it remembers, and Morrow is not alone any more.',
   ],
 };
+
+// Die Geschichtsstücke an den geheimen Orten auf Englisch (gleiche Orte wie SECRET_STORY).
+export const EN_SECRET_STORY = {
+  eiche: 'Long ago, the village children slept under the oak when they wanted to hear stories. The roots remembered every word. Since the mist came, they only whisper when light falls into the tunnel.',
+  glasturm: 'At the top of the glass tower, all the light of the dunes came together. From up here you could see the whole island and all eight light stones at once. Today you only see the mist over the mountain.',
+};

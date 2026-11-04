@@ -3,7 +3,7 @@
 // Andere Sprachen stehen in js/i18n/<sprache>-story.js (Design 10.6).
 
 import { language, mark } from '../i18n/i18n.js';
-import { EN_STORY } from '../i18n/en-story.js';
+import { EN_STORY, EN_SECRET_STORY } from '../i18n/en-story.js';
 
 export const STORY = {
   1: [
@@ -52,3 +52,11 @@ const LOCAL_STORY = { en: EN_STORY };
 
 // Die Stücke eines Gebiets in der Spielsprache. Gespeichert wird nur, wie viele gefunden sind.
 export const storyPieces = area => ((LOCAL_STORY[language()] ?? STORY)[area] ?? STORY[area] ?? []).map(mark);
+
+// Die Geschichtsstücke an den geheimen Orten (Design 5.5): je Ort eines, auf einem Geschichtsstein.
+export const SECRET_STORY = {
+  eiche: 'Unter der Eiche schliefen früher die Kinder des Dorfes, wenn sie Geschichten hören wollten. Die Wurzeln merkten sich jedes Wort. Seit dem Nebel flüstern sie nur noch, wenn Licht in den Gang fällt.',
+  glasturm: 'Oben im Glasturm sammelte sich alles Licht der Dünen. Wer hinaufstieg, konnte die ganze Insel sehen und alle acht Leuchtsteine zugleich. Heute sieht man von hier nur den Nebel über dem Berg.',
+};
+const LOCAL_SECRET = { en: EN_SECRET_STORY };
+export const secretStory = place => mark(LOCAL_SECRET[language()]?.[place] ?? SECRET_STORY[place]);

@@ -364,4 +364,10 @@ export const EN = {
   // Tagebuch: Aufträge
   'diary.quests': 'Tasks',
   'diary.noQuests': 'No tasks yet. Talk to the people on the island!',
+
+  // Geheime Orte
+  'secret.knownStory': 'You already know this inscription.',
+  'diary.secrets': 'Secret places',
+  'secret.name.eiche': 'Hollow Oak',
+  'secret.name.glasturm': 'Glass Tower',
 };

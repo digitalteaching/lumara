@@ -1,6 +1,7 @@
 // Begegnungen im hohen Gras (Design 6.4): im Schnitt alle 15 Schritte, zwischen 8 und 25.
 
 import { CONFIG } from '../config.js';
+import { AREA_WILD } from '../data/species.js';
 
 export function nextThreshold(rng) {
   const { minSteps, maxSteps, curve } = CONFIG.encounter;
@@ -24,6 +25,9 @@ export function createEncounterCounter(rng) {
 
 // Glanzform (Design 6.4): selten, nur bei wilden Wesen.
 export const rollShiny = rng => rng.next() < CONFIG.wild.shinyChance;
+
+// Wilde Wesen einer Karte: geheime Orte haben ihre eigene Tabelle, sonst gilt die des Gebiets.
+export const wildTableFor = def => def.wild ?? AREA_WILD[def.area];
 
 export function pickWild(areaTable, rng) {
   if (rng.next() < CONFIG.wild.rareChance) return areaTable.rare;
