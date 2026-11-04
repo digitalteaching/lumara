@@ -59,6 +59,7 @@ export const KLIPPEN = {
 
     {
       type: 'npc', id: 'ole', name: 'Ole', x: 5, y: 13, dir: 'down', sprite: 'ole',
+      linesAfter: ['Der Wind trägt wieder Lieder über die Insel. Hörst du sie?'],
       lines: [
         'Hallo! Ich bin Ole und passe auf die Windräder auf.',
         'Lange war der Wind hier still. Meine Räder standen fast ein ganzes Jahr.',
@@ -68,6 +69,7 @@ export const KLIPPEN = {
     },
     {
       type: 'npc', id: 'ina', name: 'Ina', x: 14, y: 20, dir: 'right', sprite: 'ina',
+      linesAfter: ['Von hier oben sieht man jetzt sogar den Leuchtturm. Wink mal Morrow!'],
       lines: [
         'Ich erforsche die Wolken unter den Brücken. Jede sieht anders aus!',
         'Auf den Hängebrücken gilt: geradeaus schauen, nicht nach unten.',
@@ -77,6 +79,7 @@ export const KLIPPEN = {
     },
     {
       type: 'npc', id: 'tamo', name: 'Tamo', x: 23, y: 6, dir: 'down', sprite: 'tamo',
+      linesAfter: ['Mein Drache fliegt bis zum Berg und zurück. Kein Nebel hält ihn auf!'],
       lines: [
         'Mein Drache fliegt fast so hoch wie der von Skye! Aber nur fast.',
         'Skye wartet oben auf dem Gipfel im Osten. Bei ihr läuft die Uhr noch schneller.',

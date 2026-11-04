@@ -54,6 +54,12 @@ export const BUCHT = {
     '=': 'pier',
   },
   objects: [
+    // Nach dem Finale (Design 9): Morrow wohnt am Leuchtturm. Als Nebelwesen schwebt es über dem Wasser
+    // neben dem Weg; so bleibt jedes Feld frei, auf dem man früher stehen konnte.
+    {
+      type: 'npc', id: 'morrow', name: 'Morrow', x: 36, y: 17, dir: 'left', sprite: 'morrow', when: 'afterFinale', // schwebt über dem Wasser
+      lines: ['Hier sehe ich die ganze Insel. Und jeden Tag kommt jemand vorbei!', 'Danke, dass du dich an mich erinnert hast.'],
+    },
     // Geheimer Ort (Design 5.7): am Ende des Stegs ein Pfahl, mit der Nussschale zur Gezeiteninsel
     {
       type: 'secret', id: 'steg-gezeiten', place: 'gezeiten', prop: 'boatpost', x: 19, y: 28,
@@ -69,6 +75,7 @@ export const BUCHT = {
 
     {
       type: 'npc', id: 'ilvy', name: 'Ilvy', x: 35, y: 16, dir: 'left', sprite: 'ilvy',
+      linesAfter: ['Morrow wohnt jetzt bei uns am Leuchtturm. Ich bringe ihm jeden Abend Tee.'],
       lines: [
         'Willkommen in der Leuchtturmbucht! Ich passe hier auf den Leuchtturm auf.',
         'Der Nebel des Vergessens liegt über der Insel. Nur Wissen kann ihn vertreiben.',
@@ -83,6 +90,7 @@ export const BUCHT = {
     },
     {
       type: 'npc', id: 'bram', name: 'Bram', x: 18, y: 26, dir: 'right', sprite: 'fischer',
+      linesAfter: ['Kein Nebel mehr über dem Wasser! Ich sehe bis zum Horizont.'],
       lines: [
         'Ahoi! Hier am Steg legen die Boote an.',
         'Die Hüterin der Bucht steht oben am Nordweg, kurz vor dem Nebel.',
@@ -93,6 +101,7 @@ export const BUCHT = {
     },
     {
       type: 'npc', id: 'pim', name: 'Pim', x: 11, y: 8, dir: 'left', sprite: 'kind',
+      linesAfter: ['Morrow hat mir gezeigt, wie man Echos fängt. Hallo-o-o!'],
       lines: [
         'Pass auf! Im hohen Gras wohnen wilde Wesen.',
         'Wenn dir eins zu stark ist, kannst du mit B fliehen.',
@@ -101,6 +110,7 @@ export const BUCHT = {
     },
     {
       type: 'npc', id: 'oda', name: 'Oda', x: 12, y: 13, dir: 'down', sprite: 'netz',
+      linesAfter: ['Ich erinnere mich wieder an alle Lieder meiner Großmutter. Danke!'],
       lines: [
         'Früher leuchteten acht Leuchtsteine über der Insel.',
         'Seit sie erloschen sind, kommt der Nebel jedes Jahr ein Stück näher.',

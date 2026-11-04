@@ -172,7 +172,47 @@ const STARS_UP = [[5, 10, 'H'], [9, 11, 'H'], [7, 12, 'H']];
 const CROOK_DOWN = [[0, 4, 'o'], [1, 4, 'o'], [0, 5, 'o'], [1, 6, 'o'], [1, 7, 'o'], [1, 8, 'o'], [1, 9, 'o'], [1, 10, 'o'], [1, 11, 'o'], [1, 12, 'o']];
 const CROOK_SIDE = [[2, 4, 'o'], [3, 4, 'o'], [2, 5, 'o'], [3, 6, 'o'], [3, 7, 'o'], [3, 8, 'o'], [3, 9, 'o'], [3, 10, 'o'], [3, 11, 'o']];
 
+// Morrow nach dem Finale (Plan 5a): ein kleines Wesen aus Nebel mit Sternenstaub, kein Mensch.
+const MORROW_DOWN = [
+  '................',
+  '.....dddddd.....',
+  '....dwwffffd....',
+  '...dwffffffVd...',
+  '...dffkffkffd...',
+  '...dffwffwffd...',
+  '...dRffffffRd...',
+  '...dfffkkfffd...',
+  '....dfffffVd..H.',
+  '...dffffffffd...',
+  '..dfffffffffVd..',
+  '..dffffVffffVd..',
+  '.H.dffVffVffd...',
+  '....dd.dd.dd....',
+  '................',
+  '................',
+];
+const MORROW_UP = MORROW_DOWN.map((r, y) => (y >= 4 && y <= 7 ? r.replace(/[kwR]/g, 'f') : r));
+const MORROW_SIDE = [
+  '................',
+  '......ddddd.....',
+  '.....dwwfffd....',
+  '....dwfffffVd...',
+  '....dffffkffd...',
+  '....dffffwffd...',
+  '....dfffffRfd...',
+  '....dfffffkkd...',
+  '.....dffffVd..H.',
+  '....dffffffd....',
+  '...dffffffffd...',
+  '..ddffVfffffVd..',
+  '.H..dfVffVffd...',
+  '.....dd.dd.d....',
+  '................',
+  '................',
+];
+
 export const CHARACTERS = {
+  morrow: { down: [MORROW_DOWN, MORROW_DOWN], up: [MORROW_UP, MORROW_UP], side: [MORROW_SIDE, MORROW_SIDE] },
   // Sternenwiese (Plan 3c): Sternendeuterin mit Fernrohr und Sternenumhang (Design 5.3) und die Bewohner
   trainer8: character({ h: 'v', i: 'P', c: 'D', d: 'n', l: 'S', b: 'n' }, { down: [...SCOPE_DOWN, ...STARS_DOWN], up: STARS_UP, side: [...SCOPE_SIDE, ...STARS_SIDE] }),
   selma: character({ h: 'h', i: 'r', c: 'P', d: 'n', l: 'V', b: 'b' }, { down: JAR_DOWN, side: JAR_SIDE }),

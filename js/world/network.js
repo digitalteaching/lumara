@@ -22,6 +22,7 @@ import { HOEHLE2 } from './maps/hoehle2.js';
 import { HOEHLE3 } from './maps/hoehle3.js';
 import { puzzleSolved } from './puzzles.js';
 import { caveOpen } from './caveGate.js';
+import { finaleDone } from './finale.js';
 import { language, mark } from '../i18n/i18n.js';
 import { EN_WORLD } from '../i18n/en-world.js';
 
@@ -81,6 +82,8 @@ export function whisperLine(o, passCount) {
 // Gebiet wirklich offen ist, sonst sobald der Stein ihres Gebiets leuchtet.
 export function npcLines(o, state, area, pack) {
   const def = mapOfArea(area);
+  // Nach dem Finale (Design 9) sagen die Bewohner neue Sätze.
+  if (o.linesAfter && finaleDone(state)) return worldLines(def, o, 'linesAfter');
   if (o.linesOpen && pack && areaOpen(state, pack, area + 1)) return worldLines(def, o, 'linesOpen');
   if (o.linesLit && state.stones.includes(area)) return worldLines(def, o, 'linesLit');
   // Bewohner, die von der Uhr erzählen, schweigen davon, wenn das Paket keine Uhr hat.

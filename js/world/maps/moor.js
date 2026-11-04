@@ -66,6 +66,7 @@ export const MOOR = {
 
     {
       type: 'npc', id: 'wenke', name: 'Wenke', x: 13, y: 19, dir: 'right', sprite: 'wenke',
+      linesAfter: ['Heute koche ich Suppe für die ganze Insel. Morrow bekommt den ersten Teller!'],
       lines: [
         'Willkommen im Pilzmoor! Ich koche die beste Pilzsuppe der ganzen Insel.',
         'Die leuchtenden Pilze isst man nicht. Sie zeigen nur im Dunkeln den Weg.',
@@ -75,6 +76,7 @@ export const MOOR = {
     },
     {
       type: 'npc', id: 'jasper', name: 'Jasper', x: 22, y: 16, dir: 'left', sprite: 'jasper',
+      linesAfter: ['Ohne Nebel sehe ich jedes Brett. Meine Stege waren nie so sicher.'],
       lines: [
         'Ich baue die Stege übers Moor. Bleib immer schön auf dem Holz!',
         'Siehst du die kleine Insel im Westen? Dort tanzen nachts die Irrlichter.',
@@ -87,6 +89,7 @@ export const MOOR = {
     },
     {
       type: 'npc', id: 'nele', name: 'Nele', x: 24, y: 21, dir: 'down', sprite: 'nele',
+      linesAfter: ['Die Irrlichter haben Morrow besucht. Sie sind jetzt Freunde!'],
       lines: [
         'Hast du die Irrlichter gesehen? Sie flackern, wenn man ihnen zuwinkt!',
         'Unter den Steinen mit dem hellen Zeichen liegen Zettel. Ich hab schon zwei gelöst!',

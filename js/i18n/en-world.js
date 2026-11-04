@@ -29,6 +29,9 @@ export const EN_WORLD = {
 
   objects: {
     bucht: {
+      morrow: {
+        lines: ['From here I can see the whole island. And every day someone comes by!', 'Thank you for remembering me.'],
+      },
       'steg-gezeiten': {
         lines: ['At the end of the pier stands a post with an old rope.', 'Out there lies a little island. With a boat you could get across.'],
         linesOpen: ['You put the nutshell on the water and row to Tide Island.'],
@@ -38,6 +41,7 @@ export const EN_WORLD = {
       'haus-bram': { lines: ['Bram’s house. The door is locked.'] },
       boot: { lines: ['The boat rocks gently on the water.'] },
       ilvy: {
+        linesAfter: ['Morrow lives with us at the lighthouse now. I bring it tea every evening.'],
         lines: [
           'Welcome to Lighthouse Bay! I look after the lighthouse here.',
           'The Mist of Forgetting lies over the island. Only knowledge can drive it away.',
@@ -51,6 +55,7 @@ export const EN_WORLD = {
         ],
       },
       bram: {
+        linesAfter: ['No more mist over the water! I can see all the way to the horizon.'],
         lines: [
           'Ahoy! The boats stop here at the pier.',
           'The keeper of the bay stands up on the north path, just before the mist.',
@@ -60,10 +65,12 @@ export const EN_WORLD = {
         linesOpen: ['Have you seen the mist in the north? It is gone!'],
       },
       pim: {
+        linesAfter: ['Morrow showed me how to catch echoes. Hello-o-o!'],
         lines: ['Watch out! Wild creatures live in the tall grass.', 'If one is too strong for you, press B to run.'],
         linesLit: ['I saw the stone light up. It was so bright!'],
       },
       oda: {
+        linesAfter: ['I remember all my grandmother’s songs again. Thank you!'],
         lines: [
           'Long ago, eight light stones glowed over the island.',
           'Since they went dark, the mist comes a little closer every year.',
@@ -86,6 +93,7 @@ export const EN_WORLD = {
     wald: {
       trainer: { afterWin: 'Your light stone is shining. The woods thank you.' },
       birk: {
+        linesAfter: ['The trees don’t whisper any more. They sing!'],
         lines: [
           'Welcome to the Whispering Woods! I carve figures from fallen wood.',
           'Do you see the stones with the bright mark? There are notes with tasks under them.',
@@ -94,6 +102,7 @@ export const EN_WORLD = {
         linesLit: ['The light stone of the woods is shining! My figures have shadows again.'],
       },
       fenna: {
+        linesAfter: ['Without the mist, my herbs grow all the way to the sky.'],
         lines: [
           'Wild creatures live in the ferns. Watch where you step!',
           'The red berries on the bushes give your creature strength. They grow back.',
@@ -101,6 +110,7 @@ export const EN_WORLD = {
         linesLit: ['Since the stone is shining again, my herbs smell twice as strong.'],
       },
       lio: {
+        linesAfter: ['I gave Morrow a firefly. Now it glows at the lighthouse.'],
         lines: [
           'I am looking for fireflies for my jar.',
           'The old trees whisper when you walk past them. Have you heard them yet?',
@@ -130,6 +140,7 @@ export const EN_WORLD = {
       },
       trainer: { afterWin: 'Your light stone is shining. The mushrooms glow brighter than ever.' },
       wenke: {
+        linesAfter: ['Today I am cooking soup for the whole island. Morrow gets the first bowl!'],
         lines: [
           'Welcome to the Mushroom Marsh! I cook the best mushroom soup on the whole island.',
           'You do not eat the glowing mushrooms. They only show the way in the dark.',
@@ -138,6 +149,7 @@ export const EN_WORLD = {
         linesLit: ['The light stone of the marsh is shining! Today I am cooking a party soup.'],
       },
       jasper: {
+        linesAfter: ['Without the mist I can see every plank. My boardwalks have never been so safe.'],
         lines: [
           'I build the boardwalks over the marsh. Always stay on the wood!',
           'Do you see the little island in the west? Will-o’-the-wisps dance there at night.',
@@ -149,6 +161,7 @@ export const EN_WORLD = {
         ],
       },
       nele: {
+        linesAfter: ['The will-o’-the-wisps visited Morrow. They are friends now!'],
         lines: [
           'Have you seen the will-o’-the-wisps? They flicker when you wave at them!',
           'There are notes under the stones with the bright mark. I have solved two!',
@@ -169,6 +182,7 @@ export const EN_WORLD = {
     duenen: {
       trainer: { afterWin: 'Your light stone is shining. The mirrors show real paths again.' },
       samir: {
+        linesAfter: ['In my glasses I can see the whole island now, clear and bright.'],
         lines: [
           'Welcome to the Mirror Dunes! I blow glasses from the sand here.',
           'Be careful: some paths only shine. They are mirages.',
@@ -177,6 +191,7 @@ export const EN_WORLD = {
         linesLit: ['The light stone is shining! Now my glasses shine like they used to.'],
       },
       talia: {
+        linesAfter: ['My new map has no mist any more. Only paths!'],
         lines: [
           'I draw maps of the dunes. They look a little different every day.',
           'Karim waits in the east. He is fast, and there is a clock in his duels!',
@@ -212,6 +227,7 @@ export const EN_WORLD = {
     klippen: {
       trainer: { afterWin: 'Your light stone is shining. Can you feel the wind? It carries greetings again.' },
       ole: {
+        linesAfter: ['The wind carries songs across the island again. Can you hear them?'],
         lines: [
           'Hello! I am Ole, and I look after the windmills.',
           'For a long time the wind was still here. My wheels stood still for almost a year.',
@@ -220,6 +236,7 @@ export const EN_WORLD = {
         linesLit: ['The light stone is shining, and my windmills are turning like never before!'],
       },
       ina: {
+        linesAfter: ['From up here you can even see the lighthouse now. Wave to Morrow!'],
         lines: [
           'I study the clouds under the bridges. Each one looks different!',
           'On the rope bridges: look straight ahead, not down.',
@@ -228,6 +245,7 @@ export const EN_WORLD = {
         linesLit: ['Since the stone is shining, the clouds are as white as fresh washing.'],
       },
       tamo: {
+        linesAfter: ['My kite dragon flies to the mountain and back. No mist can stop it!'],
         lines: [
           'My kite dragon flies almost as high as Skye’s! But only almost.',
           'Skye waits up on the peak in the east. In her duels the clock runs even faster.',
@@ -264,6 +282,7 @@ export const EN_WORLD = {
       },
       trainer: { afterWin: 'Your light stone is shining. Can you hear it? All the cogs tick in time again.' },
       greta: {
+        linesAfter: ['I am warm, the gears are turning, and the mist is gone. What a day!'],
         lines: [
           'I am Greta, a mechanic. I oil the cogs that still turn.',
           'Nobody knows what makes them move. But when one stops, it gets cold here.',
@@ -272,6 +291,7 @@ export const EN_WORLD = {
         linesLit: ['The stone is shining! Can you hear the ticking? The wheels are in time again.'],
       },
       pino: {
+        linesAfter: ['With my new ferry I take people to the lighthouse, to Morrow.'],
         lines: [
           'I am Pino, the ferryman. But my boat has floated away.',
           'Do you see the observatory behind the canal? Star pictures shine on its plaque.',
@@ -283,6 +303,7 @@ export const EN_WORLD = {
         ],
       },
       bo: {
+        linesAfter: ['The gears tick to the beat of a song. Morrow hummed it for me.'],
         lines: [
           'Have you seen the sparks on the cogs? I count them every day!',
           'There are notes under some stones. If you solve the task, you find something.',
@@ -303,6 +324,7 @@ export const EN_WORLD = {
       },
       trainer: { afterWin: 'Your light stone is shining. Look, the northern lights are brighter!' },
       sven: {
+        linesAfter: ['Forty winters, and the ice has never been this clear.'],
         lines: [
           'I am Sven. I have fished on this lake for forty winters.',
           'It is warm in my tent. Outside, I drill holes in the ice and wait.',
@@ -311,6 +333,7 @@ export const EN_WORLD = {
         linesLit: ['The stone is shining! The fish will bite today, I can feel it in my knees.'],
       },
       mira: {
+        linesAfter: ['I am building a Morrow out of snow. It even smiles!'],
         lines: [
           'I am Mira, and I make figures out of snow. Do you like my kingfisher?',
           'Do you see the ice cave behind the open water?',
@@ -322,6 +345,7 @@ export const EN_WORLD = {
         ],
       },
       ari: {
+        linesAfter: ['I write down everything I learn, so that nobody ever forgets anything again.'],
         lines: [
           'At night the northern lights dance over the lake. Green and purple! Have you seen them?',
           'There are notes under some stones. I have found two!',
@@ -339,6 +363,7 @@ export const EN_WORLD = {
     wiese: {
       trainer: { afterWin: 'Your light stone is shining. The path down to the bay is free.' },
       selma: {
+        linesAfter: ['My wish came true. Nobody forgets what is important to them any more.'],
         lines: [
           'I am Selma. I collect shooting stars that fall into the grass.',
           'When you see one fall, you can make a wish. I always wish for the same thing.',
@@ -347,6 +372,7 @@ export const EN_WORLD = {
         linesLit: ['The stone is shining! Tonight more stars are falling than in many years.'],
       },
       kai: {
+        linesAfter: ['My sheep graze all the way to the mountain now. They even want to go into the cave!'],
         lines: [
           'I am Kai, and I look after the night sheep. They never sleep when the stars shine.',
           'Do you see the gate in the mountain? It has eight sockets, one for each light stone.',

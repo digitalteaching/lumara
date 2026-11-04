@@ -59,6 +59,7 @@ export const DUENEN = {
 
     {
       type: 'npc', id: 'samir', name: 'Samir', x: 14, y: 12, dir: 'down', sprite: 'samir',
+      linesAfter: ['In meinen Gläsern sehe ich jetzt die ganze Insel, klar und hell.'],
       lines: [
         'Willkommen in den Spiegeldünen! Ich blase Gläser aus dem Sand hier.',
         'Pass auf: Manche Wege glänzen nur. Das sind Luftspiegelungen.',
@@ -68,6 +69,7 @@ export const DUENEN = {
     },
     {
       type: 'npc', id: 'talia', name: 'Talia', x: 23, y: 25, dir: 'left', sprite: 'talia',
+      linesAfter: ['Meine neue Karte hat keinen Nebel mehr. Nur Wege!'],
       lines: [
         'Ich zeichne Karten von den Dünen. Sie sehen jeden Tag ein bisschen anders aus.',
         'Karim wartet im Osten. Er ist schnell, und bei ihm läuft eine Uhr!',

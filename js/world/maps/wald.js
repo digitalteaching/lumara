@@ -59,6 +59,7 @@ export const WALD = {
 
     {
       type: 'npc', id: 'birk', name: 'Birk', x: 15, y: 26, dir: 'right', sprite: 'birk',
+      linesAfter: ['Die Bäume flüstern nicht mehr. Sie singen!'],
       lines: [
         'Willkommen im Flüsterwald! Ich schnitze hier Figuren aus Fallholz.',
         'Siehst du die Steine mit dem hellen Zeichen? Darunter liegen Zettel mit Aufgaben.',
@@ -68,6 +69,7 @@ export const WALD = {
     },
     {
       type: 'npc', id: 'fenna', name: 'Fenna', x: 8, y: 17, dir: 'down', sprite: 'fenna',
+      linesAfter: ['Ohne Nebel wachsen meine Kräuter bis zum Himmel.'],
       lines: [
         'Im Farn wohnen wilde Wesen. Pass auf, wo du hintrittst!',
         'Die roten Beeren an den Sträuchern geben deinem Wesen Kraft. Sie wachsen wieder nach.',
@@ -76,6 +78,7 @@ export const WALD = {
     },
     {
       type: 'npc', id: 'lio', name: 'Lio', x: 23, y: 17, dir: 'left', sprite: 'lio',
+      linesAfter: ['Ich habe Morrow ein Glühwürmchen geschenkt. Es leuchtet jetzt am Leuchtturm.'],
       lines: [
         'Ich suche Glühwürmchen für mein Glas.',
         'Die alten Bäume flüstern, wenn man an ihnen vorbeigeht. Hast du sie schon gehört?',

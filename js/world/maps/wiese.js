@@ -59,6 +59,7 @@ export const WIESE = {
 
     {
       type: 'npc', id: 'selma', name: 'Selma', x: 22, y: 9, dir: 'down', sprite: 'selma',
+      linesAfter: ['Mein Wunsch ist wahr geworden. Niemand vergisst mehr, was ihm wichtig ist.'],
       lines: [
         'Ich bin Selma. Ich sammle Sternschnuppen, die ins Gras fallen.',
         'Wer eine fallen sieht, darf sich etwas wünschen. Ich wünsche mir immer dasselbe.',
@@ -68,6 +69,7 @@ export const WIESE = {
     },
     {
       type: 'npc', id: 'kai', name: 'Kai', x: 11, y: 9, dir: 'up', sprite: 'kai',
+      linesAfter: ['Meine Schafe grasen jetzt bis zum Berg. Sogar in die Höhle wollen sie!'],
       lines: [
         'Ich bin Kai und hüte die Nachtschafe. Sie schlafen nie, wenn die Sterne scheinen.',
         'Siehst du das Tor im Berg? Es hat acht Fassungen, eine für jeden Leuchtstein.',

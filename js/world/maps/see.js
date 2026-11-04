@@ -65,6 +65,7 @@ export const SEE = {
 
     {
       type: 'npc', id: 'sven', name: 'Sven', x: 12, y: 6, dir: 'left', sprite: 'sven',
+      linesAfter: ['Vierzig Winter, und noch nie war das Eis so klar.'],
       lines: [
         'Ich bin Sven. Seit vierzig Wintern fische ich auf diesem See.',
         'In meinem Zelt ist es warm. Draußen bohre ich Löcher ins Eis und warte.',
@@ -74,6 +75,7 @@ export const SEE = {
     },
     {
       type: 'npc', id: 'mira', name: 'Mira', x: 28, y: 6, dir: 'right', sprite: 'mira',
+      linesAfter: ['Ich baue einen Morrow aus Schnee. Er lächelt sogar!'],
       lines: [
         'Ich bin Mira und baue Figuren aus Schnee. Gefällt dir mein Eisvogel?',
         'Siehst du die Eisgrotte dort hinter dem offenen Wasser?',
@@ -86,6 +88,7 @@ export const SEE = {
     },
     {
       type: 'npc', id: 'ari', name: 'Ari', x: 8, y: 23, dir: 'right', sprite: 'ari',
+      linesAfter: ['Ich schreibe alles auf, was ich lerne. Damit nie wieder jemand etwas vergisst.'],
       lines: [
         'Nachts tanzt das Nordlicht über dem See. Grün und lila! Hast du es gesehen?',
         'Unter manchen Steinen liegen Zettel. Ich habe schon zwei gefunden!',

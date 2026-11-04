@@ -66,6 +66,7 @@ export const RUINEN = {
 
     {
       type: 'npc', id: 'greta', name: 'Greta', x: 25, y: 24, dir: 'left', sprite: 'greta',
+      linesAfter: ['Mir ist warm, die Räder laufen, und der Nebel ist fort. Was für ein Tag!'],
       lines: [
         'Ich bin Greta, Mechanikerin. Ich öle die Zahnräder, die sich noch drehen.',
         'Niemand weiß, was sie antreibt. Aber wenn eins stehen bleibt, wird es kalt hier.',
@@ -75,6 +76,7 @@ export const RUINEN = {
     },
     {
       type: 'npc', id: 'pino', name: 'Pino', x: 28, y: 5, dir: 'right', sprite: 'pino',
+      linesAfter: ['Mit meiner neuen Fähre bringe ich Leute zum Leuchtturm, zu Morrow.'],
       lines: [
         'Ich bin Pino, der Fährmann. Nur mein Boot ist mir leider davongeschwommen.',
         'Siehst du die Sternwarte hinter dem Kanal? An ihrer Tafel leuchten Sternbilder.',
@@ -87,6 +89,7 @@ export const RUINEN = {
     },
     {
       type: 'npc', id: 'bo', name: 'Bo', x: 5, y: 17, dir: 'right', sprite: 'bo',
+      linesAfter: ['Die Zahnräder ticken im Takt eines Liedes. Morrow hat es mir vorgesummt.'],
       lines: [
         'Hast du die Funken an den Zahnrädern gesehen? Ich zähle sie jeden Tag!',
         'Unter manchen Steinen liegen Zettel. Wer die Aufgabe löst, findet etwas.',
