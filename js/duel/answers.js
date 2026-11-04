@@ -10,6 +10,11 @@ export function normalizeTyped(s) {
     .toLowerCase()
     .replace(/[’‘‛`´]/g, "'")
     .replace(/[“”„]/g, '"')
+    // Spanisch: ¿ und ¡ zählen nicht (Kinder lassen sie beim Tippen weg). Französisch: « oui » wie "oui".
+    .replace(/[¿¡]/g, '')
+    .replace(/«\s*/g, '"')
+    .replace(/\s*»/g, '"')
+    .trim()
     .replace(/\s*[.!?]+$/, '')
     .trim();
 }

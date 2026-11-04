@@ -18,6 +18,16 @@ test('Prüffokus: iPad-Apostrophe und geschützte Leerzeichen', () => {
   assert.equal(checkTyped(' ice cream ', ['ice cream']).correct, true);
 });
 
+test('Spanische Frage- und Ausrufezeichen zählen nicht, französische Anführungszeichen wie gerade', () => {
+  assert.deepEqual(checkTyped('como te llamas', ['¿Cómo te llamas?']), { correct: false, almost: true });
+  assert.equal(checkTyped('¿Cómo te llamas?', ['Cómo te llamas']).correct, true);
+  assert.equal(checkTyped('cómo te llamas', ['¿Cómo te llamas?']).correct, true);
+  assert.equal(checkTyped('¡Hola!', ['hola']).correct, true);
+  assert.equal(checkTyped('hola que tal', ['Hola, ¿qué tal?']).correct, false);
+  assert.equal(normalizeTyped('« oui »'), normalizeTyped('"oui"'));
+  assert.equal(checkTyped('Ça va ?', ['ça va']).correct, true);
+});
+
 test('Zahlen: Komma und Punkt sind gleich', () => {
   assert.equal(checkTyped('3,5', ['3.5']).correct, true);
   assert.equal(checkTyped('3.5', ['3,5']).correct, true);
