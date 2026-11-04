@@ -4,7 +4,7 @@
 
 Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, erkundet eine geheimnisvolle Insel unter einem Nebel des Vergessens und besteht Duelle mit Aufgaben aus dem Unterricht. Dafür bekommt es Punkte, und sein Wesen entwickelt sich weiter. Die Inhalte kommen aus einem Lernpaket, einer Textdatei, die die Lehrkraft selbst schreibt. Dadurch funktioniert das Spiel in jedem Fach. Das erste Beispielpaket ist für Jahrgang 6 Englisch.
 
-**Status:** Plan 1, Plan 2, Plan 3a, Plan 3b, Plan 3c, Plan 4a und Plan 4b sind gebaut (Spielfassung 0.7.0).
+**Status:** Plan 1, Plan 2, Plan 3a, Plan 3b, Plan 3c, Plan 4a, Plan 4b und Plan 4c sind gebaut (Spielfassung 0.8.0).
 
 - **Plan 1**, spielbarer Kern:
   - Leuchtturmbucht, Lernpaket, fünf Startwesen
@@ -51,6 +51,12 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
   - Das Wesen-Buch im Menü: 33 Einträge, gesehen mit Silhouette und Fundort, besiegt mit Bild und Beschreibung. Die Plätze 25 bis 33 füllen die geheimen Orte und das Finale.
   - Glanzform: Ein wildes Wesen erscheint mit 1 zu 64 in einer seltenen Farbe und bekommt im Buch einen Stern.
   - Spielstand-Format 4 (`book`); ältere Stände bekommen die Wesen ihrer besiegten Trainer ins Buch.
+- **Plan 4c**, Aufträge, Schlüsselgegenstände und die ersten geheimen Orte:
+  - In den Gebieten 1 bis 5 gibt je ein Bewohner einen Auftrag: Bram, Fenna, Jasper, Samir und Tamo. Annehmen geht jederzeit, abschließen erst, wenn der Leuchtstein des Gebiets leuchtet. Belohnung: 50 XP und ein Gegenstand.
+  - Schlüsselgegenstände im Rucksack: der Futterbeutel (Platz für 20 Futter), die Laterne und der Kletterhaken.
+  - Das Tagebuch zeigt die Aufträge mit einem Hinweis auf den nächsten Schritt.
+  - Die Hohle Eiche im Flüsterwald (dunkler Wurzelgang, nur mit Laterne) und der Glasturm in den Spiegeldünen (mit dem Kletterhaken): je eine seltene Art (Wurzelgeist, Prismalibelle), ein Geschichtsstück und ein seltener Stein.
+  - Spielstand-Format 5 (`quests`, `keys`, `secrets`).
 
 Die Höhle im Berg, Aufträge und geheime Orte kommen mit späteren Plänen.
 
@@ -62,6 +68,7 @@ Die Höhle im Berg, Aufträge und geheime Orte kommen mit späteren Plänen.
 - Bauplan 3c: [docs/superpowers/plans/2026-11-03-lumara-plan-3c-gebiete-6-bis-8.md](docs/superpowers/plans/2026-11-03-lumara-plan-3c-gebiete-6-bis-8.md)
 - Bauplan 4a: [docs/superpowers/plans/2026-11-03-lumara-plan-4a-spielsprache.md](docs/superpowers/plans/2026-11-03-lumara-plan-4a-spielsprache.md)
 - Bauplan 4b: [docs/superpowers/plans/2026-11-03-lumara-plan-4b-entwicklungen-wesen-buch.md](docs/superpowers/plans/2026-11-03-lumara-plan-4b-entwicklungen-wesen-buch.md)
+- Bauplan 4c: [docs/superpowers/plans/2026-11-04-lumara-plan-4c-auftraege-geheime-orte.md](docs/superpowers/plans/2026-11-04-lumara-plan-4c-auftraege-geheime-orte.md)
 - Frühere Ideensammlung: [docs/2026-10-17-zwischenstand-ideensammlung.md](docs/2026-10-17-zwischenstand-ideensammlung.md)
 
 ## Für Lehrkräfte
