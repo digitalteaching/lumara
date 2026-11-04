@@ -37,3 +37,15 @@ test('Der KI-Prompt öffnet sich im Browser (kein download-Attribut), damit man 
     assert.ok(!/href="pakete\/KI-PROMPT-Lernpaket\.md"[^>]*download/.test(read(page)), page);
   }
 });
+
+test('Die Kurzanleitung als PDF: auf beiden Seiten verlinkt, öffnet im Browser, nicht im Offline-Speicher', () => {
+  const pdf = 'pakete/Lumara-Kurzanleitung.pdf';
+  assert.equal(readFileSync(new URL(pdf, root)).subarray(0, 5).toString(), '%PDF-');
+  for (const page of ['anleitung.html', 'lehrkraft.html']) {
+    const html = read(page);
+    assert.ok(links(html).includes(pdf), page);
+    assert.match(html, /href="pakete\/Lumara-Kurzanleitung\.pdf" target="_blank" rel="noopener"/, page);
+  }
+  // Nur für Lehrkräfte: Die iPads der Kinder laden die 0,7 MB nicht mit in den Zwischenspeicher.
+  assert.ok(!read('sw.js').includes(pdf));
+});

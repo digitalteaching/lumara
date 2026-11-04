@@ -4,7 +4,7 @@
 // Bei jeder Veröffentlichung VERSION hier, in version.json und in js/version.js gleich erhöhen.
 // Neue Dateien des Spiels gehören in FILES (tests/sw.test.js prüft beides).
 
-const VERSION = '1.0.0';
+const VERSION = '1.0.1';
 const CACHE = `lumara-${VERSION}`;
 const FILES = [
   "index.html",
