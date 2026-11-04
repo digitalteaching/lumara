@@ -23,6 +23,8 @@ const FILES = [
   "js/app/platform.js",
   "js/app/update.js",
   "js/config.js",
+  "js/audio/notes.js",
+  "js/audio/sequencer.js",
   "js/core/hash.js",
   "js/core/input.js",
   "js/core/loop.js",
