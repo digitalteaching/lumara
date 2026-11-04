@@ -48,4 +48,8 @@ export const EN_STORY = {
 export const EN_SECRET_STORY = {
   eiche: 'Long ago, the village children slept under the oak when they wanted to hear stories. The roots remembered every word. Since the mist came, they only whisper when light falls into the tunnel.',
   glasturm: 'At the top of the glass tower, all the light of the dunes came together. From up here you could see the whole island and all eight light stones at once. Today you only see the mist over the mountain.',
+  gezeiten: 'At low tide, the island shows old stones with signs. The fishers say the first light stone was found here, tiny and cold, like a shell.',
+  irrlicht: 'The will-o’-the-wisps were once the lanterns of the marsh people. When nobody sang any more, they became little lights that dance over the water alone.',
+  eisgrotte: 'Words are frozen in the ice of the cave like bubbles. If you look closely, you can still read some. One of them says “friend”.',
+  sternwarte: 'Every night, the observatory wrote down who on the island had learned something new. The last page is empty. Underneath it says: “Forget nobody.”',
 };

@@ -161,10 +161,19 @@ function repairQuests(raw) {
 
 const repairKeys = raw => (Array.isArray(raw) ? [...new Set(raw.filter(k => KEY_ITEMS.includes(k)))] : []);
 
+// Orte mit Zahnrad-Rätsel behalten solved und gears (drei Stellungen 0 bis 3, sonst alle 0).
+const isGear = g => isInt(g) && g >= 0 && g <= 3;
 function repairSecrets(raw) {
   const out = {};
   if (!isObject(raw)) return out;
-  for (const [id, e] of Object.entries(raw)) if (SECRET_PLACES[id] && isObject(e)) out[id] = { story: e.story === true, stone: e.stone === true };
+  for (const [id, e] of Object.entries(raw)) {
+    if (!SECRET_PLACES[id] || !isObject(e)) continue;
+    out[id] = { story: e.story === true, stone: e.stone === true };
+    const goal = SECRET_PLACES[id].gears;
+    if (!goal) continue;
+    const ok = Array.isArray(e.gears) && e.gears.length === goal.length && e.gears.every(isGear);
+    Object.assign(out[id], { solved: e.solved === true, gears: ok ? [...e.gears] : goal.map(() => 0) });
+  }
   return out;
 }
 

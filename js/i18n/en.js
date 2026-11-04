@@ -370,4 +370,14 @@ export const EN = {
   'diary.secrets': 'Secret places',
   'secret.name.eiche': 'Hollow Oak',
   'secret.name.glasturm': 'Glass Tower',
+  'secret.name.gezeiten': 'Tide Island',
+  'secret.name.irrlicht': 'Wisp Island',
+  'secret.name.eisgrotte': 'Ice Grotto',
+  'secret.name.sternwarte': 'Observatory',
+
+  // Zahnräder der Sternwarte: wohin der Stern zeigt
+  'gear.dir.0': 'up',
+  'gear.dir.1': 'right',
+  'gear.dir.2': 'down',
+  'gear.dir.3': 'left',
 };
