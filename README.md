@@ -4,7 +4,9 @@
 
 Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, erkundet eine geheimnisvolle Insel unter einem Nebel des Vergessens und besteht Duelle mit Aufgaben aus dem Unterricht. Dafür bekommt es Punkte, und sein Wesen entwickelt sich weiter. Die Inhalte kommen aus einem Lernpaket, einer Textdatei, die die Lehrkraft selbst schreibt. Dadurch funktioniert das Spiel in jedem Fach. Das erste Beispielpaket ist für Jahrgang 6 Englisch.
 
-**Status:** Plan 1, Plan 2, Plan 3a, Plan 3b, Plan 3c, Plan 4a, Plan 4b, Plan 4c, Plan 4d, Plan 5a, Plan 5b, Plan 6 und Plan 7 sind gebaut (Spielfassung 0.13.0).
+**Status:** Das Spiel ist fertig (Spielfassung 1.0.0). Gebaut in den Plänen 1 bis 8.
+
+**Für Lehrkräfte:** Die [Anleitung](anleitung.html) erklärt, wie man ein Lernpaket erstellt, prüft und an die Klasse verteilt. Auf der [Seite für Lehrkräfte](lehrkraft.html) prüft man Pakete und Statistiken. Dazu gibt es die [Vorlage](pakete/vorlage.txt), das [Beispielpaket](pakete/englisch-6-beispiel.txt) und einen [KI-Prompt](pakete/KI-PROMPT-Lernpaket.md), mit dem eine KI ein gültiges Paket schreibt.
 
 - **Plan 1**, spielbarer Kern:
   - Leuchtturmbucht, Lernpaket, fünf Startwesen
@@ -87,8 +89,11 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
   - Ist das Lernpaket für Französisch oder Spanisch, läuft das ganze Spiel in dieser Sprache, auf A1: Oberfläche, Duelle, Bewohner, Schilder, Geschichte und Aufträge.
   - Gebiete und Wesen haben eigene, kindgerechte Namen (etwa Baie du Phare, Bosque Susurrante, Coquillou, Espumín). Bewohner und Morrow behalten ihre Namen; alles für die Lehrkraft bleibt Deutsch.
   - Beim Eintippen zählen ¿ und ¡ nicht, « » gilt wie " ".
-
-Der Abschluss (KI-Prompt, Anleitung, Vorlage, offline, iPad) kommt mit dem nächsten Plan.
+- **Plan 8**, Abschluss:
+  - KI-Prompt für Lernpakete (`pakete/KI-PROMPT-Lernpaket.md`) und eine Anleitung für Lehrkräfte (`anleitung.html`), beide auf der Seite für Lehrkräfte verlinkt und offline verfügbar.
+  - Feinschliff: Im Finale spricht das namenlose Wesen als „???“, die Kuppel der Sternwarte sagt, was zu tun ist, die Karte zeigt „Du bist hier“ auch in der Höhle, kürzere Texte auf Französisch und Spanisch.
+  - Ton: Musik und Effekte aus lassen den Ton schlafen (Akku), die Probefrage der Lehrkraft bleibt stumm, Tipp-Ton auch mit Bildschirmtastaturen, weitere Jingles.
+  - Geprüft im iPad-Quer- und Hochformat mit Touch-Steuerung und offline mit allen Dateien im Zwischenspeicher.
 
 - Design: [docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md](docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md)
 - Bauplan 1: [docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md](docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md)
@@ -104,6 +109,7 @@ Der Abschluss (KI-Prompt, Anleitung, Vorlage, offline, iPad) kommt mit dem näch
 - Bauplan 5b: [docs/superpowers/plans/2026-11-04-lumara-plan-5b-revanchen-aufstieg.md](docs/superpowers/plans/2026-11-04-lumara-plan-5b-revanchen-aufstieg.md)
 - Bauplan 6: [docs/superpowers/plans/2026-11-04-lumara-plan-6-musik-ton.md](docs/superpowers/plans/2026-11-04-lumara-plan-6-musik-ton.md)
 - Bauplan 7: [docs/superpowers/plans/2026-11-04-lumara-plan-7-sprachen.md](docs/superpowers/plans/2026-11-04-lumara-plan-7-sprachen.md)
+- Bauplan 8: [docs/superpowers/plans/2026-11-04-lumara-plan-8-abschluss.md](docs/superpowers/plans/2026-11-04-lumara-plan-8-abschluss.md)
 - Frühere Ideensammlung: [docs/2026-10-17-zwischenstand-ideensammlung.md](docs/2026-10-17-zwischenstand-ideensammlung.md)
 
 ## Für Lehrkräfte
