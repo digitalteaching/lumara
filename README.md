@@ -4,7 +4,7 @@
 
 Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, erkundet eine geheimnisvolle Insel unter einem Nebel des Vergessens und besteht Duelle mit Aufgaben aus dem Unterricht. Dafür bekommt es Punkte, und sein Wesen entwickelt sich weiter. Die Inhalte kommen aus einem Lernpaket, einer Textdatei, die die Lehrkraft selbst schreibt. Dadurch funktioniert das Spiel in jedem Fach. Das erste Beispielpaket ist für Jahrgang 6 Englisch.
 
-**Status:** Plan 1, Plan 2, Plan 3a, Plan 3b, Plan 3c, Plan 4a, Plan 4b und Plan 4c sind gebaut (Spielfassung 0.8.0).
+**Status:** Plan 1, Plan 2, Plan 3a, Plan 3b, Plan 3c, Plan 4a, Plan 4b, Plan 4c und Plan 4d sind gebaut (Spielfassung 0.9.0).
 
 - **Plan 1**, spielbarer Kern:
   - Leuchtturmbucht, Lernpaket, fünf Startwesen
@@ -34,7 +34,7 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
 - **Plan 3c**, Uhrwerkruinen, Nordlichtsee und Sternenwiese:
   - drei neue Gebiete mit Otto (30 s pro Frage), Freya (25 s) und Luna (20 s), Bewohnern, je drei wilden Arten, eigener Arena, Teilchen und drei Geschichtsstücken. Das letzte Stück verrät Morrows Namen.
   - Uhrwerkruinen mit Kanälen, Brücken und Zahnrädern, die Funken sprühen; Nordlichtsee mit Eis, Löchern im Eis, Schnee und Nordlicht; Sternenwiese mit Sternengras und Sternschnuppen
-  - Sternwarte und Eisgrotte sind schon zu sehen, aber noch nicht erreichbar (Platz für Plan 4).
+  - Sternwarte und Eisgrotte sind schon zu sehen; erreichbar werden sie mit Plan 4d.
   - Das Höhlentor am Berg: Seine acht Fassungen leuchten mit den Leuchtsteinen in den Farben der Ringe. Die Höhle selbst bleibt bis zum Finale zu.
   - Nach dem Sieg über Luna führt ein Pfad von der Sternenwiese hinunter in die Bucht: Der Ring der Insel ist geschlossen.
   - Karte der Insel im Menü: Gebiete im Nebel grau und mit „Im Nebel“, dazu „Du bist hier“. Das Reisemenü zeigt viele Ziele in zwei Spalten.
@@ -57,8 +57,14 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
   - Das Tagebuch zeigt die Aufträge mit einem Hinweis auf den nächsten Schritt.
   - Die Hohle Eiche im Flüsterwald (dunkler Wurzelgang, nur mit Laterne) und der Glasturm in den Spiegeldünen (mit dem Kletterhaken): je eine seltene Art (Wurzelgeist, Prismalibelle), ein Geschichtsstück und ein seltener Stein.
   - Spielstand-Format 5 (`quests`, `keys`, `secrets`).
+- **Plan 4d**, die letzten Aufträge und geheimen Orte:
+  - Aufträge in den Gebieten 6 bis 8: Pino sucht sein Boot (Nussschale), Sven schickt Tee zu Greta (Eiskufen), Selma sucht den Sternzähler Jonte (Sternkarte).
+  - Mit der Nussschale vom Pfahl am Steg zur Gezeiteninsel und vom Pfahl am Moorufer zur Irrlichtinsel.
+  - Die Eisgrotte: Auf Rutscheis gleitet man, bis eine Eissäule aufhält. Zum Kristall braucht man fünf Rutschzüge; über den Ausgang fängt man jederzeit neu an.
+  - Die Sternwarte: drei Zahnräder, deren Sterne wie auf der Sternkarte zeigen müssen. Dann öffnet sich die Kuppel und bleibt offen.
+  - Vier neue seltene Arten (Perlkrabbe, Irrlichtfee, Kristallotter, Zeitschnecke), vier Geschichtsstücke und die Buchplätze 27 bis 30.
 
-Die Höhle im Berg, Aufträge und geheime Orte kommen mit späteren Plänen.
+Die Höhle im Berg und das Finale kommen mit dem nächsten Plan.
 
 - Design: [docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md](docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md)
 - Bauplan 1: [docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md](docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md)
@@ -69,6 +75,7 @@ Die Höhle im Berg, Aufträge und geheime Orte kommen mit späteren Plänen.
 - Bauplan 4a: [docs/superpowers/plans/2026-11-03-lumara-plan-4a-spielsprache.md](docs/superpowers/plans/2026-11-03-lumara-plan-4a-spielsprache.md)
 - Bauplan 4b: [docs/superpowers/plans/2026-11-03-lumara-plan-4b-entwicklungen-wesen-buch.md](docs/superpowers/plans/2026-11-03-lumara-plan-4b-entwicklungen-wesen-buch.md)
 - Bauplan 4c: [docs/superpowers/plans/2026-11-04-lumara-plan-4c-auftraege-geheime-orte.md](docs/superpowers/plans/2026-11-04-lumara-plan-4c-auftraege-geheime-orte.md)
+- Bauplan 4d: [docs/superpowers/plans/2026-11-04-lumara-plan-4d-auftraege-boot-eis-sterne.md](docs/superpowers/plans/2026-11-04-lumara-plan-4d-auftraege-boot-eis-sterne.md)
 - Frühere Ideensammlung: [docs/2026-10-17-zwischenstand-ideensammlung.md](docs/2026-10-17-zwischenstand-ideensammlung.md)
 
 ## Für Lehrkräfte
