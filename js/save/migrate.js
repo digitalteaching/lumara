@@ -17,7 +17,7 @@ import { MAPS as WORLD_MAPS } from '../world/network.js';
 import { validateName, emptyPackProgress, emptyWorld } from '../state.js';
 import { emptyBag, BAG_ITEMS } from '../items/bag.js';
 
-export const CURRENT_VERSION = 7;
+export const CURRENT_VERSION = 8;
 
 const MIGRATIONS = {
   // 1 → 2 (Plan 3a): Leuchtsteine, Rucksack, Geschichte, Uhren für das Nachwachsen, gesamte Spielzeit.
@@ -42,6 +42,8 @@ const MIGRATIONS = {
   5: s => ({ ...s, version: 6, finale: { done: false } }),
   // 6 → 7 (Plan 5b): Revanche-Stufen je Paket; die Reparatur gibt jedem Paket leere tiers.
   6: s => ({ ...s, version: 7 }),
+  // 7 → 8 (Plan 6): Musik und Effekte ein und aus; die Reparatur schaltet beides ein, wenn nichts da ist.
+  7: s => ({ ...s, version: 8 }),
 };
 
 const MAPS = WORLD_MAPS;
@@ -239,7 +241,11 @@ export function migrateState(raw) {
       name: name.value,
       creature,
       position: repairPosition(s.position),
-      settings: { textSpeed: TEXT_SPEEDS.includes(s.settings?.textSpeed) ? s.settings.textSpeed : 'normal' },
+      settings: {
+        textSpeed: TEXT_SPEEDS.includes(s.settings?.textSpeed) ? s.settings.textSpeed : 'normal',
+        music: s.settings?.music !== false,
+        sfx: s.settings?.sfx !== false,
+      },
       packs,
       playMs: count(s.playMs),
       stones,

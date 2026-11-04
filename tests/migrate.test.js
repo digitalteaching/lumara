@@ -15,19 +15,22 @@ const V5_EMPTY = { quests: {}, keys: [], secrets: {} };
 const V6 = { version: 6, finale: { done: false } };
 import { SPIELSTAND_V7 } from './fixtures/spielstand-v7.js';
 // Format 7: jedes Paket hat Revanche-Stufen (tiers), ältere Stände bekommen leere.
-const v7 = s => ({ ...s, version: 7, packs: Object.fromEntries(Object.entries(s.packs).map(([id, p]) => [id, { ...p, tiers: {} }])) });
+// Format 8: Musik und Effekte, ältere Stände bekommen beides eingeschaltet.
+const toV8 = s => ({ ...s, version: 8, settings: { ...s.settings, music: true, sfx: true } });
+import { SPIELSTAND_V8 } from './fixtures/spielstand-v8.js';
+const v7 = s => toV8({ ...s, version: 7, packs: Object.fromEntries(Object.entries(s.packs).map(([id, p]) => [id, { ...p, tiers: {} }])) });
 import { SPIELSTAND_V6 } from './fixtures/spielstand-v6.js';
 import { TRAINER_CREATURES } from '../js/data/species.js';
 const bookOf = stones => Object.fromEntries(stones.map(n => [TRAINER_CREATURES[n].species, { beaten: true, shiny: false }]));
 import { foodCount } from '../js/items/bag.js';
 import { createMap } from '../js/world/map.js';
 
-test('Spielstand der Fassung 1 bleibt für immer ladbar und wird zu Format 7', () => {
+test('Spielstand der Fassung 1 bleibt für immer ladbar und wird zu Format 8', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v1.txt', import.meta.url), 'utf8'));
   assert.equal(d.ok, true);
   const m = migrateState(d.value);
   assert.equal(m.ok, true);
-  assert.equal(m.state.version, 7);
+  assert.equal(m.state.version, 8);
   const { version, playMs, stones, lastStone, bag, shineActive, story, world, book, quests, keys, secrets, finale, ...rest } = m.state;
   assert.deepEqual({ quests, keys, secrets }, V5_EMPTY);
   assert.deepEqual(finale, { done: false });
@@ -44,7 +47,7 @@ test('Spielstand der Fassung 1 bleibt für immer ladbar und wird zu Format 7', (
   assert.deepEqual(world, { bushes: {}, notes: {}, finds: {} });
 });
 
-test('Spielstand der Fassung 2 bleibt für immer ladbar und wird zu Format 7', () => {
+test('Spielstand der Fassung 2 bleibt für immer ladbar und wird zu Format 8', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v2.txt', import.meta.url), 'utf8'));
   assert.deepEqual(migrateState(d.value), { ok: true, state: v7({ ...SPIELSTAND_V2, version: 5, bag: { ...SPIELSTAND_V2.bag, time: 0 }, book: bookOf(SPIELSTAND_V2.stones), ...V5_EMPTY, ...V6 }) });
 });
@@ -94,7 +97,7 @@ test('fehlende Teile werden ergänzt, unmögliche Werte begrenzt', () => {
   assert.equal(c.energy, maxEnergy(c));
   assert.equal(c.lifeStones, 0);
   assert.equal(c.nickname, null);
-  assert.deepEqual(m.state.settings, { textSpeed: 'normal' });
+  assert.deepEqual(m.state.settings, { textSpeed: 'normal', music: true, sfx: true });
   assert.deepEqual(m.state.position, { map: 'bucht', ...BUCHT.spawn });
   assert.deepEqual(m.state.packs, { ENQ9: { ...emptyPackProgress(), beaten: [1] } });
   assert.equal(m.state.savedAt, 0);
@@ -106,7 +109,7 @@ test('Position in einer Wand oder außerhalb der Karte wird zum Startpunkt', () 
 });
 
 test('aus einer neueren Fassung oder unbrauchbar', () => {
-  assert.deepEqual(migrateState({ ...SPIELSTAND_V7, version: 8 }), { ok: false, reason: 'newer' });
+  assert.deepEqual(migrateState({ ...SPIELSTAND_V8, version: 9 }), { ok: false, reason: 'newer' });
   const bad = [
     null, 'x', {}, { version: 1 },
     { ...SPIELSTAND_V1, name: '' },
@@ -146,7 +149,17 @@ test('Spielstand der Fassung 6 bleibt für immer ladbar', () => {
 
 test('Spielstand der Fassung 7 bleibt für immer ladbar', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v7.txt', import.meta.url), 'utf8'));
-  assert.deepEqual(migrateState(d.value), { ok: true, state: SPIELSTAND_V7 });
+  assert.deepEqual(migrateState(d.value), { ok: true, state: toV8(SPIELSTAND_V7) });
+});
+
+test('Spielstand der Fassung 8 bleibt für immer ladbar', () => {
+  const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v8.txt', import.meta.url), 'utf8'));
+  assert.deepEqual(migrateState(d.value), { ok: true, state: SPIELSTAND_V8 });
+});
+
+test('Format 8: kaputte Toneinstellungen werden eingeschaltet, ein klares Aus bleibt aus', () => {
+  const m = migrateState({ ...structuredClone(SPIELSTAND_V8), settings: { textSpeed: 'fast', music: 'nein', sfx: false } });
+  assert.deepEqual(m.state.settings, { textSpeed: 'fast', music: true, sfx: false });
 });
 
 test('Format 7: kaputte Revanche-Stufen werden repariert', () => {

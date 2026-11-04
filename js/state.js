@@ -1,4 +1,4 @@
-// Spielzustand im Speicher, Format Version 7 (Design 10.4, 11). Was dem Kind gehört (Name, Wesen,
+// Spielzustand im Speicher, Format Version 8 (Design 10.4, 11). Was dem Kind gehört (Name, Wesen,
 // Position, Einstellungen, Leuchtsteine, Rucksack, Geschichte, Spielzeit), liegt oben; was zum
 // Lernpaket gehört, liegt in packs[Kurzform].
 // Änderungen am Format brauchen eine Umwandlung in js/save/migrate.js.
@@ -23,12 +23,12 @@ export function newGameState({ name, species, nickname }) {
   const creature = { species, nickname: nickname || null, level: 1, xpInLevel: 0, energy: 0, lifeStones: 0 };
   creature.energy = maxEnergy(creature);
   return {
-    version: 7,
+    version: 8,
     savedAt: 0,
     name,
     creature,
     position: { map: 'bucht', ...BUCHT.spawn },
-    settings: { textSpeed: 'normal' },
+    settings: { textSpeed: 'normal', music: true, sfx: true }, // Musik und Effekte (Design 15)
     packs: {},
     playMs: 0,
     stones: [],
