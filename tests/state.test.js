@@ -13,7 +13,7 @@ import { xpToNext } from '../js/duel/progress.js';
 
 test('neues Spiel: Level 1, volle Energie, Start am Steg', () => {
   const s = newGameState({ name: 'Mia', species: 'kiesel', nickname: null });
-  assert.equal(s.version, 4);
+  assert.equal(s.version, 5);
   assert.equal(s.creature.level, 1);
   assert.equal(s.creature.xpInLevel, 0);
   assert.equal(s.creature.energy, 5);
@@ -113,7 +113,7 @@ const EMPTY = { beaten: [], boss: false, history: {}, stats: { wins: 0, right: 0
 
 test('neuer Spielstand hat Version, Einstellungen und leeren Fortschritt', () => {
   const s = newGameState({ name: 'Mia', species: 'nixi', nickname: null });
-  assert.equal(s.version, 4);
+  assert.equal(s.version, 5);
   assert.equal(s.savedAt, 0);
   assert.deepEqual(s.settings, { textSpeed: 'normal' });
   assert.deepEqual(packProgress(s, 'ENQ9'), EMPTY);
@@ -191,4 +191,9 @@ test('Sieg mit Entwicklung: Die Energie aus dem Duell bleibt, das neue Feld ist 
   Object.assign(s.creature, { level: 14, xpInLevel: xpToNext(14) - 1 });
   const r = applyDuelResult(s, 'ENQ9', T1, won());
   assert.deepEqual([r.stageBefore, r.stageAfter, s.creature.energy], [1, 2, 3]); // playerEnergy 2 + 1
+});
+
+test('Neues Spiel: keine Aufträge, keine Schlüsselgegenstände, keine Funde an geheimen Orten', () => {
+  const s = newGameState({ name: 'A', species: 'nixi', nickname: null });
+  assert.deepEqual([s.quests, s.keys, s.secrets], [{}, [], {}]);
 });

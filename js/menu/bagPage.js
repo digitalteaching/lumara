@@ -3,7 +3,8 @@
 
 import { el } from '../ui/dom.js';
 import { CONFIG } from '../config.js';
-import { foodCount } from '../items/bag.js';
+import { foodCount, foodMax } from '../items/bag.js';
+import { KEY_ITEMS } from '../items/keys.js';
 import { eat } from '../items/food.js';
 import { useShine } from '../items/stones.js';
 import { displayName } from '../data/species.js';
@@ -52,7 +53,7 @@ export function bagPage(game) {
 
       body.append(...[
         el('p', {}, t('common.energy', { n: c.energy, max: maxEnergy(c) })),
-        el('p', { class: 'small' }, t('bag.foodSlots', { n: foodCount(bag), max: CONFIG.bag.foodMax })),
+        el('p', { class: 'small' }, t('bag.foodSlots', { n: foodCount(bag), max: foodMax(s) })),
         el('div', { class: 'bag-list' },
           row('berry', feedButton('berry')),
           row('starfruit', feedButton('starfruit')),
@@ -62,6 +63,11 @@ export function bagPage(game) {
         ),
         s.shineActive ? el('p', { class: 'bag-shine' }, t('bag.shineActive')) : null,
         el('p', {}, t('bag.lifeStones', { n: c.lifeStones, max: CONFIG.creature.maxLifeStones })),
+        // Schlüsselgegenstände (Design 8.4): nie verbraucht, nur wenn das Kind welche hat
+        (s.keys ?? []).length ? el('section', { class: 'sheet-section bag-keys' },
+          el('h3', {}, t('bag.keys')),
+          el('ul', {}, KEY_ITEMS.filter(k => s.keys.includes(k)).map(k =>
+            el('li', {}, el('b', {}, t(`key.${k}.name`)), ' ', t(`key.${k}.text`))))) : null,
         el('p', { class: 'bag-message', role: 'status' }, message),
       ].filter(Boolean));
     },

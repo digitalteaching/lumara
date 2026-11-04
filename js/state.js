@@ -20,7 +20,7 @@ export function newGameState({ name, species, nickname }) {
   const creature = { species, nickname: nickname || null, level: 1, xpInLevel: 0, energy: 0, lifeStones: 0 };
   creature.energy = maxEnergy(creature);
   return {
-    version: 4,
+    version: 5,
     savedAt: 0,
     name,
     creature,
@@ -35,6 +35,9 @@ export function newGameState({ name, species, nickname }) {
     story: {},
     world: emptyWorld(),
     book: {},
+    quests: {},
+    keys: [],
+    secrets: {},
   };
 }
 

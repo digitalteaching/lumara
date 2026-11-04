@@ -334,4 +334,19 @@ export const EN = {
 
   // Wesen-Buch: Bildschirmleser
   'book.cellAria': 'No. {n}: {name}, {labels}',
+
+  // Schlüsselgegenstände
+  'bag.keys': 'Key items',
+  'key.foodbag.name': 'Food bag',
+  'key.foodbag.text': 'More room for food: 20 instead of 10.',
+  'key.lantern.name': 'Lantern',
+  'key.lantern.text': 'Lights up dark tunnels.',
+  'key.hook.name': 'Climbing hook',
+  'key.hook.text': 'Helps you climb steep walls.',
+  'key.nutshell.name': 'Nutshell boat',
+  'key.nutshell.text': 'A small boat for calm water.',
+  'key.skates.name': 'Ice skates',
+  'key.skates.text': 'Let you glide over the ice.',
+  'key.starmap.name': 'Star map',
+  'key.starmap.text': 'Shows where the stars are.',
 };

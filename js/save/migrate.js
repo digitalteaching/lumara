@@ -7,6 +7,9 @@
 import { CONFIG } from '../config.js';
 import { STARTERS, TRAINER_CREATURES } from '../data/species.js';
 import { BOOK_SLOTS } from '../data/book.js';
+import { QUESTS } from '../data/quests.js';
+import { SECRET_PLACES } from '../data/secrets.js';
+import { KEY_ITEMS } from '../items/keys.js';
 import { xpToNext, maxEnergy } from '../duel/progress.js';
 import { createMap } from '../world/map.js';
 import { BUCHT } from '../world/maps/bucht.js';
@@ -14,7 +17,7 @@ import { MAPS as WORLD_MAPS } from '../world/network.js';
 import { validateName, emptyPackProgress, emptyWorld } from '../state.js';
 import { emptyBag, BAG_ITEMS } from '../items/bag.js';
 
-export const CURRENT_VERSION = 4;
+export const CURRENT_VERSION = 5;
 
 const MIGRATIONS = {
   // 1 → 2 (Plan 3a): Leuchtsteine, Rucksack, Geschichte, Uhren für das Nachwachsen, gesamte Spielzeit.
@@ -33,6 +36,8 @@ const MIGRATIONS = {
     version: 4,
     book: Object.fromEntries((Array.isArray(s.stones) ? s.stones : []).filter(n => TRAINER_CREATURES[n]).map(n => [TRAINER_CREATURES[n].species, { beaten: true, shiny: false }])),
   }),
+  // 4 → 5 (Plan 4c): Aufträge, Schlüsselgegenstände und Funde an geheimen Orten.
+  4: s => ({ ...s, version: 5, quests: {}, keys: [], secrets: {} }),
 };
 
 const MAPS = WORLD_MAPS;
@@ -123,11 +128,11 @@ function repairStones(raw) {
 }
 
 // Futter höchstens foodMax: zuerst werden Sternfrüchte gekappt, dann Beeren.
-function repairBag(raw) {
+function repairBag(raw, keys = []) {
   const bag = emptyBag();
   if (!isObject(raw)) return bag;
   for (const k of BAG_ITEMS) bag[k] = isInt(raw[k]) && raw[k] > 0 ? raw[k] : 0;
-  const max = CONFIG.bag.foodMax;
+  const max = keys.includes('foodbag') ? CONFIG.bag.foodMaxBag : CONFIG.bag.foodMax;
   bag.berry = Math.min(bag.berry, max);
   bag.starfruit = Math.min(bag.starfruit, max - bag.berry);
   return bag;
@@ -140,6 +145,25 @@ function repairStory(raw) {
     const area = Number(k);
     if (isInt(area) && area >= 1 && area <= 8 && isInt(v) && v > 0) out[area] = Math.min(3, v);
   }
+  return out;
+}
+
+const QUEST_IDS = new Set(QUESTS.map(q => q.id));
+function repairQuests(raw) {
+  const out = {};
+  if (!isObject(raw)) return out;
+  for (const [id, q] of Object.entries(raw)) {
+    if (QUEST_IDS.has(id) && isObject(q) && isInt(q.step) && q.step >= 0) out[id] = { step: q.step, done: q.done === true };
+  }
+  return out;
+}
+
+const repairKeys = raw => (Array.isArray(raw) ? [...new Set(raw.filter(k => KEY_ITEMS.includes(k)))] : []);
+
+function repairSecrets(raw) {
+  const out = {};
+  if (!isObject(raw)) return out;
+  for (const [id, e] of Object.entries(raw)) if (SECRET_PLACES[id] && isObject(e)) out[id] = { story: e.story === true, stone: e.stone === true };
   return out;
 }
 
@@ -194,11 +218,14 @@ export function migrateState(raw) {
       playMs: count(s.playMs),
       stones,
       lastStone: stones.includes(s.lastStone) ? s.lastStone : null,
-      bag: repairBag(s.bag),
+      bag: repairBag(s.bag, repairKeys(s.keys)),
       shineActive: s.shineActive === true,
       story: repairStory(s.story),
       world: repairWorld(s.world),
       book: repairBook(s.book),
+      quests: repairQuests(s.quests),
+      keys: repairKeys(s.keys),
+      secrets: repairSecrets(s.secrets),
     },
   };
 }
