@@ -8,6 +8,7 @@ import { BUCHT } from '../js/world/maps/bucht.js';
 import { HOEHLE2 } from '../js/world/maps/hoehle2.js';
 import { newGameState } from '../js/state.js';
 import { textIn } from '../js/i18n/i18n.js';
+import { readFileSync } from 'node:fs';
 import { DE } from '../js/i18n/de.js';
 import { EN } from '../js/i18n/en.js';
 
@@ -67,4 +68,10 @@ test('Nach dem Finale ist auch der Zier-Nebel neben dem Tor der Bucht fort', () 
   assert.deepEqual(fogCells(after), []);
   assert.equal(after.rows[0][15], 'T');
   assert.equal(after.rows[0][18], MAPS.bucht.rows[0][18], 'das Tor selbst bleibt, wie es ist');
+});
+
+test('Finale: Wer seinen Namen nicht mehr weiß, spricht als „???“, nicht als „Morrow“', () => {
+  for (const lang of ['de', 'en', 'fr', 'es']) assert.equal(textIn(lang, 'finale.unknown'), '???', lang);
+  const src = readFileSync(new URL('../js/scenes/finale.js', import.meta.url), 'utf8');
+  assert.match(src, /say\(game, tl\('finale\.ask'\), \{ speaker: tr\('finale\.unknown'\) \}\)/);
 });

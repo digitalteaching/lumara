@@ -46,7 +46,7 @@ export const EN_QUEST_TEXT = {
     "steps": [
       [
         "Herbs from Fenna? How kind of her!",
-        "Please say thank you. My cough will soon be gone."
+        "Please tell her thank you. My cough will soon be gone."
       ]
     ],
     "locked": [
@@ -86,7 +86,7 @@ export const EN_QUEST_TEXT = {
     ],
     "finish": [
       "Flo is back! I am so happy.",
-      "Take this lantern. With it you find the way even in the darkest tunnel."
+      "Take this lantern. It shows you the way, even in the darkest tunnel."
     ]
   },
   "q4": {
@@ -104,13 +104,13 @@ export const EN_QUEST_TEXT = {
     ],
     "steps": [
       [
-        "A ball of glass shines between the grass.",
+        "A glass ball glitters in the grass.",
         "It is Samir’s glass ball!"
       ]
     ],
     "locked": [
       "My glass ball! Thank you!",
-      "First win the light stone of the dunes. Then you get something from me."
+      "First relight the light stone of the dunes. Then I have something for you."
     ],
     "finish": [
       "My glass ball! It did not break.",

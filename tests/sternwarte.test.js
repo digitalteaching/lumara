@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { STERNWARTE } from '../js/world/maps/sternwarte.js';
 import { RUINEN } from '../js/world/maps/ruinen.js';
-import { MAPS, openGatesFor } from '../js/world/network.js';
+import { MAPS, openGatesFor, closedPuzzleGateAt } from '../js/world/network.js';
 import { createMap, reachable, cellKey } from '../js/world/map.js';
 import { turnGear } from '../js/world/puzzles.js';
 import { migrateState } from '../js/save/migrate.js';
@@ -87,4 +87,15 @@ test('Zeitschnecke: Buchplatz 30, Bild 32 × 32 mit eigener Silhouette, Text auf
   assert.equal(rows.length, 32);
   const shape = r => r.map(x => x.replace(/[^.]/g, '#')).join('/');
   for (const [id, stages] of Object.entries(CREATURE_ART)) if (id !== 'zeitschnecke') assert.notEqual(shape(stages[1]), shape(rows), id);
+});
+
+test('Vor der geschlossenen Kuppel sagt das Spiel etwas, das auf die Zahnräder zeigt', () => {
+  const s = s0();
+  const gate = STERNWARTE.gates.find(g => g.id === 'kuppel');
+  assert.equal(closedPuzzleGateAt(STERNWARTE, s, PACK, gate.x + 1, gate.y)?.id, 'kuppel');
+  assert.equal(closedPuzzleGateAt(STERNWARTE, s, PACK, gate.x + 1, gate.y + 3), null);
+  for (const i of [0, 0, 1, 2, 2, 2]) turnGear(s, 'sternwarte', i);
+  assert.equal(closedPuzzleGateAt(STERNWARTE, s, PACK, gate.x + 1, gate.y), null);
+  for (const lang of ['de', 'en', 'fr', 'es']) assert.ok(textIn(lang, 'gear.domeClosed').length > 10, lang);
+  assert.ok(textIn('de', 'gear.domeClosed').includes('Zahnr'));
 });

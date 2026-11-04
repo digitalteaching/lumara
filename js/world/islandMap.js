@@ -12,7 +12,10 @@ const CAVE = { col: 2, row: 3 };
 
 export function islandMap(state, pack) {
   const defs = Object.values(MAPS).filter(d => !d.secret && !d.cave);
-  const hereArea = MAPS[state.position?.map]?.area ?? null;
+  // In der Höhle steht „Du bist hier“ beim Berg, nicht beim Gebiet, zu dem die Höhle gehört.
+  const hereDef = MAPS[state.position?.map];
+  const inCave = !!hereDef?.cave;
+  const hereArea = inCave ? null : (hereDef?.area ?? null);
   const areas = Object.entries(LAYOUT).map(([key, [col, row]]) => {
     const area = Number(key);
     return {
@@ -26,7 +29,7 @@ export function islandMap(state, pack) {
     };
   });
   const lit = new Set(state.stones.filter(n => n >= 1 && n <= 8)).size;
-  return { areas, cave: { ...CAVE, lit } };
+  return { areas, cave: { ...CAVE, lit, here: inCave } };
 }
 
 export function mapLabels({ open, lit, here }) {
@@ -35,7 +38,7 @@ export function mapLabels({ open, lit, here }) {
   return out;
 }
 
-export const caveLabels = ({ lit }) => [t('map.mountain'), t('map.sockets', { lit })];
+export const caveLabels = ({ lit, here = false }) => [t('map.mountain'), t('map.sockets', { lit }), ...(here ? [t('map.here')] : [])];
 
 // Feste Trennstellen für die zusammengesetzten Gebietsnamen (weicher Trennstrich), damit schmale
 // Kästen und Knöpfe „Uhrwerk-ruinen“ trennen und nicht „Uhrwer-kruinen“.

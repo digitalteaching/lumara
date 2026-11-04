@@ -21,7 +21,7 @@ import { caveGateLines, caveSocketLights, caveOpen, ilvyCaveLines } from '../wor
 import { withFinale, finaleDone, finishFinale } from '../world/finale.js';
 import { playFinale } from './finale.js';
 import { breakName } from '../world/islandMap.js';
-import { MAPS, areaConfig, areaOpen, exitAt, openGatesFor, resolveStart, whisperLine, beaconFront, packWorldKey, worldLines, areaOf } from '../world/network.js';
+import { MAPS, areaConfig, areaOpen, exitAt, openGatesFor, closedPuzzleGateAt, resolveStart, whisperLine, beaconFront, packWorldKey, worldLines, areaOf } from '../world/network.js';
 import { visitStone, travelTargets, respawnPoint, challengeMark, respawnAfterLoss } from '../world/beacons.js';
 import { playBeaconScene } from './beacon.js';
 import { bushKey, bushReady, harvest } from '../items/food.js';
@@ -536,6 +536,10 @@ export function createGameWorld(game) {
       const goal = SECRET_PLACES[def.secret]?.gears ?? [];
       const dir = i => tr(`gear.dir.${goal[i]}`);
       await say(game, [tr('gear.hint1'), tr('gear.hint2', { a: dir(0) }), tr('gear.hint3', { b: dir(1), c: dir(2) })]);
+      return true;
+    }
+    if (!o && closedPuzzleGateAt(def, game.state, game.pack.data, ev.x, ev.y)) {
+      await say(game, [tr('gear.domeClosed')]);
       return true;
     }
     if (o?.type !== 'gear') return false;

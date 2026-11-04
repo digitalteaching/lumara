@@ -25,6 +25,8 @@ test('Spanische Frage- und Ausrufezeichen zählen nicht, französische Anführun
   assert.equal(checkTyped('¡Hola!', ['hola']).correct, true);
   assert.equal(checkTyped('hola que tal', ['Hola, ¿qué tal?']).correct, false);
   assert.equal(normalizeTyped('« oui »'), normalizeTyped('"oui"'));
+  assert.equal(checkTyped('Er sagte "Hallo" zu mir', ['Er sagte »Hallo« zu mir']).correct, true);
+  assert.equal(checkTyped('Il dit « bonjour » à Léa', ['Il dit "bonjour" à Léa']).correct, true);
   assert.equal(checkTyped('Ça va ?', ['ça va']).correct, true);
 });
 

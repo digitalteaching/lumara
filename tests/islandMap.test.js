@@ -18,7 +18,7 @@ test('Karte: Ring wie Design 5.2, Nebel nach Paket, Steine und „Du bist hier�
   assert.deepEqual([m.areas[4].col, m.areas[4].row], [2, 1]); // Windklippen oben
   assert.deepEqual([m.areas[0].col, m.areas[0].row], [2, 5]); // Bucht unten
   assert.deepEqual(m.areas.map(a => [a.col, a.row]), [[2, 5], [1, 4], [1, 3], [1, 2], [2, 1], [3, 2], [3, 3], [3, 4]]);
-  assert.deepEqual(m.cave, { col: 2, row: 3, lit: 5 });
+  assert.deepEqual(m.cave, { col: 2, row: 3, lit: 5, here: false });
   assert.equal(m.areas[2].name, 'Pilzmoor');
   assert.deepEqual(m.areas.map(a => a.name), ['Leuchtturmbucht', 'Flüsterwald', 'Pilzmoor', 'Spiegeldünen', 'Windklippen', 'Uhrwerkruinen', 'Nordlichtsee', 'Sternenwiese']);
 });
@@ -45,4 +45,13 @@ test('Gebietsnamen trennen an der richtigen Stelle (weicher Trennstrich), etwa �
     assert.ok(breakName(d.name).includes('\u00ad'), d.name);
     assert.equal(breakName(d.name).replaceAll('\u00ad', ''), d.name);
   }
+});
+
+test('In der Höhle steht „Du bist hier“ beim Berg, nicht auf der Sternenwiese', () => {
+  const s = { ...st([1, 2, 3, 4, 5, 6, 7, 8]), position: { map: 'hoehle1', x: 5, y: 5, dir: 'up' } };
+  const m = islandMap(s, pack(8));
+  assert.ok(m.areas.every(a => !a.here), 'kein Gebiet ist „hier“');
+  assert.equal(m.cave.here, true);
+  assert.deepEqual(caveLabels({ lit: 8, here: true }), ['Berg mit Höhle', '8 von 8 Fassungen leuchten', '● Du bist hier']);
+  assert.equal(islandMap(st([1]), pack(8)).cave.here, false);
 });

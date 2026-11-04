@@ -54,6 +54,12 @@ export function openGatesFor(def, state, pack) {
     .map(g => g.id);
 }
 
+// Das geschlossene Rätseltor an dieser Stelle (die Kuppel der Sternwarte, solange das Rätsel offen ist), oder null.
+export function closedPuzzleGateAt(def, state, pack, x, y) {
+  const open = openGatesFor(def, state, pack);
+  return (def.gates ?? []).find(g => g.afterPuzzle && !open.includes(g.id) && x >= g.x && x < g.x + g.w && y >= g.y && y < g.y + g.h) ?? null;
+}
+
 export function exitAt(def, x, y) {
   return (def.exits ?? []).find(e => x >= e.x && x < e.x + e.w && y >= e.y && y < e.y + e.h) ?? null;
 }

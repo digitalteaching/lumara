@@ -82,7 +82,7 @@ export const DE = {
   'tower.down': 'Hinuntergehen',
   'tower.beacon': 'Ein kleiner Leuchtstein auf dem Treppenabsatz füllt die Energie von {name} ganz auf.',
   'tower.end': 'Du hast Etage {n} geschafft. Deine Bestmarke: Etage {best}.',
-  'tower.lost': '{name} ist erschöpft. Ihr geht gemeinsam die Treppe hinunter.',
+  'tower.lost': 'Du gehst mit {name} die Treppe hinunter.',
   'star.near': 'Hier ist eine Sternschnuppe ins Gras gefallen. Seltene Wesen sind ganz in der Nähe!',
   'rematch.offer': 'Lust auf eine Revanche? Ich bin jetzt stärker. (Stärke {stage} von {max})',
   'rematch.offerMax': 'Noch eine Revanche? Mehr Stärke habe ich nicht, aber ich gebe alles!',
@@ -179,6 +179,7 @@ export const DE = {
   'finale.ask': ['Ich … ich weiß nicht mehr, wie ich heiße. Niemand hat mich je gerufen.'],
   'finale.say': 'Sag seinen Namen:',
   'finale.sayName': '„Morrow!“',
+  'finale.unknown': '???',
   'finale.after': [
     'Morrow? … Ja! So heiße ich!',
     'Der Nebel löst sich auf. Überall auf der Insel wird es hell.',
@@ -430,4 +431,5 @@ export const DE = {
   'gear.hint1': 'Neben den Rädern hängt eine Tafel mit drei Sternbildern. Du vergleichst sie mit der Sternkarte.',
   'gear.hint2': 'Auf der Sternkarte zeigt der Stern beim ersten Rad nach {a}.',
   'gear.hint3': 'Beim zweiten zeigt er nach {b}, beim dritten nach {c}.',
+  'gear.domeClosed': 'Die Kuppel ist fest verschlossen. Vielleicht öffnen die Zahnräder daneben sie.',
 };

@@ -11,7 +11,8 @@ const RISE_MS = 2000;
 
 export async function playFinale(game, world) {
   const morrow = speciesName('morrow', 1);
-  await say(game, tl('finale.ask'), { speaker: morrow });
+  // Noch weiß es seinen Namen nicht: Über der Sprechblase steht „???“.
+  await say(game, tl('finale.ask'), { speaker: tr('finale.unknown') });
   await choose(game, tr('finale.say'), [tr('finale.sayName')]);
   let time = 0;
   const tick = dt => { time += dt; };

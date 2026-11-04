@@ -9,11 +9,11 @@ export function normalizeTyped(s) {
     .trim()
     .toLowerCase()
     .replace(/[’‘‛`´]/g, "'")
-    .replace(/[“”„]/g, '"')
-    // Spanisch: ¿ und ¡ zählen nicht (Kinder lassen sie beim Tippen weg). Französisch: « oui » wie "oui".
+    // Alle Anführungszeichen gelten gleich, mit oder ohne Leerzeichen daneben: „Hallo“, »Hallo«,
+    // « Hallo » und "Hallo". Spanisch: ¿ und ¡ zählen nicht (Kinder lassen sie beim Tippen weg).
+    .replace(/[“”„«»‹›]/g, '"')
+    .replace(/\s*"\s*/g, '"')
     .replace(/[¿¡]/g, '')
-    .replace(/«\s*/g, '"')
-    .replace(/\s*»/g, '"')
     .trim()
     .replace(/\s*[.!?]+$/, '')
     .trim();

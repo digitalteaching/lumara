@@ -172,7 +172,7 @@ test('Spanisch: Fragen und Ausrufe haben ¿ … ? und ¡ … !', () => {
     ...Object.values(ES_QUEST_TEXT).flatMap(q => Object.values(q).flatMap(lines)),
   ];
   // „? Todavía sin ver“ im Wesen-Buch: Das ? vorn ist ein Zeichen für „unbekannt“, keine Frage.
-  for (const s of all.map(x => x.replace(/^\? /, ''))) {
+  for (const s of all.map(x => x.replace(/^\? /, '')).filter(x => !/^\?+$/.test(x))) {
     assert.equal((s.match(/¿/g) ?? []).length, (s.match(/\?/g) ?? []).length, s);
     assert.equal((s.match(/¡/g) ?? []).length, (s.match(/!/g) ?? []).length, s);
   }
@@ -210,4 +210,19 @@ test('Schalter in den Einstellungen: „Musik: an“ kommt aus der Tabelle, im F
   assert.equal(t('settings.toggle', { what: 'Musik', state: 'an' }), 'Musik: an');
   const src = readFileSync(new URL('../js/menu/settings.js', import.meta.url), 'utf8');
   assert.ok(src.includes("t('settings.toggle'"), 'settings.js setzt den Text nicht selbst zusammen');
+});
+
+test('Aufstieg verloren: „erschöpft“ steht nicht zweimal hintereinander', () => {
+  for (const lang of ['de', 'en', 'fr', 'es']) {
+    setLanguage(lang);
+    const tired = t('duel.ownTired', { name: 'Nixi' }).replace(/[.!]$/, '');
+    assert.ok(!t('tower.lost', { name: 'Nixi' }).includes(tired), `${lang}: ${t('tower.lost', { name: 'Nixi' })}`);
+  }
+});
+
+test('Kurze Texte auf dem kleinen Schirm: Zeitstein-Knopf und Kartenlegende', () => {
+  for (const [lang, L] of Object.entries({ de: DE, ...Object.fromEntries(Object.entries(FOREIGN).map(([k, v]) => [k, v.ui])) })) {
+    assert.ok(L['duel.timeBtn'].length <= DE['duel.timeBtn'].length + 2, `${lang}: ${L['duel.timeBtn']}`);
+    for (const k of ['map.lit', 'map.dark', 'map.here']) assert.ok(L[k].length <= 24, `${lang}: ${L[k]}`);
+  }
 });

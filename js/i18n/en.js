@@ -82,7 +82,7 @@ export const EN = {
   'tower.down': 'Go down',
   'tower.beacon': 'A little light stone on the landing fills {name}’s energy completely.',
   'tower.end': 'You reached floor {n}. Your best: floor {best}.',
-  'tower.lost': '{name} is exhausted. You walk down the stairs together.',
+  'tower.lost': 'You and {name} walk down the stairs.',
   'star.near': 'A shooting star has fallen into the grass here. Rare creatures are very close!',
   'rematch.offer': 'Fancy a rematch? I am stronger now. (Strength {stage} of {max})',
   'rematch.offerMax': 'Another rematch? I can’t get any stronger, but I will give it my all!',
@@ -179,6 +179,7 @@ export const EN = {
   'finale.ask': ['I … I don’t remember my name. Nobody has ever called me.'],
   'finale.say': 'Say its name:',
   'finale.sayName': '“Morrow!”',
+  'finale.unknown': '???',
   'finale.after': [
     'Morrow? … Yes! That is my name!',
     'The mist melts away. All over the island, it is getting bright.',
@@ -430,4 +431,5 @@ export const EN = {
   'gear.hint1': 'Next to the gears hangs a plaque with three star pictures. You compare it with the star map.',
   'gear.hint2': 'On the star map, the star of the first gear points {a}.',
   'gear.hint3': 'For the second it points {b}, for the third {c}.',
+  'gear.domeClosed': 'The dome is shut tight. Maybe the gears next to it can open it.',
 };

@@ -45,7 +45,7 @@ export const ES_SPECIES = {
 
   // Gebiet 1
   gischtling: { names: ['Espumín', 'Rompeolas'], gender: 'm', description: 'Un pequeño espíritu de las olas, hecho de espuma de mar. Lleva una corona de gotas de agua.' },
-  haeuschel: { names: ['Casacol', 'Torreconcha'], gender: 'm', description: 'Un cangrejo ermitaño en una concha de caracol. Cuando crece, su casa parece un pequeño faro.' },
+  haeuschel: { names: ['Casacol', 'Cangrefaro'], gender: 'm', description: 'Un cangrejo ermitaño en una concha de caracol. Cuando crece, su casa parece un pequeño faro.' },
   glimmqualle: { names: ['Medusa Estrella'], gender: 'f', description: 'Una medusa que flota sobre el agua por la noche. Sus puntos brillan como estrellas.' },
   // Gebiet 2
   moosling: { names: ['Musguito', 'Musgruñón'], gender: 'm', description: 'Una bola redonda de musgo con un sombrero de seta. Prefiere rodar a caminar.' },

@@ -30,7 +30,7 @@ export const FR_SPECIES = {
     description: 'Un hibou-nuage avec des plumes douces comme du coton. Il aime mieux flotter que voler.',
     special: {
       name: 'Vent arrière',
-      text: 'Une fois par duel, tu peux changer une question contre une autre. Avec un chrono, tu as aussi plus de temps.',
+      text: 'Une fois par duel, tu peux échanger une question contre une autre. Avec un chrono, tu as aussi plus de temps.',
     },
   },
   pieks: {
