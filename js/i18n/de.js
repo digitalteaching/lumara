@@ -73,6 +73,7 @@ export const DE = {
   'remember.offer': 'Wollen wir unser Duell wiederholen? Ich erinnere mich an jede Frage! (Stufe {stage})',
   'remember.yes': 'Ja, gern!',
   'remember.notYet': 'Wenn du alle acht Hüterinnen und Hüter mit diesem Lernpaket besiegt hast, spielen wir unser Duell noch einmal.',
+  'star.near': 'Hier ist eine Sternschnuppe ins Gras gefallen. Seltene Wesen sind ganz in der Nähe!',
   'rematch.offer': 'Lust auf eine Revanche? Ich bin jetzt stärker. (Stufe {stage})',
   'rematch.yes': 'Revanche!',
   'rematch.later': 'Später',

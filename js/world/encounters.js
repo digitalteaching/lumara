@@ -29,8 +29,8 @@ export const rollShiny = rng => rng.next() < CONFIG.wild.shinyChance;
 // Wilde Wesen einer Karte: geheime Orte haben ihre eigene Tabelle, sonst gilt die des Gebiets.
 export const wildTableFor = def => def.wild ?? AREA_WILD[def.area];
 
-export function pickWild(areaTable, rng) {
-  if (rng.next() < CONFIG.wild.rareChance) return areaTable.rare;
+export function pickWild(areaTable, rng, rareChance = CONFIG.wild.rareChance) {
+  if (rng.next() < rareChance) return areaTable.rare;
   return rng.pick(areaTable.common);
 }
 

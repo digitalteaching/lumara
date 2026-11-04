@@ -106,6 +106,8 @@ export const WIESE = {
     { id: 'glitzer-mitte', x: 20, y: 16 },
     { id: 'glitzer-ost', x: 32, y: 22 },
   ],
+  // Nach dem Finale fällt hier abwechselnd eine Sternschnuppe ins Sternengras (js/world/stars.js)
+  starSpots: [{ x: 4, y: 11 }, { x: 10, y: 14 }, { x: 19, y: 14 }, { x: 24, y: 18 }, { x: 31, y: 20 }],
   spawn: { x: 19, y: 1, dir: 'down' },
   respawn: { x: 31, y: 6, dir: 'up' },
   particles: ['fallingstar', 'glimmer'], // Sternschnuppen und glimmendes Gras (Design 5.3)

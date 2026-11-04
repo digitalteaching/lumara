@@ -151,6 +151,7 @@ const FILES = [
   "js/world/secrets.js",
   "js/world/puzzles.js",
   "js/world/finale.js",
+  "js/world/stars.js",
   "js/world/slide.js",
   "js/world/player.js"
 ];

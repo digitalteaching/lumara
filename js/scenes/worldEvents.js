@@ -6,6 +6,7 @@ import { createWorldScene } from './world.js';
 import { createDuelScene, makeWildSetup, makeTrainerSetup, makeBossSetup } from './duel.js';
 import { rematchOffer, rematchSetup } from '../duel/rematch.js';
 import { rememberAvailable, rememberSetup } from '../duel/boss.js';
+import { fallenStarSpot, nearStar, rareChanceAt } from '../world/stars.js';
 import { playTransition, reveal } from './transition.js';
 import { createEncounterCounter, wildTableFor } from '../world/encounters.js';
 import { secretOpen, takeSecretStory, takeSecretStone, blockedCells } from '../world/secrets.js';
@@ -112,7 +113,7 @@ export function createGameWorld(game) {
   }
 
   async function wildDuel() {
-    const setup = makeWildSetup(game, def.area, wildTableFor(def));
+    const setup = makeWildSetup(game, def.area, wildTableFor(def), rareChanceAt(game.state, def, player.x, player.y));
     if (def.arena) setup.arena = def.arena; // eigene Arena, etwa die Höhle
     const report = await runDuel(setup, 'wild');
     await backToWorld(report);
@@ -340,6 +341,31 @@ export function createGameWorld(game) {
       await playEvolution(game, world, { species: c.species, from, to });
       await say(game, evolutionLines(c, from, to));
     }
+  }
+
+  // ---------- Sternschnuppen (Design 9) ----------
+  // Glitzern (höchstens 1 Hz, bei „Bewegung reduzieren“ ruhig) und einmal pro Besuch ein Satz in der Nähe.
+  const star = fallenStarSpot(game.state, def);
+  let starNoticed = false;
+  if (star) {
+    world.groundRender.push((ctx, cam) => {
+      const x = star.x * 16 - cam.x + 8, y = star.y * 16 - cam.y + 8;
+      if (x < -8 || y < -8 || x > 248 || y > 168) return;
+      const glow = game.reducedMotion ? 0.8 : 0.55 + 0.35 * Math.sin((world.time / 1000) * Math.PI * 2 * 0.5);
+      ctx.globalAlpha = glow;
+      ctx.fillStyle = '#ffe08a';
+      ctx.fillRect(x - 3, y, 7, 1);
+      ctx.fillRect(x, y - 3, 1, 7);
+      ctx.fillRect(x - 1, y - 1, 3, 3);
+      ctx.fillStyle = '#fffaf0';
+      ctx.fillRect(x, y, 1, 1);
+      ctx.globalAlpha = 1;
+    });
+    world.onStepped.push((x, y) => {
+      if (starNoticed || !nearStar(star, x, y)) return null;
+      starNoticed = true;
+      return () => say(game, [tr('star.near')]);
+    });
   }
 
   // ---------- Höhle (Plan 5a) ----------

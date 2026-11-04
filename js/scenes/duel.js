@@ -25,14 +25,14 @@ import { t as tr } from '../i18n/i18n.js'; // t ist hier die Zeit
 const FINAL = new Set(['won', 'lost', 'fled']);
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
-export function makeWildSetup(game, area = 1, table = AREA_WILD[area]) {
+export function makeWildSetup(game, area = 1, table = AREA_WILD[area], rareChance) {
   const pack = game.pack.data;
   const beaten = packProgress(game.state, pack.shortId).beaten;
   return {
     kind: 'wild',
     area,
     foe: {
-      species: pickWild(table, game.rng),
+      species: pickWild(table, game.rng, rareChance),
       stage: 1,
       level: wildLevel(area, game.rng),
       maxEnergy: CONFIG.wild.energyByArea[area - 1],

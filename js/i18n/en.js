@@ -73,6 +73,7 @@ export const EN = {
   'remember.offer': 'Shall we repeat our duel? I remember every question! (Level {stage})',
   'remember.yes': 'Yes, please!',
   'remember.notYet': 'When you have beaten all eight keepers with this learning pack, we will play our duel again.',
+  'star.near': 'A shooting star has fallen into the grass here. Rare creatures are very close!',
   'rematch.offer': 'Fancy a rematch? I am stronger now. (Level {stage})',
   'rematch.yes': 'Rematch!',
   'rematch.later': 'Later',
