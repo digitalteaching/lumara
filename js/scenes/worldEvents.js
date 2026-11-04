@@ -3,7 +3,7 @@
 
 import { CONFIG } from '../config.js';
 import { createWorldScene } from './world.js';
-import { createDuelScene, makeWildSetup, makeTrainerSetup } from './duel.js';
+import { createDuelScene, makeWildSetup, makeTrainerSetup, makeBossSetup } from './duel.js';
 import { playTransition, reveal } from './transition.js';
 import { createEncounterCounter, wildTableFor } from '../world/encounters.js';
 import { secretOpen, takeSecretStory, takeSecretStone, blockedCells } from '../world/secrets.js';
@@ -12,7 +12,8 @@ import { SECRET_PLACES } from '../data/secrets.js';
 import { trainerSees } from '../world/map.js';
 import { fogEdgeLines, fogSignLines, fogSignFor } from '../world/fogEdge.js';
 import { caveGateLines, caveSocketLights, caveOpen, ilvyCaveLines } from '../world/caveGate.js';
-import { withFinale } from '../world/finale.js';
+import { withFinale, finaleDone, finishFinale } from '../world/finale.js';
+import { playFinale } from './finale.js';
 import { breakName } from '../world/islandMap.js';
 import { MAPS, areaConfig, areaOpen, exitAt, openGatesFor, resolveStart, whisperLine, beaconFront, packWorldKey, worldLines, areaOf } from '../world/network.js';
 import { visitStone, travelTargets, respawnPoint, challengeMark } from '../world/beacons.js';
@@ -23,7 +24,7 @@ import { BUCHT } from '../world/maps/bucht.js';
 import { packProgress, recordNoteAnswer } from '../state.js';
 import { notePool, noteKey, noteReady, solveNote } from '../world/notes.js';
 import { playNote } from './note.js';
-import { displayName, nameAtStage, evolutionLines } from '../data/species.js';
+import { displayName, nameAtStage, evolutionLines, speciesName } from '../data/species.js';
 import { playEvolution } from './evolution.js';
 import { questFor, acceptQuest, advanceQuest, finishQuest, activePickups, activeGuests } from '../world/quests.js';
 import { questText } from '../data/quests.js';
@@ -31,7 +32,7 @@ import { maxEnergy, stageForLevel } from '../duel/progress.js';
 import { say, choose } from '../ui/dialog.js';
 import { el, clear } from '../ui/dom.js';
 import { openMenu } from '../menu/menu.js';
-import { t as tr, language } from '../i18n/i18n.js'; // t ist hier ein eigener Name
+import { t as tr, tl, language } from '../i18n/i18n.js'; // t ist hier ein eigener Name
 
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 const DELTA = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
@@ -350,6 +351,33 @@ export function createGameWorld(game) {
       c.energy = maxEnergy(c);
       game.save();
       await say(game, [tr('cave.warm', { name: displayName(c) })]);
+      return true;
+    }
+    // Morrow (Design 5.4, 7.4): das Endduell. Verloren: am Eingang der unteren Ebene, volle Energie.
+    // Gewonnen: erst das Finale speichern, dann den Namen sagen und zum Leuchtturm.
+    if (o?.type === 'boss') {
+      if (finaleDone(game.state) || !caveOpen(game.state, game.pack.data)) return true;
+      await say(game, tl('boss.hello'), { speaker: speciesName('morrow', 3) });
+      const report = await runDuel(makeBossSetup(game), 'trainer');
+      const c = game.state.creature;
+      if (report.outcome !== 'won') {
+        c.energy = maxEnergy(c);
+        game.state.position = { map: def.id, ...def.respawn };
+        game.save();
+        await playTransition(game, 'fade', 300);
+        player.teleport(def.respawn.x, def.respawn.y, def.respawn.dir);
+        game.go(world);
+        await reveal(game);
+        await say(game, [tr('boss.lost')]);
+        return true;
+      }
+      finishFinale(game.state);
+      game.save();
+      await playTransition(game, 'fade', 300);
+      game.go(world);
+      await reveal(game);
+      await playFinale(game, world);
+      await travelTo(game, { map: 'bucht', ...BUCHT.respawn });
       return true;
     }
     if (o?.type === 'npc' && o.id === 'ilvy' && def.cave) {

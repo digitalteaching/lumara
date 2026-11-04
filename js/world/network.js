@@ -21,6 +21,7 @@ import { HOEHLE1 } from './maps/hoehle1.js';
 import { HOEHLE2 } from './maps/hoehle2.js';
 import { HOEHLE3 } from './maps/hoehle3.js';
 import { puzzleSolved } from './puzzles.js';
+import { caveOpen } from './caveGate.js';
 import { language, mark } from '../i18n/i18n.js';
 import { EN_WORLD } from '../i18n/en-world.js';
 
@@ -136,6 +137,8 @@ export function highestOpenStone(state, pack) {
 export function resolveStart(state, pack) {
   const pos = state.position;
   const def = MAPS[pos?.map];
+  // Die Höhle gibt es nur mit allen acht Steinen und einem Paket mit allen acht Trainern (Design 10.4).
+  if (def?.cave && !caveOpen(state, pack)) return { map: 'bucht', ...BUCHT.respawn };
   if (def && areaOpen(state, pack, def.area)) {
     if (createMap(def, { openGates: openGatesFor(def, state, pack) }).canEnter(pos.x, pos.y)) return pos;
     const own = beaconOf(def, def.area) && state.stones.includes(def.area);

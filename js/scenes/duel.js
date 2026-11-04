@@ -4,7 +4,7 @@ import { CONFIG } from '../config.js';
 import { createDuel } from '../duel/duel.js';
 import { timerFor } from '../duel/timing.js';
 import { createDeck, poolFor } from '../duel/questions.js';
-import { bossSetup } from '../duel/boss.js';
+import { bossSetup, foeStageForPhase } from '../duel/boss.js';
 import { stageForLevel, maxEnergy } from '../duel/progress.js';
 import { speciesName, displayName, wildName, nameAtStage, evolutionLines, AREA_WILD, TRAINER_CREATURES } from '../data/species.js';
 import { drawEvolution, evolutionAt } from '../gfx/evolution.js';
@@ -105,7 +105,7 @@ export function createDuelScene(game, setup, onEnd) {
   const duel = createDuel({
     kind: setup.kind,
     player,
-    foe: { maxEnergy: setup.foe.maxEnergy },
+    foe: { maxEnergy: setup.foe.maxEnergy, phases: setup.foe.phases },
     deck: createDeck(setup.pool, progress.history, game.rng),
     rng: game.rng,
     timeFor,
@@ -118,8 +118,17 @@ export function createDuelScene(game, setup, onEnd) {
   let evolving = null; // { start, fromImg, toImg, resolve }
   let over = false; // nach der Entwicklung zeigt das Schild die Energie des Wesens selbst
   const shiny = setup.kind === 'wild' && setup.foe.shiny === true;
-  const foeRows = shiny ? shinyRows(creatureRows(setup.foe.species, setup.foe.stage), setup.foe.species) : creatureRows(setup.foe.species, setup.foe.stage);
-  const foeKey = `creature:${setup.foe.species}:${setup.foe.stage}${shiny ? ':glanz' : ''}`;
+  let foeRows = shiny ? shinyRows(creatureRows(setup.foe.species, setup.foe.stage), setup.foe.species) : creatureRows(setup.foe.species, setup.foe.stage);
+  let foeKey = `creature:${setup.foe.species}:${setup.foe.stage}${shiny ? ':glanz' : ''}`;
+  // Endgegner (Design 7.4): In jeder Phase eine andere Gestalt, sanft übergeblendet.
+  let morph = null; // { start, rows, key }: die alte Gestalt, die ausblendet
+  const MORPH_MS = 900;
+  function nextForm() {
+    morph = game.reducedMotion ? null : { start: t, rows: foeRows, key: foeKey };
+    const st = foeStageForPhase(duel.phase);
+    foeRows = creatureRows(setup.foe.species, st);
+    foeKey = `creature:${setup.foe.species}:${st}`;
+  }
 
   let t = 0;
   let alive = true;
@@ -235,6 +244,7 @@ export function createDuelScene(game, setup, onEnd) {
     if (s.outcome === 'won') {
       anim.foe.faint = t;
       if (setup.trainer) await say(game, [setup.trainer.lines.win], { speaker: setup.trainer.name });
+      else if (setup.kind === 'boss') await say(game, [tr('boss.tired')]);
       else await say(game, [tr('duel.foeTired', { wild: wildName(setup.foe.species, setup.foe.stage, 'the') })]);
     } else if (s.outcome === 'lost') {
       anim.own.faint = t;
@@ -339,6 +349,10 @@ export function createDuelScene(game, setup, onEnd) {
       if (!r) continue;
       await showResult(r, action.response, ctx);
       updatePlates();
+      if (r.phaseCleared && alive) {
+        nextForm();
+        await say(game, [tr('boss.phase')]);
+      }
     }
     if (alive) await end();
   }
@@ -403,7 +417,20 @@ export function createDuelScene(game, setup, onEnd) {
     },
     render(ctx) {
       drawArena(ctx, setup.arena ?? setup.area, t, game.reducedMotion);
-      drawCreature(ctx, foeRows, foeKey, ARENA.foe, true, 'foe');
+      if (morph && t - morph.start < MORPH_MS) {
+        const p = (t - morph.start) / MORPH_MS;
+        ctx.save();
+        ctx.globalAlpha = 1 - p;
+        drawCreature(ctx, morph.rows, morph.key, ARENA.foe, true, 'foe');
+        ctx.restore();
+        ctx.save();
+        ctx.globalAlpha = p;
+        drawCreature(ctx, foeRows, foeKey, ARENA.foe, true, 'foe');
+        ctx.restore();
+      } else {
+        morph = null;
+        drawCreature(ctx, foeRows, foeKey, ARENA.foe, true, 'foe');
+      }
       const fs = (t - anim.foeSparkle) / 1200;
       if (fs >= 0 && fs < 1) {
         ctx.fillStyle = '#fffaf0';

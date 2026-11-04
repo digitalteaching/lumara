@@ -4,6 +4,13 @@
 
 export const finaleDone = state => state?.finale?.done === true;
 
+// Nach dem Sieg über Morrow und vor der Szene: Wer jetzt die App schließt, hat das Finale trotzdem.
+export function finishFinale(state) {
+  if (finaleDone(state)) return false;
+  state.finale = { done: true };
+  return true;
+}
+
 // Objekte mit when: 'beforeFinale' gibt es nur vor dem Finale (Ilvy in der Höhle, Morrow unten),
 // solche mit when: 'afterFinale' nur danach (Morrows Kristall, Morrow am Leuchtturm).
 export function withFinale(def, state) {

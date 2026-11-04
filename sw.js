@@ -91,6 +91,7 @@ const FILES = [
   "js/scenes/beacon.js",
   "js/scenes/duel.js",
   "js/scenes/evolution.js",
+  "js/scenes/finale.js",
   "js/scenes/eggs.js",
   "js/scenes/gallery.js",
   "js/scenes/install.js",
