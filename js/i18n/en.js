@@ -194,7 +194,7 @@ export const EN = {
   'map.dark': '○ Light stone is dark',
   'map.here': '● You are here',
   'map.mountain': 'Mountain with a cave',
-  'map.sockets': '{lit} of 8 sockets are glowing',
+  'map.sockets': 'Sockets glowing: {lit} of 8',
   'world.relocated': 'The mist came back. I brought you here.',
   'world.wokeAtBeacon': 'You woke up at the light stone. {name} is well again.',
   'world.wokeAtLighthouse': 'You woke up at the lighthouse. {name} is well again.',

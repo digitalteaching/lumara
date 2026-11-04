@@ -191,6 +191,18 @@ test('Französisch: keine fehlende Elision vor Namen, kein Wesenname mit Vokal a
   assert.equal(wildName('eichhuscher', 1, 'the'), `${FR_SPECIES.eichhuscher.gender === 'f' ? 'La' : 'Le'} ${FR_SPECIES.eichhuscher.names[0]} sauvage`);
 });
 
+test('Zahlen im Satz: Bei 1 steht keine Mehrzahl (Karte, Tasche)', () => {
+  const PLURAL_AFTER_ONE = /\b1 (lampes|places|huecos|sitios|sockets|places used)\b|Brillan 1\b|\b1 \w+ are\b|\b1 of 8 sockets are\b/;
+  for (const lang of ['en', 'fr', 'es']) {
+    setLanguage(lang);
+    for (const s of [t('map.sockets', { lit: 1 }), t('bag.foodSlots', { n: 1, max: 10 })]) assert.ok(!PLURAL_AFTER_ONE.test(s), `${lang}: ${s}`);
+  }
+});
+
+test('Französisch: Die Revanche sagt „encore plus de force“ (sonst heißt es „keine Kraft mehr“)', () => {
+  assert.ok(FR['rematch.offer'].includes('encore plus de force'), FR['rematch.offer']);
+});
+
 test('Schalter in den Einstellungen: „Musik: an“ kommt aus der Tabelle, im Französischen mit geschütztem Leerzeichen', () => {
   setLanguage('fr');
   assert.equal(t('settings.toggle', { what: 'Musique', state: 'oui' }), 'Musique : oui');

@@ -194,7 +194,7 @@ export const ES = {
   'map.dark': '○ La piedra de luz está apagada',
   'map.here': '● Estás aquí',
   'map.mountain': 'Montaña con cueva',
-  'map.sockets': 'Brillan {lit} de 8 huecos',
+  'map.sockets': 'Huecos con luz: {lit} de 8',
   'world.relocated': 'La niebla ha vuelto. Te he traído hasta aquí.',
   'world.wokeAtBeacon': 'Te has despertado junto a la piedra de luz. {name} ya está bien.',
   'world.wokeAtLighthouse': 'Te has despertado junto al faro. {name} ya está bien.',

@@ -122,6 +122,10 @@ export function jokerHint(presented, rng) {
     const wrong = options.map((_, i) => i).filter(i => i !== correctIndex);
     return { removeIndices: rng.shuffle(wrong).slice(0, 2) };
   }
-  if (form === 'typing') return { firstLetter: question.answer.trim()[0] };
+  // Der erste Buchstabe oder die erste Ziffer, nicht ¿, ¡ oder « davor.
+  if (form === 'typing') {
+    const a = question.answer.trim();
+    return { firstLetter: a.match(/[\p{L}\p{N}]/u)?.[0] ?? a[0] };
+  }
   return { firstTile: sentenceTokens(question.sentence)[0] };
 }

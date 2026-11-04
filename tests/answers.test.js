@@ -28,6 +28,14 @@ test('Spanische Frage- und Ausrufezeichen zählen nicht, französische Anführun
   assert.equal(checkTyped('Ça va ?', ['ça va']).correct, true);
 });
 
+test('Weitblick und Erleuchtung zeigen den ersten Buchstaben, nicht ¿, ¡ oder «', () => {
+  const rng = createRng(1);
+  assert.deepEqual(jokerHint({ question: { answer: '¿Cómo te llamas?' }, form: 'typing' }, rng), { firstLetter: 'C' });
+  assert.deepEqual(jokerHint({ question: { answer: '¡Hola!' }, form: 'typing' }, rng), { firstLetter: 'H' });
+  assert.deepEqual(jokerHint({ question: { answer: '« oui »' }, form: 'typing' }, rng), { firstLetter: 'o' });
+  assert.deepEqual(jokerHint({ question: { answer: '3,5' }, form: 'typing' }, rng), { firstLetter: '3' });
+});
+
 test('Zahlen: Komma und Punkt sind gleich', () => {
   assert.equal(checkTyped('3,5', ['3.5']).correct, true);
   assert.equal(checkTyped('3.5', ['3,5']).correct, true);

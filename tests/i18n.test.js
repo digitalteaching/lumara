@@ -58,7 +58,7 @@ test('Welt auf Englisch: Nebelschild, Höhlentor und Karte der Insel', () => {
   assert.deepEqual(fogEdgeLines({ leadsTo: 3, lines: [] }, { gateBeaten: true, packHasNext: false, builtAreas: 8 }), ['This path opens as soon as your teacher shares the next topic.']);
   assert.deepEqual(caveGateLines(3), ['A big gate in the mountain with eight sockets.', '3 of them are glowing.', 'Maybe it opens when all eight light stones glow again.']);
   assert.deepEqual(mapLabels({ open: false, lit: true, here: false }), ['☁ In the mist']);
-  assert.deepEqual(caveLabels({ lit: 8 }), ['Mountain with a cave', '8 of 8 sockets are glowing']);
+  assert.deepEqual(caveLabels({ lit: 8 }), ['Mountain with a cave', 'Sockets glowing: 8 of 8']);
 });
 
 test('Menü auf Englisch, die Seite für die Lehrkraft bleibt Deutsch', () => {
