@@ -360,4 +360,8 @@ export const DE = {
   'quest.got.farsight': 'Du bekommst einen Weitblickstein!',
   'quest.got.shine': 'Du bekommst {n} Glanzsteine!',
   'quest.got.starfruit': 'Du bekommst {n} Sternfrüchte!',
+
+  // Tagebuch: Aufträge
+  'diary.quests': 'Aufträge',
+  'diary.noQuests': 'Noch keine Aufträge. Sprich mit den Leuten auf der Insel!',
 };

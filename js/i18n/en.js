@@ -360,4 +360,8 @@ export const EN = {
   'quest.got.farsight': 'You get a farsight stone!',
   'quest.got.shine': 'You get {n} shine stones!',
   'quest.got.starfruit': 'You get {n} starfruits!',
+
+  // Tagebuch: Aufträge
+  'diary.quests': 'Tasks',
+  'diary.noQuests': 'No tasks yet. Talk to the people on the island!',
 };

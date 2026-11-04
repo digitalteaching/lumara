@@ -1,10 +1,11 @@
-// Tagebuch (Design 5.4, 13): die gefundenen Geschichtsstücke, nach Gebiet geordnet.
-// Fehlende Stücke stehen als „Noch nicht gefunden“ da. Aufträge kommen mit Plan 4.
+// Tagebuch (Design 5.4, 13): oben die Aufträge, darunter die gefundenen Geschichtsstücke nach Gebiet.
+// Fehlende Stücke stehen als „Noch nicht gefunden“ da.
 
 import { el } from '../ui/dom.js';
 import { STORY, storyPieces } from '../data/story.js';
 import { MAPS, mapOfArea, areaName as nameOf } from '../world/network.js';
 import { t } from '../i18n/i18n.js';
+import { questLog } from '../world/quests.js';
 
 const areaName = area => (mapOfArea(area) ? nameOf(mapOfArea(area)) : t('diary.area', { n: area }));
 
@@ -14,7 +15,14 @@ export function diaryPage(game) {
     render(body) {
       const found = game.state.story;
       const areas = Object.keys(STORY).map(Number).sort((a, b) => a - b);
+      const log = questLog(game.state);
       body.append(
+        el('div', { class: 'sheet-section diary-quests' },
+          el('h3', {}, t('diary.quests')),
+          log.length
+            ? el('ul', { class: 'quest-log' }, log.map(q => el('li', { class: q.done ? 'done' : 'open' },
+              el('b', {}, `${q.done ? '✓' : '○'} ${q.title}`), q.hint ? el('span', { class: 'quest-hint' }, q.hint) : null)))
+            : el('p', { class: 'small' }, t('diary.noQuests'))),
         el('div', { class: 'sheet-section diary' },
           el('h3', {}, t('diary.story')),
           areas.map(area =>

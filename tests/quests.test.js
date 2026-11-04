@@ -5,7 +5,7 @@ import { EN_QUEST_TEXT } from '../js/i18n/en-quests.js';
 import { MAPS } from '../js/world/network.js';
 import { createMap } from '../js/world/map.js';
 import { setLanguage } from '../js/i18n/i18n.js';
-import { questFor, acceptQuest, advanceQuest, finishQuest, activePickups, activeGuests } from '../js/world/quests.js';
+import { questFor, acceptQuest, advanceQuest, finishQuest, activePickups, activeGuests, questLog } from '../js/world/quests.js';
 import { hasKey } from '../js/items/keys.js';
 import { newGameState } from '../js/state.js';
 import { CONFIG } from '../js/config.js';
@@ -107,4 +107,18 @@ test('Fundstücke und Gäste stehen auf freien, begehbaren Feldern; Gespräche n
     assert.equal(MAPS[q.giver.map].area, q.area, q.id);
   }
   for (const g of GUESTS) assert.ok(free(g.map, g.x, g.y), g.id);
+});
+
+test('Tagebuch: angenommene Aufträge in fester Reihenfolge, offen mit Hinweis, erledigt ohne', () => {
+  const s = s0();
+  assert.deepEqual(questLog(s), []);
+  s.stones = [1, 2, 3];
+  acceptQuest(s, 'q3');
+  acceptQuest(s, 'q1');
+  advanceQuest(s, 'q3', 0);
+  finishQuest(s, 'q3');
+  assert.deepEqual(questLog(s), [
+    { id: 'q1', title: 'Brams Glücksmuschel', done: false, hint: 'Bram sucht seine Glücksmuschel. Sie liegt am Strand im Westen.' },
+    { id: 'q3', title: 'Wo ist Flo?', done: true, hint: null },
+  ]);
 });

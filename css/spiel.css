@@ -675,3 +675,9 @@ body:not([data-mode="walk"]) .menu-btn { display: none; }
 .book-pictures figure { margin: 0; text-align: center; }
 .book-pictures canvas { image-rendering: pixelated; image-rendering: crisp-edges; }
 .book-labels { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 2px; }
+
+/* Tagebuch: Aufträge (Plan 4c) */
+.quest-log { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.quest-log li { display: grid; gap: 2px; }
+.quest-log .done b { color: var(--frame-dark); }
+.quest-hint { font-size: var(--text-small); }

@@ -2,7 +2,7 @@
 // Fortschritt gehört dem Kind (Design 10.4) und liegt in state.quests. DOM-frei.
 
 import { CONFIG } from '../config.js';
-import { QUESTS, GUESTS, questById } from '../data/quests.js';
+import { QUESTS, GUESTS, questById, questText } from '../data/quests.js';
 import { gainXp } from '../duel/progress.js';
 import { addItem } from '../items/bag.js';
 import { giveKey } from '../items/keys.js';
@@ -92,4 +92,14 @@ export function activePickups(state, mapId) {
 
 export function activeGuests(state, mapId) {
   return GUESTS.filter(g => g.map === mapId && open(state, g.quest)?.step === g.step);
+}
+
+// Für das Tagebuch (Design 13): angenommene Aufträge in der Reihenfolge der Gebiete. Offene
+// Aufträge tragen den Hinweis auf den nächsten Schritt.
+export function questLog(state) {
+  return QUESTS.filter(q => progressOf(state, q.id)).map(q => {
+    const done = progressOf(state, q.id).done;
+    const text = questText(q.id);
+    return { id: q.id, title: text.title, done, hint: done ? null : text.hint };
+  });
 }
