@@ -15,7 +15,6 @@ test('Anleitung und Seite für Lehrkräfte: Abschnitte, Links und Lizenz', () =>
     assert.match(guide, new RegExp(`<h2[^>]*>${h}</h2>`), h);
   }
   for (const f of ['pakete/vorlage.txt', 'pakete/englisch-6-beispiel.txt', 'pakete/KI-PROMPT-Lernpaket.md', 'lehrkraft.html']) assert.ok(links(guide).includes(f), f);
-  assert.ok(guide.includes(''));
   assert.ok(!/(src|href)="https?:/.test(guide), 'keine Dateien von außen');
   assert.match(guide, /<html lang="de">/);
 
@@ -35,6 +34,16 @@ test('Anleitung: erst zum Home-Bildschirm, dann das Paket laden; der eigene Spei
 test('Der KI-Prompt öffnet sich im Browser (kein download-Attribut), damit man den Text kopieren kann', () => {
   for (const page of ['anleitung.html', 'lehrkraft.html']) {
     assert.ok(!/href="pakete\/KI-PROMPT-Lernpaket\.md"[^>]*download/.test(read(page)), page);
+  }
+});
+
+test('Kein Copyright-Hinweis: weder in den Dateien des Spiels noch im README, in den Plänen oder im PDF-Werkzeug', () => {
+  const served = JSON.parse(read('sw.js').match(/const FILES = (\[[\s\S]*?\]);/)[1]).filter(f => !f.endsWith('.png'));
+  const docs = ['docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md', 'docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md',
+    'docs/superpowers/plans/2026-11-04-lumara-plan-8-abschluss.md'];
+  for (const f of [...served, 'sw.js', 'README.md', 'tools/kurzanleitung/bauen.py', ...docs]) {
+    const text = read(f);
+    assert.ok(!text.includes('©') && !text.includes('Alle Rechte vorbehalten'), f);
   }
 });
 

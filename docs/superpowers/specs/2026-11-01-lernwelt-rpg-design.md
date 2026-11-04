@@ -605,7 +605,7 @@ Dazu Links zu Vorlage, Beispielpaket, KI-Prompt und Anleitung.
 - **Keine Netzwerkanfragen** außer zu den eigenen Dateien. Es gibt keine Analyse und keine Tracker. Das Lernpaket wird nur lokal gelesen.
 - **Tests:** Die reine Logik wird mit dem eingebauten Testläufer von Node geprüft (`node --test`, ohne npm-Pakete). Dazu gehören der Paket-Parser mit Prüfung, die Antwortprüfung, die XP-Kurve, die Duellregeln, das Ziehen der Fragen, die Verschleierung des Spielstands und der Prüfcode. Grafik, Steuerung und Ton werden von Hand auf dem iPad und am PC geprüft.
 - **Lokales Testen:** ES-Module brauchen einen kleinen lokalen Webserver, zum Beispiel `python3 -m http.server`.
-- **Lizenz (Claude):** Wie beim Schwesterprojekt heißt es (Lizenzhinweis mit Namen, am 4.11.2026 entfernt), mit dem Hinweis, dass der Code nur wegen GitHub Pages öffentlich ist.
+- **Lizenz (Claude):** Kein Copyright-Hinweis mit Namen (Lizenzhinweis mit Namen, am 4.11.2026 entfernt).
 
 ## 17. Reihenfolge beim Bauen
 

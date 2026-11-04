@@ -22,7 +22,7 @@
 
 - Alles für Lehrkräfte ist Deutsch.
 - Keine Netzwerkanfragen außer zu den eigenen Dateien (16). Neue Dateien kommen in die Liste von `sw.js`; `tests/sw.test.js` prüft die genaue Menge.
-- **Lizenzzeile (16):** (Lizenzhinweis mit Namen, am 4.11.2026 entfernt) auf jeder neuen Seite.
+- **Lizenzzeile (16):** (Lizenzhinweis mit Namen, am 4.11.2026 entfernt).
 - **Steuerung (13):**
   - Das Steuerkreuz hat mindestens 140 px Durchmesser, A und B mindestens 64 px, alle Tippflächen mindestens 48 px.
   - Querformat: Die Steuerelemente liegen halbtransparent über den Ecken.

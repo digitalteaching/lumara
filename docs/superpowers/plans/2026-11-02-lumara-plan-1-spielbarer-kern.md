@@ -1344,6 +1344,6 @@ test('Flucht: keine XP, Energie wie im Duell', () => {
 **Files:**
 - Modify: `README.md`
 
-- [ ] **Step 1: README aktualisieren.** Status („Plan 1 gebaut: spielbarer Kern mit Leuchtturmbucht, Lernpaket und Duellen. Noch kein Spielstand.“), lokal starten (`python3 -m http.server 8000`), Tests (`node --test`), Entwickler-Abkürzungen, Link auf diesen Plan, Lizenz wie im Schwesterprojekt: (Lizenzhinweis mit Namen, am 4.11.2026 entfernt) mit dem Hinweis, dass der Quellcode nur wegen GitHub Pages öffentlich ist.
+- [ ] **Step 1: README aktualisieren.** Status („Plan 1 gebaut: spielbarer Kern mit Leuchtturmbucht, Lernpaket und Duellen. Noch kein Spielstand.“), lokal starten (`python3 -m http.server 8000`), Tests (`node --test`), Entwickler-Abkürzungen, Link auf diesen Plan, Lizenz (Lizenzhinweis mit Namen, am 4.11.2026 entfernt).
 - [ ] **Step 2: Gesamtprüfung.** `node --test` → `# fail 0`. Dann einmal den ganzen Weg ohne Abkürzungen durchspielen, am PC in Chrome und Safari und auf einem iPad in Safari: Titel → Beispielpaket → Intro → Name → Ei → Bucht → wildes Wesen in allen drei Formen → Trainerin besiegen. Dabei prüfen: keine Netzwerkanfragen außer zu eigenen Dateien (Netzwerk-Panel), keine Konsolenfehler, Hoch- und Querformat, Drehen mitten im Duell, Steuerkreuz mit zwei Fingern (laufen und A), Bewegung reduzieren in den Systemeinstellungen.
 - [ ] **Step 3: Commit** – `git commit -m "Plan 1 abschließen: README und Gesamtprüfung"`
