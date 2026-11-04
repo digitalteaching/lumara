@@ -72,4 +72,6 @@ export const EN_SPECIES = {
   // Geheime Orte
   wurzelgeist: { names: ['Rootling'], description: 'A little spirit made of roots. On its head grows a flower that glows in the dark.' },
   prismalibelle: { names: ['Prismfly'], description: 'A dragonfly with wings made of glass. Where it flies, the light breaks into all the colours of the rainbow.' },
+  perlkrabbe: { names: ['Pearlcrab'], description: 'A little crab with a shell like a pearl. At low tide it runs through the pools and polishes the stones.' },
+  irrlichtfee: { names: ['Wispfairy'], description: 'A tiny fairy made of light. It dances over the marsh and shows everyone who is lost the way home.' },
 };

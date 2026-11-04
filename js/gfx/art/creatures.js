@@ -573,6 +573,46 @@ function prismalibelle() {
   return done(g);
 }
 
+// Perlkrabbe: eine kleine Krabbe mit einem Panzer wie eine Perle (Gezeiteninsel).
+function perlkrabbe() {
+  const g = canvas(32);
+  poly(g, [[7, 20], [10, 21], [6, 28], [4, 27]], ['C', 'e', 'e']); // Beine
+  poly(g, [[10, 22], [13, 23], [11, 29], [9, 29]], ['C', 'e', 'e']);
+  poly(g, [[19, 23], [22, 22], [24, 29], [22, 29]], ['C', 'e', 'e']);
+  poly(g, [[22, 21], [25, 20], [29, 26], [27, 27]], ['C', 'e', 'e']);
+  poly(g, [[8, 15], [11, 17], [10, 19], [7, 17]], ['C', 'e', 'e']); // Arme
+  poly(g, [[24, 14], [21, 17], [22, 19], [25, 16]], ['C', 'e', 'e']);
+  ellipse(g, 6, 11, 4, 3.5, ['p', 'C', 'e']); // Scheren
+  ellipse(g, 26, 10, 4.5, 4, ['p', 'C', 'e']);
+  ellipse(g, 16, 19, 9, 6.5, ['w', 'f', 'V']); // Perlenpanzer
+  ellipse(g, 18.5, 11, 1, 2.5, ['C', 'C', 'e']); // Augenstiele
+  ellipse(g, 21.5, 11, 1, 2.5, ['C', 'C', 'e']);
+  outline(g);
+  eye(g, 18, 8, 2, 3);
+  eye(g, 21, 8, 2, 3);
+  dots(g, [[5, 11, 'k'], [6, 11, 'k'], [26, 10, 'k'], [27, 10, 'k'], [28, 10, 'k'],
+    [11, 16, 'w'], [12, 15, 'w'], [13, 15, 'A'], [17, 17, 'R'], [20, 18, 'A'], [14, 21, 'R'], [19, 22, 'm'],
+    [17, 21, 'k'], [18, 22, 'k'], [19, 21, 'k']]);
+  return done(g);
+}
+
+// Irrlichtfee: eine winzige Fee aus Licht mit einem leuchtenden Schweif (Irrlichtinsel).
+function irrlichtfee() {
+  const g = canvas(32);
+  ellipse(g, 10, 9, 6, 4, ['w', 'A', 'L']); // Flügel oben
+  ellipse(g, 9, 18, 5, 3, ['w', 'A', 'L']); // Flügel unten
+  poly(g, [[3, 28], [11, 21], [14, 24], [6, 30]], ['H', 'h', 'r']); // Lichtschweif
+  ellipse(g, 17, 19, 5.5, 6, ['w', 'H', 'h']); // leuchtender Körper
+  ellipse(g, 21, 11, 5, 5, ['w', 'H', 'h']); // Kopf
+  ellipse(g, 23, 4, 1.5, 2.5, ['T', 'g', 'l']); // Blatt auf dem Kopf
+  outline(g);
+  eye(g, 22, 10, 2, 3);
+  dots(g, [[25, 14, 'k'], [24, 14, 'k'], [20, 13, 'R'], [25, 12, 'R'],
+    [7, 7, 'w'], [12, 6, 'w'], [8, 17, 'w'], [15, 16, 'w'], [16, 22, 'h'],
+    [1, 25, 'H'], [2, 31, 'H'], [8, 31, 'h'], [0, 29, 'h'], [27, 2, 'H'], [29, 7, 'H']]);
+  return done(g);
+}
+
 // ---------- Gebiet 1 ----------
 
 function gischtling() {
@@ -1187,6 +1227,8 @@ export const CREATURE_ART = {
   glimmqualle: { 1: glimmqualle() },
   wurzelgeist: { 1: wurzelgeist() },
   prismalibelle: { 1: prismalibelle() },
+  perlkrabbe: { 1: perlkrabbe() },
+  irrlichtfee: { 1: irrlichtfee() },
 };
 
 // Höchste vorhandene Stufe ≤ der gewünschten: Wilde Arten haben ein oder zwei Stufen.

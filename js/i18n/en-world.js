@@ -18,10 +18,16 @@ export const EN_WORLD = {
     wiese: { name: 'Starlight Meadow', of: 'of the Starlight Meadow', the: 'the Starlight Meadow' },
     eiche: { name: 'Hollow Oak', of: 'of the Hollow Oak', the: 'the Hollow Oak' },
     glasturm: { name: 'Glass Tower', of: 'of the Glass Tower', the: 'the Glass Tower' },
+    gezeiten: { name: 'Tide Island', of: 'of Tide Island', the: 'Tide Island' },
+    irrlicht: { name: 'Wisp Island', of: 'of Wisp Island', the: 'Wisp Island' },
   },
 
   objects: {
     bucht: {
+      'steg-gezeiten': {
+        lines: ['At the end of the pier stands a post with an old rope.', 'Out there lies a little island. With a boat you could get across.'],
+        linesOpen: ['You put the nutshell on the water and row to Tide Island.'],
+      },
       'haus-oda': { lines: ['Oda’s house. The door is locked.'] },
       'haus-ilvy': { lines: ['Ilvy’s house. The door is locked.'] },
       'haus-bram': { lines: ['Bram’s house. The door is locked.'] },
@@ -113,6 +119,10 @@ export const EN_WORLD = {
     },
 
     moor: {
+      'pfahl-irrlicht': {
+        lines: ['A post with an old rope sticks out of the marsh.', 'The will-o’-the-wisps dance over there. With a little boat you could row across.'],
+        linesOpen: ['You put the nutshell on the water and row to Wisp Island.'],
+      },
       trainer: { afterWin: 'Your light stone is shining. The mushrooms glow brighter than ever.' },
       wenke: {
         lines: [

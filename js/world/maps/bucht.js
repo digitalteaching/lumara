@@ -54,6 +54,13 @@ export const BUCHT = {
     '=': 'pier',
   },
   objects: [
+    // Geheimer Ort (Design 5.7): am Ende des Stegs ein Pfahl, mit der Nussschale zur Gezeiteninsel
+    {
+      type: 'secret', id: 'steg-gezeiten', place: 'gezeiten', prop: 'boatpost', x: 19, y: 28,
+      to: { map: 'gezeiten', x: 8, y: 10, dir: 'up' },
+      lines: ['Am Ende des Stegs steht ein Pfahl mit einem alten Seil.', 'Draußen liegt eine kleine Insel. Mit einem Boot käme man hinüber.'],
+      linesOpen: ['Du setzt die Nussschale aufs Wasser und ruderst zur Gezeiteninsel.'],
+    },
     { type: 'building', id: 'leuchtturm', x: 33, y: 12, w: 2, h: 4, sprite: 'lighthouse', door: { dx: 1, dy: 3 }, onDoor: 'heal' },
     { type: 'building', id: 'haus-oda', x: 9, y: 11, w: 3, h: 3, sprite: 'housePlum', door: { dx: 1, dy: 2 }, onDoor: 'locked', lines: ['Odas Haus. Die Tür ist verschlossen.'] },
     { type: 'building', id: 'haus-ilvy', x: 23, y: 11, w: 3, h: 3, sprite: 'houseTeal', door: { dx: 1, dy: 2 }, onDoor: 'locked', lines: ['Ilvys Haus. Die Tür ist verschlossen.'] },

@@ -13,11 +13,13 @@ import { SEE } from './maps/see.js';
 import { WIESE } from './maps/wiese.js';
 import { EICHE } from './maps/eiche.js';
 import { GLASTURM } from './maps/glasturm.js';
+import { GEZEITEN } from './maps/gezeiten.js';
+import { IRRLICHT } from './maps/irrlicht.js';
 import { language, mark } from '../i18n/i18n.js';
 import { EN_WORLD } from '../i18n/en-world.js';
 
 // Die Gebiete, dahinter die geheimen Orte (secret: eigene kleine Karten, Design 5.7).
-export const MAPS = { bucht: BUCHT, wald: WALD, moor: MOOR, duenen: DUENEN, klippen: KLIPPEN, ruinen: RUINEN, see: SEE, wiese: WIESE, eiche: EICHE, glasturm: GLASTURM };
+export const MAPS = { bucht: BUCHT, wald: WALD, moor: MOOR, duenen: DUENEN, klippen: KLIPPEN, ruinen: RUINEN, see: SEE, wiese: WIESE, eiche: EICHE, glasturm: GLASTURM, gezeiten: GEZEITEN, irrlicht: IRRLICHT };
 
 const hasTrainer = (pack, n) => pack.trainers.some(t => t.number === n);
 

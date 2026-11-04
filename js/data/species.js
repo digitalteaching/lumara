@@ -304,10 +304,28 @@ export const SPECIES = {
     names: ['Prismalibelle'],
     description: 'Eine Libelle mit Flügeln aus Glas. Wo sie fliegt, bricht sich das Licht in allen Farben des Regenbogens.',
   },
+  perlkrabbe: {
+    id: 'perlkrabbe',
+    kind: 'secret',
+    gender: 'f',
+    area: 1,
+    rarity: 'rare',
+    names: ['Perlkrabbe'],
+    description: 'Eine kleine Krabbe mit einem Panzer wie eine Perle. Bei Ebbe läuft sie durch die Tümpel und poliert die Steine.',
+  },
+  irrlichtfee: {
+    id: 'irrlichtfee',
+    kind: 'secret',
+    gender: 'f',
+    area: 3,
+    rarity: 'rare',
+    names: ['Irrlichtfee'],
+    description: 'Eine winzige Fee aus Licht. Sie tanzt über dem Moor und zeigt allen, die sich verlaufen haben, den Weg nach Hause.',
+  },
 };
 
 // Die seltenen Arten der geheimen Orte in der Reihenfolge des Wesen-Buchs (Plätze 25 bis 30).
-export const SECRET_SPECIES = ['wurzelgeist', 'prismalibelle'];
+export const SECRET_SPECIES = ['wurzelgeist', 'prismalibelle', 'perlkrabbe', 'irrlichtfee'];
 
 export const AREA_WILD = {
   1: { common: ['gischtling', 'haeuschel'], rare: 'glimmqualle' },

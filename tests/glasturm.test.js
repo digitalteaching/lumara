@@ -31,7 +31,7 @@ test('In den Spiegeldünen führt die Öse an der Glaswand mit dem Kletterhaken 
 });
 
 test('Prismalibelle: Buchplatz 26, Bild 32 × 32 mit eigener Silhouette', () => {
-  assert.deepEqual(BOOK_SLOTS.slice(24, 27), ['wurzelgeist', 'prismalibelle', null]);
+  assert.deepEqual(BOOK_SLOTS.slice(24, 26), ['wurzelgeist', 'prismalibelle']);
   assert.deepEqual([SPECIES.prismalibelle.kind, SPECIES.prismalibelle.area], ['secret', 4]);
   const rows = CREATURE_ART.prismalibelle[1];
   assert.equal(rows.length, 32);

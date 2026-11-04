@@ -437,6 +437,20 @@ const glassfloor = speckled('A', 111, [['w', 0.08], ['L', 0.06], ['V', 0.02], ['
 const glasswall = speckled('L', 113, [['S', 0.18], ['A', 0.1], ['w', 0.04]]);
 const prismgrass = lean => retint(tallGrass(lean), { l: 'L', g: 'A', G: 'V', F: 'S' });
 
+// Gezeiteninsel (Plan 4d): Tümpel mit Steinrand auf Sand (blockiert) und Seegras als hohes Gras
+function tidepool() {
+  const g = sand.map(r => [...r]);
+  for (let y = 0; y < 16; y++) for (let x = 0; x < 16; x++) {
+    const dx = (x + 0.5 - 8) / 6.5, dy = (y + 0.5 - 8) / 5.5, d = dx * dx + dy * dy;
+    if (d <= 0.62) g[y][x] = noise(x, y, 71) < 0.1 ? 'L' : 'S';
+    else if (d <= 1) g[y][x] = noise(x, y, 72) < 0.5 ? 's' : 'm';
+  }
+  g[6][6] = 'A'; g[6][7] = 'A'; g[7][6] = 'L';
+  for (const [x, y] of [[10, 9], [9, 9], [11, 9], [10, 8], [10, 10]]) g[y][x] = 'C'; // ein Seestern
+  return toRows(g);
+}
+const tidegrass = lean => retint(tallGrass(lean), { l: 'Y', g: 't', G: 'l', F: 'y' });
+
 // Felder ohne eigenen Boden, unter die der Boden der Umgebung gezeichnet wird
 export const OVERLAY_TILES = new Set(['rock', 'fortree', 'mushroom', 'glowshroom', 'spire', 'snowpine', 'nightrock']);
 
@@ -510,6 +524,8 @@ export const TILES = {
   glassfloor: [glassfloor],
   glasswall: [glasswall],
   prismgrass: [prismgrass(false), prismgrass(true)],
+  tidepool: [tidepool()],
+  tidegrass: [tidegrass(false), tidegrass(true)],
 };
 
 // ---------- Gebäude ----------
@@ -917,6 +933,20 @@ function hookRing() {
   return g.map(r => r.join(''));
 }
 
+// Ein Pfahl mit Seil zum Festmachen (Eingang zu den Inseln mit der Nussschale).
+function boatPost() {
+  const g = Array.from({ length: 16 }, () => Array(16).fill('.'));
+  for (let y = 1; y < 16; y++) for (let x = 5; x <= 10; x++) {
+    g[y][x] = y === 1 || x === 5 || x === 10 ? 'k' : x === 6 ? 'r' : x === 9 ? 'b' : 'o';
+  }
+  for (const x of [5, 10]) g[1][x] = '.';
+  g[2][6] = 'y';
+  for (let x = 4; x <= 11; x++) { g[6][x] = x % 2 ? 'y' : 'c'; g[7][x] = x % 2 ? 'c' : 'y'; }
+  for (const [x, y] of [[4, 5], [11, 5], [3, 6], [3, 7], [4, 8], [11, 8]]) g[y][x] = 'k';
+  for (const [x, y] of [[12, 7], [12, 8], [13, 9], [13, 10], [12, 11], [13, 12]]) g[y][x] = 'y'; // loses Seilende
+  return g.map(r => r.join(''));
+}
+
 function glassTower() {
   const g = grid(16, 48, '.');
   for (let y = 0; y < 10; y++) {
@@ -988,6 +1018,7 @@ export const PROPS = {
   oldtree: oldTree(),
   hollowoak: hollowOak(),
   hookring: hookRing(),
+  boatpost: boatPost(),
   sign: [
     '................',
     '................',

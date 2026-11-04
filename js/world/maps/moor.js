@@ -1,6 +1,6 @@
 // Gebiet 3: das Pilzmoor (Design 5.3). 40 × 30 Felder.
 // Süden: Eingang aus dem Flüsterwald und die Marsch mit Schilf. Mitte: ein Moorsee, über den ein
-// Steg führt; im Westen liegt die Irrlichtinsel (zu sehen, aber ohne Boot nicht erreichbar, Plan 4).
+// Steg führt; im Westen liegt die Irrlichtinsel (mit der Nussschale vom Pfahl am Südufer aus).
 // Norden: Torfplateau mit Leuchtstein und Pilzsammlerin, dahinter Nebel über dem Weg zu den Spiegeldünen.
 
 export const MOOR = {
@@ -51,6 +51,13 @@ export const MOOR = {
     '%': 'fog',
   },
   objects: [
+    // Geheimer Ort (Design 5.7): ein Pfahl am Südufer, mit der Nussschale zur Irrlichtinsel
+    {
+      type: 'secret', id: 'pfahl-irrlicht', place: 'irrlicht', prop: 'boatpost', x: 7, y: 15,
+      to: { map: 'irrlicht', x: 8, y: 10, dir: 'up' },
+      lines: ['Ein Pfahl mit einem alten Seil ragt aus dem Moor.', 'Drüben tanzen die Irrlichter. Mit einem kleinen Boot käme man zur Insel hinüber.'],
+      linesOpen: ['Du setzt die Nussschale aufs Wasser und ruderst zur Irrlichtinsel.'],
+    },
     { type: 'beacon', number: 3, x: 16, y: 4 },
     {
       type: 'trainer', number: 3, x: 20, y: 7, dir: 'down', sight: 4, sprite: 'trainer3',

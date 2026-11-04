@@ -129,6 +129,8 @@ const FILES = [
   "js/world/maps/duenen.js",
   "js/world/maps/eiche.js",
   "js/world/maps/glasturm.js",
+  "js/world/maps/gezeiten.js",
+  "js/world/maps/irrlicht.js",
   "js/world/maps/klippen.js",
   "js/world/maps/moor.js",
   "js/world/maps/ruinen.js",
