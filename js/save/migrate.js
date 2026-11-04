@@ -17,7 +17,7 @@ import { MAPS as WORLD_MAPS } from '../world/network.js';
 import { validateName, emptyPackProgress, emptyWorld } from '../state.js';
 import { emptyBag, BAG_ITEMS } from '../items/bag.js';
 
-export const CURRENT_VERSION = 6;
+export const CURRENT_VERSION = 7;
 
 const MIGRATIONS = {
   // 1 → 2 (Plan 3a): Leuchtsteine, Rucksack, Geschichte, Uhren für das Nachwachsen, gesamte Spielzeit.
@@ -40,6 +40,8 @@ const MIGRATIONS = {
   4: s => ({ ...s, version: 5, quests: {}, keys: [], secrets: {} }),
   // 5 → 6 (Plan 5a): der Zustand nach dem Finale, noch nicht erreicht.
   5: s => ({ ...s, version: 6, finale: { done: false } }),
+  // 6 → 7 (Plan 5b): Revanche-Stufen je Paket; die Reparatur gibt jedem Paket leere tiers.
+  6: s => ({ ...s, version: 7 }),
 };
 
 const MAPS = WORLD_MAPS;
@@ -113,9 +115,21 @@ function repairPack(raw) {
   if (!isObject(raw)) return p;
   if (Array.isArray(raw.beaten)) p.beaten = [...new Set(raw.beaten.filter(n => isInt(n) && n >= 1 && n <= 8))].sort((a, b) => a - b);
   p.boss = raw.boss === true;
+  p.tiers = repairTiers(raw.tiers);
   p.history = repairHistory(raw.history);
   p.stats = repairStats(raw.stats);
   return p;
+}
+
+// Revanche-Stufen: Schlüssel 1 bis 9, Werte ab 1, höchstens 5; alles andere fällt heraus.
+function repairTiers(raw) {
+  const out = {};
+  if (!isObject(raw)) return out;
+  for (const [k, v] of Object.entries(raw)) {
+    const n = Number(k);
+    if (isInt(n) && n >= 1 && n <= 9 && isInt(v) && v >= 1) out[n] = Math.min(5, v);
+  }
+  return out;
 }
 
 function repairPacks(raw) {

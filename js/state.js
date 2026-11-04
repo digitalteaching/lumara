@@ -1,4 +1,4 @@
-// Spielzustand im Speicher, Format Version 6 (Design 10.4, 11). Was dem Kind gehört (Name, Wesen,
+// Spielzustand im Speicher, Format Version 7 (Design 10.4, 11). Was dem Kind gehört (Name, Wesen,
 // Position, Einstellungen, Leuchtsteine, Rucksack, Geschichte, Spielzeit), liegt oben; was zum
 // Lernpaket gehört, liegt in packs[Kurzform].
 // Änderungen am Format brauchen eine Umwandlung in js/save/migrate.js.
@@ -21,7 +21,7 @@ export function newGameState({ name, species, nickname }) {
   const creature = { species, nickname: nickname || null, level: 1, xpInLevel: 0, energy: 0, lifeStones: 0 };
   creature.energy = maxEnergy(creature);
   return {
-    version: 6,
+    version: 7,
     savedAt: 0,
     name,
     creature,
@@ -49,7 +49,8 @@ export function textSpeedCps(settings) {
 }
 
 export function emptyPackProgress() {
-  return { beaten: [], boss: false, history: {}, stats: { wins: 0, right: 0, total: 0, playMs: 0, topics: {}, floor: 0 } };
+  // tiers: gewonnene Revanchen je Trainer (1 bis 8) und Morrow (9), höchstens 5 (Design 7.5).
+  return { beaten: [], boss: false, tiers: {}, history: {}, stats: { wins: 0, right: 0, total: 0, playMs: 0, topics: {}, floor: 0 } };
 }
 
 export function validateName(raw) {
@@ -64,6 +65,7 @@ export function packProgress(state, shortId) {
   const p = (state.packs[shortId] ??= empty);
   p.beaten ??= empty.beaten;
   p.boss ??= empty.boss;
+  p.tiers ??= empty.tiers;
   p.history ??= empty.history;
   p.stats ??= empty.stats;
   for (const [k, v] of Object.entries(empty.stats)) p.stats[k] ??= v;

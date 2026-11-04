@@ -13,7 +13,7 @@ import { xpToNext } from '../js/duel/progress.js';
 
 test('neues Spiel: Level 1, volle Energie, Start am Steg', () => {
   const s = newGameState({ name: 'Mia', species: 'kiesel', nickname: null });
-  assert.equal(s.version, 6);
+  assert.equal(s.version, 7);
   assert.equal(s.creature.level, 1);
   assert.equal(s.creature.xpInLevel, 0);
   assert.equal(s.creature.energy, 5);
@@ -109,11 +109,11 @@ test('Flucht: keine XP, Energie wie im Duell', () => {
   assert.equal(s.creature.level, 1);
 });
 
-const EMPTY = { beaten: [], boss: false, history: {}, stats: { wins: 0, right: 0, total: 0, playMs: 0, topics: {}, floor: 0 } };
+const EMPTY = { beaten: [], boss: false, tiers: {}, history: {}, stats: { wins: 0, right: 0, total: 0, playMs: 0, topics: {}, floor: 0 } };
 
 test('neuer Spielstand hat Version, Einstellungen und leeren Fortschritt', () => {
   const s = newGameState({ name: 'Mia', species: 'nixi', nickname: null });
-  assert.equal(s.version, 6);
+  assert.equal(s.version, 7);
   assert.equal(s.savedAt, 0);
   assert.deepEqual(s.settings, { textSpeed: 'normal' });
   assert.deepEqual(packProgress(s, 'ENQ9'), EMPTY);
