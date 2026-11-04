@@ -27,6 +27,8 @@ export function createDuel({ kind, player, foe, deck, rng, timeFor = () => null 
     playerMax: player.maxEnergy,
     foeEnergy: foe.maxEnergy,
     foeMax: foe.maxEnergy,
+    phase: 1, // Endgegner (Design 7.4): mehrere Phasen mit je voller Energie
+    phases: foe.phases ?? 1,
     streak: 0,
     critEvery,
     current: null,
@@ -139,6 +141,7 @@ export function createDuel({ kind, player, foe, deck, rng, timeFor = () => null 
       almost,
       crit: false,
       foeDamage: 0,
+      phaseCleared: false,
       playerDamage: 0,
       healed: 0,
       shielded: false,
@@ -152,6 +155,14 @@ export function createDuel({ kind, player, foe, deck, rng, timeFor = () => null 
       r.crit = d.streak % critEvery === 0;
       r.foeDamage = r.crit ? 2 : 1;
       d.foeEnergy = Math.max(0, d.foeEnergy - r.foeDamage);
+      // Leer in einer Phase, nach der noch eine kommt: die nächste Phase beginnt mit voller Energie
+      // (überschüssiger Schaden eines Volltreffers verfällt).
+      const nextPhase = d.foeEnergy === 0 && d.phase < d.phases;
+      if (nextPhase) {
+        d.phase++;
+        d.foeEnergy = foe.maxEnergy;
+        r.phaseCleared = true;
+      }
       if (player.species === 'nixi' && d.streak % CONFIG.duel.nixiEvery === 0 && d.playerEnergy < d.playerMax) {
         d.playerEnergy++;
         r.healed = 1;
@@ -190,7 +201,7 @@ export function createDuel({ kind, player, foe, deck, rng, timeFor = () => null 
   };
 
   d.surrender = () => {
-    if (kind === 'trainer' && !FINAL.has(d.state)) d.state = 'lost';
+    if ((kind === 'trainer' || kind === 'boss') && !FINAL.has(d.state)) d.state = 'lost';
   };
 
   d.summary = () => ({

@@ -127,8 +127,13 @@ export function applyDuelResult(state, shortId, setup, summary, rng = null) {
 
   if (summary.outcome === 'won') {
     report.xp = xpForWin({ kind: setup.kind, area: setup.area, trainerNumber: setup.trainer?.number, flawless: summary.flawless });
+    // Der Endgegner bringt seine 500 XP nur beim ersten Sieg mit dem aktuellen Paket (Design 6.3).
+    if (setup.kind === 'boss') {
+      if (progress.boss) report.xp = 0;
+      progress.boss = true;
+    }
     // Ein eingesetzter Glanzstein verdoppelt die XP des nächsten Siegs (nach dem Makellos-Bonus).
-    if (state.shineActive) {
+    if (state.shineActive && report.xp > 0) {
       report.xp *= 2;
       report.shine = true;
       state.shineActive = false;

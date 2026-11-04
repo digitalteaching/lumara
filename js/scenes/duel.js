@@ -4,6 +4,7 @@ import { CONFIG } from '../config.js';
 import { createDuel } from '../duel/duel.js';
 import { timerFor } from '../duel/timing.js';
 import { createDeck, poolFor } from '../duel/questions.js';
+import { bossSetup } from '../duel/boss.js';
 import { stageForLevel, maxEnergy } from '../duel/progress.js';
 import { speciesName, displayName, wildName, nameAtStage, evolutionLines, AREA_WILD, TRAINER_CREATURES } from '../data/species.js';
 import { drawEvolution, evolutionAt } from '../gfx/evolution.js';
@@ -54,6 +55,9 @@ export function makeTrainerSetup(game, number) {
     time: { trainerNumber: number, setting: pack.timePressure }, // Zeitdruck ab Trainer 4 (Design 7.4)
   };
 }
+
+// Das Endduell gegen Morrow (Design 7.4).
+export const makeBossSetup = game => bossSetup(game.pack.data);
 
 // Probefrage für Lehrkräfte (Design 12.3): ein Trainerduell mit den Fragen eines beliebigen Trainers,
 // mit dessen Wesen und Arena.

@@ -55,6 +55,6 @@ export function gainXp(creature, amount) {
 }
 
 export function xpForWin({ kind, area, trainerNumber, flawless }) {
-  const base = kind === 'trainer' ? X.trainerBase + X.trainerPerNumber * trainerNumber : X.wildBase + X.wildPerArea * area;
+  const base = kind === 'boss' ? X.bossFirst : kind === 'trainer' ? X.trainerBase + X.trainerPerNumber * trainerNumber : X.wildBase + X.wildPerArea * area;
   return flawless ? Math.round(base * (1 + X.flawlessBonus)) : base;
 }

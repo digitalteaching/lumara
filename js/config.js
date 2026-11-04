@@ -28,6 +28,8 @@ export const CONFIG = deepFreeze({
     wildPerArea: 2,
     flawlessBonus: 0.25,
   },
+  // Endgegner Morrow (Design 7.4): Phasen, Energie je Phase, angezeigtes Level, Uhr wie Trainer timeAs
+  boss: { phases: 3, energy: 6, level: 50, timeAs: 8 },
   duel: { critEvery: 3, critEveryFromStage3: 2, nixiEvery: 3, wrongMinMs: 1500 },
   // Zeitdruck (Design 7.4): Faktoren auf die Grundzeit des Trainers; lowShare: ab diesem Rest wird der Balken knapp.
   time: { fromArea: 4, typing: 1.5, tiles: 2, long: 2, flausch: 0.25, lowShare: 0.25 },
