@@ -6,6 +6,7 @@ import { SECRET_PLACES } from '../data/secrets.js';
 import { secretStory } from '../data/story.js';
 import { hasKey } from '../items/keys.js';
 import { addItem } from '../items/bag.js';
+import { cellKey } from './map.js';
 
 export const secretOpen = (state, entrance) => hasKey(state, SECRET_PLACES[entrance.place]?.key);
 
@@ -32,4 +33,11 @@ export function takeSecretStone(state, place) {
   const item = spot.stone === 'life' && state.creature.lifeStones >= CONFIG.creature.maxLifeStones ? 'farsight' : spot.stone;
   addItem(state, item);
   return item;
+}
+
+// Ein noch liegender seltener Stein belegt sein Feld: Wer darauf zu drückt, dreht sich zu ihm
+// (wie zu jedem anderen Ding, das man ansprechen kann) und kann ihn mit A nehmen.
+export function blockedCells(def, state) {
+  const s = def.secretStone;
+  return new Set(s && !state.secrets?.[s.place]?.stone ? [cellKey(s.x, s.y)] : []);
 }

@@ -6,7 +6,7 @@ import { createWorldScene } from './world.js';
 import { createDuelScene, makeWildSetup, makeTrainerSetup } from './duel.js';
 import { playTransition, reveal } from './transition.js';
 import { createEncounterCounter, wildTableFor } from '../world/encounters.js';
-import { secretOpen, takeSecretStory, takeSecretStone } from '../world/secrets.js';
+import { secretOpen, takeSecretStory, takeSecretStone, blockedCells } from '../world/secrets.js';
 import { turnGear, gearsOf } from '../world/puzzles.js';
 import { SECRET_PLACES } from '../data/secrets.js';
 import { trainerSees } from '../world/map.js';
@@ -407,6 +407,7 @@ export function createGameWorld(game) {
   // Der seltene Stein des Ortes: glitzert, bis er aufgehoben ist (einmal).
   const secretStone = def.secretStone ?? null;
   const stoneThere = () => secretStone && !game.state.secrets?.[secretStone.place]?.stone;
+  for (const k of blockedCells(def, game.state)) world.blocked.add(k);
   world.groundRender.push((ctx, cam) => {
     if (!stoneThere()) return;
     const x = secretStone.x * 16 - cam.x + 8, y = secretStone.y * 16 - cam.y + 9;
@@ -422,6 +423,7 @@ export function createGameWorld(game) {
   world.onInteract.push(async ev => {
     if (ev.target || !stoneThere() || ev.x !== secretStone.x || ev.y !== secretStone.y) return false;
     const item = takeSecretStone(game.state, secretStone.place);
+    world.blocked.clear(); // das Feld ist wieder frei
     game.save();
     if (item) await say(game, [STONE_LINES[item](displayName(game.state.creature))]);
     return true;

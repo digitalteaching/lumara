@@ -347,6 +347,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
     onTick,
     afterRender,
     groundRender,
+    blocked: new Set(), // zusätzlich belegte Felder, etwa ein noch liegender seltener Stein
     lock,
     camera,
     refreshFog,
@@ -396,10 +397,10 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
       for (const fn of [...onTick]) fn(dt);
       if (locked || opts.passive) return;
       // Auf Rutscheis gleitet die Figur weiter; Richtung und A zählen erst, wenn sie steht.
-      const sliding = isSliding(map, player);
+      const sliding = isSliding(map, player, scene.blocked);
       const pressedA = game.input.pressed('a');
       const intent = { dir: sliding ? player.dir : game.input.dir(), a: !sliding && pressedA };
-      const events = player.update(dt, intent, map);
+      const events = player.update(dt, intent, map, scene.blocked);
       for (const ev of events) {
         if (ev.type === 'stepped') {
           if (map.isTallGrass(ev.x, ev.y)) rustle.set(cellKey(ev.x, ev.y), 220);

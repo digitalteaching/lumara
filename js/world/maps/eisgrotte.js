@@ -1,8 +1,10 @@
 // Geheimer Ort: die Eisgrotte am Nordlichtsee (Design 5.7), erreichbar mit den Eiskufen von der
 // Eiskante. Unten fester Schnee mit dem Ausgang und links Schneegras mit dem Kristallotter.
 // Dahinter Rutscheis mit Eissäulen: Wer darauf tritt, gleitet, bis etwas ihn aufhält. Oben rechts
-// liegt der Kristall mit dem Geschichtsstück auf einer Schneeinsel, daneben ein Lebensstein.
-// Der kürzeste Weg braucht fünf Rutschzüge (tests/slide.test.js); feststecken kann man nirgends.
+// liegt der Kristall mit dem Geschichtsstück auf einer Schneeinsel; oben links, am Ende einer
+// Rutschbahn, ein Lebensstein (er hält das Gleiten auf, bis man ihn nimmt).
+// Der kürzeste Weg braucht drei Rutschzüge, solange der Stein liegt, danach fünf (tests/slide.test.js);
+// feststecken kann man nirgends.
 
 export const EISGROTTE = {
   id: 'eisgrotte',
@@ -27,7 +29,7 @@ export const EISGROTTE = {
   ],
   legend: { W: 'icewall', X: 'icepillar', i: 'slideice', s: 'snow', ',': 'snowgrass' },
   objects: [{ type: 'storystone', id: 'kristall', place: 'eisgrotte', prop: 'icecrystal', x: 14, y: 1 }],
-  secretStone: { x: 13, y: 1, place: 'eisgrotte' },
+  secretStone: { x: 2, y: 1, place: 'eisgrotte' },
   wild: { common: ['kristallotter'], rare: 'kristallotter' },
   exits: [{ x: 7, y: 11, w: 1, h: 1, to: 'see', at: { x: 28, y: 4, dir: 'left' } }],
   spawn: { x: 7, y: 10, dir: 'up' },

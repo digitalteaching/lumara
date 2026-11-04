@@ -12,6 +12,8 @@ import { SPECIES, SECRET_SPECIES } from '../js/data/species.js';
 import { EN_SPECIES } from '../js/i18n/en-species.js';
 import { EN_WORLD } from '../js/i18n/en-world.js';
 import { BOOK_SLOTS } from '../js/data/book.js';
+import { blockedCells } from '../js/world/secrets.js';
+import { newGameState } from '../js/state.js';
 
 // Eine kleine Eisfläche: oben drei Felder Rutscheis, unten Schnee und eine Eissäule.
 const MINI = {
@@ -68,6 +70,16 @@ test('Eisgrotte: der Kristall ist nur durch mindestens drei Rutschzüge erreichb
   for (const k of stops.keys()) {
     const [x, y] = k.split(',').map(Number);
     assert.ok(slideStops(map, { x, y }).has(cellKey(exit.x, exit.y)), `von ${k} zurück zum Ausgang`);
+  }
+  // Auch solange der Lebensstein noch liegt (er belegt sein Feld): nirgends feststecken.
+  const stone = blockedCells(EISGROTTE, newGameState({ name: 'A', species: 'nixi', nickname: null }));
+  assert.equal(stone.size, 1);
+  const withStone = slideStops(map, EISGROTTE.spawn, stone);
+  assert.ok(withStone.get(beside[0]) >= 3);
+  assert.ok(stops.has(cellKey(2, 1)) && !withStone.has(cellKey(2, 1)), "auf dem liegenden Stein hält man nicht an");
+  for (const k of withStone.keys()) {
+    const [x, y] = k.split(',').map(Number);
+    assert.ok(slideStops(map, { x, y }, stone).has(cellKey(exit.x, exit.y)), `mit Stein: von ${k} zurück zum Ausgang`);
   }
   assert.ok([...stops.keys()].some(k => { const [x, y] = k.split(',').map(Number); return map.isTallGrass(x, y); }), 'Schneegras erreichbar');
   assert.deepEqual([exit.to, exit.at.x, exit.at.y], ['see', 28, 4]);
