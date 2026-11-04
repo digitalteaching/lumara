@@ -5,7 +5,7 @@ import { CONFIG } from '../config.js';
 import { createWorldScene } from './world.js';
 import { createDuelScene, makeWildSetup, makeTrainerSetup, makeBossSetup } from './duel.js';
 import { rematchOffer, rematchSetup, rematchQuestion } from '../duel/rematch.js';
-import { rememberBlock, rememberSetup } from '../duel/boss.js';
+import { rememberBlock, rememberSetup, bossLines } from '../duel/boss.js';
 import { fallenStarSpot, nearStar, starChance } from '../world/stars.js';
 import { ascentSetup, refillBefore } from '../duel/ascent.js';
 import { musicFor } from '../audio/choose.js';
@@ -446,7 +446,7 @@ export function createGameWorld(game) {
     // Gewonnen: erst das Finale speichern, dann den Namen sagen und zum Leuchtturm.
     if (o?.type === 'boss') {
       if (finaleDone(game.state) || !caveOpen(game.state, game.pack.data)) return true;
-      await say(game, tl('boss.hello'), { speaker: speciesName('morrow', 3) });
+      await say(game, bossLines(game.pack.data).hello, { speaker: speciesName('morrow', 3) });
       const report = await runDuel(makeBossSetup(game), 'trainer');
       const c = game.state.creature;
       if (report.outcome !== 'won') {

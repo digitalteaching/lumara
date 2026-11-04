@@ -3,7 +3,7 @@ die Kinder gern lösen, und hältst dich genau an ein vorgegebenes Dateiformat.
 
 Schreibe mir EIN vollständiges Lernpaket für das Lernspiel „Lumara – Das Land unter
 dem Nebel“. Das Paket ist eine reine Textdatei. Die Kinder laden sie ins Spiel und
-lösen die Fragen in Duellen gegen acht Trainer, einen pro Gebiet der Insel.
+lösen die Fragen in Duellen gegen bis zu acht Trainer, einen pro Gebiet der Insel.
 
 ═══════════════════════════════════════════════════════════════════════
 TEIL 1 — HIER ANPASSEN (alles andere unverändert lassen)
@@ -12,14 +12,16 @@ TEIL 1 — HIER ANPASSEN (alles andere unverändert lassen)
 SCHULFORM:        Gymnasium
 JAHRGANG:         6
 FACH:             Englisch
-SPIELSPRACHE:     englisch
-  (deutsch, englisch, französisch oder spanisch. Ist das Paket für eine
-   Fremdsprache, läuft das ganze Spiel in dieser Sprache. Sonst deutsch.)
+SPIELSPRACHE:
+  (Meist leer lassen: Dann entscheidet FACH. Bei Englisch, Französisch oder
+   Spanisch läuft das ganze Spiel in dieser Sprache, sonst auf Deutsch.
+   Nur ausfüllen, um das zu ändern: deutsch, englisch, französisch, spanisch.)
 ZEITDRUCK:        normal
   (normal, lang oder aus. Eine Uhr gibt es erst ab Trainer 4.)
 TITEL DES PAKETS: Englisch Jahrgang 6 – Wiederholung
-KENNUNG:          englisch6-wiederholung
-  (kurz, ohne Leerzeichen. Bei einer späteren Fassung desselben Pakets
+KENNUNG:          fach-jahrgang-name
+  (ersetzen durch eine eigene kurze Kennung ohne Leerzeichen, zum Beispiel
+   englisch6-wiederholung. Bei einer späteren Fassung desselben Pakets
    genau gleich lassen.)
 
 DIE THEMEN (1 bis 8, eines pro Trainer, in dieser Reihenfolge):
@@ -44,16 +46,18 @@ TEIL 2 — FESTE VORGABEN (nicht verändern, nicht weglassen)
 
 A1  Reiner Text. Jede Zeile beginnt mit einem Schlüsselwort in GROSSBUCHSTABEN
     und einem Doppelpunkt, zum Beispiel  FRAGE: Wie heißt „Hund“ auf Englisch?
+    Keine Formatierung: kein Fettdruck, keine Sternchen, keine Aufzählungs-
+    zeichen, keine Überschriften, keine Codeblöcke.
 A2  Abschnitte beginnen mit einer eigenen Zeile:  === TRAINER 1 ===  bis
     === TRAINER 8 ===, dann  === ENDGEGNER ===  und  === ZETTEL ===.
-A3  Eine leere Zeile trennt zwei Fragen. Zeilen mit # am Anfang sind
-    Kommentare; schreibe keine.
+A3  Eine leere Zeile trennt zwei Fragen. Innerhalb einer Frage steht keine
+    leere Zeile. Zeilen mit # am Anfang sind Kommentare; schreibe keine.
 A4  Der Kopf steht ganz oben, vor dem ersten Abschnitt:
       PAKET: <Titel des Pakets>
       KENNUNG: <Kennung aus Teil 1>
       FACH: <Fach aus Teil 1>
       ZEITDRUCK: <normal, lang oder aus>
-      SPIELSPRACHE: <deutsch, englisch, französisch oder spanisch>
+      SPIELSPRACHE: <nur, wenn sie in Teil 1 ausgefüllt ist; sonst die Zeile weglassen>
     Die KENNUNG übernimmst du genau aus Teil 1 und darfst sie nie ändern:
     Solange sie gleich bleibt, gilt eine neue Fassung als dasselbe Paket und
     die Kinder behalten ihre Statistik.
@@ -101,6 +105,11 @@ B3  Jede Frage prüft genau das Thema ihres Trainers. Nichts doppelt,
     weder innerhalb eines Trainers noch zwischen den Trainern.
 B4  Die richtige Antwort steht nie zusätzlich unter FALSCH. Die FALSCH-
     Antworten sind plausibel, typische Fehler von Kindern, nicht albern.
+    Sie unterscheiden sich von der richtigen Antwort, von AUCH RICHTIG und
+    voneinander nicht nur durch Groß- und Kleinschreibung, Satzzeichen am
+    Ende oder die Art der Anführungszeichen: Das Spiel zählt solche Antworten
+    als gleich, und dem Paket fehlen dann falsche Antworten. Geht es genau um
+    solche Unterschiede (Groß- und Kleinschreibung, Zeichensetzung), nimm SATZ.
 B5  Lückensätze haben die Lücke als ___ (drei Unterstriche). Bei Verben steht
     die Grundform in Klammern dahinter: She ___ (play) tennis.
 B6  Antworten zum Eintippen sind kurz: ein Wort oder wenige Wörter.
@@ -113,12 +122,18 @@ B8  Die Arbeitsanweisungen im FRAGE-Text stehen in der Sprache, die der
 B9  Alle Aufgaben sind neu geschrieben. Keine Übernahme aus einem Lehrwerk,
     keine Marken, keine echten Personen.
 B10 Pro Trainer werden die Fragen von leicht nach schwer etwas anspruchsvoller.
-    Trainer 8 ist die schwierigste Stufe des Pakets.
+    Der letzte Trainer ist die schwierigste Stufe des Pakets.
+B11 Fragen, die nur als Auswahl Sinn ergeben, etwa „Welcher Satz ist richtig?“
+    oder „Choose the right word.“, bekommen die Zeile FORM: auswahl, denn sie
+    ergeben nur mit Auswahl einen Sinn. Jede andere Frage mit FALSCH muss auch
+    zum Eintippen taugen: eine kurze, eindeutige Antwort.
 
 ── C. TEXTE DER TRAINER ────────────────────────────────────────────────
 
-C1  Die Trainertexte (HALLO, SIEG, NIEDERLAGE, REVANCHE) stehen in der
-    SPIELSPRACHE aus Teil 1, kurz und freundlich, höchstens 90 Zeichen je Zeile.
+C1  Die Trainertexte (HALLO, SIEG, NIEDERLAGE, REVANCHE) stehen in der Sprache
+    des Spiels: in der SPIELSPRACHE aus Teil 1, sonst bei Englisch, Französisch
+    oder Spanisch in dieser Sprache, sonst auf Deutsch. Kurz und freundlich,
+    höchstens 90 Zeichen je Zeile.
 C2  Jeder Trainer hat einen eigenen Vornamen und eine eigene Art zu sprechen,
     passend zu seinem Gebiet:
       1 Leuchtturmbucht: junge Fischerin mit Netz und Kopftuch
@@ -141,23 +156,23 @@ D2  Zettel nutzen nur ANTWORT, mit oder ohne FALSCH, keinen SATZ.
 ── E. AUSGABE ──────────────────────────────────────────────────────────
 
 E1  Antworte nur mit dem Inhalt der Datei, ohne Einleitung, ohne
-    Zusammenfassung, ohne Codeblock-Zeichen davor oder danach.
+    Zusammenfassung, ohne Dateinamen, ohne Codeblock-Zeichen davor oder danach.
 E2  Die Datei beginnt mit der Zeile PAKET: und endet mit der letzten
     Zettelfrage.
-E3  Nenne mir danach in einer Zeile den Dateinamen, zum Beispiel
-    englisch6-wiederholung.txt. Speichern als reinen Text (UTF-8).
+E3  Reicht die Länge einer Antwort nicht, schreibe direkt weiter, ohne etwas
+    zu wiederholen oder zusammenzufassen, bis die Datei vollständig ist.
 
 ── F. SO SIEHT EIN PAKET AUS (Muster, kürzer als deins) ────────────────
 
-Das Muster zeigt nur das Format, mit 8 Fragen. Dein Paket hat 8 Trainer mit
-je mindestens 20 Fragen, den Endgegner und 20 Zettel.
+Das Muster zeigt nur das Format, mit 8 Fragen. Dein Paket hat so viele Trainer
+wie Themen in Teil 1, mit je mindestens 20 Fragen, dazu den Endgegner und
+20 Zettel.
 
 <<<MUSTER
 PAKET: Englisch Jahrgang 6 – Muster
 KENNUNG: englisch6-muster
 FACH: Englisch
 ZEITDRUCK: normal
-SPIELSPRACHE: englisch
 
 === TRAINER 1 ===
 NAME: Maren
@@ -220,21 +235,26 @@ TEIL 3 — PRÜFUNG VOR DER ANTWORT
 Gehe diese Liste durch, bevor du antwortest. Korrigiere still, was nicht
 stimmt, und liefere es richtig.
 
-P1  Stehen PAKET, KENNUNG, FACH, ZEITDRUCK und SPIELSPRACHE oben, mit der
-    KENNUNG genau wie in Teil 1?
+P1  Stehen PAKET, KENNUNG, FACH und ZEITDRUCK oben, SPIELSPRACHE nur, wenn sie
+    in Teil 1 ausgefüllt ist, und die KENNUNG genau wie in Teil 1? Steht dort
+    noch fach-jahrgang-name, bilde eine Kennung aus Fach und Jahrgang, zum
+    Beispiel mathe7-brueche.
 P2  Gibt es so viele Trainer wie Themen in Teil 1, ohne Lücke ab 1 nummeriert,
     jeder mit NAME, THEMA, HALLO, SIEG, NIEDERLAGE und REVANCHE?
 P3  Hat jeder Trainer mindestens 20 Fragen, davon etwa 10 Auswahl, 5 Eintippen
     und 5 Satzbau?
 P4  Hat jede Frage genau eines von ANTWORT und SATZ?
-P5  Hat jedes FALSCH mindestens 3 Einträge, und steht die richtige Antwort
-    nirgends unter FALSCH?
+P5  Hat jedes FALSCH mindestens 3 Einträge, die sich von der richtigen Antwort
+    und voneinander nicht nur durch Groß- und Kleinschreibung, Satzzeichen am
+    Ende oder Anführungszeichen unterscheiden?
+P5b Hat jede Frage, die nur als Auswahl Sinn ergibt, FORM: auswahl?
+P5c Steht innerhalb einer Frage keine leere Zeile, und gibt es nirgends
+    Fettdruck, Sternchen oder Aufzählungszeichen?
 P6  Ist jede Frage einmalig im ganzen Paket?
-P7  Stehen die Trainertexte in der SPIELSPRACHE, kurz und freundlich?
+P7  Stehen die Trainertexte in der Sprache des Spiels (C1), kurz und freundlich?
 P8  Gibt es === ENDGEGNER === mit HALLO, SIEG, NIEDERLAGE und === ZETTEL ===
     mit genau 20 Fragen?
-P9  Steht vor und nach der Datei kein weiterer Text außer der Zeile mit dem
-    Dateinamen?
+P9  Steht vor und nach der Datei kein weiterer Text?
 
 Danach kann die Lehrkraft die Datei auf der Seite „Für Lehrkräfte“ von Lumara
 prüfen (lehrkraft.html). Sie zeigt Fehler mit Zeilennummer und lässt einzelne

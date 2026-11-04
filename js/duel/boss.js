@@ -6,6 +6,18 @@
 import { CONFIG } from '../config.js';
 import { poolFor } from './questions.js';
 import { finaleDone } from '../world/finale.js';
+import { tl, mark } from '../i18n/i18n.js';
+
+// Morrows Zeilen: aus dem Abschnitt ENDGEGNER des Pakets (Design 10.2), sonst die festen Texte
+// in der Spielsprache. win und loss sind leer, wenn das Paket keine hat.
+export function bossLines(pack) {
+  const b = pack?.boss;
+  return {
+    hello: b?.hello?.length ? b.hello.map(mark) : tl('boss.hello'),
+    win: b?.win ? [mark(b.win)] : [],
+    loss: b?.loss ? [mark(b.loss)] : [],
+  };
+}
 
 export const foeStageForPhase = phase => CONFIG.boss.phases + 1 - phase;
 

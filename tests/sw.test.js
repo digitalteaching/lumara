@@ -20,3 +20,8 @@ test('der Service Worker speichert genau die Dateien des Spiels', () => {
   assert.deepEqual([...files].sort(), expected.sort());
   for (const f of files) assert.ok(existsSync(new URL(f, root)), f);
 });
+
+test('GitHub Pages ohne Jekyll: .nojekyll, sobald der Service Worker eine .md-Datei speichert', () => {
+  const files = JSON.parse(read('sw.js').match(/const FILES = (\[[\s\S]*?\]);/)[1]);
+  if (files.some(f => f.endsWith('.md'))) assert.ok(existsSync(new URL('.nojekyll', root)), '.nojekyll fehlt: Pages machte aus .md eine .html-Seite');
+});

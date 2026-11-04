@@ -1,4 +1,7 @@
 import { test } from 'node:test';
+import { bossLines } from '../js/duel/boss.js';
+import { readFileSync as readSrc } from 'node:fs';
+import { textIn as textInLang } from '../js/i18n/i18n.js';
 import assert from 'node:assert/strict';
 import { createRng } from '../js/core/rng.js';
 import { createDuel } from '../js/duel/duel.js';
@@ -150,4 +153,18 @@ test('Erinnerungsduell: der erste Sieg mit einem Paket gibt 500 XP, danach Stufe
   const third = rememberSetup(fullPack(), p);
   assert.deepEqual([third.rematch, third.foe.maxEnergy], [2, 10]);
   assert.equal(timerFor(third, 'kiesel')({ form: 'choice' }), 16200);
+});
+
+test('Morrows Zeilen aus dem Paket (ENDGEGNER) kommen ins Spiel, sonst die festen Texte', () => {
+  const own = bossLines({ boss: { hello: ['Wer bist du?', 'Niemand kommt hierher.'], win: 'Du erinnerst dich an so viel.', loss: 'Ruh dich aus.' } });
+  assert.deepEqual(own, { hello: ['Wer bist du?', 'Niemand kommt hierher.'], win: ['Du erinnerst dich an so viel.'], loss: ['Ruh dich aus.'] });
+  const fixed = bossLines({ boss: null });
+  assert.deepEqual(fixed.hello, [textInLang('de', 'boss.hello')].flat().length ? fixed.hello : []);
+  assert.ok(fixed.hello.length > 0);
+  assert.deepEqual([fixed.win, fixed.loss], [[], []]);
+  assert.deepEqual(bossLines({ boss: { hello: [], win: null, loss: null } }).hello, fixed.hello);
+  const events = readSrc(new URL('../js/scenes/worldEvents.js', import.meta.url), 'utf8');
+  assert.match(events, /bossLines\(game\.pack\.data\)\.hello/);
+  const duel = readSrc(new URL('../js/scenes/duel.js', import.meta.url), 'utf8');
+  assert.match(duel, /bossLines\(game\.pack\.data\)/);
 });

@@ -24,3 +24,10 @@ test('Anleitung und Seite für Lehrkräfte: Abschnitte, Links und Lizenz', () =>
 
   for (const page of [guide, teacher]) for (const f of links(page)) assert.ok(existsSync(new URL(f === './' ? 'index.html' : f, root)), f);
 });
+
+test('Anleitung: erst zum Home-Bildschirm, dann das Paket laden; der eigene Speicher steht da', () => {
+  const guide = read('anleitung.html');
+  const share = guide.slice(guide.indexOf('An die Klasse verteilen'), guide.indexOf('Thema für Thema'));
+  assert.ok(share.indexOf('Home-Bildschirm') < share.indexOf('„Lernpaket laden“'), 'Home-Bildschirm vor „Lernpaket laden“');
+  assert.match(share, /eigenen Speicher/);
+});

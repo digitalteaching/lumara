@@ -29,3 +29,16 @@ test('KI-Prompt: die acht Gebiete und Trainerfiguren wie in der Vorlage', () => 
     assert.ok(prompt.includes(`${m[1]} ${m[2]}: ${m[3]}`), `Gebiet ${m[1]}`);
   }
 });
+
+test('KI-Prompt: Regeln, an denen ein Paket sonst scheitert, und keine Beispielwerte, die unbemerkt bleiben', () => {
+  assert.match(prompt, /Groß- und Kleinschreibung/);
+  assert.match(prompt, /FALSCH[\s\S]{0,400}nicht nur durch Groß- und Kleinschreibung/);
+  assert.match(prompt, /FORM: auswahl[\s\S]{0,200}nur (als|mit) Auswahl/);
+  assert.match(prompt, /keine leere Zeile/i);
+  assert.match(prompt, /kein Fettdruck/i);
+  assert.match(prompt, /schreibe direkt weiter/i);
+  assert.ok(!/Dein Paket hat 8 Trainer/.test(prompt), 'Trainerzahl wie Themen');
+  const teil1 = prompt.slice(prompt.indexOf('TEIL 1'), prompt.indexOf('TEIL 2'));
+  assert.match(teil1, /^SPIELSPRACHE:[ \t]*$/m, 'SPIELSPRACHE leer: dann entscheidet FACH');
+  assert.match(teil1, /^KENNUNG:\s+fach-jahrgang-name$/m, 'KENNUNG als Platzhalter, den der Parser anmahnt');
+});

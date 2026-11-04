@@ -4,7 +4,7 @@ import { CONFIG } from '../config.js';
 import { createDuel } from '../duel/duel.js';
 import { timerFor } from '../duel/timing.js';
 import { createDeck, poolFor } from '../duel/questions.js';
-import { bossSetup, foeStageForPhase } from '../duel/boss.js';
+import { bossSetup, foeStageForPhase, bossLines } from '../duel/boss.js';
 import { duelMusic } from '../audio/choose.js';
 import { sound, jingle, musicTo, fanfare } from '../audio/bus.js';
 import { stageForLevel, maxEnergy } from '../duel/progress.js';
@@ -253,12 +253,20 @@ export function createDuelScene(game, setup, onEnd) {
       fanfare('victory');
       anim.foe.faint = t;
       if (setup.trainer) await say(game, [setup.trainer.lines.win], { speaker: setup.trainer.name });
-      else if (setup.kind === 'boss') await say(game, [tr('boss.tired')]);
+      else if (setup.kind === 'boss') {
+        const { win } = bossLines(game.pack.data);
+        if (win.length) await say(game, win, { speaker: speciesName('morrow', 1) });
+        await say(game, [tr('boss.tired')]);
+      }
       else await say(game, [tr('duel.foeTired', { wild: wildName(setup.foe.species, setup.foe.stage, 'the') })]);
     } else if (s.outcome === 'lost') {
       fanfare('defeat');
       anim.own.faint = t;
       if (setup.trainer) await say(game, [setup.trainer.lines.loss], { speaker: setup.trainer.name });
+      else if (setup.kind === 'boss') {
+        const { loss } = bossLines(game.pack.data);
+        if (loss.length) await say(game, loss, { speaker: speciesName('morrow', 1) });
+      }
       await say(game, [tr('duel.ownTired', { name: own })]);
     } else {
       await say(game, [tr('duel.escaped')]);
