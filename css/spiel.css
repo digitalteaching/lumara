@@ -660,7 +660,7 @@ body:not([data-mode="walk"]) .menu-btn { display: none; }
 .creature-img { image-rendering: pixelated; image-rendering: crisp-edges; }
 .creature-abilities-title { margin: 12px 0 4px; font-size: var(--text); }
 .creature-abilities { margin: 0; padding-left: 0; list-style: none; display: grid; gap: 4px; }
-.creature-abilities .off { color: var(--frame); }
+.creature-abilities .off { color: var(--frame-dark); }
 
 /* Wesen-Buch (Plan 4b): Raster mit 33 Kästen, auf 390 px vier Spalten */
 .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; margin-top: 8px; }

@@ -35,3 +35,12 @@ test('Zeitbalken: Die Beschriftung ist auf jeder Füllung gut lesbar (mindestens
     assert.ok(contrast(cream, blend(back, hex(fill))) >= 4.5, fill);
   }
 });
+
+test('Seite „Wesen“: Gesperrte Fähigkeiten sind gut lesbar (mindestens 4,5 : 1 auf Creme)', () => {
+  const r = rule('.creature-abilities .off');
+  const m = r.match(/color: (#[0-9a-f]{6}|var\(--[\w-]+\))/i);
+  assert.ok(m, 'eigene Textfarbe');
+  const vars = { 'var(--frame)': '#a8743a', 'var(--frame-dark)': '#7a5236', 'var(--ink)': '#1d2b3a' };
+  const color = vars[m[1]] ?? m[1];
+  assert.ok(contrast(hex(color), hex('#f3ecd2')) >= 4.5, color);
+});

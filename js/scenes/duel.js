@@ -7,6 +7,7 @@ import { createDeck, poolFor } from '../duel/questions.js';
 import { stageForLevel, maxEnergy } from '../duel/progress.js';
 import { speciesName, displayName, wildName, nameAtStage, evolutionLines, AREA_WILD, TRAINER_CREATURES } from '../data/species.js';
 import { drawEvolution, evolutionAt } from '../gfx/evolution.js';
+import { ownEnergyShown } from '../duel/plates.js';
 import { creatureRows } from '../gfx/art/creatures.js';
 import { spriteFrom, whiteOf } from '../gfx/canvasSprites.js';
 import { drawArena, ARENA } from '../gfx/arena.js';
@@ -111,6 +112,7 @@ export function createDuelScene(game, setup, onEnd) {
   let shownStage = stage;
   let ownRows = creatureRows(c.species, stage);
   let evolving = null; // { start, fromImg, toImg, resolve }
+  let over = false; // nach der Entwicklung zeigt das Schild die Energie des Wesens selbst
   const shiny = setup.kind === 'wild' && setup.foe.shiny === true;
   const foeRows = shiny ? shinyRows(creatureRows(setup.foe.species, setup.foe.stage), setup.foe.species) : creatureRows(setup.foe.species, setup.foe.stage);
   const foeKey = `creature:${setup.foe.species}:${setup.foe.stage}${shiny ? ':glanz' : ''}`;
@@ -129,7 +131,8 @@ export function createDuelScene(game, setup, onEnd) {
     setBar(plates.foe.bar, duel.foeEnergy, duel.foeMax);
     plates.own.name.textContent = nameAtStage(c, shownStage);
     plates.own.lv.textContent = `Lv ${c.level}`;
-    setBar(plates.own.bar, duel.playerEnergy, duel.playerMax);
+    const own = ownEnergyShown(duel, c, over);
+    setBar(plates.own.bar, own.energy, own.max);
     clear(plates.own.extra);
     const n = duel.critEvery;
     const filled = duel.streak % n;
@@ -153,6 +156,7 @@ export function createDuelScene(game, setup, onEnd) {
         resolve: () => {
           shownStage = to;
           ownRows = toRows;
+          over = true;
           updatePlates();
           resolve();
         },

@@ -1,6 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { evolutionAt } from '../js/gfx/evolution.js';
+import { playEvolution } from '../js/scenes/evolution.js';
+import { ownEnergyShown } from '../js/duel/plates.js';
 import { evolutionLines, abilityRows, nameAtStage } from '../js/data/species.js';
 import { setLanguage } from '../js/i18n/i18n.js';
 
@@ -60,4 +62,22 @@ test('Fähigkeiten auf der Seite „Wesen“: freigeschaltet ab dem Level der St
   assert.equal(abilityRows(1)[0].name, 'Zweite Chance');
   assert.equal(nameAtStage({ species: 'pieks', nickname: null }, 4), 'Waldhüter');
   assert.equal(nameAtStage({ species: 'pieks', nickname: 'Spiky' }, 4), 'Spiky');
+});
+
+test('Entwicklung über der Welt: Anzeige und Menüknopf sind solange weg, danach ist die Welt wieder bereit', async () => {
+  const game = { mode: 'walk', reducedMotion: true };
+  const world = { onTick: [], afterRender: [] };
+  const done = playEvolution(game, world, { species: 'funki', from: 1, to: 2 });
+  assert.notEqual(game.mode, 'walk'); // HUD zeigt sonst schon den neuen Namen
+  for (let i = 0; i < 100 && world.onTick.length; i++) world.onTick[0](50);
+  await done;
+  assert.equal(game.mode, 'walk');
+  assert.deepEqual([world.onTick.length, world.afterRender.length], [0, 0]);
+});
+
+test('Schild nach der Entwicklung im Duell: Energie und Höchstwert des Wesens, nicht mehr die des Duells', () => {
+  const duel = { playerEnergy: 4, playerMax: 4 };
+  const c = { species: 'funki', level: 15, xpInLevel: 0, energy: 5, lifeStones: 0 };
+  assert.deepEqual(ownEnergyShown(duel, c, false), { energy: 4, max: 4 });
+  assert.deepEqual(ownEnergyShown(duel, c, true), { energy: 5, max: 5 });
 });
