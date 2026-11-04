@@ -80,9 +80,10 @@ test('Jeder Auftrag hat seine Texte auf Deutsch und Englisch, mit gleich vielen 
   for (const q of QUESTS) {
     for (const table of [QUEST_TEXT, EN_QUEST_TEXT]) {
       const tx = table[q.id];
-      assert.ok(tx?.title && tx.hint && tx.offer?.length && tx.remind?.length && tx.locked?.length && tx.finish?.length, q.id);
+      assert.ok(tx?.title && tx.offer?.length && tx.remind?.length && tx.locked?.length && tx.finish?.length, q.id);
       assert.equal(tx.steps.length, q.steps.length - 1, q.id); // der letzte Schritt ist finish/locked
-      const lines = [...tx.offer, ...tx.remind, ...tx.locked, ...tx.finish, ...tx.steps.flat(), ...(tx.guest ?? [])];
+      assert.equal(tx.hints?.length, q.steps.length, `${q.id}: ein Tagebuch-Hinweis je Schritt`);
+      const lines = [...tx.offer, ...tx.remind, ...tx.locked, ...tx.finish, ...tx.steps.flat(), ...tx.hints, ...(tx.guest ?? [])];
       for (const l of lines) assert.ok(l.length <= 90, `${q.id}: ${l.length} Zeichen: ${l}`);
     }
   }
@@ -121,4 +122,18 @@ test('Tagebuch: angenommene Aufträge in fester Reihenfolge, offen mit Hinweis, 
     { id: 'q1', title: 'Brams Glücksmuschel', done: false, hint: 'Bram sucht seine Glücksmuschel. Sie liegt am Strand im Westen.' },
     { id: 'q3', title: 'Wo ist Flo?', done: true, hint: null },
   ]);
+});
+
+test('Tagebuch: der Hinweis folgt dem Schritt, nach dem Fund zeigt er zurück zum Auftraggeber', () => {
+  const s = s0();
+  acceptQuest(s, 'q1');
+  advanceQuest(s, 'q1', 0);
+  assert.equal(questLog(s)[0].hint, QUEST_TEXT.q1.hints[1]);
+  assert.notEqual(QUEST_TEXT.q1.hints[1], QUEST_TEXT.q1.hints[0]);
+  setLanguage('en');
+  try {
+    assert.equal(questLog(s)[0].hint, EN_QUEST_TEXT.q1.hints[1]);
+  } finally {
+    setLanguage('de');
+  }
 });

@@ -144,6 +144,11 @@ test('Format 5: kaputte Aufträge, Schlüsselgegenstände und geheime Orte falle
   assert.deepEqual(m.state.secrets, { eiche: { story: true, stone: false } });
 });
 
+test('Format 5: ein Schritt hinter dem letzten wird auf den letzten Schritt gesetzt', () => {
+  const m = migrateState({ ...structuredClone(SPIELSTAND_V5), quests: { q1: { step: 7, done: false }, q2: { step: 2, done: true } } });
+  assert.deepEqual(m.state.quests, { q1: { step: 1, done: false }, q2: { step: 1, done: true } });
+});
+
 test('Mit Futterbeutel bleiben beim Laden bis zu 20 Futter', () => {
   const m = migrateState({ ...structuredClone(SPIELSTAND_V5), keys: ['foodbag'], bag: { ...SPIELSTAND_V5.bag, berry: 14, starfruit: 4 } });
   assert.deepEqual([m.state.bag.berry, m.state.bag.starfruit], [14, 4]);

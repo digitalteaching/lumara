@@ -42,7 +42,8 @@ export const GUESTS = [
 export const questById = id => QUESTS.find(q => q.id === id) ?? null;
 
 // Texte der Aufträge auf Deutsch (Design 5.6: Bewohnertexte gehören zum Spiel). Englisch in
-// js/i18n/en-quests.js. steps[i]: was beim Schritt i gesagt wird (Fund oder Gespräch).
+// js/i18n/en-quests.js. steps[i]: was beim Schritt i gesagt wird (Fund oder Gespräch);
+// hints[i]: was das Tagebuch zeigt, solange Schritt i offen ist.
 export const QUEST_TEXT = {
   "q1": {
     "title": "Brams Glücksmuschel",
@@ -54,7 +55,10 @@ export const QUEST_TEXT = {
     "remind": [
       "Hast du meine Glücksmuschel gefunden? Schau mal am Strand im Westen."
     ],
-    "hint": "Bram sucht seine Glücksmuschel. Sie liegt am Strand im Westen.",
+    "hints": [
+      "Bram sucht seine Glücksmuschel. Sie liegt am Strand im Westen.",
+      "Bring die Muschel zurück zu Bram in der Bucht."
+    ],
     "steps": [
       [
         "Im Sand glänzt etwas: eine gestreifte Muschel.",
@@ -79,7 +83,10 @@ export const QUEST_TEXT = {
     "remind": [
       "Hast du Oda schon die Kräuter gebracht? Sie wohnt in der Bucht."
     ],
-    "hint": "Fenna schickt Kräuter für Oda in der Bucht.",
+    "hints": [
+      "Fenna schickt Kräuter für Oda in der Bucht.",
+      "Oda freut sich über die Kräuter. Erzähl es Fenna im Flüsterwald."
+    ],
     "steps": [
       [
         "Kräuter von Fenna? Wie lieb von ihr!",
@@ -104,7 +111,10 @@ export const QUEST_TEXT = {
     "remind": [
       "Hast du Flo gefunden? Er wollte in den Flüsterwald, zum Bach."
     ],
-    "hint": "Jaspers Lehrling Flo ist im Flüsterwald, am Bach.",
+    "hints": [
+      "Jaspers Lehrling Flo ist im Flüsterwald, am Bach.",
+      "Flo ist auf dem Heimweg. Sag Jasper im Pilzmoor Bescheid."
+    ],
     "steps": [
       [
         "Oh, hallo! Ich habe mich verlaufen. Die Bäume flüstern so komisch.",
@@ -132,7 +142,10 @@ export const QUEST_TEXT = {
     "remind": [
       "Hast du meine Glaskugel gefunden? Sie muss im Dünengras im Südwesten liegen."
     ],
-    "hint": "Samirs Glaskugel liegt im Dünengras im Südwesten.",
+    "hints": [
+      "Samirs Glaskugel liegt im Dünengras im Südwesten.",
+      "Bring die Glaskugel zurück zu Samir in den Spiegeldünen."
+    ],
     "steps": [
       [
         "Zwischen den Halmen glitzert eine Kugel aus Glas.",
@@ -157,7 +170,10 @@ export const QUEST_TEXT = {
     "remind": [
       "Hast du Talia meinen Brief gebracht? Sie zeichnet Karten im Süden der Dünen."
     ],
-    "hint": "Tamo schickt einen Brief an Talia in den Spiegeldünen.",
+    "hints": [
+      "Tamo schickt einen Brief an Talia in den Spiegeldünen.",
+      "Talia hat den Brief. Geh zurück zu Tamo auf die Windklippen."
+    ],
     "steps": [
       [
         "Ein Brief von Tamo? Wie schön!",

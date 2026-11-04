@@ -11,7 +11,10 @@ export const EN_QUEST_TEXT = {
     "remind": [
       "Have you found my lucky shell? Look on the beach in the west."
     ],
-    "hint": "Bram is looking for his lucky shell. It is on the beach in the west.",
+    "hints": [
+      "Bram is looking for his lucky shell. It is on the beach in the west.",
+      "Take the shell back to Bram in the bay."
+    ],
     "steps": [
       [
         "Something shines in the sand: a striped shell.",
@@ -36,7 +39,10 @@ export const EN_QUEST_TEXT = {
     "remind": [
       "Have you taken the herbs to Oda yet? She lives in the bay."
     ],
-    "hint": "Fenna is sending herbs to Oda in the bay.",
+    "hints": [
+      "Fenna is sending herbs to Oda in the bay.",
+      "Oda is happy about the herbs. Tell Fenna in the Whispering Woods."
+    ],
     "steps": [
       [
         "Herbs from Fenna? How kind of her!",
@@ -61,7 +67,10 @@ export const EN_QUEST_TEXT = {
     "remind": [
       "Have you found Flo? He wanted to go to the Whispering Woods, by the stream."
     ],
-    "hint": "Jasper’s apprentice Flo is in the Whispering Woods, by the stream.",
+    "hints": [
+      "Jasper’s apprentice Flo is in the Whispering Woods, by the stream.",
+      "Flo is on the way home. Tell Jasper in the Mushroom Marsh."
+    ],
     "steps": [
       [
         "Oh, hello! I got lost. The trees whisper so strangely.",
@@ -89,7 +98,10 @@ export const EN_QUEST_TEXT = {
     "remind": [
       "Have you found my glass ball? It must be in the dune grass in the south-west."
     ],
-    "hint": "Samir’s glass ball is in the dune grass in the south-west.",
+    "hints": [
+      "Samir’s glass ball is in the dune grass in the south-west.",
+      "Take the glass ball back to Samir in the Mirror Dunes."
+    ],
     "steps": [
       [
         "A ball of glass shines between the grass.",
@@ -114,7 +126,10 @@ export const EN_QUEST_TEXT = {
     "remind": [
       "Have you taken my letter to Talia? She draws maps in the south of the dunes."
     ],
-    "hint": "Tamo is sending a letter to Talia in the Mirror Dunes.",
+    "hints": [
+      "Tamo is sending a letter to Talia in the Mirror Dunes.",
+      "Talia has the letter. Go back to Tamo on the Windy Cliffs."
+    ],
     "steps": [
       [
         "A letter from Tamo? How nice!",

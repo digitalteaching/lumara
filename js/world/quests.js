@@ -95,11 +95,11 @@ export function activeGuests(state, mapId) {
 }
 
 // Für das Tagebuch (Design 13): angenommene Aufträge in der Reihenfolge der Gebiete. Offene
-// Aufträge tragen den Hinweis auf den nächsten Schritt.
+// Aufträge tragen den Hinweis auf den offenen Schritt.
 export function questLog(state) {
   return QUESTS.filter(q => progressOf(state, q.id)).map(q => {
-    const done = progressOf(state, q.id).done;
+    const { done, step } = progressOf(state, q.id);
     const text = questText(q.id);
-    return { id: q.id, title: text.title, done, hint: done ? null : text.hint };
+    return { id: q.id, title: text.title, done, hint: done ? null : text.hints[step] };
   });
 }

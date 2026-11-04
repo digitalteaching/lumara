@@ -148,12 +148,13 @@ function repairStory(raw) {
   return out;
 }
 
-const QUEST_IDS = new Set(QUESTS.map(q => q.id));
+// Ein Schritt hinter dem letzten (kaputt oder aus einer anderen Fassung) wird der letzte Schritt.
+const LAST_STEP = Object.fromEntries(QUESTS.map(q => [q.id, q.steps.length - 1]));
 function repairQuests(raw) {
   const out = {};
   if (!isObject(raw)) return out;
   for (const [id, q] of Object.entries(raw)) {
-    if (QUEST_IDS.has(id) && isObject(q) && isInt(q.step) && q.step >= 0) out[id] = { step: q.step, done: q.done === true };
+    if (id in LAST_STEP && isObject(q) && isInt(q.step) && q.step >= 0) out[id] = { step: Math.min(q.step, LAST_STEP[id]), done: q.done === true };
   }
   return out;
 }
