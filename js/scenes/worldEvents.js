@@ -312,8 +312,7 @@ export function createGameWorld(game) {
     const f = findAt(ev.x, ev.y);
     if (!f) return false;
     const { item } = takeFind(game.state, findKey(def.id, f), game.rng, def.area, timePressure());
-    jingle('find');
-    await foundStone(item);
+    await foundStone(item); // mit Fund-Jingle, nur wenn wirklich etwas da ist
     return true;
   });
 

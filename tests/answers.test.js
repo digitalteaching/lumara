@@ -108,3 +108,8 @@ test('akzeptierte Antworten und Anzeige der richtigen Antwort', () => {
   assert.deepEqual(acceptedAnswers(q({ alsoCorrect: ['does play'] })), ['plays', 'does play']);
   assert.equal(correctText(q({ answer: null, sentence: 'I am here.' })), 'I am here.');
 });
+
+test('Deutsche einfache Anführungszeichen ‚…‘ gelten wie gerade', () => {
+  assert.equal(checkTyped('‚Hallo‘', ["'Hallo'"]).correct, true);
+  assert.equal(checkTyped("'Hallo'", ['‚Hallo‘']).correct, true);
+});

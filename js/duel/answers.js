@@ -8,9 +8,9 @@ export function normalizeTyped(s) {
     .replace(/[\s   ]+/g, ' ')
     .trim()
     .toLowerCase()
-    .replace(/[’‘‛`´]/g, "'")
-    // Alle Anführungszeichen gelten gleich, mit oder ohne Leerzeichen daneben: „Hallo“, »Hallo«,
-    // « Hallo » und "Hallo". Spanisch: ¿ und ¡ zählen nicht (Kinder lassen sie beim Tippen weg).
+    .replace(/[’‘‚‛`´]/g, "'")
+    // Alle doppelten Anführungszeichen gelten gleich, mit oder ohne Leerzeichen daneben: „Hallo“,
+    // »Hallo«, « Hallo » und "Hallo". Einfache (‚Hallo‘, ’, `) gelten wie der Apostroph. Spanisch: ¿ und ¡ zählen nicht (Kinder lassen sie beim Tippen weg).
     .replace(/[“”„«»‹›]/g, '"')
     .replace(/\s*"\s*/g, '"')
     .replace(/[¿¡]/g, '')

@@ -54,7 +54,7 @@ function typingForm(p, onSubmit) {
   });
   // Ein Zeichen kam dazu (auch über Bildschirmtastaturen, die kein e.key melden).
   input.addEventListener('input', e => {
-    if (e.inputType === 'insertText') sound('type');
+    if (e.inputType === 'insertText' || e.inputType === 'insertCompositionText') sound('type');
   });
   const hint = el('p', { class: 'answer-hint' });
   const submit = el('button', { class: 'btn primary', type: 'submit' }, tr('duel.check'));

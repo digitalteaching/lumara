@@ -31,3 +31,9 @@ test('Anleitung: erst zum Home-Bildschirm, dann das Paket laden; der eigene Spei
   assert.ok(share.indexOf('Home-Bildschirm') < share.indexOf('„Lernpaket laden“'), 'Home-Bildschirm vor „Lernpaket laden“');
   assert.match(share, /eigenen Speicher/);
 });
+
+test('Der KI-Prompt öffnet sich im Browser (kein download-Attribut), damit man den Text kopieren kann', () => {
+  for (const page of ['anleitung.html', 'lehrkraft.html']) {
+    assert.ok(!/href="pakete\/KI-PROMPT-Lernpaket\.md"[^>]*download/.test(read(page)), page);
+  }
+});

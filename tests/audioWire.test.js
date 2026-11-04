@@ -115,3 +115,9 @@ test('Ton in Szenen: Tippen ohne e.key, Abbrechen klingt anders, Probefrage stum
   assert.match(events, /async function levelUps[\s\S]{0,400}jingle\('levelup'\)[\s\S]{0,300}jingle\('evolution'\)/, 'Level und Entwicklung außerhalb des Duells');
   assert.match(events, /climbing \? 'ascent'/, 'Aufstiegsmusik bleibt zwischen den Etagen');
 });
+
+test('Kleinigkeiten am Ton: ein Fund-Jingle pro Fund, Tipp-Ton auch mit Gboard', () => {
+  const events = src('js/scenes/worldEvents.js');
+  assert.ok(!/jingle\('find'\);\s*await foundStone/.test(events), 'foundStone spielt den Jingle selbst, nur bei einem echten Fund');
+  assert.ok(src('js/ui/duelPanel.js').includes('insertCompositionText'), 'Android-Tastaturen tippen über Komposition');
+});
