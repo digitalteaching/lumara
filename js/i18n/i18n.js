@@ -6,10 +6,12 @@
 import { LANGUAGES, READY } from '../pack/language.js';
 import { DE } from './de.js';
 import { EN } from './en.js';
+import { FR } from './fr.js';
+import { ES } from './es.js';
 
 export { LANGUAGES, READY };
 
-const TABLES = { de: DE, en: EN };
+const TABLES = { de: DE, en: EN, fr: FR, es: ES };
 let current = 'de';
 let pseudo = false;
 

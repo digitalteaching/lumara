@@ -25,6 +25,8 @@ import { caveOpen } from './caveGate.js';
 import { finaleDone } from './finale.js';
 import { language, mark } from '../i18n/i18n.js';
 import { EN_WORLD } from '../i18n/en-world.js';
+import { FR_WORLD } from '../i18n/fr-world.js';
+import { ES_WORLD } from '../i18n/es-world.js';
 
 // Die Gebiete, dahinter die geheimen Orte (secret: eigene kleine Karten, Design 5.7) und die drei
 // Ebenen der Höhle (cave: 1 bis 3, Design 5.3).
@@ -92,7 +94,7 @@ export function npcLines(o, state, area, pack) {
 
 // ---------- Spielsprache (Design 10.6) ----------
 // Die deutschen Texte stehen in den Karten, jede andere Sprache in js/i18n/<sprache>-world.js.
-const LOCAL_WORLD = { en: EN_WORLD };
+const LOCAL_WORLD = { en: EN_WORLD, fr: FR_WORLD, es: ES_WORLD };
 const localWorld = () => LOCAL_WORLD[language()] ?? null;
 
 export const mapOfArea = area => Object.values(MAPS).find(d => d.area === area && !d.secret && !d.cave) ?? null;

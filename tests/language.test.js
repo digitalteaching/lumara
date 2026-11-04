@@ -18,10 +18,11 @@ test('SPIELSPRACHE gewinnt vor dem Fach; Unbekanntes ist ein Hinweis mit Zeile',
   assert.deepEqual(r.hints, [{ line: 5, message: 'Zeile 5: Unbekannte SPIELSPRACHE „klingonisch“. Möglich sind deutsch, englisch, französisch und spanisch.' }]);
 });
 
-test('Französisch und Spanisch werden erkannt, laufen aber noch auf Deutsch; Latein läuft auf Deutsch', () => {
-  assert.deepEqual(lang('Französisch'), { language: 'de', requested: 'fr', hints: [{ line: null, message: 'Das Spiel auf Französisch kommt in einer späteren Spielfassung. Bis dahin läuft es auf Deutsch.' }] });
-  assert.equal(lang('Español').requested, 'es');
-  assert.equal(lang('Mathe', 'spanisch').requested, 'es');
+test('Französisch und Spanisch laufen in ihrer Sprache; Latein läuft auf Deutsch', () => {
+  assert.deepEqual(lang('Französisch'), { language: 'fr', requested: 'fr', hints: [] });
+  assert.deepEqual(lang('Español'), { language: 'es', requested: 'es', hints: [] });
+  assert.equal(lang('Mathe', 'spanisch').language, 'es');
+  assert.equal(lang('Französisch 7b').language, 'fr');
   assert.deepEqual(lang('Latein').hints.map(h => h.message), ['Das Spiel gibt es noch nicht auf Latein. Es läuft auf Deutsch.']);
   assert.deepEqual(lang('Italian').hints.map(h => h.message), ['Das Spiel gibt es noch nicht auf Italienisch. Es läuft auf Deutsch.']);
   assert.equal(lang(null).language, 'de');

@@ -3,8 +3,8 @@
 // und deshalb Deutsch. DOM-frei.
 
 export const LANGUAGES = ['de', 'en', 'fr', 'es'];
-// Sprachen, deren Texte schon vollständig sind. Französisch und Spanisch kommen mit Plan 7.
-export const READY = ['de', 'en'];
+// Sprachen, deren Texte vollständig sind (seit Plan 7 alle vier).
+export const READY = ['de', 'en', 'fr', 'es'];
 
 const WORDS = {
   de: ['deutsch', 'german', 'de', 'allemand', 'aleman'],

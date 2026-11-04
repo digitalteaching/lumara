@@ -1,5 +1,7 @@
 import { language, mark } from '../i18n/i18n.js';
 import { EN_QUEST_TEXT } from '../i18n/en-quests.js';
+import { FR_QUEST_TEXT } from '../i18n/fr-quests.js';
+import { ES_QUEST_TEXT } from '../i18n/es-quests.js';
 
 // Aufträge (Design 5.6, 5.7): je Gebiet einer. Annehmen geht jederzeit, abschließen erst, wenn der
 // Leuchtstein des Gebiets leuchtet. Alles, was Auftrag k braucht, liegt in den Gebieten 1 bis k.
@@ -57,8 +59,8 @@ export const GUESTS = [
 
 export const questById = id => QUESTS.find(q => q.id === id) ?? null;
 
-// Texte der Aufträge auf Deutsch (Design 5.6: Bewohnertexte gehören zum Spiel). Englisch in
-// js/i18n/en-quests.js. steps[i]: was beim Schritt i gesagt wird (Fund oder Gespräch);
+// Texte der Aufträge auf Deutsch (Design 5.6: Bewohnertexte gehören zum Spiel). Die anderen
+// Sprachen in js/i18n/<sprache>-quests.js. steps[i]: was beim Schritt i gesagt wird (Fund oder Gespräch);
 // hints[i]: was das Tagebuch zeigt, solange Schritt i offen ist.
 export const QUEST_TEXT = {
   "q1": {
@@ -295,7 +297,7 @@ export const QUEST_TEXT = {
 };
 
 // Die Texte eines Auftrags in der Spielsprache (Design 10.6).
-const LOCAL_TEXT = { en: EN_QUEST_TEXT };
+const LOCAL_TEXT = { en: EN_QUEST_TEXT, fr: FR_QUEST_TEXT, es: ES_QUEST_TEXT };
 const deepMark = v => (Array.isArray(v) ? v.map(deepMark) : typeof v === 'string' ? mark(v) : v);
 export function questText(id) {
   const src = LOCAL_TEXT[language()]?.[id] ?? QUEST_TEXT[id];

@@ -48,7 +48,7 @@ function sound(game, nav) {
         game.save();
         nav.refresh();
       },
-    }, `${t(label)}: ${t(on ? 'settings.on' : 'settings.off')}`);
+    }, t('settings.toggle', { what: t(label), state: t(on ? 'settings.on' : 'settings.off') }));
   };
   return section(
     t('settings.sound'),

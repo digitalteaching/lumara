@@ -251,6 +251,7 @@ export const DE = {
   'settings.sfx': 'Effekte',
   'settings.on': 'an',
   'settings.off': 'aus',
+  'settings.toggle': '{what}: {state}',
   'settings.slow': 'Langsam',
   'settings.normal': 'Normal',
   'settings.fast': 'Schnell',

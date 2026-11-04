@@ -251,6 +251,7 @@ export const EN = {
   'settings.sfx': 'Sound effects',
   'settings.on': 'on',
   'settings.off': 'off',
+  'settings.toggle': '{what}: {state}',
   'settings.slow': 'Slow',
   'settings.normal': 'Normal',
   'settings.fast': 'Fast',

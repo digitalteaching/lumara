@@ -4,6 +4,8 @@
 
 import { language, mark } from '../i18n/i18n.js';
 import { EN_STORY, EN_SECRET_STORY } from '../i18n/en-story.js';
+import { FR_STORY, FR_SECRET_STORY } from '../i18n/fr-story.js';
+import { ES_STORY, ES_SECRET_STORY } from '../i18n/es-story.js';
 
 export const STORY = {
   1: [
@@ -48,7 +50,7 @@ export const STORY = {
   ],
 };
 
-const LOCAL_STORY = { en: EN_STORY };
+const LOCAL_STORY = { en: EN_STORY, fr: FR_STORY, es: ES_STORY };
 
 // Die Stücke eines Gebiets in der Spielsprache. Gespeichert wird nur, wie viele gefunden sind.
 export const storyPieces = area => ((LOCAL_STORY[language()] ?? STORY)[area] ?? STORY[area] ?? []).map(mark);
@@ -62,5 +64,5 @@ export const SECRET_STORY = {
   eisgrotte: 'Im Eis der Grotte sind Wörter eingeschlossen wie Blasen. Wer genau hinsieht, kann manche noch lesen. Eines heißt „Freund“.',
   sternwarte: 'Die Sternwarte zeichnete jede Nacht auf, wer auf der Insel etwas Neues lernte. Die letzte Seite ist leer. Darunter steht: „Vergiss niemanden.“',
 };
-const LOCAL_SECRET = { en: EN_SECRET_STORY };
+const LOCAL_SECRET = { en: EN_SECRET_STORY, fr: FR_SECRET_STORY, es: ES_SECRET_STORY };
 export const secretStory = place => mark(LOCAL_SECRET[language()]?.[place] ?? SECRET_STORY[place]);

@@ -4,6 +4,8 @@ import { stageForLevel } from '../duel/progress.js';
 import { CONFIG } from '../config.js';
 import { language, mark, t } from '../i18n/i18n.js';
 import { EN_SPECIES } from '../i18n/en-species.js';
+import { FR_SPECIES } from '../i18n/fr-species.js';
+import { ES_SPECIES } from '../i18n/es-species.js';
 
 export const STARTERS = ['funki', 'kiesel', 'nixi', 'flausch', 'pieks'];
 
@@ -403,7 +405,7 @@ export const TRAINER_CREATURES = {
 // Namen, Beschreibung und Besonderheit in der Spielsprache (Design 10.6). Deutsch steht in SPECIES,
 // jede andere Sprache in js/i18n/<sprache>-species.js. Das grammatische Geschlecht hängt an der
 // Sprache; ohne eigenes gilt das deutsche.
-const LOCAL = { en: EN_SPECIES };
+const LOCAL = { en: EN_SPECIES, fr: FR_SPECIES, es: ES_SPECIES };
 export function speciesText(speciesId) {
   const sp = SPECIES[speciesId];
   const local = LOCAL[language()]?.[speciesId];

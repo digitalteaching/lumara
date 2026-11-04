@@ -1,8 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { setLanguage, setPseudo, t, tl, language } from '../js/i18n/i18n.js';
-import { DE } from '../js/i18n/de.js';
-import { EN } from '../js/i18n/en.js';
 import { STONE_LINES } from '../js/items/stones.js';
 import { defaultLines } from '../js/data/texts.js';
 import { fogEdgeLines } from '../js/world/fogEdge.js';
@@ -10,7 +8,7 @@ import { caveGateLines } from '../js/world/caveGate.js';
 import { mapLabels, caveLabels } from '../js/world/islandMap.js';
 import { backupMessage } from '../js/save/backup.js';
 import { EN_WORLD } from '../js/i18n/en-world.js';
-import { MAPS, npcLines, areaName, areaOf, worldLines } from '../js/world/network.js';
+import { npcLines, areaName, areaOf, worldLines } from '../js/world/network.js';
 import { BUCHT } from '../js/world/maps/bucht.js';
 import { MOOR } from '../js/world/maps/moor.js';
 import { DUENEN } from '../js/world/maps/duenen.js';
@@ -21,10 +19,11 @@ test.afterEach(() => {
   setPseudo(false);
 });
 
-test('Sprachen: nur fertige werden aktiv, sonst Deutsch', () => {
+test('Sprachen: Deutsch, Englisch, Französisch und Spanisch; Unbekanntes wird Deutsch', () => {
   assert.equal(setLanguage('en'), 'en');
   assert.equal(language(), 'en');
-  assert.equal(setLanguage('fr'), 'de');
+  assert.equal(setLanguage('fr'), 'fr');
+  assert.equal(setLanguage('es'), 'es');
   assert.equal(setLanguage('xy'), 'de');
 });
 
@@ -40,27 +39,8 @@ test('t(): Platzhalter, Rückfall auf Deutsch, fehlender Schlüssel ist ein Fehl
   assert.equal(t('app.title'), '⟦Lumara – Das Land unter dem Nebel⟧');
 });
 
-test('Englisch hat jeden deutschen Schlüssel, mit gleicher Art und gleichen Platzhaltern', () => {
-  const holes = v => [...String(v).matchAll(/\{(\w+)\}/g)].map(m => m[1]).sort().join(',');
-  for (const [k, v] of Object.entries(DE)) {
-    assert.ok(k in EN, `en fehlt: ${k}`);
-    assert.equal(Array.isArray(EN[k]), Array.isArray(v), k);
-    assert.equal(holes(EN[k]), holes(v), k);
-  }
-  assert.deepEqual(Object.keys(EN).filter(k => !(k in DE)), []);
-});
-
-// Sprechblasen haben je Zeile höchstens etwa 90 Zeichen. Texte auf Menüseiten dürfen länger sein,
-// sie brechen um.
-const BUBBLES = /^(intro|eggs|world|duel|note|stone|cave|fog|trainer|recover)\./;
-test('Englische Texte sind nicht leer, Sprechblasen je Zeile höchstens etwa 90 Zeichen lang', () => {
-  for (const [k, v] of Object.entries(EN)) {
-    for (const line of Array.isArray(v) ? v : [v]) {
-      assert.ok(line.trim(), k);
-      if (BUBBLES.test(k)) assert.ok(line.length <= 110, `${k}: ${line.length} Zeichen`);
-    }
-  }
-});
+// Dass jede Fremdsprache jeden Text hat (Oberfläche, Wesen, Karten, Geschichte, Aufträge), prüft
+// tests/sprachen.test.js für alle Sprachen. Hier stehen Beispiele auf Englisch.
 
 test('Duell auf Englisch: Knöpfe und Rückmeldungen', () => {
   setLanguage('en');
@@ -88,29 +68,6 @@ test('Menü auf Englisch, die Seite für die Lehrkraft bleibt Deutsch', () => {
   assert.equal(backupMessage('unknown'), 'This file is not a Lumara saved game.');
   setLanguage('de');
   assert.equal(backupMessage('damaged'), 'Diese Sicherung ist beschädigt und lässt sich nicht laden.');
-});
-
-const FIELDS = ['lines', 'linesLit', 'linesOpen', 'linesNoClock', 'afterWin'];
-
-test('Jeder Text auf jeder Karte hat eine id und eine englische Fassung', () => {
-  for (const def of Object.values(MAPS)) {
-    const a = EN_WORLD.areas[def.id];
-    assert.ok(a?.name && a?.of && a?.the, def.id);
-    const ids = new Set();
-    for (const o of def.objects) {
-      const fields = FIELDS.filter(f => o[f] != null);
-      if (!fields.length) continue;
-      const id = o.type === 'trainer' ? 'trainer' : o.id;
-      assert.ok(id, `${def.id}: ${o.type} bei ${o.x},${o.y} ohne id`);
-      assert.ok(!ids.has(id), `${def.id}: id ${id} doppelt`);
-      ids.add(id);
-      for (const f of fields) {
-        const en = EN_WORLD.objects[def.id]?.[id]?.[f];
-        assert.ok(Array.isArray(o[f]) ? Array.isArray(en) && en.length > 0 : typeof en === 'string' && en, `${def.id}.${id}.${f}`);
-      }
-    }
-    for (const id of Object.keys(EN_WORLD.objects[def.id] ?? {})) assert.ok(ids.has(id), `${def.id}: ${id} gibt es nicht auf der Karte`);
-  }
 });
 
 test('Bewohner, Schilder und Leuchtstein auf Englisch', () => {
