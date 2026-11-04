@@ -2,6 +2,7 @@
 
 import { validateName } from '../state.js';
 import { el } from '../ui/dom.js';
+import { createFreshGuard, guardClicks } from '../ui/freshGuard.js';
 import { drawTitleArt } from './title.js';
 import { t } from '../i18n/i18n.js';
 
@@ -55,6 +56,8 @@ export function askName(game, { prompt, allowEmpty = false, skipLabel = null }) 
     }
 
     game.panel.append(form);
+    // Der Tipp, der den Dialog davor schließt, darf nicht auf „Weiter“ im neuen Formular landen.
+    guardClicks(form, createFreshGuard());
     if (!document.body.classList.contains('touch')) setTimeout(() => input.focus(), 50);
   });
 }
