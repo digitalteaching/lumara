@@ -4,7 +4,7 @@
 
 Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, erkundet eine geheimnisvolle Insel unter einem Nebel des Vergessens und besteht Duelle mit Aufgaben aus dem Unterricht. Dafür bekommt es Punkte, und sein Wesen entwickelt sich weiter. Die Inhalte kommen aus einem Lernpaket, einer Textdatei, die die Lehrkraft selbst schreibt. Dadurch funktioniert das Spiel in jedem Fach. Das erste Beispielpaket ist für Jahrgang 6 Englisch.
 
-**Status:** Plan 1, Plan 2, Plan 3a, Plan 3b, Plan 3c, Plan 4a, Plan 4b, Plan 4c und Plan 4d sind gebaut (Spielfassung 0.9.0).
+**Status:** Plan 1, Plan 2, Plan 3a, Plan 3b, Plan 3c, Plan 4a, Plan 4b, Plan 4c, Plan 4d und Plan 5a sind gebaut (Spielfassung 0.10.0).
 
 - **Plan 1**, spielbarer Kern:
   - Leuchtturmbucht, Lernpaket, fünf Startwesen
@@ -63,8 +63,15 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
   - Die Eisgrotte: Auf Rutscheis gleitet man, bis eine Eissäule aufhält. Zum Kristall braucht man fünf Rutschzüge; über den Ausgang fängt man jederzeit neu an.
   - Die Sternwarte: drei Zahnräder, deren Sterne wie auf der Sternkarte zeigen müssen. Dann öffnet sich die Kuppel und bleibt offen.
   - Vier neue seltene Arten (Perlkrabbe, Irrlichtfee, Kristallotter, Zeitschnecke), vier Geschichtsstücke und die Buchplätze 27 bis 30.
+- **Plan 5a**, die Höhle, Morrow und die Welt danach:
+  - Leuchten alle acht Steine und hat das Lernpaket alle acht Trainer, öffnet sich das Höhlentor auf der Sternenwiese. Drei Ebenen führen hinunter, mit Kristallmoos, Echokristallen und zwei eigenen Arten (Echomaus, Kristallraupe).
+  - Ilvy wartet am Eingang und nennt Morrows Namen, falls das letzte Geschichtsstück der Wiese noch fehlt.
+  - Das Endduell gegen Morrow: drei Phasen mit je 6 Energie, Fragen aus allen Themen, Zeit wie bei Trainer 8. Morrow wechselt dabei die Gestalt. Der erste Sieg mit einem Paket bringt 500 XP und zählt in der Statistik als „Endgegner besiegt“.
+  - Nach dem Sieg sagt das Kind Morrows Namen. Der Nebel löst sich, alle Bewohner sagen neue Sätze, und Morrow wohnt als Freund am Leuchtturm. Das bleibt auch bei einem Paketwechsel.
+  - Das Wesen-Buch hat jetzt alle 33 Einträge.
+  - Spielstand-Format 6 (`finale`).
 
-Die Höhle im Berg und das Finale kommen mit dem nächsten Plan.
+Revanchen, das Erinnerungsduell, Sternschnuppen und der Leuchtturm-Aufstieg kommen mit dem nächsten Plan.
 
 - Design: [docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md](docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md)
 - Bauplan 1: [docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md](docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md)
@@ -76,6 +83,7 @@ Die Höhle im Berg und das Finale kommen mit dem nächsten Plan.
 - Bauplan 4b: [docs/superpowers/plans/2026-11-03-lumara-plan-4b-entwicklungen-wesen-buch.md](docs/superpowers/plans/2026-11-03-lumara-plan-4b-entwicklungen-wesen-buch.md)
 - Bauplan 4c: [docs/superpowers/plans/2026-11-04-lumara-plan-4c-auftraege-geheime-orte.md](docs/superpowers/plans/2026-11-04-lumara-plan-4c-auftraege-geheime-orte.md)
 - Bauplan 4d: [docs/superpowers/plans/2026-11-04-lumara-plan-4d-auftraege-boot-eis-sterne.md](docs/superpowers/plans/2026-11-04-lumara-plan-4d-auftraege-boot-eis-sterne.md)
+- Bauplan 5a: [docs/superpowers/plans/2026-11-04-lumara-plan-5a-hoehle-morrow.md](docs/superpowers/plans/2026-11-04-lumara-plan-5a-hoehle-morrow.md)
 - Frühere Ideensammlung: [docs/2026-10-17-zwischenstand-ideensammlung.md](docs/2026-10-17-zwischenstand-ideensammlung.md)
 
 ## Für Lehrkräfte
