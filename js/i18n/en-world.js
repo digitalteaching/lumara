@@ -17,6 +17,7 @@ export const EN_WORLD = {
     see: { name: 'Aurora Lake', of: 'of Aurora Lake', the: 'Aurora Lake' },
     wiese: { name: 'Starlight Meadow', of: 'of the Starlight Meadow', the: 'the Starlight Meadow' },
     eiche: { name: 'Hollow Oak', of: 'of the Hollow Oak', the: 'the Hollow Oak' },
+    glasturm: { name: 'Glass Tower', of: 'of the Glass Tower', the: 'the Glass Tower' },
   },
 
   objects: {
@@ -178,6 +179,10 @@ export const EN_WORLD = {
       'statue-sued-west': { lines: ['A statue made of glass. On the base it says:', '“If you look closely, you find the real path.”'] },
       'statue-sued-ost': { lines: ['A statue made of glass. On the base it says:', '“Nobody can take away what you know.”'] },
       'statue-platz': { lines: ['A statue made of glass. On the base it says:', '“Long ago, the knowledge of the whole island shone here.”'] },
+      'oese-glasturm': {
+        lines: ['An old metal ring hangs on the glass wall.', 'With a climbing hook you could climb up here, all the way to the glass tower.'],
+        linesOpen: ['You hook the climbing hook in and climb up the glass wall.'],
+      },
       'statue-west': { lines: ['A statue made of glass. On the base it says:', '“Not every path that shines is a path.”'] },
       'schild-eingang': { lines: ['Mirror Dunes', 'Not every shiny path is real. Stay on the trail!'] },
       'nebel-ost': {

@@ -295,10 +295,19 @@ export const SPECIES = {
     names: ['Wurzelgeist'],
     description: 'Ein kleiner Geist aus Wurzeln. Auf dem Kopf trägt er eine Blüte, die im Dunkeln leuchtet.',
   },
+  prismalibelle: {
+    id: 'prismalibelle',
+    kind: 'secret',
+    gender: 'f',
+    area: 4,
+    rarity: 'rare',
+    names: ['Prismalibelle'],
+    description: 'Eine Libelle mit Flügeln aus Glas. Wo sie fliegt, bricht sich das Licht in allen Farben des Regenbogens.',
+  },
 };
 
 // Die seltenen Arten der geheimen Orte in der Reihenfolge des Wesen-Buchs (Plätze 25 bis 30).
-export const SECRET_SPECIES = ['wurzelgeist'];
+export const SECRET_SPECIES = ['wurzelgeist', 'prismalibelle'];
 
 export const AREA_WILD = {
   1: { common: ['gischtling', 'haeuschel'], rare: 'glimmqualle' },

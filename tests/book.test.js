@@ -10,8 +10,8 @@ test('Das Buch hat 33 Plätze: 1 bis 24 die wilden Arten nach Gebiet, 25 bis 33 
   assert.equal(BOOK_SIZE, 33);
   assert.equal(BOOK_SLOTS.length, 33);
   assert.deepEqual(BOOK_SLOTS.slice(0, 24), [1, 2, 3, 4, 5, 6, 7, 8].flatMap(a => [...AREA_WILD[a].common, AREA_WILD[a].rare]));
-  assert.deepEqual(BOOK_SLOTS.slice(24, 25), ['wurzelgeist']); // geheime Orte ab Platz 25
-  assert.deepEqual(BOOK_SLOTS.slice(25 + 1), Array(7).fill(null));
+  assert.deepEqual(BOOK_SLOTS.slice(24, 26), ['wurzelgeist', 'prismalibelle']); // geheime Orte ab Platz 25
+  assert.deepEqual(BOOK_SLOTS.slice(26), Array(7).fill(null));
 });
 
 test('Eintragen: erst gesehen, dann besiegt und Glanz, nichts wird zurückgenommen', () => {

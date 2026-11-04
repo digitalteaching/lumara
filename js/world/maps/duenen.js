@@ -94,6 +94,13 @@ export const DUENEN = {
     // Der Glasturm: zu sehen, aber noch nicht erreichbar (Platz für Plan 4)
     { type: 'deco', id: 'glasturm', x: 6, y: 4, prop: 'glasstower' },
 
+    // Geheimer Ort (Design 5.7): eine Öse an der Glaswand, mit dem Kletterhaken hinauf zum Glasturm
+    {
+      type: 'secret', id: 'oese-glasturm', place: 'glasturm', prop: 'hookring', x: 15, y: 4,
+      to: { map: 'glasturm', x: 7, y: 10, dir: 'up' },
+      lines: ['An der Glaswand hängt eine alte Öse aus Metall.', 'Mit einem Kletterhaken käme man hier hinauf, bis zum Glasturm.'],
+      linesOpen: ['Du hakst den Kletterhaken ein und kletterst die Glaswand hinauf.'],
+    },
     { type: 'notestone', id: 'zettel-nord', x: 36, y: 3 },
     { type: 'notestone', id: 'zettel-sued', x: 5, y: 26 },
     { type: 'notestone', id: 'zettel-ost', x: 36, y: 19 },

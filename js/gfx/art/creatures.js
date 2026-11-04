@@ -555,6 +555,24 @@ function wurzelgeist() {
   return done(g);
 }
 
+// Prismalibelle: eine Libelle mit Flügeln aus Glas, die das Licht in Regenbogenfarben bricht (Glasturm).
+function prismalibelle() {
+  const g = canvas(32);
+  ellipse(g, 10, 9, 8, 4, ['w', 'A', 'L']); // Vorderflügel oben
+  ellipse(g, 9, 22, 8, 4, ['w', 'A', 'L']); // Vorderflügel unten
+  ellipse(g, 7, 13, 6, 3, ['w', 'T', 'L']); // Hinterflügel
+  ellipse(g, 7, 18, 6, 3, ['w', 'T', 'L']);
+  poly(g, [[3, 15], [16, 14], [16, 17], [3, 17]], ['t', 'S', 'D']); // langer Hinterleib
+  ellipse(g, 19, 15.5, 4, 3, ['T', 't', 'S']); // Brust
+  ellipse(g, 25, 15.5, 4, 4, ['A', 'L', 'S']); // Kopf
+  outline(g);
+  eye(g, 25, 13, 3, 3);
+  dots(g, [[28, 17, 'k'], [27, 18, 'k'],
+    [6, 8, 'R'], [9, 7, 'H'], [12, 8, 'G'], [14, 10, 'V'], [5, 23, 'V'], [8, 21, 'H'], [11, 22, 'R'], [13, 23, 'G'],
+    [4, 13, 'H'], [6, 12, 'V'], [4, 18, 'R'], [7, 19, 'G'], [8, 16, 'w'], [12, 15, 'T'], [18, 14, 'w']]);
+  return done(g);
+}
+
 // ---------- Gebiet 1 ----------
 
 function gischtling() {
@@ -1168,6 +1186,7 @@ export const CREATURE_ART = {
   haeuschel: { 1: haeuschel1(), 2: haeuschel2() },
   glimmqualle: { 1: glimmqualle() },
   wurzelgeist: { 1: wurzelgeist() },
+  prismalibelle: { 1: prismalibelle() },
 };
 
 // Höchste vorhandene Stufe ≤ der gewünschten: Wilde Arten haben ein oder zwei Stufen.

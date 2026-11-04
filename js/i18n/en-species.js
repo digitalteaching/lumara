@@ -71,4 +71,5 @@ export const EN_SPECIES = {
   sternhirsch: { names: ['Starstag'], description: 'A deer with antlers made of starlight. You only see it on clear nights.' },
   // Geheime Orte
   wurzelgeist: { names: ['Rootling'], description: 'A little spirit made of roots. On its head grows a flower that glows in the dark.' },
+  prismalibelle: { names: ['Prismfly'], description: 'A dragonfly with wings made of glass. Where it flies, the light breaks into all the colours of the rainbow.' },
 };
