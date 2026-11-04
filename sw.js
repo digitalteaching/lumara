@@ -144,6 +144,7 @@ const FILES = [
   "js/world/quests.js",
   "js/world/secrets.js",
   "js/world/puzzles.js",
+  "js/world/finale.js",
   "js/world/slide.js",
   "js/world/player.js"
 ];

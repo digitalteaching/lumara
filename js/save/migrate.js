@@ -17,7 +17,7 @@ import { MAPS as WORLD_MAPS } from '../world/network.js';
 import { validateName, emptyPackProgress, emptyWorld } from '../state.js';
 import { emptyBag, BAG_ITEMS } from '../items/bag.js';
 
-export const CURRENT_VERSION = 5;
+export const CURRENT_VERSION = 6;
 
 const MIGRATIONS = {
   // 1 → 2 (Plan 3a): Leuchtsteine, Rucksack, Geschichte, Uhren für das Nachwachsen, gesamte Spielzeit.
@@ -38,6 +38,8 @@ const MIGRATIONS = {
   }),
   // 4 → 5 (Plan 4c): Aufträge, Schlüsselgegenstände und Funde an geheimen Orten.
   4: s => ({ ...s, version: 5, quests: {}, keys: [], secrets: {} }),
+  // 5 → 6 (Plan 5a): der Zustand nach dem Finale, noch nicht erreicht.
+  5: s => ({ ...s, version: 6, finale: { done: false } }),
 };
 
 const MAPS = WORLD_MAPS;
@@ -236,6 +238,7 @@ export function migrateState(raw) {
       quests: repairQuests(s.quests),
       keys: repairKeys(s.keys),
       secrets: repairSecrets(s.secrets),
+      finale: { done: s.finale?.done === true },
     },
   };
 }

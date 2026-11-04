@@ -12,19 +12,22 @@ import { SPIELSTAND_V3 } from './fixtures/spielstand-v3.js';
 import { SPIELSTAND_V4 } from './fixtures/spielstand-v4.js';
 import { SPIELSTAND_V5 } from './fixtures/spielstand-v5.js';
 const V5_EMPTY = { quests: {}, keys: [], secrets: {} };
+const V6 = { version: 6, finale: { done: false } };
+import { SPIELSTAND_V6 } from './fixtures/spielstand-v6.js';
 import { TRAINER_CREATURES } from '../js/data/species.js';
 const bookOf = stones => Object.fromEntries(stones.map(n => [TRAINER_CREATURES[n].species, { beaten: true, shiny: false }]));
 import { foodCount } from '../js/items/bag.js';
 import { createMap } from '../js/world/map.js';
 
-test('Spielstand der Fassung 1 bleibt für immer ladbar und wird zu Format 5', () => {
+test('Spielstand der Fassung 1 bleibt für immer ladbar und wird zu Format 6', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v1.txt', import.meta.url), 'utf8'));
   assert.equal(d.ok, true);
   const m = migrateState(d.value);
   assert.equal(m.ok, true);
-  assert.equal(m.state.version, 5);
-  const { version, playMs, stones, lastStone, bag, shineActive, story, world, book, quests, keys, secrets, ...rest } = m.state;
+  assert.equal(m.state.version, 6);
+  const { version, playMs, stones, lastStone, bag, shineActive, story, world, book, quests, keys, secrets, finale, ...rest } = m.state;
   assert.deepEqual({ quests, keys, secrets }, V5_EMPTY);
+  assert.deepEqual(finale, { done: false });
   assert.deepEqual(book, { haeuschel: { beaten: true, shiny: false } }); // Maren war besiegt
   const { version: _v, ...v1 } = SPIELSTAND_V1;
   assert.deepEqual(rest, v1);
@@ -37,14 +40,14 @@ test('Spielstand der Fassung 1 bleibt für immer ladbar und wird zu Format 5', (
   assert.deepEqual(world, { bushes: {}, notes: {}, finds: {} });
 });
 
-test('Spielstand der Fassung 2 bleibt für immer ladbar und wird zu Format 5', () => {
+test('Spielstand der Fassung 2 bleibt für immer ladbar und wird zu Format 6', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v2.txt', import.meta.url), 'utf8'));
-  assert.deepEqual(migrateState(d.value), { ok: true, state: { ...SPIELSTAND_V2, version: 5, bag: { ...SPIELSTAND_V2.bag, time: 0 }, book: bookOf(SPIELSTAND_V2.stones), ...V5_EMPTY } });
+  assert.deepEqual(migrateState(d.value), { ok: true, state: { ...SPIELSTAND_V2, version: 5, bag: { ...SPIELSTAND_V2.bag, time: 0 }, book: bookOf(SPIELSTAND_V2.stones), ...V5_EMPTY, ...V6 } });
 });
 
 test('Spielstand der Fassung 3 bleibt für immer ladbar', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v3.txt', import.meta.url), 'utf8'));
-  assert.deepEqual(migrateState(d.value), { ok: true, state: { ...SPIELSTAND_V3, version: 5, book: bookOf(SPIELSTAND_V3.stones), ...V5_EMPTY } });
+  assert.deepEqual(migrateState(d.value), { ok: true, state: { ...SPIELSTAND_V3, version: 5, book: bookOf(SPIELSTAND_V3.stones), ...V5_EMPTY, ...V6 } });
 });
 
 test('Format 3: unmögliche Zeitsteine werden 0', () => {
@@ -99,7 +102,7 @@ test('Position in einer Wand oder außerhalb der Karte wird zum Startpunkt', () 
 });
 
 test('aus einer neueren Fassung oder unbrauchbar', () => {
-  assert.deepEqual(migrateState({ ...SPIELSTAND_V5, version: 6 }), { ok: false, reason: 'newer' });
+  assert.deepEqual(migrateState({ ...SPIELSTAND_V6, version: 7 }), { ok: false, reason: 'newer' });
   const bad = [
     null, 'x', {}, { version: 1 },
     { ...SPIELSTAND_V1, name: '' },
@@ -118,7 +121,7 @@ test('Der neue Pfad der Bucht macht keine gespeicherte Position ungültig', () =
 
 test('Spielstand der Fassung 4 bleibt für immer ladbar', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v4.txt', import.meta.url), 'utf8'));
-  assert.deepEqual(migrateState(d.value), { ok: true, state: { ...SPIELSTAND_V4, version: 5, ...V5_EMPTY } });
+  assert.deepEqual(migrateState(d.value), { ok: true, state: { ...SPIELSTAND_V4, ...V5_EMPTY, ...V6 } });
 });
 
 test('Format 4: kaputte oder unbekannte Einträge im Buch fallen heraus', () => {
@@ -129,7 +132,18 @@ test('Format 4: kaputte oder unbekannte Einträge im Buch fallen heraus', () => 
 
 test('Spielstand der Fassung 5 bleibt für immer ladbar', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v5.txt', import.meta.url), 'utf8'));
-  assert.deepEqual(migrateState(d.value), { ok: true, state: SPIELSTAND_V5 });
+  assert.deepEqual(migrateState(d.value), { ok: true, state: { ...SPIELSTAND_V5, ...V6 } });
+});
+
+test('Spielstand der Fassung 6 bleibt für immer ladbar', () => {
+  const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v6.txt', import.meta.url), 'utf8'));
+  assert.deepEqual(migrateState(d.value), { ok: true, state: SPIELSTAND_V6 });
+});
+
+test('Format 6: ein kaputter Zustand nach dem Finale wird repariert', () => {
+  assert.deepEqual(migrateState({ ...structuredClone(SPIELSTAND_V6), finale: 'x' }).state.finale, { done: false });
+  assert.deepEqual(migrateState({ ...structuredClone(SPIELSTAND_V6), finale: { done: 'ja' } }).state.finale, { done: false });
+  assert.deepEqual(migrateState({ ...structuredClone(SPIELSTAND_V6), finale: { done: true, extra: 1 } }).state.finale, { done: true });
 });
 
 test('Format 5: kaputte Aufträge, Schlüsselgegenstände und geheime Orte fallen heraus', () => {
