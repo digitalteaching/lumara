@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createRng } from '../js/core/rng.js';
 import { createDuel } from '../js/duel/duel.js';
-import { bossSetup, foeStageForPhase } from '../js/duel/boss.js';
+import { bossSetup, foeStageForPhase, rememberAvailable, rememberSetup } from '../js/duel/boss.js';
 import { xpForWin } from '../js/duel/progress.js';
 import { timerFor } from '../js/duel/timing.js';
 import { newGameState, applyDuelResult, packProgress } from '../js/state.js';
@@ -114,4 +114,40 @@ test('Beim letzten Treffer einer Phase zeigt der Balken leer, bis die neue Gesta
   assert.equal(d.foeEnergy, 6);
   assert.equal(foeEnergyShown(d, true), 0);
   assert.equal(foeEnergyShown(d, false), d.foeEnergy);
+});
+
+const fullPack = () => ({ shortId: 'ENQ9', timePressure: 'normal', trainers: [1, 2, 3, 4, 5, 6, 7, 8].map(n => ({ number: n, questions: [q({ text: `T${n}`, trainer: n })] })) });
+
+test('Erinnerungsduell: nur nach dem Finale, mit allen acht Trainern im Paket und alle mit diesem Paket besiegt', () => {
+  const s = newGameState({ name: 'A', species: 'funki', nickname: null });
+  const p = packProgress(s, 'ENQ9');
+  p.beaten = [1, 2, 3, 4, 5, 6, 7, 8];
+  assert.equal(rememberAvailable(s, fullPack()), false); // noch kein Finale
+  s.finale.done = true;
+  assert.equal(rememberAvailable(s, fullPack()), true);
+  assert.equal(rememberAvailable(s, { ...fullPack(), trainers: fullPack().trainers.slice(0, 3) }), false);
+  p.beaten = [1, 2, 3, 4, 5, 6, 7];
+  assert.equal(rememberAvailable(s, fullPack()), false);
+});
+
+test('Erinnerungsduell: der erste Sieg mit einem Paket gibt 500 XP, danach Stufen wie bei Revanchen', () => {
+  const s = newGameState({ name: 'A', species: 'funki', nickname: null });
+  s.finale.done = true;
+  s.position = { map: 'bucht', x: 35, y: 17, dir: 'right' };
+  const p = packProgress(s, 'ENQ9');
+  const won = { outcome: 'won', playerEnergy: 3, flawless: false, answers: [] };
+  const first = rememberSetup(fullPack(), p);
+  assert.deepEqual([first.kind, first.remember, first.rematch, first.foe.maxEnergy, first.foe.phases], ['boss', true, 0, 6, 3]);
+  assert.equal(timerFor(first, 'kiesel')({ form: 'choice' }), 20000);
+  assert.equal(applyDuelResult(s, 'ENQ9', first, won).xp, 500);
+  assert.equal(p.boss, true);
+  assert.deepEqual(s.position, { map: 'bucht', x: 35, y: 17, dir: 'right' }, 'das Finale läuft nicht noch einmal');
+  const second = rememberSetup(fullPack(), p);
+  assert.equal(second.rematch, 1);
+  assert.equal(applyDuelResult(s, 'ENQ9', second, won).xp, 313);
+  assert.equal(p.tiers[9], 1);
+  p.tiers[9] = 1;
+  const third = rememberSetup(fullPack(), p);
+  assert.deepEqual([third.rematch, third.foe.maxEnergy], [2, 10]);
+  assert.equal(timerFor(third, 'kiesel')({ form: 'choice' }), 16200);
 });

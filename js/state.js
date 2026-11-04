@@ -133,7 +133,10 @@ export function applyDuelResult(state, shortId, setup, summary, rng = null) {
     report.xp = xpForWin({ kind: setup.kind, area: setup.area, trainerNumber: setup.trainer?.number, flawless: summary.flawless, rematch: setup.rematch ?? 0 });
     // Der Endgegner bringt seine 500 XP nur beim ersten Sieg mit dem aktuellen Paket (Design 6.3).
     if (setup.kind === 'boss') {
-      if (progress.boss) report.xp = 0;
+      // Erinnerungsduell: nach dem ersten Sieg mit dem Paket steigt Morrows Stufe (tiers[9]).
+      if (setup.remember) {
+        if (progress.boss) raiseTier(progress, 9);
+      } else if (progress.boss) report.xp = 0;
       progress.boss = true;
       // Das Endduell im Berg: Das Finale steht im selben Speichern wie der Sieg, samt Platz am
       // Leuchtturm. Wer die App gleich nach dem Sieg schließt, muss Morrow nicht noch einmal besiegen.

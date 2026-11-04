@@ -29,7 +29,8 @@ export const CONFIG = deepFreeze({
     flawlessBonus: 0.25,
   },
   // Endgegner Morrow (Design 7.4): Phasen, Energie je Phase, angezeigtes Level, Uhr wie Trainer timeAs
-  boss: { phases: 3, energy: 6, level: 50, timeAs: 8 },
+  // rememberFactor: XP des Erinnerungsduells nach dem ersten Sieg, 500 × 0,5 × (1 + 0,25·Stufe) (Design 6.3)
+  boss: { phases: 3, energy: 6, level: 50, timeAs: 8, rememberFactor: 0.5 },
   // Revanchen (Design 7.5): Stufen 1 bis 5; Energie und Anzeige-Level je Stufe, Zeitfaktor je Stufe,
   // Grundzeit für Trainer ohne Uhr, kürzeste Zeit, XP-Aufschlag je Stufe
   rematch: { maxTier: 5, energyPerTier: 2, levelPerTier: 3, timeFactor: 0.9, baseSeconds: 40, minSeconds: 10, xpPerTier: 0.25 },

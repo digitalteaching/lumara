@@ -5,6 +5,7 @@ import { CONFIG } from '../config.js';
 import { createWorldScene } from './world.js';
 import { createDuelScene, makeWildSetup, makeTrainerSetup, makeBossSetup } from './duel.js';
 import { rematchOffer, rematchSetup } from '../duel/rematch.js';
+import { rememberAvailable, rememberSetup } from '../duel/boss.js';
 import { playTransition, reveal } from './transition.js';
 import { createEncounterCounter, wildTableFor } from '../world/encounters.js';
 import { secretOpen, takeSecretStory, takeSecretStone, blockedCells } from '../world/secrets.js';
@@ -379,6 +380,24 @@ export function createGameWorld(game) {
       await reveal(game);
       await playFinale(game, world);
       await travelTo(game, { map: 'bucht', ...BUCHT.respawn });
+      return true;
+    }
+    // Morrow am Leuchtturm (Design 9): nach seinen Sätzen das Erinnerungsduell, wenn das Paket passt.
+    if (o?.type === 'npc' && o.id === 'morrow') {
+      world.turnToward(o, OPPOSITE[player.dir]);
+      await say(game, worldLines(def, o, 'lines'), { speaker: o.name });
+      if (!rememberAvailable(game.state, game.pack.data)) {
+        await say(game, [tr('remember.notYet')], { speaker: o.name });
+        world.resetFacing(o);
+        return true;
+      }
+      const setup = rememberSetup(game.pack.data, packProgress(game.state, shortId()));
+      const ask = setup.rematch ? tr('remember.offer', { stage: setup.rematch }) : tr('remember.offerFirst');
+      const pick = await choose(game, ask, [tr('remember.yes'), tr('rematch.later')], { cancelIndex: 1 });
+      world.resetFacing(o);
+      if (pick !== 0) return true;
+      const report = await runDuel(setup, 'trainer');
+      await backToWorld(report);
       return true;
     }
     if (o?.type === 'npc' && o.id === 'ilvy' && def.cave) {
