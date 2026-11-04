@@ -205,6 +205,7 @@ export const CHARACTERS = {
   trainer2: character({ h: 'F', i: 'k', c: 'l', d: 'F', l: 'o', b: 'b' }, { down: MOSS_DOWN, side: MOSS_SIDE }),
   fenna: character({ h: 'h', i: 'r', c: 'v', d: 'P', l: 'c', b: 'b' }, { down: BASKET_DOWN, side: BASKET_SIDE }),
   birk: character({ h: 'm', i: 's', c: 'o', d: 'b', l: 'Y', b: 'k' }, { down: BEARD_DOWN.map(([x, y]) => [x, y, 'w']), side: BEARD_SIDE.map(([x, y]) => [x, y, 'w']) }),
+  flo: character({ h: 'y', i: 'o', c: 'G', d: 'l', l: 'D', b: 'b' }),
   lio: character({ h: 'b', i: 'k', c: 'h', d: 'r', l: 'D', b: 'b' }, { down: JAR_DOWN, side: JAR_SIDE }),
   // neutrale Figur mit Kapuzenumhang (Design 14)
   player: character({ h: 't', i: 'F', c: 't', d: 'F', l: 'c', b: 'b' }),

@@ -349,4 +349,15 @@ export const DE = {
   'key.skates.text': 'Damit gleitest du über das Eis.',
   'key.starmap.name': 'Sternkarte',
   'key.starmap.text': 'Zeigt, wie die Sterne stehen.',
+
+  // Aufträge
+  'quest.askHelp': 'Hilfst du mir?',
+  'quest.yes': 'Ja, ich helfe!',
+  'quest.accepted': 'Neuer Auftrag: {title}',
+  'quest.done': '✓ Auftrag erledigt: {title}',
+  'quest.gotKey': 'Du bekommst: {name}!',
+  'quest.got.life': 'Du bekommst einen Lebensstein!',
+  'quest.got.farsight': 'Du bekommst einen Weitblickstein!',
+  'quest.got.shine': 'Du bekommst {n} Glanzsteine!',
+  'quest.got.starfruit': 'Du bekommst {n} Sternfrüchte!',
 };

@@ -1,6 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { QUESTS } from '../js/data/quests.js';
+import { QUESTS, GUESTS, QUEST_TEXT, questText } from '../js/data/quests.js';
+import { EN_QUEST_TEXT } from '../js/i18n/en-quests.js';
+import { MAPS } from '../js/world/network.js';
+import { createMap } from '../js/world/map.js';
+import { setLanguage } from '../js/i18n/i18n.js';
 import { questFor, acceptQuest, advanceQuest, finishQuest, activePickups, activeGuests } from '../js/world/quests.js';
 import { hasKey } from '../js/items/keys.js';
 import { newGameState } from '../js/state.js';
@@ -70,4 +74,37 @@ test('Ein Auftrag mit erfülltem Schritt bleibt nach dem Paketwechsel, auch wenn
   advanceQuest(s, 'q5', 0);
   s.packs = {}; // anderes Paket: Fortschritt der Aufträge hängt nicht am Paket
   assert.deepEqual(s.quests.q5, { step: 1, done: false });
+});
+
+test('Jeder Auftrag hat seine Texte auf Deutsch und Englisch, mit gleich vielen Schritten und kurzen Zeilen', () => {
+  for (const q of QUESTS) {
+    for (const table of [QUEST_TEXT, EN_QUEST_TEXT]) {
+      const tx = table[q.id];
+      assert.ok(tx?.title && tx.hint && tx.offer?.length && tx.remind?.length && tx.locked?.length && tx.finish?.length, q.id);
+      assert.equal(tx.steps.length, q.steps.length - 1, q.id); // der letzte Schritt ist finish/locked
+      const lines = [...tx.offer, ...tx.remind, ...tx.locked, ...tx.finish, ...tx.steps.flat(), ...(tx.guest ?? [])];
+      for (const l of lines) assert.ok(l.length <= 90, `${q.id}: ${l.length} Zeichen: ${l}`);
+    }
+  }
+  setLanguage('en');
+  try {
+    assert.equal(questText('q3').title, 'Where is Flo?');
+  } finally {
+    setLanguage('de');
+  }
+  assert.equal(questText('q3').title, 'Wo ist Flo?');
+});
+
+test('Fundstücke und Gäste stehen auf freien, begehbaren Feldern; Gespräche nennen echte Bewohner', () => {
+  const free = (mapId, x, y) => createMap(MAPS[mapId], { openGates: (MAPS[mapId].gates ?? []).map(g => g.id) }).canEnter(x, y);
+  for (const q of QUESTS) {
+    for (const st of q.steps) {
+      assert.ok(MAPS[st.map].area <= q.area, `${q.id}: ${st.map} liegt hinter Gebiet ${q.area}`);
+      if (st.kind === 'pickup') assert.ok(free(st.map, st.x, st.y), `${q.id}.${st.id}`);
+      else assert.ok(MAPS[st.map].objects.some(o => o.type === 'npc' && o.id === st.npc) || GUESTS.some(g => g.id === st.npc && g.map === st.map), `${q.id}: ${st.npc}`);
+    }
+    assert.ok(MAPS[q.giver.map].objects.some(o => o.type === 'npc' && o.id === q.giver.npc), q.id);
+    assert.equal(MAPS[q.giver.map].area, q.area, q.id);
+  }
+  for (const g of GUESTS) assert.ok(free(g.map, g.x, g.y), g.id);
 });

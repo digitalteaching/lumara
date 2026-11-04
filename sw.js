@@ -53,6 +53,7 @@ const FILES = [
   "js/gfx/screen.js",
   "js/gfx/sprites.js",
   "js/i18n/de.js",
+  "js/i18n/en-quests.js",
   "js/i18n/en-species.js",
   "js/i18n/en-story.js",
   "js/i18n/en-world.js",

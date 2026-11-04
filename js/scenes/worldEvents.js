@@ -21,6 +21,8 @@ import { notePool, noteKey, noteReady, solveNote } from '../world/notes.js';
 import { playNote } from './note.js';
 import { displayName, nameAtStage, evolutionLines } from '../data/species.js';
 import { playEvolution } from './evolution.js';
+import { questFor, acceptQuest, advanceQuest, finishQuest, activePickups, activeGuests } from '../world/quests.js';
+import { questText } from '../data/quests.js';
 import { maxEnergy, stageForLevel } from '../duel/progress.js';
 import { say, choose } from '../ui/dialog.js';
 import { el, clear } from '../ui/dom.js';
@@ -43,8 +45,19 @@ export async function travelTo(game, pos, style = 'fade') {
 
 const samePlace = (a, b) => a.map === b.map && a.x === b.x && a.y === b.y;
 
+// Die Karte mit den Gästen der laufenden Aufträge als Bewohner (Design 5.6).
+function withGuests(base, state) {
+  const guests = activeGuests(state, base.id);
+  if (!guests.length) return base;
+  return {
+    ...base,
+    objects: [...base.objects, ...guests.map(g => ({ type: 'npc', id: g.id, name: g.name, x: g.x, y: g.y, dir: g.dir, sprite: g.sprite, guestOf: g.quest, lines: [] }))],
+  };
+}
+
 export function createGameWorld(game) {
-  const def = MAPS[game.state.position.map] ?? BUCHT;
+  // Gäste eines Auftrags (etwa Flo) stehen nur, solange ihr Schritt dran ist.
+  const def = withGuests(MAPS[game.state.position.map] ?? BUCHT, game.state);
   const world = createWorldScene(game, def, { openGates: openGatesFor(def, game.state, game.pack.data) });
   const { map, player } = world;
   const { trainerNumber } = areaConfig(def);
@@ -303,15 +316,103 @@ export function createGameWorld(game) {
       return out;
     });
     if (!result) return;
-    // Bis zur Entwicklung heißt das Wesen noch wie vorher (Design 6.3).
+    await levelUps(levelBefore);
+    if (result.story) await say(game, [result.story], { speaker: tr('world.storySpeaker') });
+  }
+
+  // Level-Zeilen und Entwicklung nach XP außerhalb eines Duells (Zettel, Auftrag). Bis zur
+  // Entwicklung heißt das Wesen noch wie vorher (Design 6.3).
+  async function levelUps(levelBefore) {
+    const c = game.state.creature;
     const from = stageForLevel(levelBefore), to = stageForLevel(c.level);
     for (let lvl = levelBefore + 1; lvl <= c.level; lvl++) await say(game, [tr('duel.levelUp', { name: nameAtStage(c, from), level: lvl })]);
-    if (result.evolved) {
+    if (to > from) {
       await playEvolution(game, world, { species: c.species, from, to });
       await say(game, evolutionLines(c, from, to));
     }
-    if (result.story) await say(game, [result.story], { speaker: tr('world.storySpeaker') });
   }
+
+  // ---------- Aufträge (Design 5.6, 5.7) ----------
+  // Vor dem allgemeinen Gespräch: Hat ein Bewohner etwas zu einem Auftrag zu sagen, sagt er das.
+
+  async function questTalk(o, q) {
+    const { quest, role } = q;
+    const text = questText(quest.id);
+    const speaker = o.name;
+    if (role === 'offer') {
+      await say(game, text.offer, { speaker });
+      const pick = await choose(game, tr('quest.askHelp'), [tr('quest.yes'), tr('duel.later')], { cancelIndex: 1 });
+      if (pick !== 0) return;
+      acceptQuest(game.state, quest.id);
+      game.save();
+      await say(game, [tr('quest.accepted', { title: text.title })]);
+    } else if (role === 'remind') {
+      await say(game, text.remind, { speaker });
+    } else if (role === 'step') {
+      const i = game.state.quests[quest.id].step;
+      await say(game, text.steps[i], { speaker });
+      advanceQuest(game.state, quest.id, i);
+      game.save();
+    } else if (role === 'locked') {
+      await say(game, text.locked, { speaker });
+    } else if (role === 'finish') {
+      await say(game, text.finish, { speaker });
+      const c = game.state.creature;
+      const levelBefore = c.level;
+      const r = finishQuest(game.state, quest.id);
+      game.save();
+      if (!r) return;
+      await say(game, [tr('quest.done', { title: text.title })]);
+      await say(game, [r.key ? tr('quest.gotKey', { name: tr(`key.${r.key}.name`) }) : tr(`quest.got.${r.item}`, { n: r.n })]);
+      await say(game, [tr('duel.xp', { name: nameAtStage(c, stageForLevel(levelBefore)), xp: r.xp, extra: '' })]);
+      await levelUps(levelBefore);
+    }
+  }
+
+  world.onInteract.unshift(async ev => {
+    const o = ev.target;
+    if (o?.type !== 'npc') return false;
+    const q = questFor(game.state, def.id, o.id);
+    if (!q || q.role === 'done') {
+      // Ein Gast, dessen Schritt erledigt ist, verabschiedet sich.
+      if (o.guestOf && questText(o.guestOf).guest) {
+        await say(game, questText(o.guestOf).guest, { speaker: o.name });
+        return true;
+      }
+      return false;
+    }
+    world.turnToward(o, OPPOSITE[player.dir]);
+    await questTalk(o, q);
+    world.resetFacing(o);
+    return true;
+  });
+
+  // Fundstücke eines Auftrags: glitzern, solange ihr Schritt dran ist; aufheben mit A vom Nachbarfeld.
+  world.groundRender.push((ctx, cam) => {
+    for (const p of activePickups(game.state, def.id)) {
+      const x = p.x * 16 - cam.x + 8, y = p.y * 16 - cam.y + 9;
+      if (x < -4 || y < -4 || x > 244 || y > 164) continue;
+      const flash = !game.reducedMotion && (world.time + p.x * 97) % 1200 < 300;
+      ctx.fillStyle = '#ffe08a';
+      ctx.globalAlpha = flash ? 1 : 0.75;
+      ctx.fillRect(x - 1, y, 3, 1);
+      ctx.fillRect(x, y - 1, 1, 3);
+      if (flash) {
+        ctx.fillStyle = '#fffaf0';
+        ctx.fillRect(x, y, 1, 1);
+      }
+      ctx.globalAlpha = 1;
+    }
+  });
+  world.onInteract.push(async ev => {
+    if (ev.target) return false;
+    const p = activePickups(game.state, def.id).find(f => f.x === ev.x && f.y === ev.y);
+    if (!p) return false;
+    await say(game, questText(p.quest).steps[p.index]);
+    advanceQuest(game.state, p.quest, p.index);
+    game.save();
+    return true;
+  });
 
   // ---------- Höhlentor (Design 5.2) ----------
   // Vor dem allgemeinen Gebäude-Handler: Das Tor sagt, wie viele Fassungen leuchten. Über das Torbild

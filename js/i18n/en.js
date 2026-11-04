@@ -349,4 +349,15 @@ export const EN = {
   'key.skates.text': 'Let you glide over the ice.',
   'key.starmap.name': 'Star map',
   'key.starmap.text': 'Shows where the stars are.',
+
+  // Aufträge
+  'quest.askHelp': 'Will you help me?',
+  'quest.yes': 'Yes, I will help!',
+  'quest.accepted': 'New task: {title}',
+  'quest.done': '✓ Task done: {title}',
+  'quest.gotKey': 'You get: {name}!',
+  'quest.got.life': 'You get a life stone!',
+  'quest.got.farsight': 'You get a farsight stone!',
+  'quest.got.shine': 'You get {n} shine stones!',
+  'quest.got.starfruit': 'You get {n} starfruits!',
 };
