@@ -4,7 +4,7 @@
 
 Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, erkundet eine geheimnisvolle Insel unter einem Nebel des Vergessens und besteht Duelle mit Aufgaben aus dem Unterricht. Dafür bekommt es Punkte, und sein Wesen entwickelt sich weiter. Die Inhalte kommen aus einem Lernpaket, einer Textdatei, die die Lehrkraft selbst schreibt. Dadurch funktioniert das Spiel in jedem Fach. Das erste Beispielpaket ist für Jahrgang 6 Englisch.
 
-**Status:** Das Spiel ist fertig (Spielfassung 1.0.4). Gebaut in den Plänen 1 bis 8. Es läuft unter https://digitalteaching.github.io/lumara/.
+**Status:** Das Spiel ist fertig (Spielfassung 1.1.0). Gebaut in den Plänen 1 bis 8, danach 1.0.x und 1.1. Es läuft unter https://digitalteaching.github.io/lumara/.
 
 **Für Lehrkräfte:** Die [Anleitung](anleitung.html) erklärt, wie man ein Lernpaket erstellt, prüft und an die Klasse verteilt. Auf der [Seite für Lehrkräfte](lehrkraft.html) prüft man Pakete und Statistiken. Dazu gibt es die [Vorlage](pakete/vorlage.txt), das [Beispielpaket](pakete/englisch-6-beispiel.txt), einen [KI-Prompt](pakete/KI-PROMPT-Lernpaket.md), mit dem eine KI ein gültiges Paket schreibt, und eine [Kurzanleitung als PDF](pakete/Lumara-Kurzanleitung.pdf) zum Ausdrucken.
 
@@ -99,6 +99,10 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
 - **1.0.4**, Seite für Lehrkräfte ohne „null“: Unter dem Paketnamen stand nach dem Prüfen das Wort „null“ (ein natives append mit einem leeren Zweig). Ein Test sucht jetzt im ganzen Code nach solchen Aufrufen.
 - **1.0.3**, Namensfeld mit Doppeltipp-Schutz: Der Tipp, der Ilvys letzten Satz schließt, landete auf iPads auf „Weiter“ im gerade erschienenen Namensfeld, und das Kind sah „Bitte gib einen Namen ein“, bevor es tippen konnte. Das Namensfeld nimmt jetzt wie Eier und Paket-Bildschirm 350 ms lang keinen Tipp an.
 - **1.0.2**, ohne Copyright-Hinweis: Die Hinweise mit Namen sind aus den Seiten, dem README, dem PDF und den Plänen entfernt. Ein Test sorgt dafür, dass keiner zurückkommt.
+- **1.1**, Rucksack und Schätze:
+  - Der Rucksack klappt direkt im Spiel auf, nur beim Laufen. Er zeigt Futter, Steine, Schlüsselgegenstände und das Schatz-Album mit 24 Schätzen; man kann füttern, Glanzsteine einsetzen und Schätze ansehen. Antippen daneben schließt ihn. Bei „Bewegung reduzieren“ gibt es keine Klappen- und Flug-Animation.
+  - Schätze findet man auf drei Wegen: beim Pflücken an Sträuchern (etwa jedes dritte Mal), unter Zetteln, die sonst nichts bringen (etwa jeder achte), und als seltene Beute wilder Wesen (jedes zehnte Mal). Die Zahlen stehen in `js/config.js` unter `treasures`.
+  - Alle Schätze haben in allen vier Spielsprachen eigene, kindgerechte Namen und ein selbst gezeichnetes Bild. Alte Spielstände laden weiter: Format 9 ergänzt das Album leer, es zeigt 0 von 24.
 
 - Design: [docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md](docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md)
 - Bauplan 1: [docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md](docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md)
@@ -115,6 +119,8 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
 - Bauplan 6: [docs/superpowers/plans/2026-11-04-lumara-plan-6-musik-ton.md](docs/superpowers/plans/2026-11-04-lumara-plan-6-musik-ton.md)
 - Bauplan 7: [docs/superpowers/plans/2026-11-04-lumara-plan-7-sprachen.md](docs/superpowers/plans/2026-11-04-lumara-plan-7-sprachen.md)
 - Bauplan 8: [docs/superpowers/plans/2026-11-04-lumara-plan-8-abschluss.md](docs/superpowers/plans/2026-11-04-lumara-plan-8-abschluss.md)
+- Design 1.1: [docs/superpowers/specs/2026-11-21-lumara-freunde-und-verstecke-design.md](docs/superpowers/specs/2026-11-21-lumara-freunde-und-verstecke-design.md)
+- Bauplan 1.1, Rucksack und Schätze: [docs/superpowers/plans/2026-11-21-lumara-1.1-rucksack-schaetze.md](docs/superpowers/plans/2026-11-21-lumara-1.1-rucksack-schaetze.md)
 - Frühere Ideensammlung: [docs/2026-10-17-zwischenstand-ideensammlung.md](docs/2026-10-17-zwischenstand-ideensammlung.md)
 
 ## Für Lehrkräfte
@@ -180,6 +186,7 @@ Kinder bekommen die neue Fassung beim nächsten Öffnen. Das laufende Spiel läd
 - Format 1 mit `tests/fixtures/spielstand-v1.txt`
 - Format 2 (seit Spielfassung 0.3.0) mit `tests/fixtures/spielstand-v2.txt`
 - Format 3 (seit Spielfassung 0.4.0, mit Zeitsteinen im Rucksack) mit `tests/fixtures/spielstand-v3.txt`
+- Format 9 (seit 1.1.0, Schätze und Album) mit `tests/fixtures/spielstand-v9.txt`
 
 Diese Dateien werden nie geändert. Für jede Änderung am Format gilt:
 
