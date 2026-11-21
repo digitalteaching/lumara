@@ -3,9 +3,9 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { FRIENDABLE, giftOf, makeFriend } from '../js/friends/friends.js';
+import { FRIENDABLE, companionGift, giftOf, makeFriend } from '../js/friends/friends.js';
 import { HIDEOUTS } from '../js/data/hideouts.js';
-import { companionAlert, companionGift, hideoutAction, hideoutKey, hideoutShown, sniffedHideouts } from '../js/world/hideouts.js';
+import { companionAlert, hideoutAction, hideoutKey, hideoutShown, sniffedHideouts } from '../js/world/hideouts.js';
 import { CONFIG } from '../js/config.js';
 import { SCENE, alertSpot, foundLine, scenePose } from '../js/scenes/hideoutEvents.js';
 import { companionLine } from '../js/scenes/companion.js';

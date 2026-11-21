@@ -8,9 +8,10 @@ import { CONFIG } from '../config.js';
 import { HIDEOUTS } from '../data/hideouts.js';
 import { HIDDEN_SPECIES } from '../data/species.js';
 import { gainXp } from '../duel/progress.js';
-import { giftOf, isFriend } from '../friends/friends.js';
+import { companionGift } from '../friends/friends.js';
 import { addItem } from '../items/bag.js';
 import { AREA_TREASURES, addTreasure, rollTreasure } from '../items/treasures.js';
+import { recordNoteAnswer } from '../state.js';
 import { MAPS } from './network.js';
 
 export const hideoutKey = h => `${h.map}:${h.x},${h.y}`;
@@ -24,10 +25,7 @@ export const hideoutsOn = mapId => HIDEOUTS.filter(h => h.map === mapId);
 export const hideoutReady = (state, h) => (state.world.hideouts?.[hideoutKey(h)] ?? 0) <= state.playMs;
 
 // Es zählt der Begleiter in diesem Moment: Wer im Menü wechselt, sieht das sofort.
-export function canOpen(state, h) {
-  const c = state.companion;
-  return !!c && isFriend(state, c) && giftOf(c) === h.gift;
-}
+export const canOpen = (state, h) => companionGift(state) === h.gift;
 
 const distance = (h, x, y) => Math.abs(h.x - x) + Math.abs(h.y - y);
 
@@ -39,12 +37,6 @@ export function nearHideouts(state, mapId, x, y, radius = CONFIG.hideouts.nearRa
 }
 
 // ---------- Was die Welt zeigt und was A tut (js/scenes/hideoutEvents.js) ----------
-
-// Die Gabe des Begleiters, wenn er ein Freund ist, sonst null.
-export function companionGift(state) {
-  const c = state.companion;
-  return c && isFriend(state, c) ? giftOf(c) : null;
-}
 
 // A vor einem Versteck: 'empty' (gerade leer, das zählt zuerst), 'hint' (ohne passenden Begleiter)
 // oder 'open'.
@@ -112,6 +104,16 @@ export function openFind(state, h, area, correct, rng) {
   }
   refill(state, h);
   return { xp, item, treasure, lost, evolved: r.stageAfter > r.stageBefore };
+}
+
+// Die Antwort auf die Frage eines Fund-Verstecks verbuchen (settle für playNote, js/scenes/note.js):
+// Sie zählt genau einmal wie die Antwort unter einem Zettel (Statistik und Wiederholung des Pakets
+// shortId), dann öffnet openFind das Versteck, nur bei richtig. out: das Ergebnis von openFind; panel:
+// was das Antwortfeld zeigt, nur die XP (den Fund sagt danach die Welt).
+export function settleFind(state, shortId, h, answer, rng) {
+  recordNoteAnswer(state, shortId, answer);
+  const out = openFind(state, h, MAPS[h.map].area, answer.correct, rng);
+  return { out, panel: { xp: out.xp, item: null, lost: null, story: null, evolved: out.evolved } };
 }
 
 // Ein Wesen-Versteck öffnet sich ohne Frage. Es ist sofort leer, damit ein Neustart mitten im Duell

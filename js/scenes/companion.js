@@ -6,19 +6,13 @@
 import { createFollower } from '../world/follower.js';
 import { nearHideouts } from '../world/hideouts.js';
 import { miniImages } from '../gfx/miniImages.js';
-import { giftOf } from '../friends/friends.js';
+import { companionOf, giftOf } from '../friends/friends.js';
 import { speciesName } from '../data/species.js';
 import { say } from '../ui/dialog.js';
 import { t, tl } from '../i18n/i18n.js';
 
 const T = 16;
 const HOP_MS = 130; // beim Laufen wechseln Stehen und Hüpfen so schnell wie die Schritte der Bewohner
-
-// Der Begleiter aus dem Spielstand, wenn er ein Freund mit Gabe ist, sonst null.
-export function companionOf(state) {
-  const id = state?.companion ?? null;
-  return id && state.friends?.[id] && giftOf(id) ? id : null;
-}
 
 // Was der Begleiter auf A sagt, wenn die Figur bei (x, y) auf der Karte mapId steht. Ist ein bereites
 // Versteck seiner Gabe höchstens nearRadius Felder entfernt, sein Satz companion.near.<Gabe>; die

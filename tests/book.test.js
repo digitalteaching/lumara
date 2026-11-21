@@ -9,6 +9,8 @@ import { MENU_ITEMS } from '../js/menu/items.js';
 test('Das Buch hat 41 Plätze: 34 bis 41 die Wesen der Verstecke', () => {
   assert.equal(BOOK_SIZE, 41);
   assert.equal(BOOK_SLOTS.length, 41);
+  assert.ok(BOOK_SLOTS.every(Boolean), 'jeder Platz hat eine Art');
+  assert.equal(new Set(BOOK_SLOTS).size, 41, 'keine Art doppelt');
   assert.equal(BOOK_SLOTS[32], 'morrow');
   assert.deepEqual(BOOK_SLOTS.slice(33), HIDDEN_SPECIES);
   assert.deepEqual(BOOK_SLOTS.slice(0, 24), [1, 2, 3, 4, 5, 6, 7, 8].flatMap(a => [...AREA_WILD[a].common, AREA_WILD[a].rare]));

@@ -14,17 +14,18 @@
 import { CONFIG } from '../config.js';
 import { MAPS } from '../world/network.js';
 import { notePool } from '../world/notes.js';
-import { companionAlert, companionGift, hideoutAction, hideoutAt, hideoutShown, hideoutsOn, openCreature, openFind, sniffedHideouts } from '../world/hideouts.js';
-import { packProgress, recordNoteAnswer } from '../state.js';
+import { companionAlert, hideoutAction, hideoutAt, hideoutShown, hideoutsOn, openCreature, settleFind, sniffedHideouts } from '../world/hideouts.js';
+import { packProgress } from '../state.js';
 import { playNote } from './note.js';
 import { makeWildSetup } from './duel.js';
 import { giftCanvas, hideoutCanvas } from '../gfx/art/gifts.js';
-import { giftName } from '../friends/friends.js';
+import { companionGift, giftName } from '../friends/friends.js';
 import { speciesName } from '../data/species.js';
 import { treasureName } from '../items/treasures.js';
 import { sound, jingle } from '../audio/bus.js';
 import { say } from '../ui/dialog.js';
 import { t } from '../i18n/i18n.js';
+import { SCREEN_W, SCREEN_H } from './world.js';
 
 const T = 16;
 
@@ -186,7 +187,7 @@ function drawAlert(ctx, x, y) {
   ctx.fillRect(x + 2, y + 6, 2, 2);
 }
 
-const onScreen = (x, y) => x > -T && y > -T && x < 240 + T && y < 160 + T;
+const onScreen = (x, y) => x > -T && y > -T && x < SCREEN_W + T && y < SCREEN_H + T;
 
 // wildDuel(setup): ein wildes Duell mit diesem Aufbau und zurück in die Welt (aus createGameWorld).
 // levelUps(levelBefore): Level-Zeilen und Entwicklung nach XP außerhalb eines Duells.
@@ -296,10 +297,10 @@ export function addHideouts(world, game, { wildDuel, levelUps }) {
     let out = null;
     const pool = notePool(game.pack.data, packProgress(state, shortId).beaten);
     const result = await playNote(game, pool, answer => {
-      recordNoteAnswer(state, shortId, answer);
-      out = openFind(state, h, MAPS[h.map].area, answer.correct, game.rng);
+      const settled = settleFind(state, shortId, h, answer, game.rng);
+      out = settled.out;
       game.save();
-      return { xp: out.xp, item: null, lost: null, story: null, evolved: out.evolved };
+      return settled.panel;
     }, { stays: 'hideout.stays' });
     if (!result?.correct || !out?.xp) return; // „Später“, falsch oder schon leer
     jingle('find');

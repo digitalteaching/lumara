@@ -9,7 +9,8 @@ import { CAVE_SPECIES, HIDDEN_SPECIES } from '../js/data/species.js';
 import { AREA_TREASURES } from '../js/items/treasures.js';
 import { xpToNext } from '../js/duel/progress.js';
 import { GIFT_TILES, HIDEOUTS } from '../js/data/hideouts.js';
-import { canOpen, hideoutAt, hideoutKey, hideoutReady, hideoutsOn, nearHideouts, openCreature, openFind } from '../js/world/hideouts.js';
+import { canOpen, hideoutAt, hideoutKey, hideoutReady, hideoutsOn, nearHideouts, openCreature, openFind, settleFind } from '../js/world/hideouts.js';
+import { packProgress } from '../js/state.js';
 import { KARTEN_1_1 } from './fixtures/karten-1.1.js';
 
 const AREA_MAPS = ['bucht', 'wald', 'moor', 'duenen', 'klippen', 'ruinen', 'see', 'wiese'];
@@ -267,4 +268,67 @@ test('Wesen-Versteck: das neue Wesen des Gebiets, sofort leer bis zum Nachfülle
   const s = s0();
   assert.equal(openCreature(s, hideoutsOn('bucht').find(x => x.kind === 'find')), null);
   assert.deepEqual(s.world.hideouts, {});
+});
+
+// Ein Zufall, der mitzählt, wie oft gezogen wird.
+const counting = (...v) => {
+  const r = seq(...v);
+  const c = { calls: 0, next: () => (c.calls++, r.next()) };
+  return c;
+};
+
+test('Belohnung: genau ein Zug aus der Tabelle, nur ein häufiger Schatz zieht noch einmal (welcher)', () => {
+  const h = hideoutsOn('duenen').find(x => x.kind === 'find');
+  const total = Object.values(CONFIG.hideouts.rewards).reduce((a, b) => a + b, 0);
+  let start = 0;
+  for (const [reward, weight] of Object.entries(CONFIG.hideouts.rewards)) {
+    const s = s0();
+    s.playMs = 100;
+    const rng = counting((start + weight / 2) / total, 0);
+    const out = openFind(s, h, 4, true, rng);
+    assert.equal(out.item, reward);
+    assert.equal(rng.calls, reward === 'treasure' ? 2 : 1, reward);
+    start += weight;
+  }
+  // Falsch, leer oder ein Wesen-Versteck: kein Zug.
+  const s = s0();
+  const none = counting(0);
+  openFind(s, h, 4, false, none);
+  openFind(s, hideoutsOn('duenen').find(x => x.kind === 'creature'), 4, true, none);
+  s.world.hideouts[hideoutKey(h)] = s.playMs + 1;
+  openFind(s, h, 4, true, none);
+  assert.equal(none.calls, 0);
+});
+
+test('settleFind: Die Antwort zählt genau einmal wie ein Zettel, nachgefüllt wird nur bei richtig', () => {
+  const h = hideoutsOn('wald').find(x => x.kind === 'find');
+  const key = hideoutKey(h);
+  const answer = correct => ({ key: 'q1', correct, trainer: 2 });
+
+  // Falsch: gezählt, das Versteck bleibt voll, das Antwortfeld zeigt keine XP.
+  const s = s0();
+  s.playMs = 1000;
+  const wrong = settleFind(s, 'paket', h, answer(false), counting(0));
+  const p = packProgress(s, 'paket');
+  assert.deepEqual([p.stats.total, p.stats.right, p.stats.topics[2]], [1, 0, { right: 0, total: 1 }]);
+  assert.deepEqual(p.history.q1, { n: 1, s: 0, w: true });
+  assert.equal(hideoutReady(s, h), true);
+  assert.deepEqual(wrong.out, { xp: 0, item: null, treasure: null, lost: null, evolved: false });
+  assert.deepEqual(wrong.panel, { xp: 0, item: null, lost: null, story: null, evolved: false });
+
+  // Richtig: noch einmal genau einmal gezählt, 15 XP, Nachfüllen nach 10 Minuten. Den Fund nennt das
+  // Antwortfeld nicht (item null), den sagt danach die Welt.
+  const right = settleFind(s, 'paket', h, answer(true), counting(0.5 / 17, 0));
+  assert.deepEqual([p.stats.total, p.stats.right, p.stats.topics[2]], [2, 1, { right: 1, total: 2 }]);
+  assert.deepEqual(p.history.q1, { n: 2, s: 1, w: false });
+  assert.equal(s.world.hideouts[key], 1000 + CONFIG.hideouts.refillMs);
+  assert.equal(right.out.xp, 15);
+  assert.equal(right.out.item, 'treasure');
+  assert.deepEqual(right.panel, { xp: 15, item: null, lost: null, story: null, evolved: false });
+
+  // Gleich danach noch einmal richtig (Doppeltipp): gezählt, aber leer, nichts gefunden.
+  const again = settleFind(s, 'paket', h, answer(true), counting(0));
+  assert.equal(p.stats.total, 3);
+  assert.equal(again.out.xp, 0);
+  assert.equal(s.world.hideouts[key], 1000 + CONFIG.hideouts.refillMs);
 });

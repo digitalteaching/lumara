@@ -1,8 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parseSprite } from '../js/gfx/sprites.js';
-import { TILES, BUILDINGS, PROPS, CAVE_SOCKETS, OVERLAY_TILES } from '../js/gfx/art/tiles.js';
+import { readFileSync } from 'node:fs';
+import { TILES, BUILDINGS, PROPS, CAVE_SOCKETS, OVERLAY_TILES, TASK_ART } from '../js/gfx/art/tiles.js';
 import { WALKABLE, BLOCKED } from '../js/world/map.js';
+import { TASKS } from '../js/data/tasks.js';
 
 test('jede Kachelart hat Bilder zu 16 × 16', () => {
   for (const kind of [...WALKABLE, ...BLOCKED]) {
@@ -77,4 +79,29 @@ test('Kacheln der Gebiete 6 bis 8: 16 × 16, bekannte Farben, richtige Bildzahl'
   assert.equal(CAVE_SOCKETS.length, 8);
   assert.ok(CAVE_SOCKETS.every(([x, y]) => x >= 0 && x < 48 && y >= 0 && y < 48));
   assert.equal(new Set(CAVE_SOCKETS.map(p => p.join(','))).size, 8); // acht verschiedene Fassungen
+});
+
+// Die Bilder der Spielaufgaben lesen Reihenfolge und Lage aus einer Abschrift, damit die Kacheln keine
+// Karte mitladen. Die Quelle bleibt js/data/tasks.js.
+test('Kacheln: Abschrift der Aufgaben gleicht js/data/tasks.js, ohne Import von Daten oder Karten', () => {
+  assert.deepEqual(TASK_ART.runeOrder, TASKS[2].order);
+  assert.deepEqual(TASK_ART.leverOrder, TASKS[6].order);
+  assert.deepEqual(TASK_ART.starTablet, { order: TASKS[8].order, plates: TASKS[8].plates });
+  const src = readFileSync(new URL('../js/gfx/art/tiles.js', import.meta.url), 'utf8');
+  assert.doesNotMatch(src, /^import /m);
+});
+
+// Die Zeichenbäume der Waldaufgabe sehen den Flüsterbäumen sonst sehr ähnlich: Ihre Krone ist golden,
+// ohne die Grüntöne des Flüsterbaums.
+test('Zeichenbäume: goldene Krone, nicht grün wie der Flüsterbaum', () => {
+  const crown = rows => rows.slice(0, 15).join('').replace(/[.k]/g, '');
+  const green = /[Flg]/;
+  assert.match(crown(PROPS.oldtree), green);
+  for (let i = 0; i < 4; i++) {
+    for (const v of ['', 'Lit', 'Open']) {
+      const c = crown(PROPS[`runetree${i}${v}`]);
+      assert.doesNotMatch(c, green, `runetree${i}${v}`);
+      assert.ok([...c].filter(ch => ch === 'h').length > c.length / 3, `runetree${i}${v}: golden`);
+    }
+  }
 });

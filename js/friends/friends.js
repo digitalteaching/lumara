@@ -18,6 +18,16 @@ export function giftOf(speciesId) {
 
 export const isFriend = (state, id) => !!state.friends?.[id];
 
+// Der Begleiter aus dem Spielstand, wenn er ein Freund mit Gabe ist, sonst null. Ein alter oder
+// kaputter Spielstand kann einen nennen, der kein Freund ist: Der läuft nicht mit und öffnet nichts.
+export function companionOf(state) {
+  const id = state?.companion ?? null;
+  return id && isFriend(state, id) && giftOf(id) ? id : null;
+}
+
+// Die Gabe des Begleiters (companionOf), sonst null.
+export const companionGift = state => giftOf(companionOf(state));
+
 export function friendList(state) {
   return FRIENDABLE.filter(id => isFriend(state, id)).map(id => ({
     species: id,

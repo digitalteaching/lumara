@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { newGameState } from '../js/state.js';
-import { FRIENDABLE, GIFTS, giftOf, befriendOffer, makeFriend, setCompanion, friendList, giftName, giftText } from '../js/friends/friends.js';
+import { FRIENDABLE, GIFTS, WATER_FRIENDS, giftOf, befriendOffer, makeFriend, setCompanion, friendList, giftName, giftText, companionOf, companionGift } from '../js/friends/friends.js';
 import { BOOK_SLOTS } from '../js/data/book.js';
 import { setLanguage, LANGUAGES } from '../js/i18n/i18n.js';
 
@@ -61,6 +61,25 @@ test('Begleiter: nur Freunde, Doppeltipp ändert nichts', () => {
   assert.equal(setCompanion(s, 'gischtling'), false);
   assert.equal(setCompanion(s, null), true);
   assert.equal(setCompanion(s, null), false);
+});
+
+test('Begleiter aus dem Spielstand: nur ein Freund zählt, dann auch seine Gabe', () => {
+  const s = s0();
+  assert.deepEqual([companionOf(s), companionGift(s)], [null, null]);
+  assert.deepEqual([companionOf(null), companionGift(undefined)], [null, null]);
+  makeFriend(s, 'eisflosse', false);
+  setCompanion(s, 'eisflosse');
+  assert.deepEqual([companionOf(s), companionGift(s)], ['eisflosse', 'dive']);
+  s.companion = 'kometwiesel'; // kein Freund, etwa ein kaputter Spielstand
+  assert.deepEqual([companionOf(s), companionGift(s)], [null, null]);
+});
+
+// Wasserwesen bleiben im Garten am Teich (js/world/garden.js). Nur befreundbare Arten gehören dazu,
+// auch die Wasserwesen der Verstecke (Flaschling, Eisflosse).
+test('Wasserwesen im Garten: nur befreundbare Arten, mit Flaschling und Eisflosse', () => {
+  for (const id of WATER_FRIENDS) assert.ok(FRIENDABLE.includes(id), id);
+  assert.ok(WATER_FRIENDS.has('flaschling') && WATER_FRIENDS.has('eisflosse'));
+  assert.deepEqual([...WATER_FRIENDS].sort(), ['eisflosse', 'flaschling', 'frostrobbe', 'gischtling', 'glimmqualle', 'haeuschel', 'kristallotter', 'nebelunke', 'perlkrabbe']);
 });
 
 test('Freundesliste in Buchreihenfolge mit Gabe und Begleiter', () => {

@@ -2,8 +2,6 @@
 // Natürliche Flächen werden aus festem Rauschen erzeugt (immer gleich), feste Dinge sind von Hand gezeichnet.
 // Zeichen: siehe gfx/palette.js. '.' ist durchsichtig.
 
-import { TASKS } from '../../data/tasks.js'; // nur für Reihenfolge und Lage auf Zeichenstein, Wandzeichnung und Sterntafel
-
 function noise(x, y, seed) {
   let h = (Math.imul(x + 1, 374761393) + Math.imul(y + 1, 668265263) + Math.imul(seed + 7, 2246822519)) | 0;
   h = Math.imul(h ^ (h >>> 13), 1274126177);
@@ -1145,6 +1143,19 @@ function windmill(frame) {
 
 // ---------- Spielaufgaben (Lumara 1.2, js/data/tasks.js) ----------
 
+// Was die Bilder aus den Aufgaben brauchen: die Reihenfolge auf dem Zeichenstein (Wald) und auf der
+// Wandzeichnung (Ruinen), Lage und Reihenfolge der Steine für die Sterntafel (Wiese). Die Quelle ist
+// js/data/tasks.js; diese Abschrift erspart den Kacheln, die Karten mitzuladen. tests/tiles.test.js
+// prüft, dass beide gleich sind.
+export const TASK_ART = {
+  runeOrder: [2, 1, 3, 0],
+  leverOrder: [2, 0, 1],
+  starTablet: {
+    order: [1, 3, 2, 0],
+    plates: [{ x: 14, y: 26 }, { x: 17, y: 24 }, { x: 19, y: 27 }, { x: 22, y: 25 }],
+  },
+};
+
 // Ein Bild auf ein anderes legen; mit under nur auf dessen leere Pixel (es steht dann dahinter).
 function layer(rows, sprite, ox, oy, { under = false } = {}) {
   const g = rows.map(r => [...r]);
@@ -1480,9 +1491,9 @@ function wallSketch(order) {
 
 // ---------- Nordlichtsee: die Hasenfamilie ----------
 
-// Am Waldrand kuscheln sich eine Häsin und zwei Kleine in eine Schneemulde (16 × 16). Vor ihnen
-// glitzert, was sie gefunden haben (gelöst: verschenkt).
-function rabbits(found) {
+// Am Waldrand kuscheln sich eine Häsin und zwei Kleine in eine Schneemulde (16 × 16). withGift: Vor
+// ihnen glitzert, was sie gefunden haben (ungelöst); gelöst haben sie es verschenkt.
+function rabbits({ withGift }) {
   const g = grid(16, 16, '.');
   for (let y = 9; y < 16; y++) for (let x = 0; x < 16; x++) {
     const dx = (x - 7.5) / 8, dy = (y - 15.5) / 6.5;
@@ -1499,7 +1510,7 @@ function rabbits(found) {
   put(MOTHER, 0, 3);
   put(KIT, 8, 8);
   put(KIT, 11, 9);
-  if (found) for (const [x, y, ch] of [[9, 15, 'H'], [8, 15, 'h'], [10, 15, 'h'], [9, 14, 'h']]) g[y][x] = ch;
+  if (withGift) for (const [x, y, ch] of [[9, 15, 'H'], [8, 15, 'h'], [10, 15, 'h'], [9, 14, 'h']]) g[y][x] = ch;
   return toRows(g);
 }
 
@@ -1583,7 +1594,7 @@ const TASK_PROPS = {
     [`runetree${i}Lit`, runeTree(i, { lit: true })],
     [`runetree${i}Open`, runeTree(i, { lit: true, open: true })],
   ])),
-  runestone: runeStone(TASKS[2].order),
+  runestone: runeStone(TASK_ART.runeOrder),
   wispstump: wispStump,
   ...Object.fromEntries([0, 1, 2, 3].map(d => [`glassstatue${d}`, glassStatue(d)])),
   ...Object.fromEntries([0, 1, 2, 3].flatMap(d => [
@@ -1598,10 +1609,10 @@ const TASK_PROPS = {
     [`lever${i}Lit`, lever(i, true)],
     [`lever${i}Open`, lever(i, true)], // der letzte Hebel: gezogen, das Kanalstück ist leer
   ])),
-  wallsketch: wallSketch(TASKS[6].order),
-  rabbits: rabbits(true),
-  rabbitsDone: rabbits(false),
-  startablet: starTablet(TASKS[8]),
+  wallsketch: wallSketch(TASK_ART.leverOrder),
+  rabbits: rabbits({ withGift: true }),
+  rabbitsDone: rabbits({ withGift: false }),
+  startablet: starTablet(TASK_ART.starTablet),
   ...Object.fromEntries([0, 1, 2, 3].flatMap(i => [[`starplate${i}`, starPlate(i, false)], [`starplate${i}Lit`, starPlate(i, true)]])),
 };
 

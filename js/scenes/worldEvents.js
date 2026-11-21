@@ -42,6 +42,7 @@ import { questText } from '../data/quests.js';
 import { maxEnergy, stageForLevel } from '../duel/progress.js';
 import { say, choose } from '../ui/dialog.js';
 import { el, clear } from '../ui/dom.js';
+import { createWhisper } from '../ui/toast.js';
 import { openMenu } from '../menu/menu.js';
 import { openBackpack, bagIcon } from '../menu/backpack.js';
 import { canOpenBackpack } from '../items/backpackView.js';
@@ -236,15 +237,9 @@ export function createGameWorld(game) {
   const whispers = def.objects.filter(o => o.type === 'whisper');
   const whisperCount = new Map();
   let nearWhisper = null;
-  let whisperNode = null;
-  let whisperTimer = null;
-  function showWhisper(text) {
-    whisperNode?.remove();
-    clearTimeout(whisperTimer);
-    whisperNode = el('div', { class: 'whisper passive', 'aria-live': 'polite' }, text);
-    game.ui.append(whisperNode);
-    whisperTimer = setTimeout(() => whisperNode?.remove(), 3000);
-  }
+  // Eine Zeile für alle leisen Sätze dieser Welt; die Spielaufgaben nutzen sie mit (world.whisper).
+  const showWhisper = createWhisper(game);
+  world.whisper = showWhisper;
   world.onStepped.unshift((x, y) => {
     const tree = whispers.find(o => Math.abs(o.x - x) + Math.abs(o.y - y) === 1) ?? null;
     if (tree && tree !== nearWhisper) {
@@ -905,7 +900,7 @@ export function createGameWorld(game) {
     hud.remove();
     bagBtn.remove();
     menuBtn.remove();
-    whisperNode?.remove();
+    showWhisper.clear();
     offMenu?.();
     offMenu = null;
     offBag?.();
@@ -922,8 +917,9 @@ export function createGameWorld(game) {
   // laufen über die Wege dieser Welt.
   addHideouts(world, game, { wildDuel, levelUps });
 
-  // Spielaufgaben (Lumara 1.2, Spec 6.6): Ihr A-Handler kommt an den Anfang, das Folgen des
-  // Irrlichts hängt sich hinten an onStepped.
+  // Spielaufgaben (Lumara 1.2, Spec 6.6): Ihr A-Handler kommt an den Anfang. Die Steine zum Betreten
+  // (Sternenwiese) und das Folgen (Irrlicht im Moor, Pfotenspuren am See) hängen sich hinten an
+  // onStepped; ihre leisen Sätze nutzen world.whisper.
   addTasks(world, game);
 
   // Im Garten am Leuchtturm wohnen die Freunde, die nicht mitlaufen (Lumara 1.2). Vor dem Begleiter,

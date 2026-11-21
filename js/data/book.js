@@ -17,7 +17,6 @@ export const BOOK_SLOTS = [
   ...CAVE_SPECIES,
   ...BOSS_SPECIES,
   ...HIDDEN_SPECIES,
-  ...Array(Math.max(0, BOOK_SIZE - 24 - SECRET_SPECIES.length - CAVE_SPECIES.length - BOSS_SPECIES.length - HIDDEN_SPECIES.length)).fill(null),
 ];
 const IN_BOOK = new Set(BOOK_SLOTS.filter(Boolean));
 

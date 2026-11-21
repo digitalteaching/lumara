@@ -15,6 +15,7 @@ import { openSheet } from '../ui/sheet.js';
 import { say } from '../ui/dialog.js';
 import { createRng } from '../core/rng.js';
 import { t } from '../i18n/i18n.js';
+import { SCREEN_W, SCREEN_H } from './world.js';
 
 const T = 16;
 const HOP_MS = 130; // wie beim Begleiter
@@ -82,7 +83,7 @@ export function addGarden(world, game) {
       z: () => pixelY(f) / T,
       draw(ctx, cam) {
         const sx = pixelX(f) - cam.x, sy = pixelY(f) - cam.y - 2;
-        if (sx < -T || sy < -T || sx > 240 || sy > 160) return;
+        if (sx < -T || sy < -T || sx > SCREEN_W || sy > SCREEN_H) return;
         // Ein Kleinbild, das sich nicht bauen lässt, fehlt nur (js/gfx/miniImages.js warnt einmal).
         const images = miniImages(f.species, f.shiny);
         if (!images) return;

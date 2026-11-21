@@ -17,8 +17,10 @@ import { t } from '../i18n/i18n.js';
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 
 const T = 16;
-const SCREEN_W = 240;
-const SCREEN_H = 160;
+// Bildschirm in Spielpixeln. Auch die Teile der Welt (Garten, Verstecke, Spielaufgaben) rechnen damit,
+// etwa um nur zu zeichnen, was zu sehen ist.
+export const SCREEN_W = CONFIG.screen.width;
+export const SCREEN_H = CONFIG.screen.height;
 
 function tileCanvas(kind, frame = 0) {
   const frames = TILES[kind];

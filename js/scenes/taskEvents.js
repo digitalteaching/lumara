@@ -30,19 +30,19 @@ import { act, createRun, foundCount, isFound, orderLit, solveTask, taskOn, taskS
 import { treasureName } from '../items/treasures.js';
 import { sound, jingle } from '../audio/bus.js';
 import { say } from '../ui/dialog.js';
-import { el } from '../ui/dom.js';
 import { t, tl } from '../i18n/i18n.js';
 import { PROPS } from '../gfx/art/tiles.js';
 import { spriteFrom } from '../gfx/canvasSprites.js';
 import { drawChamber, drawPaw, drawPlateGlow, drawWisp } from '../gfx/taskDraw.js';
 import { cellKey } from '../world/map.js';
+import { createWhisper } from '../ui/toast.js';
+import { SCREEN_W, SCREEN_H } from './world.js';
 
 const T = 16;
 const FLY_MS = 700; // so lange fliegt das Irrlicht zur nächsten Station
-const WHISPER_MS = 3000;
 const SPIN_MS = 300; // ein Bild des Windrads, das sich dreht (wie die Windräder zum Anschauen)
 const STUB = 3; // so viele Spuren sieht man am Anfang, bevor man ihnen folgt
-const onScreen = (x, y, w = T, h = T) => x > -w && y > -h && x < 240 && y < 160;
+const onScreen = (x, y, w = T, h = T) => x > -w && y > -h && x < SCREEN_W && y < SCREEN_H;
 
 // Das Bild mit einer anderen Zahl am Ende: gullnest0 → gullnest3, glassstatue3 → glassstatue1.
 const numbered = (prop, n) => `${prop.replace(/\d+$/, '')}${n}`;
@@ -65,21 +65,13 @@ export function addTasks(world, game, io = {}) {
     return lines('intro');
   };
 
-  // Leise Sätze (wie das Flüstern der Bäume): drei Sekunden, ohne Sperre.
-  let node = null;
-  let timer = null;
-  const whisper = io.whisper ?? (text => {
-    if (!game.ui) return;
-    node?.remove();
-    clearTimeout(timer);
-    node = el('div', { class: 'whisper passive', 'aria-live': 'polite' }, text);
-    game.ui.append(node);
-    timer = setTimeout(() => node?.remove(), WHISPER_MS);
-  });
+  // Leise Sätze wie das Flüstern der Bäume (js/ui/toast.js createWhisper): in der Spielwelt dieselbe
+  // Zeile wie die Bäume (world.whisper aus js/scenes/worldEvents.js), damit sich nie zwei überdecken.
+  const whisper = io.whisper ?? world.whisper ?? createWhisper(game);
   const baseExit = world.exit;
   world.exit = () => {
     baseExit?.();
-    node?.remove();
+    whisper.clear?.();
   };
 
   // ---------- Bilder ----------

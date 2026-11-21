@@ -91,3 +91,13 @@ test('Glanzform unterscheidet sich in mindestens 20 % der Pixel', () => {
     assert.ok(changed / filled >= 0.2, `${id}: nur ${Math.round((100 * changed) / filled)} % anders`);
   }
 });
+
+// Im Duell steht jedes Wesen in einem Feld von 32 × 32: Die Wesen der Verstecke füllen es so wie die
+// übrigen (Spiegelechse und Kometwiesel waren mit 30 % zu klein).
+test('Wesen der Verstecke füllen ihr Bild wie die übrigen Wesen', () => {
+  for (const id of HIDDEN_SPECIES) {
+    const rows = CREATURE_ART[id][1];
+    const filled = rows.join('').replace(/\./g, '').length / 1024;
+    assert.ok(filled >= 0.37, `${id}: ${Math.round(filled * 100)} %`);
+  }
+});

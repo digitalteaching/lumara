@@ -829,6 +829,28 @@ test('In der Welt: Steine der Sternenwiese: ein falscher erster ist kein Fehler,
   assert.equal(done.w.onStepped.length, 0, 'gelöst: Steine ohne Handler');
 });
 
+// Die Aufgaben flüstern in derselben Zeile wie die Bäume (world.whisper aus worldEvents), damit sich
+// zwei leise Sätze nie überdecken. Beim Verlassen der Welt verschwindet der Satz.
+test('In der Welt: Leise Sätze der Aufgaben gehen in die gemeinsame Zeile der Welt', () => {
+  const def = MAPS.wiese;
+  const state = s0();
+  state.position = { map: 'wiese', ...def.spawn };
+  const game = { state, reducedMotion: true, mode: 'walk', save: () => {}, input: { dir: () => null, pressed: () => false } };
+  const w = createWorldScene(game, def, {});
+  const line = [];
+  let cleared = 0;
+  w.whisper = Object.assign(text => line.push(text), { clear: () => cleared++ });
+  addTasks(w, game, { say: async () => {} });
+  const task = TASKS[8];
+  const [a, , c] = task.order;
+  w.onStepped.at(-1)(task.plates[c].x, task.plates[c].y);
+  w.onStepped.at(-1)(task.plates[a].x, task.plates[a].y);
+  const list = task.order.map(i => t(`task.8.symbol.${i}`)).join(', ');
+  assert.deepEqual(line, [t('task.8.start', { list }), `${t(`task.8.part.${a}`)} ${t('task.8.progress', { n: 1, of: 4 })}`]);
+  w.exit();
+  assert.equal(cleared, 1);
+});
+
 test('In der Welt: Pfotenspuren im Schnee: am Anfang leise, nach der ersten Station ein Tipp, am Ende die Hasen', async () => {
   const { w, def, said, hushed, state } = world('see');
   const task = TASKS[7], st = task.stations;

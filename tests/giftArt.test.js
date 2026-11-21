@@ -31,3 +31,12 @@ test('Versteckbilder und Gabenzeichen haben je einen eigenen Umriss', () => {
     for (const a of ids) for (const b of ids) if (a < b) assert.notEqual(shape(art[a]), shape(art[b]), `${a} wie ${b}`);
   }
 });
+
+// Das Aufwind-Zeichen liegt auf Wolken, Klippen und Felsnadeln (auch dunkle Nachtklippen). Mit nur
+// weißen Strichen verschwände es auf den weißen Wolken: Es braucht helle und dunkle Pixel.
+test('Aufwind-Versteck: helle und dunkle Striche, damit es auf Wolken und Fels sichtbar bleibt', () => {
+  const px = HIDEOUT_ART.updraft.join('');
+  const count = ch => [...px].filter(c => c === ch).length;
+  assert.ok(count('w') >= 8, 'helle Oberkanten');
+  assert.ok(count('d') >= 8, 'dunkle Schatten');
+});
