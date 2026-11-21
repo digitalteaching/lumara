@@ -522,9 +522,9 @@ export const FR = {
   'gift.sniff.name': 'Bon nez',
   'gift.sniff.text': 'Montre chaque cachette proche et quel don il faut.',
 
-  'menu.friends': 'Amies',
-  'friends.none': 'Pas encore d’amie. Bats une créature sauvage, et tu pourras devenir son amie.',
-  'friends.count': 'Amies : {n} sur {max}',
+  'menu.friends': 'Amis',
+  'friends.none': 'Pas encore d’ami. Bats une créature sauvage, et tu pourras devenir ami avec elle.',
+  'friends.count': 'Amis : {n} sur {max}',
   'friends.gift': 'Don : {gift}',
   'friends.withYou': 'est avec toi',
   'friends.isWithYou': '{name} est avec toi en ce moment.',
