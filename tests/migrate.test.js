@@ -18,25 +18,29 @@ import { SPIELSTAND_V7 } from './fixtures/spielstand-v7.js';
 // Format 8: Musik und Effekte, ältere Stände bekommen beides eingeschaltet.
 const toV8 = s => ({ ...s, version: 8, settings: { ...s.settings, music: true, sfx: true } });
 import { SPIELSTAND_V8 } from './fixtures/spielstand-v8.js';
-const v7 = s => toV8({ ...s, version: 7, packs: Object.fromEntries(Object.entries(s.packs).map(([id, p]) => [id, { ...p, tiers: {} }])) });
+// Format 9: Schätze und Album, ältere Stände bekommen beides leer.
+const toV9 = s => ({ ...toV8(s), version: 9, treasures: {}, album: [] });
+import { SPIELSTAND_V9 } from './fixtures/spielstand-v9.js';
+const v7 = s => toV9({ ...s, version: 7, packs: Object.fromEntries(Object.entries(s.packs).map(([id, p]) => [id, { ...p, tiers: {} }])) });
 import { SPIELSTAND_V6 } from './fixtures/spielstand-v6.js';
 import { TRAINER_CREATURES } from '../js/data/species.js';
 const bookOf = stones => Object.fromEntries(stones.map(n => [TRAINER_CREATURES[n].species, { beaten: true, shiny: false }]));
 import { foodCount } from '../js/items/bag.js';
 import { createMap } from '../js/world/map.js';
 
-test('Spielstand der Fassung 1 bleibt für immer ladbar und wird zu Format 8', () => {
+test('Spielstand der Fassung 1 bleibt für immer ladbar und wird zu Format 9', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v1.txt', import.meta.url), 'utf8'));
   assert.equal(d.ok, true);
   const m = migrateState(d.value);
   assert.equal(m.ok, true);
-  assert.equal(m.state.version, 8);
-  const { version, playMs, stones, lastStone, bag, shineActive, story, world, book, quests, keys, secrets, finale, ...rest } = m.state;
+  assert.equal(m.state.version, 9);
+  const { version, playMs, stones, lastStone, bag, shineActive, story, world, book, quests, keys, secrets, finale, treasures, album, ...rest } = m.state;
   assert.deepEqual({ quests, keys, secrets }, V5_EMPTY);
   assert.deepEqual(finale, { done: false });
+  assert.deepEqual({ treasures, album }, { treasures: {}, album: [] });
   assert.deepEqual(book, { haeuschel: { beaten: true, shiny: false } }); // Maren war besiegt
   const { version: _v, ...v1 } = SPIELSTAND_V1;
-  const { version: _w, ...v1Latest } = v7(v1);
+  const { version: _w, treasures: _t, album: _a, ...v1Latest } = v7(v1);
   assert.deepEqual(rest, v1Latest);
   assert.deepEqual(stones, [1]); // Hüterin war mit ENQ9 besiegt → Stein 1 leuchtet
   assert.equal(lastStone, null);
@@ -47,7 +51,7 @@ test('Spielstand der Fassung 1 bleibt für immer ladbar und wird zu Format 8', (
   assert.deepEqual(world, { bushes: {}, notes: {}, finds: {} });
 });
 
-test('Spielstand der Fassung 2 bleibt für immer ladbar und wird zu Format 8', () => {
+test('Spielstand der Fassung 2 bleibt für immer ladbar und wird zu Format 9', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v2.txt', import.meta.url), 'utf8'));
   assert.deepEqual(migrateState(d.value), { ok: true, state: v7({ ...SPIELSTAND_V2, version: 5, bag: { ...SPIELSTAND_V2.bag, time: 0 }, book: bookOf(SPIELSTAND_V2.stones), ...V5_EMPTY, ...V6 }) });
 });
@@ -109,7 +113,7 @@ test('Position in einer Wand oder außerhalb der Karte wird zum Startpunkt', () 
 });
 
 test('aus einer neueren Fassung oder unbrauchbar', () => {
-  assert.deepEqual(migrateState({ ...SPIELSTAND_V8, version: 9 }), { ok: false, reason: 'newer' });
+  assert.deepEqual(migrateState({ ...SPIELSTAND_V9, version: 10 }), { ok: false, reason: 'newer' });
   const bad = [
     null, 'x', {}, { version: 1 },
     { ...SPIELSTAND_V1, name: '' },
@@ -149,12 +153,26 @@ test('Spielstand der Fassung 6 bleibt für immer ladbar', () => {
 
 test('Spielstand der Fassung 7 bleibt für immer ladbar', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v7.txt', import.meta.url), 'utf8'));
-  assert.deepEqual(migrateState(d.value), { ok: true, state: toV8(SPIELSTAND_V7) });
+  assert.deepEqual(migrateState(d.value), { ok: true, state: toV9(SPIELSTAND_V7) });
 });
 
 test('Spielstand der Fassung 8 bleibt für immer ladbar', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v8.txt', import.meta.url), 'utf8'));
-  assert.deepEqual(migrateState(d.value), { ok: true, state: SPIELSTAND_V8 });
+  assert.deepEqual(migrateState(d.value), { ok: true, state: { ...SPIELSTAND_V8, version: 9, treasures: {}, album: [] } });
+});
+
+test('Spielstand der Fassung 9 bleibt für immer ladbar', () => {
+  const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v9.txt', import.meta.url), 'utf8'));
+  assert.deepEqual(migrateState(d.value), { ok: true, state: SPIELSTAND_V9 });
+});
+
+test('Format 9: kaputte Schätze und Album werden repariert', () => {
+  const m = migrateState({ ...structuredClone(SPIELSTAND_V9), treasures: { glassshell: 3, drache: 2, goldleaf: -1, sandrose: 1.5, amber: 'x' }, album: ['quatsch', 'amber', 'amber', 7] });
+  assert.deepEqual(m.state.treasures, { glassshell: 3 });
+  // Ein Schatz mit Anzahl > 0 kommt immer ins Album; Reihenfolge wie TREASURES, ohne Doppelte und Unbekannte.
+  assert.deepEqual(m.state.album, ['glassshell', 'amber']);
+  const n = migrateState({ ...structuredClone(SPIELSTAND_V9), treasures: 'x', album: null });
+  assert.deepEqual([n.state.treasures, n.state.album], [{}, []]);
 });
 
 test('Format 8: kaputte Toneinstellungen werden eingeschaltet, ein klares Aus bleibt aus', () => {

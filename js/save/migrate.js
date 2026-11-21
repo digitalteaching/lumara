@@ -16,8 +16,9 @@ import { BUCHT } from '../world/maps/bucht.js';
 import { MAPS as WORLD_MAPS } from '../world/network.js';
 import { validateName, emptyPackProgress, emptyWorld } from '../state.js';
 import { emptyBag, BAG_ITEMS } from '../items/bag.js';
+import { TREASURES, isTreasure } from '../items/treasures.js';
 
-export const CURRENT_VERSION = 8;
+export const CURRENT_VERSION = 9;
 
 const MIGRATIONS = {
   // 1 → 2 (Plan 3a): Leuchtsteine, Rucksack, Geschichte, Uhren für das Nachwachsen, gesamte Spielzeit.
@@ -44,6 +45,8 @@ const MIGRATIONS = {
   6: s => ({ ...s, version: 7 }),
   // 7 → 8 (Plan 6): Musik und Effekte ein und aus; die Reparatur schaltet beides ein, wenn nichts da ist.
   7: s => ({ ...s, version: 8 }),
+  // 8 → 9 (Lumara 1.1): Schätze im Rucksack und das Album, beides zunächst leer.
+  8: s => ({ ...s, version: 9, treasures: {}, album: [] }),
 };
 
 const MAPS = WORLD_MAPS;
@@ -204,6 +207,20 @@ function repairBook(raw) {
   return out;
 }
 
+// Nur bekannte Schätze mit ganzzahliger Anzahl über 0.
+function repairTreasures(raw) {
+  const out = {};
+  if (!isObject(raw)) return out;
+  for (const [id, n] of Object.entries(raw)) if (isTreasure(id) && isInt(n) && n > 0) out[id] = n;
+  return out;
+}
+
+// Ein Schatz im Rucksack gehört immer ins Album; Reihenfolge wie in TREASURES, ohne Doppelte und Unbekannte.
+function repairAlbum(raw, treasures) {
+  const seen = new Set(Array.isArray(raw) ? raw.filter(isTreasure) : []);
+  return TREASURES.map(x => x.id).filter(id => seen.has(id) || id in treasures);
+}
+
 const WORLD_KEY = /^[a-z]+:\d+,\d+$/;
 function repairWorld(raw) {
   const out = emptyWorld();
@@ -233,6 +250,8 @@ export function migrateState(raw) {
   const beaten = Object.values(packs).flatMap(p => p.beaten);
   const stones = repairStones([...(Array.isArray(s.stones) ? s.stones : []), ...beaten]);
 
+  const treasures = repairTreasures(s.treasures);
+
   return {
     ok: true,
     state: {
@@ -259,6 +278,8 @@ export function migrateState(raw) {
       keys: repairKeys(s.keys),
       secrets: repairSecrets(s.secrets),
       finale: { done: s.finale?.done === true },
+      treasures,
+      album: repairAlbum(s.album, treasures),
     },
   };
 }
