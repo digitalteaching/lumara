@@ -1220,7 +1220,7 @@ function gullNest(n) {
   return out;
 }
 
-// Zeichen, in die Rinde geritzt (5 × 5): 0 Raute, 1 Dreieck, 2 Kreis, 3 Viereck. Das Viereck ist
+// Zeichen, in die Rinde geritzt (5 × 5): 0 Raute, 1 Dreieck, 2 Kreis, 3 Quadrat. Das Quadrat ist
 // ausgefüllt, damit es sich auf dem kleinen Bild deutlich vom Kreis unterscheidet.
 const RUNES = [
   ['..X..', '.X.X.', 'X...X', '.X.X.', '..X..'],
@@ -1232,12 +1232,15 @@ const rune = (i, ch) => RUNES[i].map(r => r.replace(/X/g, ch));
 
 // Ein Zeichenbaum im Flüsterwald (16 × 32): ein alter Baum ohne Gesicht, im Stamm ein Zeichen. Es
 // leuchtet (lit), wenn der Baum in der Reihenfolge dran war; open: darunter das offene Astloch.
+// Seine Krone ist herbstlich golden (dunkel, Grundton, hell), damit man ihn nicht mit den grünen
+// Flüsterbäumen verwechselt.
+const RUNE_CROWN = ['r', 'h', 'H'];
 function runeTree(i, { lit = false, open = false } = {}) {
   const g = grid(16, 32, '.');
   for (let y = 0; y < 18; y++) for (let x = 0; x < 16; x++) {
     const dx = (x - 7.5) / 8, dy = (y - 8.5) / 9;
     const d = dx * dx + dy * dy;
-    if (d <= 1) g[y][x] = d > 0.8 ? 'k' : noise(x, y, 43 + i) < 0.3 ? 'F' : noise(x, y, 44) < 0.25 ? 'g' : 'l';
+    if (d <= 1) g[y][x] = d > 0.8 ? 'k' : noise(x, y, 43 + i) < 0.3 ? RUNE_CROWN[0] : noise(x, y, 44) < 0.25 ? RUNE_CROWN[2] : RUNE_CROWN[1];
   }
   for (let y = 15; y < 31; y++) for (let x = 4; x < 12; x++) g[y][x] = x === 4 || x === 11 ? 'k' : (x + y) % 5 === 0 && (y < 18 || y > 24) ? 'b' : 'o';
   for (const [x, y] of [[3, 29], [2, 30], [12, 29], [13, 30], [4, 31], [5, 31], [10, 31], [11, 31]]) g[y][x] = 'k';
