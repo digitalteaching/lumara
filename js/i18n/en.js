@@ -394,6 +394,7 @@ export const EN = {
   'book.unknown': '? Not seen yet',
   'book.seen': '◐ Seen',
   'book.beaten': '● Beaten',
+  'book.friend': '♥ Friend',
   'book.shinySeen': '✦ Shiny form seen',
 
   // Glanzform
@@ -416,7 +417,7 @@ export const EN = {
 
   // Wesen-Buch im Menü
   'menu.book': 'Creature Book',
-  'book.counts': 'Seen: {seen} of {total} · Beaten: {beaten}',
+  'book.counts': 'Seen: {seen} of {total} · Beaten: {beaten} · Friends: {friends}',
   'book.no': 'No. {n}',
   'book.unknownAria': 'No. {n}: unknown',
   'book.entryTitle': 'No. {n} · {name}',
@@ -436,12 +437,15 @@ export const EN = {
   'bag.unknown': 'Not found yet',
   'bag.noKeys': 'Nothing yet',
   'bag.inDuel': 'Works in a duel',
+  'bag.forFriends': 'You give it when making friends',
   'bag.foundIn': 'Found in: {place}',
   'bag.pick': 'Tap a thing to learn more about it.',
   'item.berry.name': 'Berry',
   'item.berry.text': 'Gives {n} energy.',
   'item.starfruit.name': 'Starfruit',
   'item.starfruit.text': 'Fills up all the energy.',
+  'item.treat.name': 'Treat',
+  'item.treat.text': 'A creature trusts you faster: one spot in the trust ring is filled at once.',
   'item.farsight.name': 'Farsight stone',
   'item.farsight.text': 'In a duel: shows a hint.',
   'item.shine.name': 'Shine stone',

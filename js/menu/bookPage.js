@@ -30,10 +30,11 @@ export function bookPage(game) {
         el('span', { class: 'book-no' }, t('book.no', { n: e.number })),
         creatureCanvas(e.id, 1, { look: e.status === 'beaten' ? 'color' : 'silhouette', scale: 1 }),
         el('span', { class: 'book-name' }, e.name),
+        e.friend ? el('span', { class: 'book-heart', 'aria-hidden': 'true' }, '♥') : null,
         e.shiny ? el('span', { class: 'book-star', 'aria-hidden': 'true' }, '✦') : null);
       });
       appendAll(body,
-        el('p', { class: 'small' }, t('book.counts', { seen: v.seen, total: v.total, beaten: v.beaten })),
+        el('p', { class: 'small' }, t('book.counts', { seen: v.seen, total: v.total, beaten: v.beaten, friends: v.friends })),
         el('div', { class: 'book-grid' }, cells));
     },
   };

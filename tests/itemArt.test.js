@@ -5,7 +5,7 @@ import { parseSprite } from '../js/gfx/sprites.js';
 import { KEY_ITEMS } from '../js/items/keys.js';
 import { TREASURES } from '../js/items/treasures.js';
 
-const IDS = ['berry', 'starfruit', 'farsight', 'shine', 'time', ...KEY_ITEMS, ...TREASURES.map(x => x.id)];
+const IDS = ['berry', 'starfruit', 'treat', 'farsight', 'shine', 'time', ...KEY_ITEMS, ...TREASURES.map(x => x.id)];
 
 test('Jeder Gegenstand, Schlüssel und Schatz hat ein Bild in 16 × 16', () => {
   for (const id of IDS) {
@@ -40,7 +40,7 @@ test('Rahmen: Kanten wiederholen sich nahtlos, die Mitte hat eine Farbe', () => 
 });
 
 test('Kein Bild ohne Gegenstand', () => {
-  assert.equal(Object.keys(ITEM_ART).length, 35);
+  assert.equal(Object.keys(ITEM_ART).length, 36);
 });
 
 // Unbekannte Schätze kann der Rucksack als Schattenriss zeigen: Jeder hat seinen eigenen.

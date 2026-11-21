@@ -683,6 +683,7 @@ body:not([data-mode="walk"]) .menu-btn, body:not([data-mode="walk"]) .bag-btn { 
 .book-no { font-size: 0.75em; color: var(--frame-dark); }
 .book-name { font-weight: 700; font-size: 0.8em; text-align: center; overflow-wrap: anywhere; hyphens: manual; }
 .book-star { position: absolute; top: 2px; right: 4px; color: #b07a1a; font-weight: 800; }
+.book-heart { position: absolute; top: 2px; left: 4px; color: #b8412f; font-weight: 800; }
 .book-pictures { display: flex; gap: 16px; justify-content: center; align-items: flex-end; }
 .book-pictures figure { margin: 0; text-align: center; }
 .book-pictures canvas { image-rendering: pixelated; image-rendering: crisp-edges; }

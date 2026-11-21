@@ -396,6 +396,7 @@ export const FR = {
   'book.unknown': '? Pas encore vue',
   'book.seen': '◐ Vue',
   'book.beaten': '● Battue',
+  'book.friend': '♥ Amie',
   'book.shinySeen': '✦ Forme brillante vue',
 
   // Glanzform
@@ -418,7 +419,7 @@ export const FR = {
 
   // Wesen-Buch im Menü
   'menu.book': 'Livre des créatures',
-  'book.counts': 'Vues : {seen} sur {total} · Battues : {beaten}',
+  'book.counts': 'Vues : {seen} sur {total} · Battues : {beaten} · Amies : {friends}',
   'book.no': 'N° {n}',
   'book.unknownAria': 'N° {n} : inconnue',
   'book.entryTitle': 'N° {n} · {name}',
@@ -438,12 +439,15 @@ export const FR = {
   'bag.unknown': 'Pas encore trouvé',
   'bag.noKeys': 'Rien pour l’instant',
   'bag.inDuel': 'Agit en duel',
+  'bag.forFriends': 'Tu la donnes pour te faire un ami',
   'bag.foundIn': 'Trouvé : {place}',
   'bag.pick': 'Touche un objet pour en savoir plus.',
   'item.berry.name': 'Baie',
   'item.berry.text': 'Donne {n} énergie.',
   'item.starfruit.name': 'Fruit-étoile',
   'item.starfruit.text': 'Remplit toute l’énergie.',
+  'item.treat.name': 'Friandise',
+  'item.treat.text': 'Une créature te fait confiance plus vite : une case du cercle de confiance se remplit tout de suite.',
   'item.farsight.name': 'Pierre d’indice',
   'item.farsight.text': 'En duel : montre un indice.',
   'item.shine.name': 'Pierre brillante',

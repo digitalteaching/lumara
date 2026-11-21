@@ -11,7 +11,7 @@ import { maxEnergy } from '../duel/progress.js';
 
 export const POCKETS = ['food', 'stones', 'treasures', 'keys'];
 
-const FOOD_ITEMS = ['berry', 'starfruit'];
+const FOOD_ITEMS = ['berry', 'starfruit', 'treat'];
 const STONE_ACTIONS = { farsight: 'duel', shine: 'shine', time: 'duel' };
 
 const item = (state, id, action, disabled) => ({ id, kind: 'item', count: state.bag[id] ?? 0, known: true, action, disabled });
@@ -22,7 +22,9 @@ export function backpackView(state) {
   const album = state.album ?? [];
   const treasures = state.treasures ?? {};
 
-  const food = FOOD_ITEMS.map(id => item(state, id, 'feed', !(state.bag[id] > 0)));
+  const food = FOOD_ITEMS.map(id => id === 'treat'
+    ? item(state, id, 'befriend', false)
+    : item(state, id, 'feed', !(state.bag[id] > 0)));
   const stones = Object.entries(STONE_ACTIONS).map(([id, action]) =>
     item(state, id, action, id === 'shine' && (shineActive || !(state.bag[id] > 0))));
   const treasureItems = TREASURES.map(({ id }) => {

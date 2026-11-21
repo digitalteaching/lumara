@@ -47,6 +47,26 @@ const starfruit = rows(`
   .kkk........kkk.
 `);
 
+// Leckerli: ein kleiner Honigkeks mit Herz
+const treat = rows(`
+  ................
+  ................
+  ....kkkkkkkk....
+  ..kkHHHHhhhhkk..
+  .kHHYYYYYYhhhrk.
+  .kHYYYYYYYYYhrk.
+  kHYYYeeYYeeYYhrk
+  kHYYeCCeeCCeYhrk
+  kHYYeCCCCCCeYhrk
+  kHYYYeCCCCeYYhrk
+  .kHYYYeCCeYYhrk.
+  .kHYYYYeeYYYhrk.
+  .kyhYYYYYYYhrrk.
+  ..kkyhhhhhhrkk..
+  ....kkkkkkkk....
+  ................
+`);
+
 // Die Steine sind Kiesel mit einem Zeichen. Weitblick: ein Auge
 const farsight = rows(`
   ................
@@ -698,7 +718,7 @@ const cometshard = rows(`
 `);
 
 export const ITEM_ART = {
-  berry, starfruit, farsight, shine, time,
+  berry, starfruit, treat, farsight, shine, time,
   foodbag, lantern, hook, nutshell, skates, starmap,
   glassshell, gullfeather, amber,
   acorncap, goldleaf, whispercone,

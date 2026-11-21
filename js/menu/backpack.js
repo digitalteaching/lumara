@@ -159,6 +159,7 @@ export function openBackpack(game) {
         return el('button', { class: 'btn primary bp-act', type: 'button', disabled: entry.disabled, dataset: { focus: 'act' }, onclick: () => shine() }, t('bag.use'));
       }
       if (entry.action === 'duel') return el('p', { class: 'bp-act bp-in-duel' }, t('bag.inDuel'));
+      if (entry.action === 'befriend') return el('p', { class: 'bp-act bp-in-duel' }, t('bag.forFriends'));
       return null;
     }
 

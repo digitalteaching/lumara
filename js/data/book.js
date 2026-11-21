@@ -31,6 +31,7 @@ export function recordSighting(state, speciesId, { beaten = false, shiny = false
 
 export function bookView(state) {
   const book = state.book ?? {};
+  const friends = state.friends ?? {};
   const entries = BOOK_SLOTS.map((id, i) => {
     const e = id ? book[id] : null;
     const status = !e ? 'unknown' : e.beaten ? 'beaten' : 'seen';
@@ -42,6 +43,7 @@ export function bookView(state) {
       id,
       status,
       shiny: !!e?.shiny,
+      friend: !!(id && friends[id]),
       name: text ? text.names[0] : null,
       place: place ? areaName(place) : null,
       description: e?.beaten ? text.description : null,
@@ -51,12 +53,14 @@ export function bookView(state) {
     total: BOOK_SIZE,
     seen: entries.filter(x => x.status !== 'unknown').length,
     beaten: entries.filter(x => x.status === 'beaten').length,
+    friends: entries.filter(x => x.friend).length,
     entries,
   };
 }
 
-export function bookLabels({ status, shiny }) {
+export function bookLabels({ status, shiny, friend }) {
   const out = [t(`book.${status}`)];
+  if (friend) out.push(t('book.friend'));
   if (shiny) out.push(t('book.shinySeen'));
   return out;
 }

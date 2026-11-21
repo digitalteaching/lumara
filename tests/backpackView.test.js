@@ -13,8 +13,9 @@ test('Neues Spiel: vier Fächer, Futter leer und gesperrt, 0 von 24 Schätzen, k
   assert.deepEqual(v.pockets.map(p => p.id), POCKETS);
   assert.deepEqual(POCKETS, ['food', 'stones', 'treasures', 'keys']);
   const food = pocket(v, 'food');
-  assert.deepEqual(food.items.map(e => e.id), ['berry', 'starfruit']);
-  assert.ok(food.items.every(e => e.count === 0 && e.disabled && e.action === 'feed'));
+  assert.deepEqual(food.items.map(e => e.id), ['berry', 'starfruit', 'treat']);
+  assert.ok(food.items.filter(e => e.action === 'feed').every(e => e.count === 0 && e.disabled));
+  assert.deepEqual(food.items.find(e => e.id === 'treat'), { id: 'treat', kind: 'item', count: 0, known: true, action: 'befriend', disabled: false });
   const tr = pocket(v, 'treasures');
   assert.equal(tr.items.length, 24);
   assert.equal(tr.found, 0);
@@ -82,4 +83,18 @@ test('Rucksack öffnet nicht während einer Überblendung', () => {
   assert.equal(canOpenBackpack({ mode: 'walk', locked: false, fading: true }), false);
   assert.equal(canOpenBackpack({ mode: 'walk', locked: false, fading: false }), true);
   assert.equal(canOpenBackpack({ mode: 'walk', locked: true, fading: true }), false);
+});
+
+test('Leckerli im Futterfach, ohne Futterplatz', () => {
+  const s = fresh('nixi');
+  s.bag.berry = 10;
+  s.bag.treat = 3;
+  const v = backpackView(s);
+  const food = pocket(v, 'food');
+  assert.deepEqual(food.items.map(e => e.id), ['berry', 'starfruit', 'treat']);
+  const treat = food.items.find(e => e.id === 'treat');
+  assert.equal(treat.count, 3);
+  assert.equal(treat.action, 'befriend');
+  assert.equal(treat.disabled, false);
+  assert.equal(v.food.n, 10);
 });

@@ -394,6 +394,7 @@ export const ES = {
   'book.unknown': '? Todavía sin ver',
   'book.seen': '◐ Vista',
   'book.beaten': '● Vencida',
+  'book.friend': '♥ Amiga',
   'book.shinySeen': '✦ Forma brillante vista',
 
   // Glanzform
@@ -416,7 +417,7 @@ export const ES = {
 
   // Wesen-Buch im Menü
   'menu.book': 'Libro de criaturas',
-  'book.counts': 'Vistas: {seen} de {total} · Vencidas: {beaten}',
+  'book.counts': 'Vistas: {seen} de {total} · Vencidas: {beaten} · Amigas: {friends}',
   'book.no': 'N.º {n}',
   'book.unknownAria': 'N.º {n}: desconocida',
   'book.entryTitle': 'N.º {n} · {name}',
@@ -436,12 +437,15 @@ export const ES = {
   'bag.unknown': 'Aún sin encontrar',
   'bag.noKeys': 'Todavía nada',
   'bag.inDuel': 'Actúa en el duelo',
+  'bag.forFriends': 'La das al hacerte amigo',
   'bag.foundIn': 'Se encuentra en: {place}',
   'bag.pick': 'Toca un objeto para saber más.',
   'item.berry.name': 'Baya',
   'item.berry.text': 'Da {n} de energía.',
   'item.starfruit.name': 'Fruta estrella',
   'item.starfruit.text': 'Llena toda la energía.',
+  'item.treat.name': 'Golosina',
+  'item.treat.text': 'Una criatura confía más rápido: una casilla del anillo de confianza se llena al instante.',
   'item.farsight.name': 'Piedra de pista',
   'item.farsight.text': 'En un duelo: te da una pista.',
   'item.shine.name': 'Piedra de brillo',

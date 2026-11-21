@@ -31,10 +31,10 @@ test('Ansicht: Zähler, Zustand, und Name, Fundort, Beschreibung erst, wenn man 
   const s = { ...newGameState({ name: 'A', species: 'nixi', nickname: null }), book: { gischtling: { beaten: true, shiny: false }, rindenwicht: { beaten: false, shiny: true } } };
   const v = bookView(s);
   assert.deepEqual([v.total, v.seen, v.beaten], [33, 2, 1]);
-  assert.deepEqual(v.entries[0], { number: 1, id: 'gischtling', status: 'beaten', shiny: false, name: 'Gischtling', place: 'Leuchtturmbucht', description: SPECIES.gischtling.description });
-  assert.deepEqual(v.entries[5], { number: 6, id: 'rindenwicht', status: 'seen', shiny: true, name: 'Rindenwicht', place: 'Flüsterwald', description: null });
-  assert.deepEqual(v.entries[1], { number: 2, id: 'haeuschel', status: 'unknown', shiny: false, name: null, place: null, description: null });
-  assert.deepEqual(v.entries[32], { number: 33, id: 'morrow', status: 'unknown', shiny: false, name: null, place: null, description: null });
+  assert.deepEqual(v.entries[0], { number: 1, id: 'gischtling', status: 'beaten', shiny: false, friend: false, name: 'Gischtling', place: 'Leuchtturmbucht', description: SPECIES.gischtling.description });
+  assert.deepEqual(v.entries[5], { number: 6, id: 'rindenwicht', status: 'seen', shiny: true, friend: false, name: 'Rindenwicht', place: 'Flüsterwald', description: null });
+  assert.deepEqual(v.entries[1], { number: 2, id: 'haeuschel', status: 'unknown', shiny: false, friend: false, name: null, place: null, description: null });
+  assert.deepEqual(v.entries[32], { number: 33, id: 'morrow', status: 'unknown', shiny: false, friend: false, name: null, place: null, description: null });
   setLanguage('en');
   try {
     assert.deepEqual([bookView(s).entries[0].name, bookView(s).entries[0].place], ['Sprayling', 'Lighthouse Bay']);
@@ -63,4 +63,19 @@ test('Menü in der Reihenfolge aus Design 13, mit dem Wesen-Buch', () => {
   } finally {
     setLanguage('de');
   }
+});
+
+test('Freunde bekommen ein Herz und zählen mit', () => {
+  setLanguage('de');
+  const s = newGameState({ name: 'A', species: 'nixi', nickname: null });
+  s.book = { moosling: { beaten: true, shiny: false } };
+  s.friends = { moosling: { shiny: false } };
+  const v = bookView(s);
+  const e = v.entries.find(x => x.id === 'moosling');
+  assert.equal(e.friend, true);
+  assert.equal(e.status, 'beaten');
+  assert.equal(v.friends, 1);
+  assert.equal(v.entries.filter(x => x.friend).length, 1);
+  const labels = bookLabels(e);
+  assert.equal(labels.indexOf('♥ Befreundet'), labels.indexOf('● Besiegt') + 1);
 });

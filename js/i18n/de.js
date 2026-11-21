@@ -394,6 +394,7 @@ export const DE = {
   'book.unknown': '? Noch nicht gesehen',
   'book.seen': '◐ Gesehen',
   'book.beaten': '● Besiegt',
+  'book.friend': '♥ Befreundet',
   'book.shinySeen': '✦ Glanzform gesehen',
 
   // Glanzform
@@ -416,7 +417,7 @@ export const DE = {
 
   // Wesen-Buch im Menü
   'menu.book': 'Wesen-Buch',
-  'book.counts': 'Gesehen: {seen} von {total} · Besiegt: {beaten}',
+  'book.counts': 'Gesehen: {seen} von {total} · Besiegt: {beaten} · Freunde: {friends}',
   'book.no': 'Nr. {n}',
   'book.unknownAria': 'Nr. {n}: unbekannt',
   'book.entryTitle': 'Nr. {n} · {name}',
@@ -436,12 +437,15 @@ export const DE = {
   'bag.unknown': 'Noch nicht gefunden',
   'bag.noKeys': 'Noch nichts',
   'bag.inDuel': 'Wirkt im Duell',
+  'bag.forFriends': 'Gibst du beim Befreunden',
   'bag.foundIn': 'Fundort: {place}',
   'bag.pick': 'Tippe etwas an, dann erfährst du mehr darüber.',
   'item.berry.name': 'Beere',
   'item.berry.text': 'Gibt {n} Energie.',
   'item.starfruit.name': 'Sternfrucht',
   'item.starfruit.text': 'Füllt die Energie ganz auf.',
+  'item.treat.name': 'Leckerli',
+  'item.treat.text': 'Ein Wesen fasst schneller Vertrauen: Ein Feld im Vertrauensring ist gleich voll.',
   'item.farsight.name': 'Weitblickstein',
   'item.farsight.text': 'Im Duell: zeigt einen Hinweis.',
   'item.shine.name': 'Glanzstein',
