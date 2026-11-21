@@ -227,7 +227,7 @@ export const FR = {
   'board.news.task': 'Tâche du tableau réussie ! Tu reçois : {reward}.',
   'board.news.bonus': 'Les trois tâches sont réussies ! En plus, tu reçois : {reward} et {xp} XP.',
   'wish.want': 'Mon plus grand souhait : {treasure}.',
-  'wish.ask': 'Veux-tu me donner ta trouvaille ? ({treasure})',
+  'wish.ask': 'Veux-tu me donner ceci : {treasure} ?',
   'wish.give': 'Tu donnes : {treasure}.',
   'wish.thanks.starfruit': 'Merci, merci ! Voici un fruit-étoile pour toi.',
   'wish.thanks.stone': 'C’est tellement gentil ! Prends cette pierre, elle t’aidera.',

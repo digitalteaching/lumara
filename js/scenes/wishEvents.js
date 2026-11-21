@@ -2,21 +2,25 @@
 // Aushang (js/scenes/boardEvents.js), im Rucksack nennt die Karte eines Schatzes, wer ihn sich wünscht.
 // - Sprechblase: Über dem Wunsch-Bewohner dieser Karte steht, solange sein Wunsch offen ist, eine
 //   kleine weiße Blase mit dem Schatzbild. Sie wippt langsam (unter 1 Hz), bei „Bewegung reduzieren“
-//   nie. Solange die Welt gesperrt ist (etwa im Gespräch), ist sie weg. Berührt sie die Figur (die
-//   steht über ihm), rückt sie zur Seite, weg von der Figur.
+//   nie. Solange die Welt gesperrt ist (etwa im Gespräch), ist sie weg. Berührt sie das Feld der Figur
+//   oder des Begleiters (über ihm), rückt sie zur Seite. Nach Feldern, nicht nach Pixeln: So springt
+//   sie nicht mitten in einem Schritt.
 // - A vor ihm: Er dreht sich zur Figur.
 //   - Offener Wunsch und der Schatz im Rucksack: sein eigener Satz, der Wunsch, dann [Ja] [Nein].
 //     Ja: erst tauschen und speichern, dann erzählen (Abgabe, Dank, was es gibt, Level-Zeilen).
 //     Nein: Er wartet, nichts ändert sich.
-//   - Ohne den Schatz: sein Satz, der Wunsch und wo man ihn findet.
-//   - Erfüllt: Morgen kommt ein neuer Wunsch.
+//   - Ohne den Schatz: erst seine normalen Sätze (wie ohne Wunsch, etwa Pims Tipp zum Fliehen mit B),
+//     dann sein eigener Satz, der Wunsch und wo man ihn findet.
+//   - Erfüllt: seine normalen Sätze, dann: Morgen kommt ein neuer Wunsch.
 //   - Ohne Wunsch (sein Gebiet ist noch zu): Er redet wie immer (der allgemeine Bewohner-Handler).
-// - Ein Auftrag, dessen Schritt gerade bei ihm ist (Talia, Greta), geht vor: Dann antwortet der Auftrag.
+// - Ein Auftrag, dessen Schritt gerade bei ihm ist (Talia, Greta), geht vor: Dann antwortet der Auftrag,
+//   und so lange zeigt er keine Blase.
 // Alles nach A läuft unter der Sperre der Welt; solange sie gilt, kommt kein zweites A an. busy schützt
 // zusätzlich vor einem doppelten Start (Doppeltipp).
 
 import { WISH_GIVERS, wishOf, canGive, giveWish, wishHint } from '../world/wishes.js';
 import { questFor } from '../world/quests.js';
+import { npcLines } from '../world/network.js';
 import { treasureName } from '../items/treasures.js';
 import { itemCanvas } from '../gfx/art/items.js';
 import { COLOR, hexOf } from '../gfx/palette.js';
@@ -36,16 +40,20 @@ const BOB_MS = 600; // so lange oben, dann so lange unten: unter 1 Hz
 const INK = hexOf(COLOR.ink);
 const WHITE = hexOf(COLOR.white);
 
-// Die Figur belegt x … x+15 und y-2 … y+13 (ihr Bild beginnt 2 Pixel über ihrem Feld).
-const touchesPlayer = (b, p) => b.x < p.x + T && b.x + BOX > p.x && b.y < p.y + T - 2 && b.y + BOX + TAIL > p.y - 2;
+// Eine Figur belegt x … x+15 und y-2 … y+13 ihres Felds (ihr Bild beginnt 2 Pixel darüber).
+const touches = (b, f) => b.x < f.x + T && b.x + BOX > f.x && b.y < f.y + T - 2 && b.y + BOX + TAIL > f.y - 2;
 
 // Wo die Blase steht (oben links des Kastens, Spielpixel) und wo ihr Zipfel sitzt. n: Bewohner,
-// p: Figur, beide in Pixeln ihres Felds wie player.pixel(). Mittig über seinem Kopf; berührt sie dort
-// die Figur, gleich hoch daneben, auf der Seite weg von der Figur, der Zipfel zu ihm hin.
-export function bubbleSpot(n, p) {
-  const above = { x: n.x - 1, y: n.y - 2 - GAP - TAIL - BOX, tail: 'mid' };
-  if (!touchesPlayer(above, p)) return above;
-  return p.x < n.x ? { x: n.x + T, y: above.y, tail: 'left' } : { x: n.x - BOX, y: above.y, tail: 'right' };
+// figures: die Figur und, wenn es ihn gibt, der Begleiter, alle als Pixel der linken oberen Ecke ihres
+// Felds. Mittig über seinem Kopf; berührt sie dort eine Figur, gleich hoch daneben, zuerst auf der
+// Seite weg von der Figur, der Zipfel zu ihm hin. Ist nirgends Platz, bleibt sie über ihm.
+export function bubbleSpot(n, figures) {
+  const y = n.y - 2 - GAP - TAIL - BOX;
+  const above = { x: n.x - 1, y, tail: 'mid' };
+  const right = { x: n.x + T, y, tail: 'left' };
+  const left = { x: n.x - BOX, y, tail: 'right' };
+  const sides = figures[0] && figures[0].x < n.x ? [right, left] : [left, right];
+  return [above, ...sides].find(b => !figures.some(f => touches(b, f))) ?? above;
 }
 
 function drawBubble(ctx, img, x, y, tail) {
@@ -76,10 +84,19 @@ export function addWishes(world, game, { levelUps = async () => {}, say: speak =
   const { player } = world;
   let busy = false;
 
+  // Ein Auftrag mit einem Schritt bei ihm geht vor (dann antwortet dessen Handler).
+  const questFirst = () => {
+    const q = questFor(game.state, world.mapId, npc.id);
+    return !!q && q.role !== 'done';
+  };
   const openWish = () => {
     const w = wishOf(game.state, npc.id);
-    return w && w.done === false ? w : null;
+    return w && w.done === false && !questFirst() ? w : null;
   };
+  // Felder der Figur und des Begleiters (der kommt in createGameWorld erst nach den Wünschen dazu).
+  const figures = () => [player, world.companion?.cell()].filter(Boolean).map(c => ({ x: c.x * T, y: c.y * T }));
+  // Was er ohne Wunsch sagen würde (js/scenes/world.js).
+  const usualLines = () => npcLines(npc, game.state, world.map.def.area, game.pack?.data) ?? [];
 
   // ---------- Sprechblase ----------
 
@@ -87,7 +104,7 @@ export function addWishes(world, game, { levelUps = async () => {}, say: speak =
     const w = openWish();
     if (!w || world.locked) return;
     const bob = game.reducedMotion ? 0 : Math.floor(world.time / BOB_MS) % 2;
-    const spot = bubbleSpot({ x: npc.x * T, y: npc.y * T }, player.pixel());
+    const spot = bubbleSpot({ x: npc.x * T, y: npc.y * T }, figures());
     const x = spot.x - cam.x, y = spot.y - cam.y - bob;
     if (onScreen(x, y)) drawBubble(ctx, itemCanvas(w.treasure), x, y, spot.tail);
   });
@@ -114,10 +131,10 @@ export function addWishes(world, game, { levelUps = async () => {}, say: speak =
   }
 
   async function talk(w) {
-    if (w.done) return speak(game, [t('wish.nextDay')], { speaker: npc.name });
+    if (w.done) return speak(game, [...usualLines(), t('wish.nextDay')], { speaker: npc.name });
     const treasure = treasureName(w.treasure);
     const intro = [t(`wish.${npc.id}.own`), t('wish.want', { treasure })];
-    if (!canGive(game.state, npc.id)) return speak(game, [...intro, wishHint(w.treasure)], { speaker: npc.name });
+    if (!canGive(game.state, npc.id)) return speak(game, [...usualLines(), ...intro, wishHint(w.treasure)], { speaker: npc.name });
     await speak(game, intro, { speaker: npc.name });
     const pick = await ask(game, t('wish.ask', { treasure }), [t('common.yes'), t('common.no')], { cancelIndex: 1 });
     if (pick === 0) return trade(treasure);
@@ -129,9 +146,7 @@ export function addWishes(world, game, { levelUps = async () => {}, say: speak =
     const o = ev.target;
     if (o?.type !== 'npc' || o.id !== npc.id) return false;
     const w = wishOf(game.state, npc.id);
-    if (!w) return false;
-    const q = questFor(game.state, world.mapId, npc.id);
-    if (q && q.role !== 'done') return false;
+    if (!w || questFirst()) return false;
     if (busy) return true;
     busy = true;
     world.turnToward(o, OPPOSITE[player.dir]);

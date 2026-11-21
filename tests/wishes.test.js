@@ -169,3 +169,16 @@ test('Texte in jeder Sprache', () => {
   }
   setLanguage('de');
 });
+
+// Die Frage nennt den Schatz hinter einem Doppelpunkt, nie in Klammern (alle vier Sprachen).
+test('wish.ask: der Schatz hinter einem Doppelpunkt, ohne Klammern', () => {
+  for (const lang of ['de', 'en', 'fr', 'es']) {
+    setLanguage(lang);
+    const x = t('wish.ask', { treasure: 'X' });
+    assert.ok(!/[()]/.test(x), `${lang}: ${x}`);
+    assert.match(x, /:\s?X\s?\?$/u, `${lang}: ${x}`);
+    if (lang === 'fr') assert.ok(x.includes(' :') && x.includes(' ?'), x);
+    if (lang === 'es') assert.ok(x.startsWith('¿'), x);
+  }
+  setLanguage('de');
+});

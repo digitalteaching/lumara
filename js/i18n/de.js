@@ -226,7 +226,7 @@ export const DE = {
   'board.news.task': 'Aufgabe vom Aushang geschafft! Du bekommst: {reward}.',
   'board.news.bonus': 'Alle drei Aufgaben geschafft! Dazu gibt es: {reward} und {xp} XP.',
   'wish.want': 'Ich wünsche mir so sehr: {treasure}.',
-  'wish.ask': 'Möchtest du mir deinen Fund geben? ({treasure})',
+  'wish.ask': 'Möchtest du mir das geben: {treasure}?',
   'wish.give': 'Du gibst ab: {treasure}.',
   'wish.thanks.starfruit': 'Danke, danke! Hier ist eine Sternfrucht für dich.',
   'wish.thanks.stone': 'Das ist so lieb von dir! Nimm diesen Stein, er hilft dir weiter.',
