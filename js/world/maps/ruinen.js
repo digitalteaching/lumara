@@ -105,6 +105,14 @@ export const RUINEN = {
     // Die Sternwarte hinter dem Kanal: mit der Sternkarte über die Tafel am Kanal erreichbar
     { type: 'deco', id: 'sternwarte', x: 33, y: 6, prop: 'observatory' },
 
+    // Spielaufgabe (Lumara 1.2, js/data/tasks.js): drei Hebel an der Südmauer, daneben eine
+    // Wandzeichnung mit ihrer Reihenfolge. Richtig gezogen läuft das Kanalstück hinter der Schleuse
+    // leer (TASKS[6].chamber, nur ein Bild: Die Kacheln bleiben Kanal).
+    { type: 'task', id: 'task6-clue', task: 6, role: 'clue', prop: 'wallsketch', x: 9, y: 28 },
+    { type: 'task', id: 'task6-switch0', task: 6, role: 'switch', index: 0, prop: 'lever0', x: 11, y: 28 },
+    { type: 'task', id: 'task6-switch1', task: 6, role: 'switch', index: 1, prop: 'lever1', x: 12, y: 28 },
+    { type: 'task', id: 'task6-switch2', task: 6, role: 'switch', index: 2, prop: 'lever2', x: 13, y: 28 },
+
     { type: 'notestone', id: 'zettel-nord', x: 20, y: 6 },
     { type: 'notestone', id: 'zettel-west', x: 10, y: 25 },
     { type: 'notestone', id: 'zettel-ost', x: 36, y: 25 },

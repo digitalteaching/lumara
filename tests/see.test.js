@@ -74,3 +74,14 @@ test('See: Spieltexte sind kurz und nennen Morrow nicht', () => {
     }
   }
 });
+
+test('See: Die Pfotenspuren beginnen beim Zelt, die Hasenfamilie sitzt am Waldrand im Südwesten', async () => {
+  const { TASKS } = await import('../js/data/tasks.js');
+  const tent = SEE.objects.find(o => o.id === 'zelt');
+  const [first] = TASKS[7].stations;
+  assert.ok(Math.max(Math.abs(first.x - tent.x), Math.abs(first.y - tent.y)) <= 2, 'Anfang beim Zelt');
+  const rabbits = SEE.objects.find(o => o.id === 'task7-giver');
+  const m = createMap(SEE);
+  assert.ok([[0, 1], [0, -1], [1, 0], [-1, 0]].filter(([dx, dy]) => m.tileAt(rabbits.x + dx, rabbits.y + dy) === 'snowpine').length >= 2, 'zwischen den Tannen');
+  assert.ok(rabbits.x < 10 && rabbits.y > 18);
+});

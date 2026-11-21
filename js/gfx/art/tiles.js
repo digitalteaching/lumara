@@ -2,7 +2,7 @@
 // Natürliche Flächen werden aus festem Rauschen erzeugt (immer gleich), feste Dinge sind von Hand gezeichnet.
 // Zeichen: siehe gfx/palette.js. '.' ist durchsichtig.
 
-import { TASKS } from '../../data/tasks.js'; // nur für die Reihenfolge auf dem Zeichenstein
+import { TASKS } from '../../data/tasks.js'; // nur für Reihenfolge und Lage auf Zeichenstein, Wandzeichnung und Sterntafel
 
 function noise(x, y, seed) {
   let h = (Math.imul(x + 1, 374761393) + Math.imul(y + 1, 668265263) + Math.imul(seed + 7, 2246822519)) | 0;
@@ -1312,6 +1312,241 @@ function glassStatue(dir) {
   return dir === 3 ? mirror(rows) : rows;
 }
 
+// ---------- Windklippen: Windräder, Wimpel an Stangen und ein Drachen ----------
+
+// Ein Wimpel (7 × 5), der nach rechts weht: Koralle mit dunklem Rand, an der Stange ein heller Streifen.
+const FLAG = ['eee....', 'CCCee..', 'wCCCCCe', 'CCCee..', 'eee....'];
+// Um 90° nach links gedreht: Die Spitze zeigt nach oben.
+const turnLeft = rows => Array.from({ length: rows[0].length }, (_, r) => rows.map(row => row[rows[0].length - 1 - r]).join(''));
+// Nach Richtung 0 oben, 1 rechts, 2 unten, 3 links.
+const FLAGS = [turnLeft(FLAG), FLAG, [...turnLeft(FLAG)].reverse(), mirror(FLAG)];
+
+// Ein Windrad der Spielaufgabe (16 × 32): Holzturm mit türkisem Kopf, damit es sich von den roten
+// Windrädern zum Anschauen unterscheidet. Hinten am Kopf weht ein Wimpel nach dir: Nach oben schaut
+// das Rad zu uns (der Wimpel ragt dahinter auf), nach unten sehen wir die Rückseite des Rads (der Wimpel
+// zeigt zu uns), nach rechts oder links sieht man das Rad von der Seite als schmalen Strich.
+// spin: das zweite Bild, wenn es sich im Wind dreht.
+function windWheel(dir, spin = false) {
+  if (dir === 3) return mirror(windWheel(1, spin));
+  const g = grid(16, 32, '.');
+  const put = (x, y, ch) => {
+    if (x >= 0 && x < 16 && y >= 0 && y < 32) g[y][x] = ch;
+  };
+  const flag = (rows, ox, oy) => rows.forEach((r, y) => [...r].forEach((ch, x) => ch !== '.' && put(ox + x, oy + y, ch)));
+  if (dir === 0) flag(FLAGS[0], 5, 2); // hinter dem Rad
+  for (let y = 12; y < 32; y++) {
+    const half = 2 + Math.floor((y - 12) / 7);
+    const x0 = 8 - half - 1, x1 = 7 + half + 1;
+    for (let x = x0; x <= x1; x++) g[y][x] = x === x0 || x === x1 || y === 31 ? 'k' : (y - 12) % 4 === 3 ? 'b' : 'o';
+  }
+  for (let y = 27; y < 31; y++) for (const x of [7, 8]) g[y][x] = y === 27 ? 'k' : 'b'; // Tür
+  for (let y = 8; y <= 12; y++) for (let x = 5; x <= 10; x++) {
+    if (y === 8 && (x === 5 || x === 10)) continue;
+    g[y][x] = y === 8 || y === 12 || x === 5 || x === 10 ? 'k' : x === 6 || y === 9 ? 'T' : 't';
+  }
+  if (dir === 1) {
+    // von der Seite: das Rad als Strich, die Nabe, hinten der Wimpel
+    const [top, bottom] = spin ? [6, 13] : [3, 16];
+    for (let y = top; y <= bottom; y++) {
+      put(2, y, spin ? 'w' : 'b');
+      put(3, y, spin ? 'b' : 'w');
+    }
+    put(2, top - 1, 'k'); put(3, top - 1, 'k'); put(2, bottom + 1, 'k'); put(3, bottom + 1, 'k');
+    for (const y of [9, 10]) { put(4, y, 'h'); put(5, y, 'k'); }
+    flag(FLAGS[1], 9, 7);
+    return toRows(g);
+  }
+  // von vorn (0) oder von hinten (2): Holm und Segel, hinten matter
+  const sail = dir === 0 ? 'w' : 'm';
+  if (spin) {
+    for (let i = 4; i <= 15; i++) if (i !== 9 && i !== 10) { put(7, i, 'b'); put(8, i, sail); }
+    for (let i = 2; i <= 13; i++) if (i !== 7 && i !== 8) { put(i, 9, 'b'); put(i, 10, sail); }
+  } else {
+    for (let i = 2; i <= 13; i++) {
+      put(i, i + 2, 'b');
+      put(i + 1, i + 2, sail);
+      put(15 - i, i + 2, 'b');
+      put(14 - i, i + 2, sail);
+    }
+  }
+  for (const [x, y] of [[7, 9], [8, 9], [7, 10], [8, 10]]) put(x, y, 'k');
+  if (dir === 0) put(7, 9, 'h'); // goldene Nabe vorn
+  else flag(FLAGS[2], 5, 11); // der Wimpel zeigt zu uns
+  return toRows(g);
+}
+
+// Eine Stange mit Wimpel auf einem Steinfuß (16 × 32); der Wimpel weht nach dir.
+function pennant(dir) {
+  const g = grid(16, 32, '.');
+  for (let y = 5; y < 29; y++) { g[y][7] = 'o'; g[y][8] = 'b'; }
+  g[4][7] = 'h'; g[4][8] = 'h'; g[3][7] = 'k'; g[3][8] = 'k';
+  for (let y = 27; y < 32; y++) for (let x = 4; x <= 11; x++) {
+    if (y === 27 && (x === 4 || x === 11)) continue;
+    g[y][x] = y === 27 || y === 31 || x === 4 || x === 11 ? 'k' : y === 28 ? 'm' : 's';
+  }
+  const [rows, ox, oy] = [[FLAGS[0], 5, 0], [FLAGS[1], 9, 5], [FLAGS[2], 5, 6], [FLAGS[3], 0, 5]][dir];
+  return layer(toRows(g), rows, ox, oy);
+}
+
+// Ein Drachen aus Koralle und Gold mit Holzkreuz, Rand dunkel (Raute um cx, cy mit Radius r).
+function kiteShape(g, cx, cy, r) {
+  for (let y = cy - r; y <= cy + r; y++) for (let x = cx - r; x <= cx + r; x++) {
+    const d = Math.abs(x - cx) + Math.abs(y - cy);
+    if (d > r) continue;
+    g[y][x] = d === r ? 'k' : x === cx || y === cy ? 'b' : (x < cx) === (y < cy) ? 'C' : 'h';
+  }
+}
+
+// Am Boden (16 × 16): ein Pflock, daran die Schnur, daneben liegt der Drachen. Gelöst (16 × 32): Er
+// fliegt hoch über dem Pflock, mit Schwanz und Schleifen.
+function kite(flying) {
+  const g = grid(16, flying ? 32 : 16, '.');
+  const h = g.length;
+  for (let y = h - 10; y < h; y++) { g[y][2] = y === h - 10 ? 'k' : 'o'; g[y][3] = y === h - 10 ? 'k' : 'b'; }
+  if (flying) {
+    kiteShape(g, 10, 6, 5);
+    for (let i = 0; i <= 10; i++) g[Math.round(11 + i * 1.1)][Math.round(10 - i * 0.6)] = 'c'; // Schnur zum Pflock
+    for (const [x, y, bow] of [[11, 12, 0], [12, 14, 1], [12, 16, 0], [13, 18, 1], [13, 20, 0], [14, 22, 1]]) g[y][x] = bow ? 'R' : 'k';
+    for (const [x, y] of [[11, 14], [13, 14], [12, 13], [12, 15], [12, 18], [14, 18], [13, 22], [15, 22]]) g[y][x] = 'R';
+  } else {
+    kiteShape(g, 10, 10, 4);
+    for (const [x, y] of [[4, 8], [5, 9], [6, 9], [7, 10]]) g[y][x] = 'c';
+    for (const [x, y] of [[11, 15], [13, 15], [15, 14]]) g[y][x] = 'R';
+  }
+  return toRows(g);
+}
+
+// ---------- Uhrwerkruinen: Hebel an der Mauer und eine Wandzeichnung ----------
+
+// Griffe: 0 rot, 1 gelb, 2 blau (Farbe und heller Glanz).
+const KNOBS = [['e', 'C'], ['h', 'H'], ['S', 'L']];
+
+// Ein Hebel an der Mauer (16 × 16): eine Platte aus dunklem Metall mit Schlitz, darin ein Griff mit
+// dicker farbiger Kugel. Oben steht er auf, gezogen ist er unten und die kleine Lampe leuchtet.
+function lever(i, pulled) {
+  const g = grid(16, 16, '.');
+  for (let y = 2; y <= 15; y++) for (let x = 3; x <= 12; x++) {
+    if ((y === 2 || y === 15) && (x === 3 || x === 12)) continue;
+    g[y][x] = y === 2 || y === 15 || x === 3 || x === 12 ? 'k' : 'd';
+  }
+  for (const [x, y] of [[4, 3], [11, 3], [4, 14], [11, 14]]) g[y][x] = 's'; // Nieten
+  for (let y = 4; y <= 13; y++) { g[y][7] = 'n'; g[y][8] = 'n'; } // Schlitz
+  for (const [x, y] of [[10, 5], [10, 6]]) g[y][x] = pulled ? 'T' : 'n'; // Lampe
+  const [color, shine] = KNOBS[i];
+  const [from, to, top] = pulled ? [9, 11, 11] : [4, 8, 0];
+  for (let y = from; y <= to; y++) { g[y][7] = 'm'; g[y][8] = 's'; } // Stange
+  g[8][6] = 'k'; g[8][9] = 'k'; g[9][6] = 'k'; g[9][9] = 'k'; // Drehpunkt
+  // Kugel (6 × 5) mit Rand und Glanz
+  for (let y = top; y <= top + 4; y++) for (let x = 5; x <= 10; x++) {
+    const corner = (y === top || y === top + 4) && (x === 5 || x === 10);
+    if (corner) continue;
+    g[y][x] = y === top || y === top + 4 || x === 5 || x === 10 ? 'k' : y === top + 1 && x <= 7 ? shine : color;
+  }
+  return toRows(g);
+}
+
+// Die Wandzeichnung (16 × 16): ein heller Putzfleck, darauf die drei Griffe in der Reihenfolge der
+// Aufgabe mit Pfeilen dazwischen, darunter Wasser, das abläuft.
+function wallSketch(order) {
+  const g = grid(16, 16, '.');
+  for (let y = 1; y <= 14; y++) for (let x = 0; x <= 15; x++) {
+    if ((y === 1 || y === 14) && (x === 0 || x === 15)) continue;
+    g[y][x] = y === 1 || y === 14 || x === 0 || x === 15 ? 'y' : 'c';
+  }
+  order.forEach((lev, n) => {
+    const [color, shine] = KNOBS[lev];
+    const x0 = 1 + n * 5;
+    for (let y = 3; y <= 5; y++) for (let x = x0; x <= x0 + 2; x++) g[y][x] = y === 3 && x === x0 ? shine : color;
+    for (let y = 6; y <= 8; y++) g[y][x0 + 1] = 'd'; // die Stange, nach unten gezogen
+    if (n < 2) for (const [dx, dy] of [[3, 3], [4, 4], [3, 5]]) g[dy][x0 + dx] = 'd'; // Pfeil
+  });
+  for (let x = 2; x <= 13; x++) g[10 + ((x >> 1) % 2)][x] = 'L'; // Wasser
+  for (let x = 4; x <= 11; x++) g[12][x] = x % 3 ? 'S' : 'L';
+  return toRows(g);
+}
+
+// ---------- Nordlichtsee: die Hasenfamilie ----------
+
+// Am Waldrand kuscheln sich eine Häsin und zwei Kleine in eine Schneemulde (16 × 16). Vor ihnen
+// glitzert, was sie gefunden haben (gelöst: verschenkt).
+function rabbits(found) {
+  const g = grid(16, 16, '.');
+  for (let y = 9; y < 16; y++) for (let x = 0; x < 16; x++) {
+    const dx = (x - 7.5) / 8, dy = (y - 15.5) / 6.5;
+    const d = dx * dx + dy * dy;
+    if (d <= 1) g[y][x] = d > 0.75 ? 'f' : y > 13 ? 'm' : 'f';
+  }
+  // Hasen schauen nach rechts: lange Ohren mit rosa Innenseite, ein dunkles Auge, rosa Nase.
+  const MOTHER = [
+    '.kk.kk...', 'kwRkwRk..', 'kwRkwRk..', 'kwRkwRk..', '.kwwwwk..', '.kwwwwwk.', 'kwwwkwwRk', 'kwwwwwwk.',
+    'kwwwwwwwk', 'kwwwwwwwk', 'kfwwwwwfk', '.kkkkkkk.',
+  ];
+  const KIT = ['k.k..', 'RkRk.', 'kwwk.', 'kwkwk', 'kwwRk', 'kfwk.', '.kk..'];
+  const put = (rows, ox, oy) => rows.forEach((r, y) => [...r].forEach((ch, x) => { if (ch !== '.') g[oy + y][ox + x] = ch; }));
+  put(MOTHER, 0, 3);
+  put(KIT, 8, 8);
+  put(KIT, 11, 9);
+  if (found) for (const [x, y, ch] of [[9, 15, 'H'], [8, 15, 'h'], [10, 15, 'h'], [9, 14, 'h']]) g[y][x] = ch;
+  return toRows(g);
+}
+
+// ---------- Sternenwiese: Sterntafel und flache Steine ----------
+
+// Zeichen auf den Steinen (7 × 7): 0 Mond, 1 Stern, 2 Komet, 3 Planet mit Ring.
+const SKY = [
+  ['..XXX..', '.XX....', 'XXX....', 'XXX....', 'XXX....', '.XX....', '..XXX..'],
+  ['...X...', '...X...', 'XXXXXXX', '.XXXXX.', '..XXX..', '.XX.XX.', 'XX...XX'],
+  ['X......', '.X.X...', '..X.X..', '...XXX.', '..XXXXX', '...XXXX', '....XX.'],
+  ['.....XX', '..XXX.X', '.XXXXX.', '.XXXXX.', '.XXXXX.', 'X.XXX..', 'XX.....'],
+];
+// Die Zeichen klein (3 × 3) für die Sterntafel.
+const SKY_SMALL = [
+  ['XX.', 'X..', 'XX.'],
+  ['.X.', 'XXX', 'X.X'],
+  ['X..', '.XX', '.XX'],
+  ['XXX', 'X.X', 'XXX'],
+];
+
+// Ein flacher Stein im Gras der Sternenwiese (16 × 16), darauf ein Zeichen: eingeritzt oder leuchtend.
+function starPlate(i, lit) {
+  const g = grid(16, 16, '.');
+  for (let y = 3; y < 15; y++) for (let x = 0; x < 16; x++) {
+    const dx = (x - 7.5) / 7.6, dy = (y - 8.5) / 5.6;
+    const d = dx * dx + dy * dy;
+    if (d > 1) continue;
+    g[y][x] = d > 0.8 ? (y > 9 ? 'n' : 'd') : y < 6 ? 'm' : y > 11 ? 'd' : 's';
+  }
+  SKY[i].forEach((r, y) => [...r].forEach((ch, x) => { if (ch === 'X') g[5 + y][4 + x] = lit ? 'H' : 'n'; }));
+  if (lit) g[8][7] = 'w';
+  return toRows(g);
+}
+
+// Die Sterntafel (16 × 16): eine dunkle Steintafel, darauf das Sternbild so, wie die vier Steine auf der
+// Wiese liegen. Eine Linie verbindet die Zeichen in der Reihenfolge der Aufgabe; das erste leuchtet gold.
+function starTablet({ plates, order }) {
+  const g = grid(16, 16, '.');
+  for (let y = 0; y < 16; y++) for (let x = 1; x < 15; x++) {
+    if (y === 0 && (x === 1 || x === 14)) continue;
+    g[y][x] = y === 0 || y === 15 || x === 1 || x === 14 ? 'k' : y > 12 ? 's' : 'D';
+  }
+  const xs = plates.map(p => p.x), ys = plates.map(p => p.y);
+  const [minX, maxX, minY, maxY] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
+  // Linke obere Ecke jedes kleinen Zeichens auf der Tafel (Platz: x 2 bis 13, y 1 bis 12).
+  const at = plates.map(p => ({
+    x: 2 + Math.round(((p.x - minX) / Math.max(1, maxX - minX)) * 9),
+    y: 1 + Math.round(((p.y - minY) / Math.max(1, maxY - minY)) * 9),
+  }));
+  order.slice(1).forEach((to, n) => {
+    const a = at[order[n]], b = at[to];
+    const steps = Math.max(Math.abs(b.x - a.x), Math.abs(b.y - a.y));
+    for (let s = 1; s < steps; s++) g[a.y + 1 + Math.round(((b.y - a.y) * s) / steps)][a.x + 1 + Math.round(((b.x - a.x) * s) / steps)] = 'L';
+  });
+  order.forEach((i, n) => {
+    SKY_SMALL[i].forEach((r, y) => [...r].forEach((ch, x) => { if (ch === 'X') g[at[i].y + y][at[i].x + x] = n === 0 ? 'H' : 'A'; }));
+  });
+  return toRows(g);
+}
+
 const TASK_PROPS = {
   chickcrate: layer(crate, CHICK, 5, 2, { under: true }),
   chickcrateDone: crate,
@@ -1328,6 +1563,23 @@ const TASK_PROPS = {
   runestone: runeStone(TASKS[2].order),
   wispstump: wispStump,
   ...Object.fromEntries([0, 1, 2, 3].map(d => [`glassstatue${d}`, glassStatue(d)])),
+  ...Object.fromEntries([0, 1, 2, 3].flatMap(d => [
+    [`windwheel${d}`, windWheel(d)],
+    [`windwheel${d}Spin`, windWheel(d, true)],
+    [`pennant${d}`, pennant(d)],
+  ])),
+  kite: kite(false),
+  kiteDone: kite(true),
+  ...Object.fromEntries([0, 1, 2].flatMap(i => [
+    [`lever${i}`, lever(i, false)],
+    [`lever${i}Lit`, lever(i, true)],
+    [`lever${i}Open`, lever(i, true)], // der letzte Hebel: gezogen, das Kanalstück ist leer
+  ])),
+  wallsketch: wallSketch(TASKS[6].order),
+  rabbits: rabbits(true),
+  rabbitsDone: rabbits(false),
+  startablet: starTablet(TASKS[8]),
+  ...Object.fromEntries([0, 1, 2, 3].flatMap(i => [[`starplate${i}`, starPlate(i, false)], [`starplate${i}Lit`, starPlate(i, true)]])),
 };
 
 export const PROPS = {

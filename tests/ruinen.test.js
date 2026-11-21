@@ -69,3 +69,14 @@ test('Ruinen: Spieltexte sind kurz und nennen Morrow nicht', () => {
     }
   }
 });
+
+test('Ruinen: Hebel und Wandzeichnung hängen an der Südmauer neben dem Kanalende', () => {
+  const m = createMap(RUINEN);
+  const parts = RUINEN.objects.filter(o => o.type === 'task');
+  assert.equal(parts.length, 4);
+  for (const o of parts) {
+    assert.equal(m.tileAt(o.x, o.y), 'ruinwall', `${o.id}: an der Mauer`);
+    assert.ok(m.canEnter(o.x, o.y - 1), `${o.id}: davor Pflaster`);
+  }
+  assert.equal(m.tileAt(14, 27), 'canal', 'das Kanalende bleibt Kanal');
+});

@@ -73,3 +73,14 @@ test('Wiese: Spieltexte sind kurz und nennen Morrow nicht', () => {
     }
   }
 });
+
+test('Wiese: Sterntafel und flache Steine liegen im Süden der Wiese, nicht im Sternengras', async () => {
+  const { TASKS } = await import('../js/data/tasks.js');
+  const m = createMap(WIESE);
+  const tablet = WIESE.objects.find(o => o.id === 'task8-clue');
+  assert.ok(tablet.y >= 24);
+  for (const p of TASKS[8].plates) {
+    assert.ok(p.y >= 24, `Stein ${p.x},${p.y} im Süden`);
+    assert.equal(m.tileAt(p.x, p.y), 'nightgrass');
+  }
+});

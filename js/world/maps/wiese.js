@@ -35,7 +35,7 @@ export const WIESE = {
     '%%nnnnnnnnnnnnnnnnnnnnnnnnnnnSSSSSSSSnRR',
     '%%nnnnnnnnnnnnnnnnnnnnnnnRnnnSSSSSSSSnRR',
     '%%nnnnnnnnnnnnnnnnnnnnnnnnnnnSSSSSSSSnRR',
-    'RRnnnnnnnnnnRnnnnnnnnnnnnnnnnSSSSSSSSnRR',
+    'RRnnnnnnnnnnnnnnnnnnnnnnnnnnnSSSSSSSSnRR',
     'RRnnnnnnnnnnnnnnnnnnnnnnnnnnnSSSSSSSSnRR',
     'RRnRnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnRR',
     'RRnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnRR',
@@ -80,6 +80,11 @@ export const WIESE = {
 
     // Das Höhlentor: offen mit allen acht Steinen und einem Paket mit allen acht Trainern (caveOpen)
     { type: 'building', id: 'hoehlentor', x: 7, y: 5, w: 3, h: 3, sprite: 'cavegate', door: { dx: 1, dy: 2 }, onDoor: 'locked', to: { map: 'hoehle1', x: 9, y: 13, dir: 'up' } },
+
+    // Spielaufgabe (Lumara 1.2, js/data/tasks.js): eine Tafel mit einem Sternbild, wo früher ein
+    // Felsblock lag. Die vier flachen Steine daneben (TASKS[8].plates) betritt man in der Reihenfolge
+    // seiner Linie.
+    { type: 'task', id: 'task8-clue', task: 8, role: 'clue', prop: 'startablet', x: 12, y: 24 },
 
     { type: 'notestone', id: 'zettel-nord', x: 26, y: 4 },
     { type: 'notestone', id: 'zettel-west', x: 5, y: 19 },

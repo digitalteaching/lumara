@@ -13,8 +13,11 @@
 //            order; ein falscher setzt zurück. role 'clue' nennt die Reihenfolge.
 // - turn:    jedes role 'switch' dreht A eine Stellung weiter (0 oben, 1 rechts, 2 unten, 3 links,
 //            wie das Zahnrad der Sternwarte); gelöst, wenn alle wie goal stehen. start: Anfang.
-// - follow:  ein Irrlicht wartet an stations[i]; kommt die Figur höchstens near Felder heran
-//            (auch schräg), fliegt es zur nächsten. Ist sie weiter als lose weg, fliegt es zurück.
+//            role 'clue' zeigt die Richtung (wind), spin: Teile am Ziel drehen sich.
+// - follow:  ein Irrlicht (oder guide 'paws': Pfotenspuren) wartet an stations[i]; kommt die Figur
+//            höchstens near Felder heran (auch schräg), geht es zur nächsten. Ist sie weiter als lose
+//            weg, fängt es wieder am Anfang an.
+// role 'prize' (und 'giver' außerhalb von collect) zeigt gelöst sein Bild <prop>Done.
 
 import { DUENEN } from '../world/maps/duenen.js';
 
@@ -46,5 +49,26 @@ export const TASKS = {
   4: {
     area: 4, map: 'duenen', type: 'turn', start: [3, 0, 0],
     goal: parts(DUENEN, 4, 'switch').map(s => facing(s, beaconOf(DUENEN, 4))),
+  },
+  // Windklippen: drei Windräder oben auf der Nordplattform. Die Wimpel an zwei Stangen wehen nach
+  // rechts (wind); ein Windrad steht richtig, wenn sein Wimpel genauso weht, und dreht sich dann.
+  // Stehen alle drei, steigt der Drachen an der Ecke mit dem Fund auf.
+  5: { area: 5, map: 'klippen', type: 'turn', wind: 1, start: [2, 0, 3], goal: [1, 1, 1], spin: true },
+  // Uhrwerkruinen: drei Hebel an der Südmauer (0 rot, 1 gelb, 2 blau), die Wandzeichnung daneben zeigt
+  // die Reihenfolge. Dann läuft das Kanalstück hinter der Schleuse leer (chamber, nur ein Bild: Die
+  // Kacheln bleiben Kanal).
+  6: { area: 6, map: 'ruinen', type: 'order', order: [2, 0, 1], chamber: { x: 14, y: 25, w: 2, h: 3 } },
+  // Nordlichtsee: Pfotenspuren beginnen beim Zelt von Sven, abseits vom Weg zwischen Eingang,
+  // Leuchtstein und Ausgang, und führen über den Schnee am Westufer zu einer Hasenfamilie unter einer
+  // Tanne.
+  7: {
+    area: 7, map: 'see', type: 'follow', guide: 'paws', near: 1, lose: 8,
+    stations: [{ x: 8, y: 7 }, { x: 5, y: 10 }, { x: 5, y: 15 }, { x: 6, y: 20 }, { x: 3, y: 21 }],
+  },
+  // Sternenwiese: vier flache Steine im Süden der Wiese (0 Mond, 1 Stern, 2 Komet, 3 Planet), so
+  // angeordnet wie das Sternbild auf der Tafel daneben. Die Linie des Sternbilds nennt die Reihenfolge.
+  8: {
+    area: 8, map: 'wiese', type: 'order', order: [1, 3, 2, 0],
+    plates: [{ x: 14, y: 26 }, { x: 17, y: 24 }, { x: 19, y: 27 }, { x: 22, y: 25 }],
   },
 };

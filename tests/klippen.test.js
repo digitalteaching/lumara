@@ -78,3 +78,15 @@ test('Klippen: Spieltexte sind kurz und nennen Morrow nicht', () => {
     }
   }
 });
+
+test('Klippen: Die Windräder der Spielaufgabe stehen an der Nordkante, davor Fels ohne Windgras', () => {
+  const m = createMap(KLIPPEN);
+  const parts = KLIPPEN.objects.filter(o => o.type === 'task');
+  assert.equal(parts.filter(o => o.role === 'switch').length, 3);
+  for (const o of parts) {
+    assert.ok(o.y <= 3 && o.x >= 12 && o.x <= 24, `${o.id}: auf der Nordplattform`);
+    assert.equal(m.tileAt(o.x, o.y), 'cliffrock', `${o.id}: auf Fels, nicht auf Wolken`);
+    const front = [[0, 1], [-1, 0]].map(([dx, dy]) => ({ x: o.x + dx, y: o.y + dy })).find(p => m.canEnter(p.x, p.y));
+    assert.ok(front && !m.isTallGrass(front.x, front.y), `${o.id}: Vorfeld ohne Windgras`);
+  }
+});

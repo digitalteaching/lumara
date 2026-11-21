@@ -31,7 +31,7 @@ export const SEE = {
     'PPGGGsiiiiiiiiiiwwiiiiiiiiiiiiiiiissssPP',
     'PPssssiiiiiiiiiiwwiiiiiiiiiiiiiiiissssPP',
     'PPsssssiiiiiiiiiiiiiiiiiiiiiiiiiisssssPP',
-    'PPPPssssiiiiiiiiiiiiiiiiiiiiiiiissssssPP',
+    'PPPsssssiiiiiiiiiiiiiiiiiiiiiiiissssssPP',
     'PPPPssssssssssssssssssssssssssssssssssPP',
     'PPssssssssssssssssssssssssssssssssssssPP',
     'PPssssssssssssssssssssssssGGGGGGGGssssPP',
@@ -99,6 +99,11 @@ export const SEE = {
     { type: 'deco', id: 'zelt', x: 10, y: 6, prop: 'tent', lines: ['Svens Fischerzelt. Drinnen ist es warm und riecht nach Tee.'] },
     // Die Eisgrotte hinter dem offenen Wasser: zu sehen, aber noch nicht erreichbar (Plan 4)
     { type: 'deco', id: 'eisgrotte', x: 35, y: 4, prop: 'icecave' },
+
+    // Spielaufgabe (Lumara 1.2, js/data/tasks.js): Pfotenspuren beginnen beim Zelt und führen am
+    // Westufer entlang zu einer Hasenfamilie am Waldrand (TASKS[7].stations). Sie sitzt auf einem
+    // früheren Tannenfeld, jetzt Schnee.
+    { type: 'task', id: 'task7-giver', task: 7, role: 'giver', prop: 'rabbits', x: 3, y: 21 },
 
     { type: 'notestone', id: 'zettel-nord', x: 24, y: 5 },
     { type: 'notestone', id: 'zettel-ost', x: 36, y: 20 },

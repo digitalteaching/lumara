@@ -12,8 +12,8 @@ export const KLIPPEN = {
   rows: [
     'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC',
     'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC',
-    'CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC',
-    'CCCCCCCCCCCCCcccccccccccCCCCSCCCCCCCCCCC',
+    'CCCCCCCCCCCCCCcCcCcCcCcCCCCCCCCCCCCCCCCC',
+    'CCCCCCCCCCCCCccccccccccccCCCSCCCCCCCCCCC',
     'CCSCCCCCCCCCcccwwwwwwwcccCCCCCCCCCCCCCCC',
     'CCCCCCCCCSCScccwwwwwwwcccCCCCCCCCCCCCCCC',
     'CCCCCCCCCCCCcccwwwwwwwcccCCCCCCCCCCCCCCC',
@@ -97,6 +97,15 @@ export const KLIPPEN = {
     { type: 'deco', id: 'windrad-nord', x: 13, y: 4, prop: 'windmill', anim: true },
     { type: 'deco', id: 'windrad-gipfel', x: 36, y: 10, prop: 'windmill', anim: true },
     { type: 'deco', id: 'windrad-sued', x: 23, y: 24, prop: 'windmill', anim: true },
+    // Spielaufgabe (Lumara 1.2, js/data/tasks.js): drei Windräder an der Nordkante, die man mit A dreht,
+    // bis ihr Wimpel so weht wie die Wimpel an den beiden Stangen. Dann steigt der Drachen an der Ecke
+    // auf. Alle stehen auf früheren Wolkenfeldern, jetzt Fels; prop ist die Anfangsstellung.
+    { type: 'task', id: 'task5-clue0', task: 5, role: 'clue', index: 0, prop: 'pennant1', x: 14, y: 2 },
+    { type: 'task', id: 'task5-switch0', task: 5, role: 'switch', index: 0, prop: 'windwheel2', x: 16, y: 2 },
+    { type: 'task', id: 'task5-switch1', task: 5, role: 'switch', index: 1, prop: 'windwheel0', x: 18, y: 2 },
+    { type: 'task', id: 'task5-switch2', task: 5, role: 'switch', index: 2, prop: 'windwheel3', x: 20, y: 2 },
+    { type: 'task', id: 'task5-clue1', task: 5, role: 'clue', index: 1, prop: 'pennant1', x: 22, y: 2 },
+    { type: 'task', id: 'task5-prize', task: 5, role: 'prize', prop: 'kite', x: 24, y: 3 },
 
     { type: 'notestone', id: 'zettel-nord', x: 22, y: 8 },
     { type: 'notestone', id: 'zettel-sued', x: 13, y: 23 },
