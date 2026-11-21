@@ -163,6 +163,7 @@ const FILES = [
   "js/version.js",
   "js/world/beacons.js",
   "js/world/board.js",
+  "js/world/wishes.js",
   "js/world/caveGate.js",
   "js/world/encounters.js",
   "js/world/fogEdge.js",
