@@ -171,7 +171,9 @@ export const SONGS = {
   find: { tempo: 140, voices: { sq1: 'a5/16 c#6/16 e6/8 -/4', sq2: 'e5/4 -/4', tri: 'a3/4 -/4' } },
   beacon: { tempo: 110, voices: { sq1: 'c5/8 g5/8 c6/4 e6/4. -/8 d6/4 c6/2', sq2: 'e4/2 g4/2 c5/2.', tri: 'c3/2 e3/2 c3/2.', noise: '-/2 h/4 h/4 s/2.' } },
   finale: { tempo: 120, voices: { sq1: 'd5/4 f#5/4 a5/4 d6/4 c#6/4 a5/4 d6/2', sq2: 'a4/2 d5/2 e5/2 f#5/2', tri: 'd3/2 a2/2 a2/2 d3/2' } },
+  // Ein neuer Freund (Lumara 1.2): zwei warme Takte in F-Dur, die Melodie wiegt sich nach Hause.
+  friendship: { tempo: 132, voices: { sq1: 'a4/8 c5/8 f5/4 e5/8 f5/8 a5/4 | g5/8 f5/8 e5/8 g5/8 f5/2', sq2: 'f4/2 c5/2 | bb4/2 a4/2', tri: 'f3/2 c3/2 | c3/2 f2/2' } },
 };
 
 export const LOOPS = ['title', 'area1', 'area2', 'area3', 'area4', 'area5', 'area6', 'area7', 'area8', 'cave', 'wild', 'trainer', 'boss', 'ascent'];
-export const JINGLES = ['victory', 'defeat', 'levelup', 'evolution', 'find', 'beacon', 'finale'];
+export const JINGLES = ['victory', 'defeat', 'levelup', 'evolution', 'find', 'beacon', 'finale', 'friendship'];

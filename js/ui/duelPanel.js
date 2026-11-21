@@ -174,6 +174,18 @@ function timeBar(lowShare) {
   };
 }
 
+// Was das Panel je nach Art zeigt. Ein Zettel (kind 'note') ist kein Duell: keine Fähigkeiten,
+// kein Weitblick, „Später“ statt Fliehen. Beim Befreunden (kind 'befriend', Lumara 1.2) gelten die
+// Besonderheiten der Startwesen nicht, es gibt weder Uhr noch Füttern, nur der Weitblickstein hilft;
+// Verlassen heißt dort „Weiterziehen“. abilities: Erleuchtung, Rückenwind, Zeitstein und Füttern.
+const LEAVE = { wild: 'flee', trainer: 'surrender', note: 'later', befriend: 'moveon' };
+const LEAVE_LABEL = { flee: 'duel.flee', surrender: 'duel.surrender', later: 'duel.later', moveon: 'befriend.moveOn' };
+export function panelRules(kind) {
+  const leave = LEAVE[kind] ?? 'surrender';
+  const plain = kind === 'note' || kind === 'befriend';
+  return { leave, leaveLabel: LEAVE_LABEL[leave], abilities: !plain, farsight: kind !== 'note' };
+}
+
 export function createDuelPanel(game) {
   const root = el('div', { class: 'duel-panel' });
   game.panel.append(root);
@@ -194,7 +206,7 @@ export function createDuelPanel(game) {
 
   // Zeigt die aktuelle Frage.
   // Ergebnis: { type: 'answer', response } | { type: 'feed' } | { type: 'flee' } | { type: 'surrender' }
-  //   | { type: 'later' } (nur bei einem Zettel)
+  //   | { type: 'later' } (nur bei einem Zettel) | { type: 'moveon' } (nur beim Befreunden)
   // feed: { show, enabled() } – „Füttern“ steht das ganze Duell an seinem Platz, wenn zu Beginn
   // Futter im Rucksack war, und ist gesperrt, wenn gerade nicht gefüttert werden kann (auch nach
   // einem Zeitstein: Dann bleibt es bei der Antwort).
@@ -218,9 +230,8 @@ export function createDuelPanel(game) {
       }
       finishOpen = finish;
 
-      // Ein Zettel (kind 'note') ist kein Duell: keine Fähigkeiten, „Später“ statt Fliehen.
-      const note = duel.kind === 'note';
-      const leave = { wild: 'flee', trainer: 'surrender', note: 'later' }[duel.kind] ?? 'surrender';
+      const rules = panelRules(duel.kind);
+      const leave = rules.leave;
       const offB = game.input.on('b', () => finish({ type: leave }));
 
       function render() {
@@ -245,7 +256,7 @@ export function createDuelPanel(game) {
             farBtn.textContent = farsight.label();
           }
         };
-        if (species === 'funki' && !note) {
+        if (species === 'funki' && rules.abilities) {
           jokerBtn = el('button', {
             class: 'btn side',
             type: 'button',
@@ -258,7 +269,7 @@ export function createDuelPanel(game) {
           }, tr('duel.jokerBtn'));
           side.append(jokerBtn);
         }
-        if (farsight && !note) {
+        if (farsight && rules.farsight) {
           farBtn = el('button', {
             class: 'btn side',
             type: 'button',
@@ -271,7 +282,7 @@ export function createDuelPanel(game) {
           }, farsight.label());
           side.append(farBtn);
         }
-        if (species === 'flausch' && !note) {
+        if (species === 'flausch' && rules.abilities) {
           side.append(el('button', {
             class: 'btn side',
             type: 'button',
@@ -284,7 +295,7 @@ export function createDuelPanel(game) {
           }, tr('duel.swapBtn')));
         }
         let feedBtn = null;
-        if (time && !note) {
+        if (time && rules.abilities) {
           const timeBtn = el('button', {
             class: 'btn side',
             type: 'button',
@@ -299,12 +310,11 @@ export function createDuelPanel(game) {
           }, time.label());
           side.append(timeBtn);
         }
-        if (feed?.show && !note) {
+        if (feed?.show && rules.abilities) {
           feedBtn = el('button', { class: 'btn side', type: 'button', disabled: !feed.enabled(), onclick: () => finish({ type: 'feed' }) }, tr('duel.feed'));
           side.append(feedBtn);
         }
-        const leaveLabel = tr({ flee: 'duel.flee', surrender: 'duel.surrender', later: 'duel.later' }[leave]);
-        side.append(el('button', { class: 'btn side', type: 'button', onclick: () => finish({ type: leave }) }, leaveLabel));
+        side.append(el('button', { class: 'btn side', type: 'button', onclick: () => finish({ type: leave }) }, tr(rules.leaveLabel)));
 
         if (duel.timeLimit != null) {
           bar = timeBar(CONFIG.time.lowShare);

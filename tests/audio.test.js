@@ -98,7 +98,7 @@ test('Effekte nur, wenn sie an sind; alle Effekte aus Design 15 gibt es', () => 
   off.audio.unlock();
   off.audio.sfx('correct');
   assert.equal(off.ctx.oscillators + off.ctx.sources, 0);
-  for (const id of ['menu', 'confirm', 'correct', 'wrong', 'hit', 'crit', 'tile', 'type', 'lift', 'transition', 'fog', 'bagOpen', 'bagClose']) assert.ok(SFX[id], id);
+  for (const id of ['menu', 'confirm', 'correct', 'wrong', 'hit', 'crit', 'tile', 'type', 'lift', 'transition', 'fog', 'bagOpen', 'bagClose', 'trust']) assert.ok(SFX[id], id);
 });
 
 test('Ohne Web Audio bleibt alles still und wirft keinen Fehler', () => {

@@ -23,6 +23,9 @@ import { foodEnergy } from '../items/food.js';
 import { treasureName } from '../items/treasures.js';
 import { pickWild, wildLevel, rollShiny } from '../world/encounters.js';
 import { shinyRows } from '../gfx/art/shiny.js';
+import { drawTrustRing, drawHeart, heartPose, heartMs } from '../gfx/trustRing.js';
+import { befriendOffer } from '../friends/friends.js';
+import { playBefriend } from './befriend.js';
 import { t as tr } from '../i18n/i18n.js'; // t ist hier die Zeit
 
 const FINAL = new Set(['won', 'lost', 'fled']);
@@ -141,7 +144,8 @@ export function createDuelScene(game, setup, onEnd) {
   let panel = null;
   let asking = false; // eine Frage ist zu sehen: Nur dann läuft die Uhr (Design 7.4)
   const plates = { own: plate('own'), foe: plate('foe') };
-  const anim = { own: { lunge: -1e9, hit: -1e9, faint: null }, foe: { lunge: -1e9, hit: -1e9, faint: null }, sparkle: -1e9, foeSparkle: -1e9 };
+  // tired: Das besiegte Wesen bleibt sitzen, ohne zu wippen, solange man sich anfreunden kann.
+  const anim = { own: { lunge: -1e9, hit: -1e9, faint: null }, foe: { lunge: -1e9, hit: -1e9, faint: null, tired: false }, sparkle: -1e9, foeSparkle: -1e9 };
 
   function updatePlates() {
     plates.foe.name.textContent = foeName;
@@ -162,6 +166,32 @@ export function createDuelScene(game, setup, onEnd) {
   }
 
   let stopKeyboard = () => {};
+
+  // Befreunden (Lumara 1.2): Vertrauensring um das Wesen, Text auf seinem Namensschild, Herz.
+  let ring = null; // { filled, since: [Startzeit je Feld] }
+  let heartAt = null;
+  let leaveHook = null; // räumt beim Verlassen der Szene das Panel des Rings weg
+  const view = {
+    alive: () => alive,
+    setRing(trust) {
+      clear(plates.foe.extra);
+      if (!trust) {
+        ring = null;
+        updatePlates(); // die Glanzform-Marke kommt zurück
+        return;
+      }
+      const since = ring?.since ?? [];
+      for (let i = ring?.filled ?? 0; i < trust.filled; i++) since[i] = t;
+      ring = { filled: trust.filled, since };
+      plates.foe.extra.append(el('span', { class: 'trust-mark' }, tr('befriend.trust', { n: trust.filled, max: CONFIG.friends.needed })));
+    },
+    heart() {
+      heartAt = t;
+    },
+    onLeave(fn) {
+      leaveHook = fn;
+    },
+  };
 
   // Die Entwicklung in der Arena (Design 6.3). Danach steht das neue Wesen auf der Plattform.
   function evolveInArena(from, to) {
@@ -250,9 +280,12 @@ export function createDuelScene(game, setup, onEnd) {
     // beim Sieg (Design 11). Sonst speichert das Schließen den Stand ohne Sieg und XP.
     const report = applyDuelResult(game.state, game.pack.data.shortId, setup, s, game.rng);
     game.save?.();
+    // Ein wildes Wesen, mit dem man sich noch anfreunden kann, verblasst nicht, es bleibt sitzen.
+    const offer = befriendOffer(game.state, setup, s.outcome);
     if (s.outcome === 'won') {
       fanfare('victory');
-      anim.foe.faint = t;
+      if (offer) anim.foe.tired = true;
+      else anim.foe.faint = t;
       if (setup.trainer) await say(game, [setup.trainer.lines.win], { speaker: setup.trainer.name });
       else if (setup.kind === 'boss') {
         const { win } = bossLines(game.pack.data);
@@ -299,6 +332,16 @@ export function createDuelScene(game, setup, onEnd) {
         ? tr('duel.foeDroppedBerry', { wild: wildName(setup.foe.species, setup.foe.stage, 'the') })
         : tr('duel.foundBerry', { name: displayName(c) });
       await say(game, l.kept ? [line] : [line, tr('bag.full')]);
+    }
+    if (offer && alive) {
+      const result = await playBefriend(game, setup, offer, view);
+      if (!alive) return;
+      // Erst nach dem Herz blendet das Wesen aus, dann geht es zurück in die Welt.
+      const heartLeft = result === 'friend' && heartAt !== null ? heartMs(game.reducedMotion) - (t - heartAt) : 0;
+      if (heartLeft > 0) await wait(heartLeft);
+      if (!alive) return;
+      anim.foe.faint = t;
+      await wait(600);
     }
     if (alive) onEnd(report);
   }
@@ -388,7 +431,7 @@ export function createDuelScene(game, setup, onEnd) {
     const a = anim[who];
     const dir = flip ? -1 : 1;
     let dx = 0;
-    let dy = game.reducedMotion ? 0 : Math.round(Math.sin(t / 650 + (flip ? 1.7 : 0)));
+    let dy = game.reducedMotion || a.tired ? 0 : Math.round(Math.sin(t / 650 + (flip ? 1.7 : 0)));
     const lp = (t - a.lunge) / 300;
     if (!game.reducedMotion && lp >= 0 && lp < 1) dx += Math.round(Math.sin(lp * Math.PI) * 8) * dir;
     const hp = (t - a.hit) / 300;
@@ -418,6 +461,8 @@ export function createDuelScene(game, setup, onEnd) {
     exit() {
       alive = false;
       closeDialogs();
+      leaveHook?.();
+      leaveHook = null;
       panel?.remove();
       plates.foe.node.remove();
       plates.own.node.remove();
@@ -463,6 +508,9 @@ export function createDuelScene(game, setup, onEnd) {
         }
         ctx.globalAlpha = 1;
       }
+      if (ring) drawTrustRing(ctx, ring, ARENA.foe.x, ARENA.foe.y - 16, t, game.reducedMotion);
+      const heart = heartAt === null ? null : heartPose(t - heartAt, game.reducedMotion);
+      if (heart) drawHeart(ctx, ARENA.foe.x, ARENA.foe.y - 16 + heart.dy, heart.alpha);
       if (evolving) drawEvolution(ctx, t - evolving.start, evolving, ARENA.own, game.reducedMotion);
       else drawCreature(ctx, ownRows, `creature:${c.species}:${ownRows.length}`, ARENA.own, false, 'own');
       const sp = (t - anim.sparkle) / 1200;

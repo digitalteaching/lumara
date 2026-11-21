@@ -136,11 +136,17 @@ function devLevel(state) {
   state.creature.level = Math.min(n, CONFIG.creature.maxLevel);
   state.creature.energy = maxEnergy(state.creature);
 }
+// &leckerli=n: n Leckerli im Rucksack, zum Befreunden mit einem Feld im Ring vorab.
+function devTreats(state) {
+  const n = Number(params.get('leckerli'));
+  if (Number.isInteger(n) && n > 0) state.bag.treat = n;
+}
 async function devStart() {
   setGamePack(game, await devPack());
   const species = STARTERS.includes(params.get('wesen')) ? params.get('wesen') : 'funki';
   game.state = newGameState({ name: 'Test', species, nickname: null });
   devLevel(game.state);
+  devTreats(game.state);
   // ?dev&gebiet=wald (moor, …): gleich am Eingang des Gebiets, alle Steine davor leuchten
   const def = MAPS[params.get('gebiet')];
   if (def && def.area > 1) {
@@ -155,6 +161,7 @@ async function devDuel(kind) {
   const species = STARTERS.includes(params.get('wesen')) ? params.get('wesen') : 'funki';
   game.state = newGameState({ name: 'Test', species, nickname: null });
   devLevel(game.state);
+  devTreats(game.state);
   const again = () => {
     game.state.creature.energy = Math.max(game.state.creature.energy, 1);
     const setup = kind === 'trainer' ? makeTrainerSetup(game, 1) : makeWildSetup(game, 1);

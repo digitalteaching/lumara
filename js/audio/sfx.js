@@ -16,6 +16,8 @@ export const SFX = {
   // Rucksack auf und zu (Lumara 1.1): Rascheln aus Rauschen, dazu ein heller Ton, beim Schließen tiefer.
   bagOpen: [{ drum: 'h', at: 0 }, { drum: 'h', at: 0.04 }, { drum: 'h', at: 0.09 }, { type: 'triangle', from: 784, to: 1175, at: 0.06, dur: 0.12, level: 0.2 }],
   bagClose: [{ drum: 'h', at: 0 }, { drum: 'h', at: 0.04 }, { drum: 'h', at: 0.09 }, { type: 'triangle', from: 392, to: 262, at: 0.06, dur: 0.12, level: 0.24 }],
+  // Ein Feld im Vertrauensring leuchtet auf (Lumara 1.2): zwei weiche, steigende Dreiecktöne.
+  trust: [{ type: 'triangle', from: 659, at: 0, dur: 0.12, level: 0.26 }, { type: 'triangle', from: 880, to: 988, at: 0.11, dur: 0.22, level: 0.26 }],
 };
 
 export function playSfx(synth, id, when) {

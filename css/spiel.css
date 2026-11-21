@@ -447,6 +447,8 @@ body.touch .answer-key { display: none; }
 /* Ohne Inhalt (etwa beim Gegner ohne Glanzform) keine leere Zeile: Das Schild bleibt flach. */
 .plate-extra:empty { display: none; }
 .shiny-mark { font-weight: 800; color: var(--frame-dark); }
+/* Befreunden (Lumara 1.2): Stand des Vertrauensrings auf dem Schild des Wesens */
+.trust-mark { font-weight: 800; color: var(--frame-dark); }
 .pips { display: flex; gap: 3px; }
 .pip { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--frame); }
 .pip.on { background: #ffe08a; }
