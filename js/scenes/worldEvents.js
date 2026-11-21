@@ -25,7 +25,8 @@ import { MAPS, areaConfig, areaOpen, exitAt, openGatesFor, closedPuzzleGateAt, r
 import { visitStone, travelTargets, respawnPoint, challengeMark, respawnAfterLoss } from '../world/beacons.js';
 import { playBeaconScene } from './beacon.js';
 import { bushKey, bushReady, harvest } from '../items/food.js';
-import { findKey, findReady, takeFind, stepFind, STONE_LINES } from '../items/stones.js';
+import { findKey, findReady, stepFind, STONE_LINES } from '../items/stones.js';
+import { takeGlitter, treasureName } from '../items/treasures.js';
 import { BUCHT } from '../world/maps/bucht.js';
 import { packProgress, recordNoteAnswer } from '../state.js';
 import { notePool, noteKey, noteReady, solveNote } from '../world/notes.js';
@@ -277,6 +278,12 @@ export function createGameWorld(game) {
     await say(game, [STONE_LINES[item](displayName(game.state.creature))]);
   }
 
+  async function foundTreasure(id) {
+    game.save();
+    jingle('find');
+    await say(game, [tr('treasure.found', { name: treasureName(id) })]);
+  }
+
   const finds = def.finds ?? [];
   const findAt = (x, y) => finds.find(f => f.x === x && f.y === y && findReady(game.state, findKey(def.id, f))) ?? null;
 
@@ -311,8 +318,9 @@ export function createGameWorld(game) {
     if (ev.target) return false;
     const f = findAt(ev.x, ev.y);
     if (!f) return false;
-    const { item } = takeFind(game.state, findKey(def.id, f), game.rng, def.area, timePressure());
-    await foundStone(item); // mit Fund-Jingle, nur wenn wirklich etwas da ist
+    const { item, treasure } = takeGlitter(game.state, findKey(def.id, f), game.rng, def.area, timePressure());
+    if (item === 'treasure') await foundTreasure(treasure);
+    else await foundStone(item); // mit Fund-Jingle, nur wenn wirklich etwas da ist
     return true;
   });
 

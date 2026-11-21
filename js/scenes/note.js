@@ -7,6 +7,7 @@ import { createDeck } from '../duel/questions.js';
 import { createDuelPanel, watchKeyboard } from '../ui/duelPanel.js';
 import { packProgress } from '../state.js';
 import { displayName } from '../data/species.js';
+import { treasureName } from '../items/treasures.js';
 import { t } from '../i18n/i18n.js';
 
 const FOUND = {
@@ -46,7 +47,8 @@ export async function playNote(game, pool, settle) {
     const out = settle(duel.summary().answers[0]);
     if (r.correct) {
       const lines = [];
-      if (out.item) lines.push(t('note.alsoFound', { item: t(FOUND[out.item]) }));
+      if (out.item === 'treasure') lines.push(t('note.alsoFoundTreasure', { name: treasureName(out.treasure) }));
+      else if (out.item) lines.push(t('note.alsoFound', { item: t(FOUND[out.item]) }));
       if (out.item === 'life') lines.push(t('note.lifeStone', { name: displayName(c) }));
       if (out.lost) lines.push(t('note.alsoFoundFull', { item: t(FOUND[out.lost]) }));
       await panel.feedback({ ok: true, title: t('note.right', { xp: out.xp }), lines, minMs: 600 });

@@ -10,6 +10,7 @@ import { recordAnswer } from './duel/questions.js';
 import { BUCHT } from './world/maps/bucht.js';
 import { emptyBag, addItem } from './items/bag.js';
 import { lootRolls } from './items/food.js';
+import { addTreasure, wildTreasureDrop } from './items/treasures.js';
 import { t } from './i18n/i18n.js';
 import { finishFinale } from './world/finale.js';
 import { raiseTier } from './duel/rematch.js';
@@ -161,7 +162,11 @@ export function applyDuelResult(state, shortId, setup, summary, rng = null) {
       if (!progress.beaten.includes(setup.trainer.number)) progress.beaten.push(setup.trainer.number);
       report.stoneLit = lightStone(state, setup.trainer.number);
     }
-    if (rng) report.loot = lootRolls(state, setup, rng).map(l => ({ ...l, kept: addItem(state, l.item) > 0 }));
+    if (rng) {
+      report.loot = lootRolls(state, setup, rng).map(l => ({ ...l, kept: addItem(state, l.item) > 0 }));
+      const treasure = wildTreasureDrop(setup, rng);
+      if (treasure) report.loot.push({ item: 'treasure', treasure, source: 'wild', kept: addTreasure(state, treasure) > 0 });
+    }
   } else if (summary.outcome === 'lost') {
     c.energy = maxEnergy(c);
   } else {

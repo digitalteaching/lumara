@@ -66,11 +66,13 @@ test('Beute nach einem Sieg landet im Rucksack, gemeldet wird, was hineinpasste'
   assert.deepEqual(applyDuelResult(s, 'ENQ9', wild, won(), always).loot, [
     { item: 'berry', source: 'wild', kept: true },
     { item: 'berry', source: 'find', kept: true },
+    { item: 'treasure', treasure: 'glassshell', source: 'wild', kept: true },
   ]);
   assert.equal(s.bag.berry, 2);
   s.bag.berry = 9;
-  assert.deepEqual(applyDuelResult(s, 'ENQ9', wild, won(), always).loot.map(l => l.kept), [true, false]);
+  assert.deepEqual(applyDuelResult(s, 'ENQ9', wild, won(), always).loot.map(l => l.kept), [true, false, true]);
   assert.equal(s.bag.berry, 10);
+  assert.equal(s.treasures.glassshell, 2);
   const fled = { outcome: 'fled', playerEnergy: 3, flawless: true, answers: [] };
   assert.deepEqual(applyDuelResult(s, 'ENQ9', wild, fled, always).loot, []);
   assert.deepEqual(applyDuelResult(s, 'ENQ9', wild, won()).loot, []); // ohne Zufall keine Beute

@@ -20,6 +20,7 @@ import { el, clear } from '../ui/dom.js';
 import { applyDuelResult, packProgress } from '../state.js';
 import { FOOD, foodCount, takeItem } from '../items/bag.js';
 import { foodEnergy } from '../items/food.js';
+import { treasureName } from '../items/treasures.js';
 import { pickWild, wildLevel, rollShiny } from '../world/encounters.js';
 import { shinyRows } from '../gfx/art/shiny.js';
 import { t as tr } from '../i18n/i18n.js'; // t ist hier die Zeit
@@ -291,7 +292,10 @@ export function createDuelScene(game, setup, onEnd) {
     }
     for (const l of report.loot) {
       if (!alive) return;
-      const line = l.source === 'wild'
+      const wild = l.source === 'wild';
+      const line = l.item === 'treasure'
+        ? tr('duel.foeDroppedTreasure', { wild: wildName(setup.foe.species, setup.foe.stage, 'the'), name: treasureName(l.treasure) })
+        : wild
         ? tr('duel.foeDroppedBerry', { wild: wildName(setup.foe.species, setup.foe.stage, 'the') })
         : tr('duel.foundBerry', { name: displayName(c) });
       await say(game, l.kept ? [line] : [line, tr('bag.full')]);

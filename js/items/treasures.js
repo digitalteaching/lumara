@@ -2,6 +2,9 @@
 // Rucksack (Anzahl) und im Album (einmal gefunden, bleibt). IDs sind englisch, Texte stehen in i18n/. DOM-frei.
 
 import { t } from '../i18n/i18n.js';
+import { CONFIG } from '../config.js';
+import { findReady, takeFind } from './stones.js';
+import { CAVE_SPECIES } from '../data/species.js';
 
 const SETS = [
   [1, 'glassshell', 'gullfeather', 'amber'],
@@ -50,3 +53,21 @@ export function rollTreasure(area, rng) {
 
 export const treasureName = id => t(`treasure.${id}.name`);
 export const treasureText = id => t(`treasure.${id}.text`);
+
+// Glitzerstelle: mit findChance ein Schatz des Gebiets, sonst ein Stein wie bisher. Glitzert sie
+// gerade nicht (etwa bei einem Doppeltipp), gibt es nichts.
+export function takeGlitter(state, key, rng, area = 1, timePressure = 'normal') {
+  if (!findReady(state, key)) return { item: null, added: 0 };
+  if (!(rng.next() < CONFIG.treasures.findChance)) return takeFind(state, key, rng, area, timePressure);
+  const treasure = rollTreasure(area, rng);
+  const added = addTreasure(state, treasure);
+  state.world.finds[key] = state.playMs + CONFIG.finds.respawnMs;
+  return { item: 'treasure', treasure, added };
+}
+
+// Wilde Wesen verlieren selten einen Schatz ihres Gebiets; nicht in der Höhle, nicht bei Trainern.
+export function wildTreasureDrop(setup, rng) {
+  if (setup.kind !== 'wild' || !(setup.area >= 1 && setup.area <= 8)) return null;
+  if (CAVE_SPECIES.includes(setup.foe?.species)) return null;
+  return rng.next() < CONFIG.treasures.wildDropChance ? rollTreasure(setup.area, rng) : null;
+}

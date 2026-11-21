@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { newGameState } from '../js/state.js';
-import { TREASURES, AREA_TREASURES, isTreasure, addTreasure, takeTreasure, rollTreasure, treasureName, treasureText } from '../js/items/treasures.js';
+import { TREASURES, AREA_TREASURES, isTreasure, addTreasure, takeTreasure, rollTreasure, treasureName, treasureText, takeGlitter, wildTreasureDrop } from '../js/items/treasures.js';
+import { findReady } from '../js/items/stones.js';
 import { CONFIG } from '../js/config.js';
 import { setLanguage, LANGUAGES } from '../js/i18n/i18n.js';
 
@@ -75,4 +76,23 @@ test('Namen und Sätze in jeder Sprache', () => {
   } finally {
     setLanguage('de');
   }
+});
+
+test('Glitzerstelle: mit findChance ein Schatz des Gebiets, sonst ein Stein wie bisher', () => {
+  const s = s0();
+  assert.deepEqual(takeGlitter(s, 'wald:5,6', seq(0), 2), { item: 'treasure', treasure: 'acorncap', added: 1 });
+  assert.equal(findReady(s, 'wald:5,6'), false);
+  assert.equal(s.treasures.acorncap, 1);
+  assert.deepEqual(takeGlitter(s, 'wald:5,6', seq(0), 2), { item: null, added: 0 }); // leere Stelle
+  const f = s0();
+  assert.deepEqual(takeGlitter(f, 'wald:5,6', seq(0.5, 0), 2), { item: 'farsight', added: 1 });
+});
+
+test('Wilde Wesen: selten ein Schatz ihres Gebiets, nie in der Höhle, nie bei Trainern', () => {
+  assert.equal(wildTreasureDrop({ kind: 'wild', area: 3, foe: { species: 'tupfling' } }, seq(0)), 'sporeball');
+  assert.equal(wildTreasureDrop({ kind: 'wild', area: 3, foe: { species: 'tupfling' } }, seq(0.5)), null);
+  assert.equal(wildTreasureDrop({ kind: 'wild', area: 8, foe: { species: 'echomaus' } }, seq(0)), null);
+  assert.equal(wildTreasureDrop({ kind: 'trainer', area: 1 }, seq(0)), null);
+  assert.equal(wildTreasureDrop({ kind: 'ascent', area: 1 }, seq(0)), null);
+  assert.equal(wildTreasureDrop({ kind: 'wild', area: 1 }, seq(0)), 'glassshell');
 });

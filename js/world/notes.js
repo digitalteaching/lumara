@@ -6,6 +6,7 @@ import { CONFIG } from '../config.js';
 import { gainXp } from '../duel/progress.js';
 import { poolFor } from '../duel/questions.js';
 import { addItem } from '../items/bag.js';
+import { addTreasure, rollTreasure } from '../items/treasures.js';
 import { timedArea } from '../items/stones.js';
 import { storyPieces } from '../data/story.js';
 
@@ -45,10 +46,14 @@ export function solveNote(state, key, area, correct, rng, timePressure = 'normal
 
   let item = null;
   let lost = null;
+  let treasure = null;
   if (rng.next() < CONFIG.notes.rewardChance) {
     const reward = pickReward(state, rng, area, timePressure);
     if (addItem(state, reward) > 0) item = reward;
     else lost = reward;
+  } else if (rng.next() < CONFIG.treasures.noteChance) {
+    treasure = rollTreasure(area, rng);
+    addTreasure(state, treasure);
   }
 
   let story = null;
@@ -60,7 +65,8 @@ export function solveNote(state, key, area, correct, rng, timePressure = 'normal
   }
 
   state.world.notes[key] = state.playMs + CONFIG.notes.refillMs;
-  return { xp, item, lost, story, evolved: r.stageAfter > r.stageBefore };
+  const result = { xp, item, lost, story, evolved: r.stageAfter > r.stageBefore };
+  return treasure ? { ...result, item: 'treasure', treasure } : result;
 }
 
 // Alle gefundenen Stücke, nach Gebiet und Fundreihenfolge.

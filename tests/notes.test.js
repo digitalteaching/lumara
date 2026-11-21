@@ -131,3 +131,11 @@ test('Ein Zettel mit Entwicklung füllt das neue Energiefeld', () => {
   assert.equal(out.evolved, true);
   assert.equal(s.creature.energy, 3);
 });
+
+test('Zettel ohne Gegenstand: mit noteChance ein häufiger Schatz', () => {
+  const s = s0();
+  const r = solveNote(s, 'bucht:1,1', 1, true, seq(0.6, 0, 0.6));
+  assert.equal(r.item, 'treasure');
+  assert.equal(r.treasure, 'gullfeather');
+  assert.equal(s.treasures.gullfeather, 1);
+});
