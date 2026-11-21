@@ -5,11 +5,11 @@
 import { el } from '../ui/dom.js';
 import { STORY, storyPieces, secretStory } from '../data/story.js';
 import { SECRET_PLACES } from '../data/secrets.js';
-import { MAPS, mapOfArea, areaName as nameOf } from '../world/network.js';
+import { mapOfArea, areaName as nameOf } from '../world/network.js';
 import { t } from '../i18n/i18n.js';
 import { questLog } from '../world/quests.js';
 import { boardView } from '../world/board.js';
-import { WISH_GIVERS, wishOf, wishHint } from '../world/wishes.js';
+import { WISH_GIVERS, wishOf, wishHint, wisherName } from '../world/wishes.js';
 import { treasureName } from '../items/treasures.js';
 import { boardTaskList } from './boardPage.js';
 
@@ -17,11 +17,10 @@ const areaName = area => (mapOfArea(area) ? nameOf(mapOfArea(area)) : t('diary.a
 
 // Offene Wünsche nach Gebiet: Name des Bewohners (aus seiner Karte), Schatz und wo man ihn findet.
 function openWishes(state) {
-  return Object.values(WISH_GIVERS).flatMap(({ map, npc }) => {
+  return Object.values(WISH_GIVERS).flatMap(({ npc }) => {
     const w = wishOf(state, npc);
     if (!w || w.done !== false) return [];
-    const name = MAPS[map].objects.find(o => o.id === npc)?.name ?? npc;
-    return [{ text: t('wish.diary', { name, treasure: treasureName(w.treasure) }), hint: wishHint(w.treasure) }];
+    return [{ text: t('wish.diary', { name: wisherName(npc), treasure: treasureName(w.treasure) }), hint: wishHint(w.treasure) }];
   });
 }
 

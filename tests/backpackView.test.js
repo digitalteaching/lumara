@@ -98,3 +98,19 @@ test('Leckerli im Futterfach, ohne Futterplatz', () => {
   assert.equal(treat.disabled, false);
   assert.equal(v.food.n, 10);
 });
+
+// Lumara 1.3: Die Karte eines Schatzes sagt, wer ihn sich gerade wünscht (Namen aus ihren Karten).
+test('Schätze: wishers nennt die Bewohner mit offenem Wunsch nach diesem Schatz', () => {
+  const s = fresh('nixi');
+  s.wishes = {
+    pim: { treasure: 'glassshell', day: '2026-11-22', done: false },
+    lio: { treasure: 'glassshell', day: '2026-11-22', done: false },
+    nele: { treasure: 'amber', day: '2026-11-22', done: true },
+  };
+  const items = pocket(backpackView(s), 'treasures').items;
+  assert.ok(items.every(e => Array.isArray(e.wishers)), 'jeder Schatz hat die Liste');
+  assert.deepEqual(items.find(e => e.id === 'glassshell').wishers, ['Pim', 'Lio']);
+  assert.deepEqual(items.find(e => e.id === 'amber').wishers, [], 'ein erfüllter Wunsch zählt nicht');
+  assert.deepEqual(items.find(e => e.id === 'goldleaf').wishers, []);
+  assert.ok(pocket(backpackView(fresh('nixi')), 'treasures').items.every(e => e.wishers.length === 0), 'ohne Wünsche leer');
+});

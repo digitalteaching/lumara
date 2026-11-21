@@ -145,6 +145,7 @@ const FILES = [
   "js/scenes/taskEvents.js",
   "js/scenes/title.js",
   "js/scenes/transition.js",
+  "js/scenes/wishEvents.js",
   "js/scenes/world.js",
   "js/scenes/worldEvents.js",
   "js/state.js",

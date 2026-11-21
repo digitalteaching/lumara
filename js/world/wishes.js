@@ -5,7 +5,7 @@
 import { CONFIG } from '../config.js';
 import { t } from '../i18n/i18n.js';
 import { emit } from './events.js';
-import { areaOpen, mapOfArea, areaAt } from './network.js';
+import { MAPS, areaOpen, mapOfArea, areaAt } from './network.js';
 import { TREASURES, AREA_TREASURES, takeTreasure } from '../items/treasures.js';
 import { addItem } from '../items/bag.js';
 import { gainXp } from '../duel/progress.js';
@@ -27,6 +27,12 @@ const areaOfNpc = npc => AREAS.find(a => WISH_GIVERS[a].npc === npc);
 const open = (state, pack) => AREAS.filter(a => areaOpen(state, pack, a));
 
 export const wishOf = (state, npc) => state.wishes?.[npc] ?? null;
+
+// Der Name eines Wunsch-Bewohners, wie er auf seiner Karte steht.
+export function wisherName(npc) {
+  const giver = Object.values(WISH_GIVERS).find(g => g.npc === npc);
+  return MAPS[giver?.map]?.objects.find(o => o.id === npc)?.name ?? npc;
+}
 
 // Wer wünscht sich diesen Schatz gerade noch?
 export const wishersOf = (state, treasureId) =>

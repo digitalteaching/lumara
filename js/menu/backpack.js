@@ -1,6 +1,7 @@
 // Der Rucksack im Spiel (Lumara 1.1, Spec 5.1): ein großer Pixel-Rucksack über dem ganzen Bildschirm.
 // Er kommt von unten nach vorn, die Klappe klappt hoch, dann liegen vier Fächer offen (Futter, Steine,
-// Schätze, Schlüssel). Antippen zeigt darunter eine Karte mit Name, Anzahl, Text und Handlung.
+// Schätze, Schlüssel). Antippen zeigt darunter eine Karte mit Name, Anzahl, Text und Handlung, bei
+// einem Schatz dazu, wer ihn sich gerade wünscht (Lumara 1.3).
 // Schließen mit ✕, B, Esc, R oder einem Tipp neben den Rucksack. Bei „Bewegung reduzieren“ ist er
 // sofort offen, und nichts fliegt. Was die Fächer zeigen, kommt aus items/backpackView.js. Nur im Browser.
 
@@ -181,6 +182,7 @@ export function openBackpack(game) {
             entry.known && entry.kind !== 'key' ? el('span', { class: 'bp-card-count' }, `× ${entry.count}`) : null),
           entry.known ? el('p', {}, itemText(entry, game.state)) : null,
           place ? el('p', { class: 'bp-card-place' }, t('bag.foundIn', { place: areaName(place) })) : null,
+          entry.wishers?.length ? el('p', { class: 'bp-card-wish' }, t('bag.wishedBy', { names: entry.wishers.join(', ') })) : null,
           message ? el('p', { class: 'bp-msg' }, message) : null),
         action(entry),
       );

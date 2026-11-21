@@ -8,6 +8,7 @@ import { KEY_ITEMS, hasKey } from './keys.js';
 import { TREASURES, treasureName, treasureText } from './treasures.js';
 import { foodEnergy } from './food.js';
 import { maxEnergy } from '../duel/progress.js';
+import { wishersOf, wisherName } from '../world/wishes.js';
 
 export const POCKETS = ['food', 'stones', 'treasures', 'keys'];
 
@@ -29,7 +30,9 @@ export function backpackView(state) {
     item(state, id, action, id === 'shine' && (shineActive || !(state.bag[id] > 0))));
   const treasureItems = TREASURES.map(({ id }) => {
     const known = album.includes(id);
-    return { id, kind: 'treasure', count: treasures[id] ?? 0, known, action: known ? 'view' : null, disabled: false };
+    // wishers: Namen der Bewohner, die sich diesen Schatz gerade wünschen (Lumara 1.3).
+    const wishers = wishersOf(state, id).map(wisherName);
+    return { id, kind: 'treasure', count: treasures[id] ?? 0, known, action: known ? 'view' : null, disabled: false, wishers };
   });
   const keys = KEY_ITEMS.filter(k => hasKey(state, k))
     .map(id => ({ id, kind: 'key', count: 1, known: true, action: null, disabled: false }));

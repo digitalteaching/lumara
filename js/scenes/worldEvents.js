@@ -38,6 +38,7 @@ import { addGarden } from './gardenEvents.js';
 import { addHideouts } from './hideoutEvents.js';
 import { addTasks } from './taskEvents.js';
 import { addBoard } from './boardEvents.js';
+import { addWishes } from './wishEvents.js';
 import { questFor, acceptQuest, advanceQuest, finishQuest, activePickups, activeGuests } from '../world/quests.js';
 import { questText } from '../data/quests.js';
 import { maxEnergy, stageForLevel } from '../duel/progress.js';
@@ -922,6 +923,10 @@ export function createGameWorld(game) {
   // Aushang (Lumara 1.3, Spec 7.1): neue Aufgaben am neuen Tag, Meldungen, die Tafel in der Bucht und
   // Ilvys Hinweis. Der Bonus bringt die Level-Zeilen dieser Welt.
   addBoard(world, game, { levelUps });
+
+  // Wünsche (Lumara 1.3, Spec 7.2): die Sprechblase über dem Wunsch-Bewohner und sein A-Handler vor
+  // dem allgemeinen Bewohner-Handler. Nach dem Aushang, der die Wünsche des Tages bringt.
+  addWishes(world, game, { levelUps });
 
   // Spielaufgaben (Lumara 1.2, Spec 6.6): Ihr A-Handler kommt an den Anfang. Die Steine zum Betreten
   // (Sternenwiese) und das Folgen (Irrlicht im Moor, Pfotenspuren am See) hängen sich hinten an
