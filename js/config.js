@@ -82,6 +82,7 @@ export const CONFIG = deepFreeze({
     rewards: { berry: 3, starfruit: 1, farsight: 2, shine: 1, life: 1 },
     rewardsTimed: { berry: 3, starfruit: 1, farsight: 2, shine: 1, life: 1, time: 2 },
   },
+  treasures: { findChance: 1 / 3, noteChance: 0.25, wildDropChance: 0.1 }, // Schätze (Lumara 1.1)
   // Entwicklung (Design 6.3): Aufleuchten, Wechsel der Gestalt, Ausklingen; zusammen 3,8 s.
   evolution: { glowMs: 900, swapMs: [450, 450, 380, 380, 340], fadeMs: 900 },
   beacons: {

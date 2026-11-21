@@ -86,6 +86,7 @@ const FILES = [
   "js/items/food.js",
   "js/items/keys.js",
   "js/items/stones.js",
+  "js/items/treasures.js",
   "js/main.js",
   "js/menu/backupPages.js",
   "js/menu/bagPage.js",
