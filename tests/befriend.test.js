@@ -67,6 +67,36 @@ test('Ring und Herz: nur Farben der Palette, leer #46496e, voll #ffe08a, alles i
   }
 });
 
+// Farben der Pixel, die drawTrustRing setzt, in der Reihenfolge der Aufrufe.
+function ringColors(ring, t, reducedMotion) {
+  const ctx = stubContext();
+  drawTrustRing(ctx, ring, ARENA.foe.x, ARENA.foe.y - 16, t, reducedMotion);
+  let color = null;
+  const out = [];
+  for (const c of ctx.calls) {
+    if (c[0] === 'set' && c[1] === 'fillStyle') color = c[2];
+    if (c[0] === 'fillRect') out.push(color);
+  }
+  return out;
+}
+
+test('Ring: leer ohne einen hellen Pixel, voll ohne einen dunklen', () => {
+  for (const rm of [false, true]) {
+    const empty = ringColors({ filled: 0, since: [] }, 5000, rm);
+    assert.ok(empty.length > 0);
+    assert.ok(empty.every(c => c === '#46496e'), `leer, reducedMotion=${rm}`);
+    const full = ringColors({ filled: 3, since: [0, 0, 0] }, 5000, rm);
+    assert.equal(full.length, empty.length, 'gleich viele Pixel');
+    assert.ok(full.every(c => c === '#ffe08a'), `voll, reducedMotion=${rm}`);
+  }
+  // Ein Feld voll (Leckerli), die anderen beiden ganz dunkel: genau ein Drittel hell.
+  const one = ringColors({ filled: 1, since: [0] }, 5000, false);
+  assert.equal(one.filter(c => c === '#ffe08a').length * 3, one.length);
+  // Ein neues Feld beginnt dunkel, auch ganz am Anfang des Bogens.
+  const starting = ringColors({ filled: 1, since: [1000] }, 1000, false);
+  assert.ok(starting.every(c => c === '#46496e'));
+});
+
 test('Ring bei „Bewegung reduzieren“: gleich, egal wie spät', () => {
   const ring = { filled: 2, since: [0, 100] };
   const early = stubContext();

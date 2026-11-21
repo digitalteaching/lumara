@@ -54,8 +54,9 @@ export function heartPose(elapsed, reducedMotion) {
 export function drawTrustRing(ctx, ring, cx, cy, t, reducedMotion) {
   ringArcs().forEach((arc, i) => {
     const span = arc.to - arc.from;
-    const lit = Math.round(span * ringFill(ring, i, t, reducedMotion));
-    for (const [color, a, b] of [[FULL, 0, lit], [EMPTY, lit + 1, span]]) {
+    // Grad 0 bis span sind span + 1 Schritte; lit davon sind hell (0: alles dunkel, span + 1: alles hell).
+    const lit = Math.round((span + 1) * ringFill(ring, i, t, reducedMotion));
+    for (const [color, a, b] of [[FULL, 0, lit - 1], [EMPTY, lit, span]]) {
       if (b < a) continue;
       ctx.fillStyle = color;
       for (let d = a; d <= b; d++) {
