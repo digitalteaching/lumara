@@ -13,6 +13,9 @@ export const SFX = {
   lift: [{ type: 'triangle', from: 262, to: 392, at: 0, dur: 0.16, level: 0.3 }],
   transition: [{ type: 'triangle', from: 392, to: 196, at: 0, dur: 0.26, level: 0.22 }],
   fog: [{ drum: 'h', at: 0 }, { type: 'triangle', from: 523, to: 1047, at: 0.02, dur: 0.6, level: 0.18 }, { drum: 'h', at: 0.3 }],
+  // Rucksack auf und zu (Lumara 1.1): Rascheln aus Rauschen, dazu ein heller Ton, beim Schließen tiefer.
+  bagOpen: [{ drum: 'h', at: 0 }, { drum: 'h', at: 0.04 }, { drum: 'h', at: 0.09 }, { type: 'triangle', from: 784, to: 1175, at: 0.06, dur: 0.12, level: 0.2 }],
+  bagClose: [{ drum: 'h', at: 0 }, { drum: 'h', at: 0.04 }, { drum: 'h', at: 0.09 }, { type: 'triangle', from: 392, to: 262, at: 0.06, dur: 0.12, level: 0.24 }],
 };
 
 export function playSfx(synth, id, when) {

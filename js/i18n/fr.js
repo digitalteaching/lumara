@@ -265,6 +265,7 @@ export const FR = {
   'world.lighthouseHeal': 'La lumière du phare donne une nouvelle force à {name}.',
   'world.mirage': 'Ce n’est qu’un mirage !',
   'world.menu': 'Ouvrir le menu',
+  'world.bag': 'Sac à dos',
   'world.doorLocked': 'La porte est fermée à clé.',
 
   // Menü und Einstellungen
@@ -281,17 +282,10 @@ export const FR = {
   'creature.xpAria': '{xp} XP sur {need}',
   'creature.xpToNext': '{xp} / {need} XP jusqu’au niveau {next}',
   'common.energy': 'Énergie {n} / {max}',
-  'bag.berries': 'Baies',
-  'bag.starfruits': 'Fruits-étoiles',
-  'bag.farsights': 'Pierres d’indice',
-  'bag.shines': 'Pierres brillantes',
-  'bag.times': 'Pierres du temps',
   'bag.eats': '{name} mange {what}. +{n} énergie',
   'bag.notHungry': '{name} n’a plus faim.',
   'bag.use': 'Utiliser',
   'bag.foodSlots': 'Nourriture : {n} sur {max} places',
-  'bag.farsightNote': 'En duel : montre un indice.',
-  'bag.timeNote': 'En duel avec un chrono : arrête le temps pendant une question.',
   'bag.shineActive': 'La pierre brillante brille : XP doublés à ta prochaine victoire.',
   'bag.lifeStones': 'Pierres de vie dans ta créature : {n} sur {max}',
   'map.aria': 'Carte de l’île',
@@ -435,7 +429,6 @@ export const FR = {
   'book.cellAria': 'N° {n} : {name}, {labels}',
 
   // Schlüsselgegenstände
-  'bag.keys': 'Objets importants',
   'bag.close': 'Fermer',
   'bag.pocket.food': 'Nourriture',
   'bag.pocket.stones': 'Pierres',
@@ -446,6 +439,7 @@ export const FR = {
   'bag.noKeys': 'Rien pour l’instant',
   'bag.inDuel': 'Agit en duel',
   'bag.foundIn': 'Trouvé : {place}',
+  'bag.pick': 'Touche un objet pour en savoir plus.',
   'item.berry.name': 'Baie',
   'item.berry.text': 'Donne {n} énergie.',
   'item.starfruit.name': 'Fruit étoile',

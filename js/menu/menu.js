@@ -1,4 +1,6 @@
 // Menü (Design 13): Wesen, Rucksack, Wesen-Buch, Karte, Tagebuch und Einstellungen (js/menu/items.js).
+// „Rucksack“ ist keine Seite: Der Eintrag schließt das Menü, und die Welt öffnet den Rucksack
+// (js/menu/backpack.js) im selben Lock.
 
 import { sound } from '../audio/bus.js';
 import { el } from '../ui/dom.js';
@@ -7,7 +9,6 @@ import { speciesText, speciesName, displayName, abilityRows } from '../data/spec
 import { creatureCanvas } from '../gfx/creatureImage.js';
 import { xpToNext, maxEnergy, stageForLevel } from '../duel/progress.js';
 import { settingsPage } from './settings.js';
-import { bagPage } from './bagPage.js';
 import { diaryPage } from './diaryPage.js';
 import { mapPage } from './mapPage.js';
 import { bookPage } from './bookPage.js';
@@ -51,20 +52,24 @@ export function creaturePage(game) {
 
 const PAGES = {
   'menu.creature': creaturePage,
-  'menu.bag': bagPage,
   'menu.book': bookPage,
   'menu.map': mapPage,
   'menu.diary': diaryPage,
   'menu.settings': settingsPage,
 };
 
-function menuPage(game) {
+function menuPage(game, choose) {
   return {
     title: t('menu.title'),
     render(body, nav) {
+      const open = key => {
+        if (key !== 'menu.bag') return nav.push(PAGES[key](game));
+        choose('bag');
+        nav.close();
+      };
       body.append(
         el('div', { class: 'sheet-list' },
-          MENU_ITEMS.map(key => el('button', { class: 'btn', type: 'button', onclick: () => nav.push(PAGES[key](game)) }, t(key))),
+          MENU_ITEMS.map(key => el('button', { class: 'btn', type: 'button', onclick: () => open(key) }, t(key))),
           el('button', { class: 'btn primary', type: 'button', onclick: () => nav.close() }, t('menu.backToGame')),
         ),
       );
@@ -72,7 +77,10 @@ function menuPage(game) {
   };
 }
 
-export function openMenu(game) {
+// Liefert 'bag', wenn das Kind „Rucksack“ gewählt hat, sonst undefined.
+export async function openMenu(game) {
   sound('menu');
-  return openSheet(game, menuPage(game));
+  let choice;
+  await openSheet(game, menuPage(game, c => (choice = c)));
+  return choice;
 }

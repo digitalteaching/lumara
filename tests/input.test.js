@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { keyToButton, dpadDirection } from '../js/core/input.js';
+import { keyToButton, dpadDirection, BUTTONS } from '../js/core/input.js';
 
 test('Pfeile/WASD laufen, Enter/Leertaste = A, Esc/Rücktaste = B, M = Menü', () => {
   assert.equal(keyToButton('ArrowUp', false), 'up');
@@ -12,6 +12,13 @@ test('Pfeile/WASD laufen, Enter/Leertaste = A, Esc/Rücktaste = B, M = Menü', (
   assert.equal(keyToButton('Backspace', false), 'b');
   assert.equal(keyToButton('m', false), 'menu');
   assert.equal(keyToButton('x', false), null);
+});
+
+test('R öffnet den Rucksack, auch groß geschrieben, im Textfeld nicht', () => {
+  assert.equal(keyToButton('r', false), 'bag');
+  assert.equal(keyToButton('R', false), 'bag');
+  assert.equal(keyToButton('r', true), null);
+  assert.ok(BUTTONS.includes('bag'));
 });
 
 test('Prüffokus: im Textfeld löst keine Taste eine Spielaktion aus', () => {

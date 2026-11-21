@@ -539,8 +539,27 @@ body:not([data-mode="walk"]) .whisper { display: none; }
   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
   touch-action: manipulation;
 }
-.menu-btn:focus-visible { outline: 3px solid var(--cream); outline-offset: 2px; }
-body:not([data-mode="walk"]) .menu-btn { display: none; }
+/* Rucksack-Knopf links neben dem Menüknopf, gleich groß und mit gleichem Abstand */
+.bag-btn {
+  position: absolute;
+  right: calc(var(--gpx) * 8 + 52px);
+  top: calc(var(--gpx) * 4);
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 3px solid var(--frame);
+  border-radius: 8px;
+  background: rgba(243, 236, 210, 0.92);
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
+  touch-action: manipulation;
+}
+.bag-btn canvas { width: 32px; height: 32px; image-rendering: pixelated; image-rendering: crisp-edges; }
+.menu-btn:focus-visible, .bag-btn:focus-visible { outline: 3px solid var(--cream); outline-offset: 2px; }
+body:not([data-mode="walk"]) .menu-btn, body:not([data-mode="walk"]) .bag-btn { display: none; }
 
 /* Menü-Blatt über dem ganzen Bildschirm */
 .sheet {
@@ -582,7 +601,6 @@ body:not([data-mode="walk"]) .menu-btn { display: none; }
 .sheet .btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
 .sheet-list { display: flex; flex-direction: column; gap: 10px; }
 .sheet-list .btn { width: 100%; text-align: left; }
-.bag-list { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
 
 /* Karte der Insel (Menü): 3 Spalten × 5 Zeilen, der Ring um den Berg. Nebel grau und gestrichelt,
    „Du bist hier“ mit dunklem Rahmen; der Zustand steht immer auch als Text da. */
@@ -601,12 +619,6 @@ body:not([data-mode="walk"]) .menu-btn { display: none; }
   .map-name { font-size: var(--text-small); }
   .map-state { font-size: 14px; }
 }
-.bag-row { display: flex; align-items: center; gap: 12px; min-height: 44px; }
-.bag-name { flex: 1; }
-.bag-count { min-width: 2ch; text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; }
-.bag-message { min-height: 1.4em; font-weight: 700; }
-.bag-note { display: block; font-size: var(--text-small); color: var(--frame-dark); }
-.bag-shine { font-weight: 700; color: var(--frame-dark); }
 .diary .diary-area h4 { margin: 8px 0 4px; }
 .diary .diary-piece { margin: 0 0 8px; line-height: 1.45; }
 .diary-piece.missing { color: var(--frame-dark); font-style: italic; opacity: 0.75; }
@@ -681,3 +693,198 @@ body:not([data-mode="walk"]) .menu-btn { display: none; }
 .quest-log li { display: grid; gap: 2px; }
 .quest-log .done b { color: var(--frame-dark); }
 .quest-hint { font-size: var(--text-small); }
+
+/* Rucksack (Lumara 1.1): kommt groß von unten, die Klappe klappt hoch, dann liegen vier Fächer offen.
+   Rahmen, Klappe und Bilder sind Pixelbilder (scharf vergrößert), Texte in der Systemschrift.
+   Farben aus der Palette (js/gfx/palette.js). */
+.backpack {
+  --slot: 80px;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+  background: rgba(27, 26, 46, 0.78);
+  overflow: hidden;
+}
+.bp-bag {
+  position: relative;
+  width: min(1000px, 100%);
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  perspective: 1200px;
+}
+/* Rahmen: BAG_ART.frame in vierfacher Größe, Scheiben zu 32 px, Kanten wiederholt (nie gestreckt) */
+.bp-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 6px;
+  border: 32px solid transparent;
+  border-image: var(--bp-frame) 32 fill / 32px repeat;
+  background: #f3ecd2;
+  background-clip: padding-box;
+  color: var(--ink);
+  font-size: var(--text-small);
+  line-height: 1.3;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+.bp-flap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -4px;
+  z-index: 2;
+  pointer-events: none;
+  transform-origin: 50% 0;
+}
+.bp-flap canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; image-rendering: crisp-edges; }
+
+.bp-head { flex: none; display: flex; align-items: center; gap: 12px 16px; flex-wrap: wrap; }
+.bp-energy { flex: 0 1 300px; min-width: 190px; }
+.bp-energy .plate-head { font-size: var(--text-small); }
+.bp-energy .plate-bar { height: 12px; }
+.bp-food { flex: 1 1 200px; margin: 0; }
+.bp-close { flex: none; margin-left: auto; width: 52px; height: 52px; padding: 0; font-size: 24px; line-height: 1; }
+.backpack .btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+
+/* Fächer: zwei Reihen mit je zwei Fächern. Die untere Reihe (Schätze, Schlüssel) bekommt den Rest
+   der Höhe; das Album scrollt in seinem Fach, nicht die Seite. */
+.bp-pockets { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 10px; }
+.bp-row { flex: none; display: flex; gap: 10px; }
+.bp-row-big { flex: 1 1 auto; min-height: calc(var(--slot) * 1.5 + 60px); }
+.bp-pocket {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px 10px;
+  border: 3px dashed #a8743a;
+  border-radius: 10px;
+  background: #f1ddb0;
+  box-shadow: inset 0 3px 0 rgba(122, 82, 54, 0.25);
+}
+.bp-pocket-title { margin: 0; font-size: var(--text-small); font-weight: 800; color: #7a5236; }
+.bp-album-count { font-weight: 600; }
+.bp-slots {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, var(--slot));
+  grid-auto-rows: var(--slot);
+  align-content: start;
+  gap: 6px;
+  padding: 4px;
+  margin: -4px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.bp-note { margin: 0; }
+.bp-shine { font-weight: 700; color: #7a5236; }
+.bp-empty { color: #7a5236; font-style: italic; }
+
+.bp-slot {
+  position: relative;
+  width: var(--slot);
+  height: var(--slot);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 3px solid #a8743a;
+  border-radius: 8px;
+  background: #fffaf0;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(74, 51, 40, 0.35);
+  touch-action: manipulation;
+}
+.bp-slot:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(74, 51, 40, 0.35); }
+.bp-slot:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.bp-slot.selected { border-color: #1b1a2e; box-shadow: inset 0 0 0 2px #1b1a2e, 0 3px 0 rgba(74, 51, 40, 0.35); }
+.bp-slot.unknown { background: #d4d6e6; border-style: dashed; border-color: #6b6f94; }
+.bp-img { width: 64px; height: 64px; image-rendering: pixelated; image-rendering: crisp-edges; }
+.bp-slot.none .bp-img { opacity: 0.4; }
+.bp-q { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 800; color: #46496e; text-shadow: 0 2px 0 #fffaf0; }
+.bp-count {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  min-width: 24px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: #1b1a2e;
+  color: #f3ecd2;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 20px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Karte unter den Fächern: Bild, Name, Anzahl, Text, Fundort und Handlung */
+.bp-card {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 122px;
+  padding: 10px 12px;
+  border: 3px solid #a8743a;
+  border-radius: 10px;
+  background: #fffaf0;
+}
+.bp-card p { margin: 0; }
+.bp-card-img { flex: none; width: 96px; height: 96px; image-rendering: pixelated; image-rendering: crisp-edges; }
+.bp-card-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.bp-card-name { font-size: var(--text); font-weight: 800; }
+.bp-card-count { margin-left: 10px; font-weight: 700; color: #7a5236; font-variant-numeric: tabular-nums; }
+.bp-card-place { color: #7a5236; }
+.bp-msg { font-weight: 700; }
+.bp-act { flex: none; }
+.bp-in-duel { font-weight: 700; color: #7a5236; max-width: 12em; text-align: right; }
+.bp-hint { flex: 1; text-align: center; color: #7a5236; font-style: italic; }
+
+/* Das Futter fliegt zur Energieanzeige (nur mit Bewegung) */
+.bp-fly { position: fixed; z-index: 3; pointer-events: none; image-rendering: pixelated; image-rendering: crisp-edges; }
+
+/* Auf und zu (etwa 0,4 s). Ohne Klasse anim (Bewegung reduzieren) ist er sofort offen. */
+.backpack.anim { animation: bp-fade 160ms ease-out both; }
+.backpack.anim .bp-bag { animation: bp-rise 220ms cubic-bezier(0.2, 0.8, 0.3, 1) both; }
+.backpack.anim .bp-flap { animation: bp-flap 220ms 190ms ease-in both; }
+.backpack.open .bp-flap { display: none; }
+/* Beim Zuklappen fängt der Rucksack noch kurz Tipps ab (ein Doppeltipp auf ✕ öffnet ihn nicht gleich wieder). */
+.backpack.closing { animation: bp-fade-out 180ms ease-in both; }
+.backpack.closing .bp-bag { animation: bp-drop 180ms ease-in both; }
+.backpack.closing:not(.anim) { opacity: 0; }
+@keyframes bp-fade { from { background-color: rgba(27, 26, 46, 0); } }
+@keyframes bp-fade-out { to { background-color: rgba(27, 26, 46, 0); } }
+@keyframes bp-rise { from { transform: translateY(70vh) scale(0.85); } }
+@keyframes bp-drop { to { transform: translateY(60vh) scale(0.9); opacity: 0; } }
+/* Die Klappe ist oben angenäht und klappt nach vorn und oben über die Naht. */
+@keyframes bp-flap { from { transform: rotateX(0deg); } 70% { opacity: 1; } to { transform: rotateX(180deg); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .backpack .bp-flap { display: none; }
+  .backpack, .backpack .bp-bag { animation: none !important; }
+}
+
+/* Schmal (Handy, geteilter Bildschirm): Fächer untereinander, der ganze Rucksack scrollt. */
+@media (max-width: 599px) {
+  .bp-body { overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+  .bp-pockets { flex: none; overflow: visible; }
+  .bp-row { flex-direction: column; }
+  .bp-row-big { flex: none; min-height: 0; }
+  .bp-pocket { flex: none; }
+  .bp-album { flex: none; max-height: calc(var(--slot) * 2.5 + 20px); }
+  .bp-card { flex-wrap: wrap; }
+}

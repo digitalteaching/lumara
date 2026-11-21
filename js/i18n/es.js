@@ -264,6 +264,7 @@ export const ES = {
   'world.lighthouseHeal': 'La luz del faro le da nuevas fuerzas a {name}.',
   'world.mirage': '¡Solo es un espejismo!',
   'world.menu': 'Menú',
+  'world.bag': 'Mochila',
   'world.doorLocked': 'La puerta está cerrada con llave.',
 
   // Menü und Einstellungen
@@ -280,17 +281,10 @@ export const ES = {
   'creature.xpAria': '{xp} de {need} XP',
   'creature.xpToNext': '{xp} / {need} XP hasta el nivel {next}',
   'common.energy': 'Energía {n} / {max}',
-  'bag.berries': 'Bayas',
-  'bag.starfruits': 'Frutas estrella',
-  'bag.farsights': 'Piedras de pista',
-  'bag.shines': 'Piedras de brillo',
-  'bag.times': 'Piedras del tiempo',
   'bag.eats': '{name} come {what}. +{n} de energía',
   'bag.notHungry': '{name} ya no tiene hambre.',
   'bag.use': 'Usar',
   'bag.foodSlots': 'Comida: {n} de {max} sitios ocupados',
-  'bag.farsightNote': 'En un duelo: te da una pista.',
-  'bag.timeNote': 'En un duelo con reloj: para el tiempo durante una pregunta.',
   'bag.shineActive': 'La piedra de brillo está activa: el doble de XP en tu próxima victoria.',
   'bag.lifeStones': 'Piedras de vida en tu criatura: {n} de {max}',
   'map.aria': 'Mapa de la isla',
@@ -433,7 +427,6 @@ export const ES = {
   'book.cellAria': 'N.º {n}: {name}, {labels}',
 
   // Schlüsselgegenstände
-  'bag.keys': 'Objetos clave',
   'bag.close': 'Cerrar',
   'bag.pocket.food': 'Comida',
   'bag.pocket.stones': 'Piedras',
@@ -444,6 +437,7 @@ export const ES = {
   'bag.noKeys': 'Todavía nada',
   'bag.inDuel': 'Actúa en el duelo',
   'bag.foundIn': 'Se encuentra en: {place}',
+  'bag.pick': 'Toca un objeto para saber más.',
   'item.berry.name': 'Baya',
   'item.berry.text': 'Da {n} de energía.',
   'item.starfruit.name': 'Fruta estrella',

@@ -15,14 +15,18 @@ function size(selector) {
   return { w: px('width'), h: px('height') };
 }
 
-test('Steuerung: Steuerkreuz mindestens 140 px, A und B mindestens 64 px, Menüknopf mindestens 48 px', () => {
+test('Steuerung: Steuerkreuz mindestens 140 px, A und B mindestens 64 px, Menü- und Rucksack-Knöpfe mindestens 48 px', () => {
   const dpad = size('#pad .dpad');
   assert.ok(dpad.w >= 140 && dpad.h >= 140, JSON.stringify(dpad));
   for (const b of ['#pad .pad-btn.a', '#pad .pad-btn.b']) {
     const s = size(b);
     assert.ok(s.w >= 64 && s.h >= 64, `${b}: ${JSON.stringify(s)}`);
   }
-  const menu = size('.menu-btn');
-  assert.ok(menu.w >= 48 && menu.h >= 48, JSON.stringify(menu));
+  for (const b of ['.menu-btn', '.bag-btn', '.bp-close']) {
+    const s = size(b);
+    assert.ok(s.w >= 48 && s.h >= 48, `${b}: ${JSON.stringify(s)}`);
+  }
+  // Die Plätze im Rucksack (Gegenstände, Schätze, Schlüssel)
+  assert.ok(Number(css.match(/\.backpack \{[^}]*--slot:\s*(\d+)px/)?.[1]) >= 48, '.backpack --slot');
   assert.match(css, /env\(safe-area-inset-bottom\)/, 'Abstand zum Rand des iPads');
 });

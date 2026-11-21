@@ -7,9 +7,10 @@ const KEYS = {
   Enter: 'a', ' ': 'a',
   Escape: 'b', Backspace: 'b',
   m: 'menu',
+  r: 'bag',
 };
 
-export const BUTTONS = ['up', 'down', 'left', 'right', 'a', 'b', 'menu'];
+export const BUTTONS = ['up', 'down', 'left', 'right', 'a', 'b', 'menu', 'bag'];
 const DIRS = new Set(['up', 'down', 'left', 'right']);
 
 export function keyToButton(key, inTextField) {
@@ -61,8 +62,9 @@ export function createInput({ target = window } = {}) {
 
   target.addEventListener('keydown', e => {
     const el = e.target;
-    // Ein fokussierter Knopf reagiert selbst auf Enter und Leertaste.
-    const own = isTextTarget(el) || (el?.tagName === 'BUTTON' && (e.key === 'Enter' || e.key === ' '));
+    // Ein fokussierter Knopf reagiert selbst auf Enter und Leertaste. Mit Strg oder Cmd gehört die
+    // Taste dem Browser, etwa Cmd+R zum Neuladen (R öffnet sonst den Rucksack).
+    const own = isTextTarget(el) || (el?.tagName === 'BUTTON' && (e.key === 'Enter' || e.key === ' ')) || e.ctrlKey || e.metaKey;
     const btn = keyToButton(e.key, own);
     if (!btn) return;
     e.preventDefault();

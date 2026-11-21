@@ -264,6 +264,7 @@ export const DE = {
   'world.lighthouseHeal': 'Das Licht des Leuchtturms gibt {name} neue Kraft.',
   'world.mirage': 'Nur eine Luftspiegelung!',
   'world.menu': 'Menü',
+  'world.bag': 'Rucksack',
   'world.doorLocked': 'Die Tür ist verschlossen.',
 
   // Menü und Einstellungen
@@ -280,17 +281,10 @@ export const DE = {
   'creature.xpAria': '{xp} von {need} XP',
   'creature.xpToNext': '{xp} / {need} XP bis Level {next}',
   'common.energy': 'Energie {n} / {max}',
-  'bag.berries': 'Beeren',
-  'bag.starfruits': 'Sternfrüchte',
-  'bag.farsights': 'Weitblicksteine',
-  'bag.shines': 'Glanzsteine',
-  'bag.times': 'Zeitsteine',
   'bag.eats': '{name} isst {what}. +{n} Energie',
   'bag.notHungry': '{name} ist schon satt.',
   'bag.use': 'Einsetzen',
   'bag.foodSlots': 'Futter: {n} von {max} Plätzen belegt',
-  'bag.farsightNote': 'Im Duell: zeigt einen Hinweis.',
-  'bag.timeNote': 'Im Duell mit Zeitdruck: hält die Zeit für eine Frage an.',
   'bag.shineActive': 'Glanzstein leuchtet: doppelte XP beim nächsten Sieg.',
   'bag.lifeStones': 'Lebenssteine im Wesen: {n} von {max}',
   'map.aria': 'Karte der Insel',
@@ -433,7 +427,6 @@ export const DE = {
   'book.cellAria': 'Nr. {n}: {name}, {labels}',
 
   // Schlüsselgegenstände
-  'bag.keys': 'Schlüsselgegenstände',
   'bag.close': 'Schließen',
   'bag.pocket.food': 'Futter',
   'bag.pocket.stones': 'Steine',
@@ -444,6 +437,7 @@ export const DE = {
   'bag.noKeys': 'Noch nichts',
   'bag.inDuel': 'Wirkt im Duell',
   'bag.foundIn': 'Fundort: {place}',
+  'bag.pick': 'Tippe etwas an, dann erfährst du mehr darüber.',
   'item.berry.name': 'Beere',
   'item.berry.text': 'Gibt {n} Energie.',
   'item.starfruit.name': 'Sternfrucht',

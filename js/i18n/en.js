@@ -264,6 +264,7 @@ export const EN = {
   'world.lighthouseHeal': 'The light of the lighthouse gives {name} new strength.',
   'world.mirage': 'Just a mirage!',
   'world.menu': 'Menu',
+  'world.bag': 'Backpack',
   'world.doorLocked': 'The door is locked.',
 
   // Menü und Einstellungen
@@ -280,17 +281,10 @@ export const EN = {
   'creature.xpAria': '{xp} of {need} XP',
   'creature.xpToNext': '{xp} / {need} XP to level {next}',
   'common.energy': 'Energy {n} / {max}',
-  'bag.berries': 'Berries',
-  'bag.starfruits': 'Starfruits',
-  'bag.farsights': 'Farsight stones',
-  'bag.shines': 'Shine stones',
-  'bag.times': 'Time stones',
   'bag.eats': '{name} eats {what}. +{n} energy',
   'bag.notHungry': '{name} is already full.',
   'bag.use': 'Use',
   'bag.foodSlots': 'Food: {n} of {max} places used',
-  'bag.farsightNote': 'In a duel: shows a hint.',
-  'bag.timeNote': 'In a duel with a clock: stops the time for one question.',
   'bag.shineActive': 'Shine stone is glowing: double XP for your next win.',
   'bag.lifeStones': 'Life stones in your creature: {n} of {max}',
   'map.aria': 'Map of the island',
@@ -433,7 +427,6 @@ export const EN = {
   'book.cellAria': 'No. {n}: {name}, {labels}',
 
   // Schlüsselgegenstände
-  'bag.keys': 'Key items',
   'bag.close': 'Close',
   'bag.pocket.food': 'Food',
   'bag.pocket.stones': 'Stones',
@@ -444,6 +437,7 @@ export const EN = {
   'bag.noKeys': 'Nothing yet',
   'bag.inDuel': 'Works in a duel',
   'bag.foundIn': 'Found in: {place}',
+  'bag.pick': 'Tap a thing to learn more about it.',
   'item.berry.name': 'Berry',
   'item.berry.text': 'Gives {n} energy.',
   'item.starfruit.name': 'Starfruit',

@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { newGameState } from '../js/state.js';
-import { POCKETS, backpackView, itemName, itemText } from '../js/items/backpackView.js';
+import { POCKETS, backpackView, itemName, itemText, canOpenBackpack } from '../js/items/backpackView.js';
 import { setLanguage } from '../js/i18n/i18n.js';
 
 setLanguage('de');
@@ -67,4 +67,11 @@ test('Steine und Namen', () => {
   assert.equal(itemName({ id: 'berry', kind: 'item' }, s), 'Beere');
   assert.equal(itemName({ id: 'amber', kind: 'treasure' }, s), 'Bernsteintropfen');
   assert.equal(itemName({ id: 'hook', kind: 'key' }, s), 'Kletterhaken');
+});
+
+test('Rucksack öffnet nur beim Laufen und ohne Sperre', () => {
+  assert.equal(canOpenBackpack({ mode: 'walk', locked: false }), true);
+  assert.equal(canOpenBackpack({ mode: 'walk', locked: true }), false);
+  assert.equal(canOpenBackpack({ mode: 'screen', locked: false }), false);
+  assert.equal(canOpenBackpack({ mode: 'duel', locked: false }), false);
 });

@@ -47,6 +47,10 @@ export function backpackView(state) {
   };
 }
 
+// Der Rucksack geht nur beim Laufen auf, nicht in Duell, Dialog oder Menü und nicht, solange die
+// Welt gesperrt ist (etwa während eines Gesprächs oder einer Überblendung).
+export const canOpenBackpack = ({ mode, locked }) => mode === 'walk' && !locked;
+
 export function itemName(entry) {
   if (entry.kind === 'treasure') return treasureName(entry.id);
   if (entry.kind === 'key') return t(`key.${entry.id}.name`);

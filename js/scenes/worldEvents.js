@@ -39,6 +39,8 @@ import { maxEnergy, stageForLevel } from '../duel/progress.js';
 import { say, choose } from '../ui/dialog.js';
 import { el, clear } from '../ui/dom.js';
 import { openMenu } from '../menu/menu.js';
+import { openBackpack, bagIcon } from '../menu/backpack.js';
+import { canOpenBackpack } from '../items/backpackView.js';
 import { t as tr, tl, language } from '../i18n/i18n.js'; // t ist hier ein eigener Name
 
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
@@ -845,9 +847,16 @@ export function createGameWorld(game) {
       // Eine neue Sprache (Design 10.6) baut die Welt ebenfalls neu auf, damit alles Sichtbare passt.
       const packBefore = packWorldKey(game.pack.data);
       const langBefore = language();
-      await openMenu(game);
+      // „Rucksack“ im Menü schließt das Menü; der Rucksack öffnet im selben Lock, vor einem Neuaufbau.
+      if ((await openMenu(game)) === 'bag') await openBackpack(game);
       if (packWorldKey(game.pack.data) !== packBefore || language() !== langBefore) await afterPackSwitch();
     });
+  }
+
+  // Rucksack-Knopf links neben ☰ und Taste R (Lumara 1.1): nur beim Laufen und ohne Sperre.
+  function showBag() {
+    if (!canOpenBackpack({ mode: game.mode, locked: world.locked })) return;
+    world.lock(() => openBackpack(game));
   }
 
   // Nach einem Paketwechsel (Design 10.4): Tore neu bestimmen; liegt dieser Ort jetzt im Nebel,
@@ -859,23 +868,30 @@ export function createGameWorld(game) {
     if (!samePlace(here, target)) await next.lock(() => say(game, [tr('world.relocated')], { speaker: 'Ilvy' }));
   }
   const menuBtn = el('button', { class: 'menu-btn', type: 'button', 'aria-label': tr('world.menu'), onclick: showMenu }, '☰');
+  const bagBtn = el('button', { class: 'bag-btn', type: 'button', 'aria-label': tr('world.bag'), onclick: showBag }, bagIcon());
   let offMenu = null;
+  let offBag = null;
 
   const baseEnter = world.enter;
   world.enter = () => {
     baseEnter();
     if (!hud.isConnected) game.ui.append(hud);
+    if (!bagBtn.isConnected) game.ui.append(bagBtn);
     if (!menuBtn.isConnected) game.ui.append(menuBtn);
     offMenu ??= game.input.on('menu', showMenu);
+    offBag ??= game.input.on('bag', showBag);
   };
   const baseExit = world.exit;
   world.exit = () => {
     baseExit?.();
     hud.remove();
+    bagBtn.remove();
     menuBtn.remove();
     whisperNode?.remove();
     offMenu?.();
     offMenu = null;
+    offBag?.();
+    offBag = null;
   };
 
   // Beim Betreten prüfen, ob die Trainerin die Figur schon sieht.
