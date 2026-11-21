@@ -15,9 +15,16 @@ export function bookPage(game) {
       const v = bookView(game.state);
       const cells = v.entries.map(e => {
         const labels = bookLabels(e);
-        if (e.status === 'unknown') {
+        // Kopfzeile: Herz (Freund) links, Nummer in der Mitte, Stern (Glanzform) rechts, nebeneinander
+        // in einem Raster, damit sich auch bei langen Nummern nichts überlappt. Unbekannt: nur die Nummer.
+        const known = e.status !== 'unknown';
+        const top = el('span', { class: 'book-top' },
+          known && e.friend ? el('span', { class: 'book-heart', 'aria-hidden': 'true' }, '♥') : null,
+          el('span', { class: 'book-no' }, t('book.no', { n: e.number })),
+          known && e.shiny ? el('span', { class: 'book-star', 'aria-hidden': 'true' }, '✦') : null);
+        if (!known) {
           return el('div', { class: 'book-cell unknown', role: 'img', 'aria-label': t('book.unknownAria', { n: e.number }) },
-            el('span', { class: 'book-no' }, t('book.no', { n: e.number })),
+            top,
             el('span', { class: 'book-q', 'aria-hidden': 'true' }, '?'),
             el('span', { class: 'book-name' }, '???'));
         }
@@ -27,11 +34,9 @@ export function bookPage(game) {
           'aria-label': t('book.cellAria', { n: e.number, name: e.name, labels: labels.join(', ') }),
           onclick: () => nav.push(bookEntryPage(game, e.number)),
         },
-        el('span', { class: 'book-no' }, t('book.no', { n: e.number })),
+        top,
         creatureCanvas(e.id, 1, { look: e.status === 'beaten' ? 'color' : 'silhouette', scale: 1 }),
-        el('span', { class: 'book-name' }, e.name),
-        e.friend ? el('span', { class: 'book-heart', 'aria-hidden': 'true' }, '♥') : null,
-        e.shiny ? el('span', { class: 'book-star', 'aria-hidden': 'true' }, '✦') : null);
+        el('span', { class: 'book-name' }, e.name));
       });
       appendAll(body,
         el('p', { class: 'small' }, t('book.counts', { seen: v.seen, total: v.total, beaten: v.beaten, friends: v.friends })),

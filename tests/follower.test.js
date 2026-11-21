@@ -132,10 +132,37 @@ test('Nach einem Teleport steht er wieder hinter der Figur', () => {
   assert.deepEqual([f.fromX, f.fromY], [10, 6]);
   assert.equal(f.dir, 'up');
   assert.deepEqual(f.pixel(), { x: 160, y: 96 });
-  // Ein Feld daneben zählt nicht als Teleport: Er bleibt, wo er ist.
+  // Auch ein Teleport auf ein Nachbarfeld setzt ihn neu hinter die Figur, statt ihn vor ihr stehen zu
+  // lassen (er stand bei 10,6, die Figur schaut nach links).
   p.teleport(10, 7, 'left');
   f.update();
-  assert.deepEqual(cell(f), [10, 6]);
+  assert.deepEqual(cell(f), [11, 7]);
+  assert.deepEqual([f.fromX, f.fromY], [11, 7]);
+  assert.equal(f.dir, 'left');
+  // Ebenso auf sein eigenes Feld: Er wäre sonst unter der Figur verschwunden.
+  p.teleport(11, 7, 'down');
+  f.update();
+  assert.deepEqual(cell(f), [11, 6]);
+  assert.equal(f.hidden(), false);
+  // Ohne neuen Teleport bleibt er stehen, auch bei vielen Aufrufen.
+  f.update();
+  f.update();
+  assert.deepEqual(cell(f), [11, 6]);
+});
+
+test('Ein Schritt, den die Welt gleich zurücknimmt, versetzt ihn nicht', () => {
+  const map = createMap(MEADOW);
+  const p = createPlayer({ x: 4, y: 4, dir: 'right' });
+  const f = createFollower(map, p);
+  walk(map, p, f, 'right', 1);
+  assert.deepEqual([cell(p), cell(f)], [[5, 4], [4, 4]]);
+  // Wie in world.update: Ein Schritt beginnt und wird im selben Bild zurückgenommen (etwa weil auf dem
+  // Feld davor gerade ein wildes Wesen erscheint). Dazwischen ruft niemand update().
+  f.update();
+  p.update(16, { dir: 'down', a: false }, map);
+  p.cancelMove();
+  f.update();
+  assert.deepEqual([cell(p), cell(f)], [[5, 4], [4, 4]]);
 });
 
 test('Auf Rutscheis folgt er Feld für Feld', () => {
@@ -180,13 +207,18 @@ test('Begleiter in der Welt: wird er gesetzt, steht er sofort hinter der Figur; 
   actor.draw(noDrawing, { x: 0, y: 0 });
   assert.equal(await speak({ target: null, x: 4, y: 5 }), false);
 
-  // Ein Feld vor der Figur, die nach unten schaut: Erst mit dem Begleiter rückt er nach hinten.
+  // Nach einem Teleport ein Feld weiter steht er (noch unsichtbar) gleich wieder hinter der Figur.
   world.player.teleport(4, 2, 'down');
   world.update(16);
-  assert.equal(actor.z(), 3);
+  assert.equal(actor.z(), 1);
+  // Die Figur dreht sich auf der Stelle um (etwa gegen eine Wand): Nun steht er ein Feld vor ihr.
+  // Erst mit dem Begleiter rückt er nach hinten.
+  world.player.dir = 'up';
+  world.update(16);
+  assert.equal(actor.z(), 1);
   makeFriend(state, FRIENDABLE[0], false);
   state.companion = FRIENDABLE[0];
-  assert.equal(actor.z(), 1);
+  assert.equal(actor.z(), 3);
   assert.equal(await speak({ target: { type: 'sign' }, x: 4, y: 3 }), false, 'vor einem Objekt schweigt er');
 
   // Kein Freund (etwa ein alter Spielstand): kein Begleiter.

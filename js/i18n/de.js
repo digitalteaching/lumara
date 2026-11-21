@@ -522,6 +522,7 @@ export const DE = {
 
   'menu.friends': 'Freunde',
   'friends.none': 'Noch keine Freunde. Besiege ein wildes Wesen, dann kannst du dich mit ihm anfreunden.',
+  'friends.notYet': 'Mit {name} bist du noch nicht befreundet.',
   'friends.count': 'Freunde: {n} von {max}',
   'friends.gift': 'Gabe: {gift}',
   'friends.withYou': 'begleitet dich',

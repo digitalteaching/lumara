@@ -224,7 +224,54 @@ test('Bei reduzierter Bewegung bleiben alle stehen; ein neuer Begleiter macht im
   assert.deepEqual([world.actors.length, world.blocked.size], [0, 0]);
 });
 
-test('A ins Leere neben den Freunden: Der Garten-Handler lässt den Begleiter sprechen', async () => {
+// Nach einem Wechsel steht der neue Begleiter hinter der Figur (follower.place), nicht auf dem Feld, das
+// sie zuletzt verlassen hat. Dreht sie sich danach um, ist dieses Feld nicht mehr „hinter ihr“: Es muss
+// trotzdem für die Freunde gesperrt bleiben.
+function swapScene(withCompanion) {
+  // Wenige Freunde ohne Wasserwesen, damit Platz bleibt; wie im Spiel kommt der Begleiter nach dem Garten.
+  const ids = FRIENDABLE.filter(id => !WATER_FRIENDS.has(id)).slice(0, 6);
+  const state = { friends: {}, companion: ids[0], position: { map: 'garten', ...GARTEN.spawn } };
+  for (const id of ids) makeFriend(state, id, false);
+  const game = fakeGame(state, false);
+  const world = createWorldScene(game, GARTEN);
+  addGarden(world, game);
+  if (withCompanion) addCompanion(world, game);
+  const { map } = world;
+  const { free } = gardenCells(map);
+  const isFree = (x, y) => free.some(c => c.x === x && c.y === y) && !world.blocked.has(cellKey(x, y));
+  // Ein Fleck mit der Figur in der Mitte und freien Feldern darunter (F) und noch eins darunter (G).
+  const spot = free.find(c => [[0, 0], [1, 0], [-1, 0], [0, -1], [0, 1], [0, 2], [1, 2], [-1, 2], [0, 3]].every(([dx, dy]) => isFree(c.x + dx, c.y + dy)));
+  assert.ok(spot, 'Platz im Garten');
+  const p = world.player;
+  p.teleport(spot.x, spot.y, 'up');
+  world.update(16);
+  // Wechsel des Begleiters, während die Figur nach oben schaut: Er stellt sich unter sie.
+  state.companion = ids[1];
+  world.update(16);
+  const F = { x: spot.x, y: spot.y + 1 };
+  if (withCompanion) assert.deepEqual(world.companion.cell(), F);
+  // Die Figur dreht sich nach rechts: Hinter ihr liegt nun das Feld links.
+  p.dir = 'right';
+  // Ein Freund (kein Wasserwesen) steht bei G unter F, seine übrigen Nachbarfelder sind belegt: Das
+  // einzige freie Feld wäre F.
+  const f = world.actors.find(a => a.species && !a.moving);
+  const G = { x: F.x, y: F.y + 1 };
+  world.blocked.delete(cellKey(f.x, f.y));
+  Object.assign(f, { x: G.x, y: G.y, fromX: G.x, fromY: G.y, rest: 0 });
+  world.blocked.add(cellKey(G.x, G.y));
+  for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1]]) world.blocked.add(cellKey(G.x + dx, G.y + dy));
+  world.update(16);
+  return { f, G };
+}
+
+test('Nach einem Wechsel des Begleiters läuft kein Freund auf sein Feld, auch wenn sich die Figur dreht', () => {
+  for (const withCompanion of [false, true]) {
+    const { f, G } = swapScene(withCompanion);
+    assert.deepEqual({ x: f.x, y: f.y, moving: f.moving }, { ...G, moving: false }, withCompanion ? 'mit Begleiter in der Welt' : 'nur der Garten');
+  }
+});
+
+test('A ins Leere oder auf ein anderes Schild: Die Garten-Handler lassen es weiter, etwa zum Begleiter', async () => {
   const { world } = gardenWorld({ reducedMotion: true });
   const { free } = gardenCells(world.map);
   const empty = free.find(c => !world.blocked.has(cellKey(c.x, c.y)));

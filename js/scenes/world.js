@@ -386,6 +386,14 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
       ctx.fillRect(x + 4, y + 15, 8, 2);
       ctx.fillRect(x + 3, y + 16, 10, 1);
     },
+    // Hohes Gras verdeckt die Füße: Steht auf dem Feld (x, y) hohes Gras, zeichnet das die unteren
+    // 6 Pixel der Kachel noch einmal, über eine Figur, die gerade dort gezeichnet wurde (Spielfigur,
+    // Begleiter, Freunde im Garten).
+    grassOver(ctx, cam, x, y) {
+      if (!map.isTallGrass(x, y)) return;
+      const img = tileCanvas(map.tileAt(x, y), rustle.has(cellKey(x, y)) ? 1 : 0);
+      ctx.drawImage(img, 0, 10, 16, 6, x * T - cam.x, y * T - cam.y + 10, 16, 6);
+    },
     turnToward(o, dir) {
       facing.set(o, dir);
     },
@@ -489,12 +497,8 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
         draw: () => {
           const step = player.moving && player.progress < 0.6 ? (player.frame ? 1 : 2) : 0;
           scene.drawCharacter(ctx, 'player', player.dir, step, pp.x - cam.x, pp.y - cam.y - 2);
-          // Hohes Gras verdeckt die Füße
-          const onGrass = map.isTallGrass(player.x, player.y) && (!player.moving || player.progress > 0.5);
-          if (onGrass) {
-            const img = tileCanvas(map.tileAt(player.x, player.y), rustle.has(cellKey(player.x, player.y)) ? 1 : 0);
-            ctx.drawImage(img, 0, 10, 16, 6, player.x * T - cam.x, player.y * T - cam.y + 10, 16, 6);
-          }
+          // Hohes Gras verdeckt die Füße, ab der Hälfte eines Schritts die auf dem Zielfeld.
+          if (!player.moving || player.progress > 0.5) scene.grassOver(ctx, cam, player.x, player.y);
         },
       });
       for (const a of scene.actors) drawables.push({ z: a.z(), draw: () => a.draw(ctx, cam) });

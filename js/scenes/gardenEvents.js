@@ -41,12 +41,25 @@ export function addGarden(world, game) {
   let pending = false; // ein Freund hat noch keinen Platz
   let retry = RETRY_MS;
 
-  // Der Begleiter steht auf dem Feld, das die Figur zuletzt verlassen hat, oder hinter ihr.
-  const behind = step(player, OPPOSITE[player.dir]);
-  let trailX = behind.x, trailY = behind.y;
+  // Der Begleiter steht auf dem Feld, das die Figur zuletzt verlassen hat (trail), oder hinter ihr.
+  // Kommt ein Begleiter neu dazu, stellt er sich wie in follower.place hinter die Figur, sonst auf ihr
+  // Feld; rebuild setzt trail dann genauso.
+  let trailX = player.x, trailY = player.y;
+  let trailFor; // der Begleiter, für den trail gesetzt wurde
+  function placeTrail() {
+    const back = step(player, OPPOSITE[player.dir]);
+    const free = map.canEnter(back.x, back.y, world.blocked);
+    trailX = free ? back.x : player.x;
+    trailY = free ? back.y : player.y;
+  }
+  // Felder, auf die kein Freund geht: Figur, Begleiter (trail und, falls er schon mitläuft, sein Feld
+  // laut world.companion) und das Feld hinter der Figur.
   function playerCells() {
     const back = step(player, OPPOSITE[player.dir]);
-    return new Set([cellKey(player.x, player.y), cellKey(player.fromX, player.fromY), cellKey(trailX, trailY), cellKey(back.x, back.y)]);
+    const cells = new Set([cellKey(player.x, player.y), cellKey(player.fromX, player.fromY), cellKey(trailX, trailY), cellKey(back.x, back.y)]);
+    const c = world.companion?.cell();
+    if (c) cells.add(cellKey(c.x, c.y));
+    return cells;
   }
 
   // Position in Spielpixeln, beim Gehen weich zwischen den zwei Feldern.
@@ -76,6 +89,8 @@ export function addGarden(world, game) {
         const hop = f.moving && !game.reducedMotion ? Math.floor(world.time / HOP_MS) % 2 : 0;
         world.drawShadow(ctx, sx, sy);
         ctx.drawImage(images[f.side][hop], sx, sy);
+        // Hohes Gras verdeckt die Füße wie bei der Figur (ab der Hälfte eines Schritts das Zielfeld).
+        if (!f.moving || progressOf(f) > 0.5) world.grassOver(ctx, cam, f.x, f.y);
       },
     };
     return f;
@@ -111,6 +126,12 @@ export function addGarden(world, game) {
       const w = wanted.get(f.species);
       if (!w) remove(f);
       else if (w.shiny !== f.shiny) f.shiny = w.shiny;
+    }
+    // Ein neuer Begleiter (auch der erste beim Betreten): Sein Feld zählt ab jetzt als das der Figur,
+    // sonst könnte ein Freund dorthin laufen. Nach dem Entfernen: Wer mitgeht, macht sein Feld frei.
+    if (game.state.companion !== trailFor) {
+      trailFor = game.state.companion;
+      placeTrail();
     }
     const newcomers = list.filter(f => !friends.has(f.species));
     pending = false;

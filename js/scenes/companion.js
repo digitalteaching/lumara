@@ -88,6 +88,13 @@ export function addCompanion(world, game) {
       const x = p.x - cam.x, y = p.y - cam.y - 2;
       world.drawShadow(ctx, x, y);
       ctx.drawImage(img, x, y);
+      // Hohes Gras verdeckt seine Füße wie die der Figur: auf seinem Feld, beim Laufen ab der Hälfte
+      // des Schritts auf dem Zielfeld. In einer Szene nur, solange er genau auf einem Feld steht.
+      if (pose) {
+        if (pose.x % T === 0 && pose.y % T === 0) world.grassOver(ctx, cam, pose.x / T, pose.y / T);
+      } else if (!walking || player.progress > 0.5) {
+        world.grassOver(ctx, cam, follower.x, follower.y);
+      }
     },
   });
 

@@ -682,10 +682,13 @@ body:not([data-mode="walk"]) .menu-btn, body:not([data-mode="walk"]) .bag-btn { 
 .book-cell.unknown { opacity: 0.7; border-style: dashed; }
 .book-cell canvas { width: 48px; height: 48px; image-rendering: pixelated; image-rendering: crisp-edges; }
 .book-q { font-size: 32px; font-weight: 800; line-height: 48px; color: var(--frame); }
-.book-no { font-size: 0.75em; color: var(--frame-dark); }
+/* Kopfzeile eines Kastens als Raster: Herz links, Nummer in der Mitte, Stern rechts. Sie liegen
+   nebeneinander statt übereinander, so berührt das Herz die Nummer nie, auch bei großer Schrift. */
+.book-top { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 2px; width: 100%; }
+.book-no { grid-column: 2; grid-row: 1; font-size: 0.75em; text-align: center; color: var(--frame-dark); }
 .book-name { font-weight: 700; font-size: 0.8em; text-align: center; overflow-wrap: anywhere; hyphens: manual; }
-.book-star { position: absolute; top: 2px; right: 4px; color: #b07a1a; font-weight: 800; }
-.book-heart { position: absolute; top: 2px; left: 4px; color: #b8412f; font-weight: 800; }
+.book-star { grid-column: 3; grid-row: 1; justify-self: end; font-size: 0.9em; line-height: 1; color: #b07a1a; font-weight: 800; }
+.book-heart { grid-column: 1; grid-row: 1; justify-self: start; font-size: 0.9em; line-height: 1; color: #b8412f; font-weight: 800; }
 .book-pictures { display: flex; gap: 16px; justify-content: center; align-items: flex-end; }
 .book-pictures figure { margin: 0; text-align: center; }
 .book-pictures canvas { image-rendering: pixelated; image-rendering: crisp-edges; }

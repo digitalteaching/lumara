@@ -35,8 +35,9 @@ export function friendCard(game, species) {
     title: speciesName(species, 1),
     render(body, nav) {
       const f = friendList(game.state).find(x => x.species === species);
-      if (!f) return;
       const name = speciesName(species, 1);
+      // Kein Freund (kommt im Spiel nicht vor, etwa ein kaputter Spielstand): ein Satz statt einer leeren Seite.
+      if (!f) return appendAll(body, el('p', { class: 'sheet-text' }, t('friends.notYet', { name })));
       const button = el('button', {
         class: 'btn primary',
         type: 'button',

@@ -522,6 +522,7 @@ export const EN = {
 
   'menu.friends': 'Friends',
   'friends.none': 'No friends yet. Beat a wild creature, then you can become friends with it.',
+  'friends.notYet': 'You are not friends with {name} yet.',
   'friends.count': 'Friends: {n} of {max}',
   'friends.gift': 'Gift: {gift}',
   'friends.withYou': 'is with you',

@@ -32,8 +32,15 @@ export function createFollower(map, player, occupied) {
     f.dir = player.dir;
   };
 
+  // Wo die Figur beim letzten update() stand. Ändert sich das, während sie steht, wurde sie versetzt
+  // (Teleport, etwa beim Aufwachen nach einer Niederlage), auch wenn sie nur ein Feld weiter landet.
+  let seenX = player.x, seenY = player.y;
+
   // Mehrmals pro Bild aufrufbar: Ohne neuen Schritt der Figur ändert sich nichts.
   f.update = () => {
+    const moved = player.x !== seenX || player.y !== seenY;
+    seenX = player.x;
+    seenY = player.y;
     if (player.moving) {
       // Die Figur verlässt ein Feld, auf dem er nicht steht: Er geht dorthin.
       if (onCell(player.fromX, player.fromY)) return;
@@ -46,8 +53,9 @@ export function createFollower(map, player, occupied) {
       f.y = player.fromY;
       return;
     }
-    // Die Figur steht und er ist mehr als ein Feld weg: Sie wurde versetzt.
-    if (distance(f.x, f.y, player.x, player.y) > 1) f.place();
+    // Die Figur steht, aber an einem anderen Feld als zuletzt, oder er ist mehr als ein Feld weg: Sie
+    // wurde versetzt, er stellt sich wieder hinter sie.
+    if (moved || distance(f.x, f.y, player.x, player.y) > 1) f.place();
   };
 
   // Position in Spielpixeln: im selben Fortschritt zwischen seinen zwei Feldern wie die Figur.
