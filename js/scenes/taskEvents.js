@@ -2,9 +2,11 @@
 // js/data/tasks.js, Texte: i18n task.<gebiet>.*. Jede Aufgabe hat intro, tip, solved und done, dazu je
 // Art (tests/tasks.test.js prüft das):
 // - collect: speaker (wer belohnt), hurry, gone, item.<i>, left.<n> (n Teile fehlen noch)
-// - order:   clue ({list}), progress ({n}, {of}), again, symbol.<i> (Namen für die Liste), part.<i>
+// - order:   clue ({list}), progress ({n}, {of}), again, start ({list}, falsches erstes Teil),
+//            symbol.<i> (Namen für die Liste), part.<i>
 // - turn:    turned ({dir} aus gear.dir.<0 bis 3>)
-// - follow:  station (ein Satz je Station zwischen Anfang und Ende), again, rest (Teil am Ende)
+// - follow:  station (ein Satz je Station zwischen Anfang und Ende), again, rest (Teil am Ende),
+//            back (leise: verloren, bevor man ihm einmal gefolgt ist)
 // Bilder: collect giver <prop ohne Zahl><gefunden>, item <prop>Done; order switch <prop>Lit und für
 // das letzte Teil <prop>Open; turn switch <prop ohne Zahl><stellung>.
 // - Bilder: propVariant.task wählt das Bild eines Teils nach Stand (gefunden, leuchtet, Stellung);
@@ -108,6 +110,8 @@ export function addTasks(world, game) {
       sound('wrong');
       return say(game, [part, say1('tip', { list: orderList() })]);
     }
+    // Noch nichts angefangen und nicht das erste Teil: kein Fehler, nur ein freundlicher Hinweis.
+    if (r.notFirst) return say(game, [part, say1('start', { list: orderList() })]);
     return say(game, [part, say1('again')]);
   }
 
@@ -179,10 +183,11 @@ function addWisp(world, game, { task, run, solved, finish, say1, lines, firstTim
   let node = null;
   let timer = null;
   function whisper(text) {
+    if (!game.ui) return; // ohne Oberfläche (Tests) nichts anzeigen
     node?.remove();
     clearTimeout(timer);
     node = el('div', { class: 'whisper passive', 'aria-live': 'polite' }, text);
-    game.ui?.append(node);
+    game.ui.append(node);
     timer = setTimeout(() => node?.remove(), WHISPER_MS);
   }
   const baseExit = world.exit;
@@ -209,6 +214,11 @@ function addWisp(world, game, { task, run, solved, finish, say1, lines, firstTim
     }
     if (r.result === 'wrong') {
       flyTo(stations[0], { jump: true });
+      // Noch keiner Station gefolgt (from 1: nur angefangen): leise zurück, ohne Fehlerton und Dialog.
+      if (from < 2) {
+        whisper(say1('back'));
+        return null;
+      }
       return async () => {
         sound('wrong');
         await say(game, [say1('tip')]);

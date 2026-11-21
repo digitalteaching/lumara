@@ -64,6 +64,8 @@ function order(run, task, what) {
   }
   // Schon im laufenden Versuch dran (etwa zweimal A am selben Baum): kein Fehler.
   if (orderLit(run, task, index)) return { result: 'nothing', index };
+  // Noch nichts angefangen: kein Fehler, nur nicht das erste Teil (die Szene sagt, womit man anfängt).
+  if (run.step === 0) return { result: 'nothing', index, notFirst: true };
   run.step = 0;
   return { result: 'wrong', index };
 }

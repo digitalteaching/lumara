@@ -35,10 +35,12 @@ export const TASKS = {
   // Flüsterwald: vier Bäume mit Zeichen (0 Raute, 1 Dreieck, 2 Kreis, 3 Viereck), der Zeichenstein
   // am Eingang nennt die Reihenfolge. Im letzten Baum öffnet sich das Astloch.
   2: { area: 2, map: 'wald', type: 'order', order: [2, 1, 3, 0] },
-  // Pilzmoor: vom Eingang über den Torf nach Westen bis zum Wurzelstock, ohne hohes Schilf.
+  // Pilzmoor: Das Irrlicht wartet über einem Leuchtpilz westlich vom Eingang, abseits vom Weg zum Steg
+  // (wer nur durchs Moor geht, startet nichts). Es führt über den Torf nach Westen bis zum
+  // Wurzelstock, ohne hohes Schilf.
   3: {
     area: 3, map: 'moor', type: 'follow', near: 1, lose: 8,
-    stations: [{ x: 21, y: 25 }, { x: 16, y: 21 }, { x: 12, y: 17 }, { x: 8, y: 17 }, { x: 3, y: 17 }],
+    stations: [{ x: 14, y: 25 }, { x: 16, y: 21 }, { x: 12, y: 17 }, { x: 8, y: 17 }, { x: 3, y: 17 }],
   },
   // Spiegeldünen: drei Glasstatuen um den Leuchtstein. Am Anfang schauen alle an ihm vorbei.
   4: {

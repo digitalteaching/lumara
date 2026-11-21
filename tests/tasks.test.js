@@ -66,12 +66,22 @@ test('order: richtige Reihenfolge leuchtet, ein falscher Baum setzt mit wrong zu
   assert.deepEqual(act(run, task, { role: 'switch', index: 3 }), { result: 'nothing' });
 });
 
+test('order: Ein falscher Baum, bevor etwas leuchtet, ist kein Fehler, nur nicht der erste', () => {
+  const task = { area: 2, map: 'x', type: 'order', order: [2, 1, 3, 0] };
+  const run = createRun(task);
+  for (const i of [0, 1, 3]) assert.deepEqual(act(run, task, { role: 'switch', index: i }), { result: 'nothing', index: i, notFirst: true });
+  assert.equal(run.step, 0);
+  assert.deepEqual(act(run, task, { role: 'switch', index: 2 }), { result: 'progress', index: 2, step: 1 });
+  assert.deepEqual(act(run, task, { role: 'switch', index: 0 }), { result: 'wrong', index: 0 }, 'danach ist ein falscher Baum ein Fehler');
+});
+
 test('order mit Platten: Felder zählen wie Schalter, andere Felder tun nichts', () => {
   const task = { area: 8, map: 'x', type: 'order', order: [1, 0], plates: [{ x: 2, y: 2 }, { x: 5, y: 2 }] };
   const run = createRun(task);
   assert.deepEqual(act(run, task, { x: 3, y: 3 }), { result: 'nothing' });
-  assert.deepEqual(act(run, task, { x: 2, y: 2 }), { result: 'wrong', index: 0 });
+  assert.deepEqual(act(run, task, { x: 2, y: 2 }), { result: 'nothing', index: 0, notFirst: true });
   assert.deepEqual(act(run, task, { x: 5, y: 2 }), { result: 'progress', index: 1, step: 1 });
+  assert.deepEqual(act(run, task, { x: 5, y: 2 }), { result: 'nothing', index: 1 });
   assert.deepEqual(act(run, task, { x: 2, y: 2 }), { result: 'solved', index: 0, step: 2 });
 });
 
@@ -262,9 +272,9 @@ test('Bilder der Aufgaben: 16 Pixel breit, bekannte Farben, mit allen Zuständen
 const count = n => Array.from({ length: n }, (_, i) => i);
 const NEEDS = {
   collect: task => ['speaker', 'hurry', 'gone', ...count(task.items).flatMap(i => [`item.${i}`, `left.${i}`])],
-  order: task => ['clue', 'progress', 'again', ...count(task.order.length).flatMap(i => [`symbol.${i}`, `part.${i}`])],
+  order: task => ['clue', 'progress', 'again', 'start', ...count(task.order.length).flatMap(i => [`symbol.${i}`, `part.${i}`])],
   turn: () => ['turned'],
-  follow: () => ['station', 'again', 'rest'],
+  follow: () => ['station', 'again', 'rest', 'back'],
 };
 
 test('Texte der Aufgaben: in allen vier Sprachen, kurz genug für eine Sprechblase', () => {
@@ -343,6 +353,51 @@ test('In der Welt: Das Irrlicht wartet an der ersten Station; nah heran beginnt 
   done.tasks = [3];
   const solved = world('moor', done);
   assert.equal(solved.w.onStepped.length, 0, 'gelöst: kein Folgen mehr');
+});
+
+test('In der Welt: Wer das Irrlicht verliert, bevor er ihm gefolgt ist, bekommt keinen Fehler; danach einen Tipp', () => {
+  const { w } = world('moor');
+  const stepped = w.onStepped.at(-1);
+  const [s0, s1] = TASKS[3].stations;
+  const far = { x: s1.x + TASKS[3].lose + 1, y: s1.y };
+  assert.equal(typeof stepped(s0.x + 1, s0.y), 'function', 'Einleitung');
+  assert.equal(stepped(far.x, far.y), null, 'nur angefangen, dann weggegangen: leise zurück');
+  assert.equal(stepped(s0.x - 1, s0.y), null, 'noch einmal: leise weiter');
+  assert.equal(stepped(s1.x, s1.y + 1), null, 'einer Station gefolgt');
+  const s2 = TASKS[3].stations[2];
+  assert.equal(typeof stepped(s2.x + TASKS[3].lose + 1, s2.y), 'function', 'jetzt Fehlerton und Tipp');
+});
+
+test('Moor: Wer nur vom Eingang zum Steg geht, kommt dem wartenden Irrlicht nicht nahe', () => {
+  const def = MAPS.moor, map = closed(def);
+  const [s0] = TASKS[3].stations;
+  // Alle Felder auf einem kürzesten Weg vom Eingang zu einem der beiden Stegfelder am Südufer.
+  const dist = from => {
+    const d = new Map([[cellKey(from.x, from.y), 0]]);
+    const queue = [from];
+    while (queue.length) {
+      const c = queue.shift();
+      for (const [dx, dy] of NEAR) {
+        const n = { x: c.x + dx, y: c.y + dy };
+        if (!map.canEnter(n.x, n.y) || d.has(cellKey(n.x, n.y))) continue;
+        d.set(cellKey(n.x, n.y), d.get(cellKey(c.x, c.y)) + 1);
+        queue.push(n);
+      }
+    }
+    return d;
+  };
+  const fromSpawn = dist(def.spawn);
+  const piers = [];
+  for (let x = 0; x < map.width; x++) if (map.tileAt(x, 15) === 'pier') piers.push({ x, y: 15 });
+  assert.equal(piers.length, 2);
+  for (const pier of piers) {
+    const toPier = dist(pier), total = fromSpawn.get(cellKey(pier.x, pier.y));
+    for (const [k, d] of fromSpawn) {
+      if (d + toPier.get(k) !== total) continue;
+      const [x, y] = k.split(',').map(Number);
+      assert.ok(chebyshev({ x, y }, s0) > TASKS[3].near + 2, `${k} auf dem Weg zum Steg startet das Irrlicht`);
+    }
+  }
 });
 
 test('In der Welt: Das Irrlicht leuchtet nur in Farben der Palette; bei „Bewegung reduzieren“ steht es still', () => {
