@@ -96,6 +96,25 @@ test('Die allgemeinen Sätze versprechen keinen Fund und kein Graben', () => {
   }
 });
 
+// Gaben öffnen Verstecke, sonst nichts: Es gibt keine Wege, die erst eine Gabe zeigt, und kein Wesen
+// trägt die Figur. Kein Text der Begleiter, der Gaben oder der Hinweise an Verstecken sagt so etwas.
+test('Begleiter, Gaben und Hinweise versprechen keine Wege und kein Tragen oder Reiten', () => {
+  const PATH_OR_RIDE = {
+    de: [/\b(Weg|Wege|Pfad|Pfade)\b/, /trägt dich|trage dich|\breit(e|en|est|et)\b|auf meinem rücken/i],
+    en: [/\b(paths?|roads?|routes?)\b/i, /carr(y|ies) you|\brid(e|es|ing)\b|on my back/i],
+    fr: [/\b(chemins?|sentiers?|routes?)\b/i, /\bte port(e|er|era)\b|sur mon dos|\bmonter sur\b/i],
+    es: [/\b(caminos?|senderos?|rutas?)\b/i, /\bte llev(a|o|aré|ará)\b|\bmontar\b|en mi espalda/i],
+  };
+  const lineKeys = table => Object.keys(table).filter(k => /^(companion\.|gift\.[a-z]+\.text$|hideout\.hint\.)/.test(k));
+  for (const [lang, table] of Object.entries({ de: DE, en: EN, fr: FR, es: ES })) {
+    const keys = lineKeys(table);
+    assert.ok(keys.length >= GIFTS.length * 3, `${lang}: ${keys.length} Schlüssel`);
+    for (const k of keys) {
+      for (const line of [table[k]].flat()) for (const re of PATH_OR_RIDE[lang]) assert.ok(!re.test(line), `${lang}: ${k}: ${line}`);
+    }
+  }
+});
+
 test('In einer anderen Sprache kommt der Satz aus deren Tabelle', () => {
   setLanguage('en');
   const h = HIDEOUTS.find(x => x.gift === 'dive');

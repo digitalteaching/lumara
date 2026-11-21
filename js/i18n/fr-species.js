@@ -85,7 +85,7 @@ export const FR_SPECIES = {
   zeitschnecke: { names: ['Tic-Tacargot'], gender: 'm', description: 'Un escargot avec une coquille comme une horloge. Il est lent, mais il n’est jamais en retard.' },
   kristallotter: { names: ['Cristaloutre'], gender: 'f', description: 'Une loutre avec une fourrure comme du givre. De petits cristaux de glace poussent sur son dos et brillent sous l’aurore boréale.' },
   irrlichtfee: { names: ['Fée-Follette'], gender: 'f', description: 'Une toute petite fée de lumière. Elle danse au-dessus du marais et montre le chemin de la maison à ceux qui sont perdus.' },
-  flaschling: { names: ['Mini-Flacon'], gender: 'f', description: 'Un petit être qui vit dans des bouteilles échouées sur la plage. Il collectionne les lettres qui sont dedans.' },
+  flaschling: { names: ['Mini-Flacon'], gender: 'm', description: 'Un petit être qui vit dans des bouteilles échouées sur la plage. Il collectionne les lettres qui sont dedans.' },
   wipfelwusel: { names: ['Cimeron'], gender: 'm', description: 'Un minuscule être des cimes des arbres. Ses oreilles sont deux feuilles vertes.' },
   glimmwurz: { names: ['Racinelampe'], gender: 'f', description: 'Une racine avec une fleur comme une lanterne. Elle vit dans les tunnels sombres des racines.' },
   spiegelechse: { names: ['Lézard-Miroir'], gender: 'm', description: 'Un lézard qu’on voit seulement quand on regarde à travers un mirage. Sinon, il est invisible.' },

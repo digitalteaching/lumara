@@ -127,3 +127,22 @@ test('Neue Wesen: eine Stufe, Gebiet, selten, eigene Namen in jeder Sprache', ()
     }
   });
 });
+
+// Das Geschlecht folgt dem Kopfwort des Namens: le flacon, la racine, le lézard, la plume, la belette;
+// el botellín, la raíz, el lagarto, la pluma, el duende, el pez, la comadreja.
+test('Neue Wesen: Französisch und Spanisch mit dem Geschlecht ihres Namens', () => {
+  const GENDER = {
+    fr: { flaschling: 'm', wipfelwusel: 'm', glimmwurz: 'f', spiegelechse: 'm', klingfeder: 'f', rostbold: 'm', eisflosse: 'm', kometwiesel: 'f' },
+    es: { flaschling: 'm', wipfelwusel: 'm', glimmwurz: 'f', spiegelechse: 'm', klingfeder: 'f', rostbold: 'm', eisflosse: 'm', kometwiesel: 'f' },
+  };
+  assert.deepEqual(Object.keys(GENDER.fr).sort(), [...HIDDEN_SPECIES].sort());
+  for (const [lang, L] of [['fr', FR_SPECIES], ['es', ES_SPECIES]]) {
+    for (const id of HIDDEN_SPECIES) assert.equal(L[id].gender, GENDER[lang][id], `${lang} ${id}: ${L[id].names[0]}`);
+  }
+  try {
+    setLanguage('fr');
+    assert.equal(wildName('flaschling', 1, 'a'), 'Un Mini-Flacon sauvage');
+  } finally {
+    setLanguage('de');
+  }
+});
