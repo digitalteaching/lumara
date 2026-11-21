@@ -82,6 +82,7 @@ const FILES = [
   "js/i18n/fr-world.js",
   "js/i18n/fr.js",
   "js/i18n/i18n.js",
+  "js/items/backpackView.js",
   "js/items/bag.js",
   "js/items/food.js",
   "js/items/keys.js",
