@@ -33,3 +33,14 @@ test('Jede Art im Buch sieht als Glanzform deutlich anders aus; Umriss und Leere
 test('Grautöne bleiben ohne eigene Regel, wie sie sind', () => {
   assert.deepEqual(shinyRows(['kndsmfcw.']), ['kndsmfcw.']);
 });
+
+test('Rostbold glänzt warm: kein Blau, und der Kobold hebt sich von seiner Holzkiste ab', () => {
+  const rows = CREATURE_ART.rostbold[1];
+  const out = shinyRows(rows, 'rostbold');
+  assert.ok(!/[DSLA]/.test(out.join('')), 'kein Blau in der Glanzform');
+  // Körper (flieder V, v, P) und Kiste (Holz r, o, b) bekommen verschiedene Farben.
+  const at = ch => new Set(rows.flatMap((r, y) => [...r].flatMap((c, x) => (c === ch ? [out[y][x]] : []))));
+  const body = new Set(['V', 'v', 'P'].flatMap(ch => [...at(ch)]));
+  const crate = new Set(['r', 'o', 'b'].flatMap(ch => [...at(ch)]));
+  assert.deepEqual([...body].filter(c => crate.has(c)), []);
+});

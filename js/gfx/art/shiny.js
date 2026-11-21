@@ -24,7 +24,9 @@ export const SHINY_OVERRIDE = {
   klippbock: { f: 'Y', m: 'y', s: 'r', d: 'o' }, // Grauer Bock → goldener Bock
   frostrobbe: { f: 'R', m: 'V', S: 'v', A: 'V' }, // Weiße Robbe → Rosenrobbe
   kristallotter: { f: 'Y', m: 'y', s: 'r', w: 'c' }, // Raureif → Bernstein, die Kristalle werden grün
-  rostbold: { r: 'y', o: 'r', b: 'o' }, // Die Kiste bleibt aus Holz (heller) und wird nicht silbern wie eine Blechtonne
+  // Rostbold: Die Kiste bleibt aus Holz (heller) und wird nicht silbern wie eine Blechtonne. Der Kobold
+  // wird nicht blau, sondern glüht warm wie Glut (Pfirsich, Koralle, Glutrot), der Schopf golden.
+  rostbold: { r: 'y', o: 'r', b: 'o', V: 'p', v: 'C', P: 'e', C: 'h', e: 'o' },
 };
 
 export function shinyRows(rows, speciesId = null) {

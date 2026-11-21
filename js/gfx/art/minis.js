@@ -119,6 +119,26 @@ export const MINI_OVERRIDE = {
     '.k..kskkksk.....',
     '.....k...k......',
   ],
+  // Verkleinert ginge die Laterne im Rahmen unter. Von Hand: ein heller Schein in dunklem, viereckigem
+  // Rahmen hinten in der Rückenflosse, weit weg vom Kopf.
+  eisflosse: [
+    '................',
+    '....kkk.........',
+    '..kknnnkkk......',
+    '..knHHHnDDk.....',
+    '..knHwHnLLDk....',
+    'k.knHHHnLLLDk...',
+    'DkknnnnnALLSDk..',
+    'DAkDAAAAAAAAADk.',
+    'DLLAAAwAAAAwkADk',
+    'kDLAAwAAAAAkkADk',
+    'kLLAAAAAAAAAAADk',
+    'DLLDAAALLAAARDDk',
+    'DLDkDAALfffffLk.',
+    'DDk.kDAfffffADk.',
+    'kk...kkDDDDDkk..',
+    '.......kkkkk....',
+  ],
 };
 
 // Jeder 2 × 2-Block wird ein Pixel: deckend bei mindestens 2 Farbpixeln (nicht '.' und nicht 'k'),

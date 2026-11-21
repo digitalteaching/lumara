@@ -1484,25 +1484,28 @@ function rostbold() {
   return done(g);
 }
 
-// Eisflosse: ein runder Fisch unter dem Eis. In seiner Rückenflosse sitzt eine kleine Laterne, in der
-// ein warmes Licht brennt (Gebiet 7).
+// Eisflosse: ein runder Fisch unter dem Eis. Seine Rückenflosse ist weit nach hinten gezogen, und hinten
+// in ihr sitzt eine viereckige Laterne: dunkler Rahmen, Kreuzsprossen, vier Scheiben mit warmem Licht
+// (Gebiet 7). Sie sitzt über dem Rücken zum Schwanz hin, nicht über dem Kopf.
 function eisflosse() {
   const g = canvas(32);
   poly(g, [[8, 19], [1, 12], [3, 19.5], [1, 27]], ['A', 'L', 'S']); // Schwanzflosse
-  poly(g, [[8, 17], [9, 10], [11.5, 12], [13, 7], [20, 7], [21.5, 11], [24, 9], [25, 16]], ['A', 'L', 'S']); // Rückenflosse
-  ellipse(g, 16.5, 10.5, 3.6, 4, ['w', 'H', 'h']); // Laterne
+  poly(g, [[7, 17], [6.5, 9], [8.5, 4], [17, 4], [23.5, 13.5], [22, 16]], ['A', 'L', 'S']); // Rückenflosse
   ellipse(g, 16.5, 19.5, 10, 7, ['A', 'A', 'L']); // Körper
   ellipse(g, 17.5, 23.5, 6, 2.2, ['w', 'f', 'A']); // heller Bauch
   ellipse(g, 13, 21, 3.5, 2, ['A', 'L', 'S']); // Brustflosse
   outline(g, 'D');
-  dots(g, [[14, 6, 'D'], [15, 6, 'D'], [16, 6, 'D'], [17, 6, 'D'], [18, 6, 'D'], [19, 6, 'D'], [16, 5, 'D'], [17, 5, 'D'], [16, 4, 'D'], [17, 4, 'D'], // Dach
-    [16, 8, 'h'], [16, 13, 'h'], [16, 9, 'w'], [16, 10, 'w'], [17, 10, 'w'], [16, 11, 'H'], [17, 11, 'w'], [16, 12, 'H'], // Flamme
-    [10, 13, 'L'], [12, 14, 'L'], [21, 13, 'L'], [23, 13, 'L'], // Strahlen der Rückenflosse
+  for (let y = 5; y <= 13; y++) { // Laterne: Rahmen und Sprossen n, Scheiben H
+    for (let x = 8; x <= 14; x++) put(g, x, y, x === 8 || x === 11 || x === 14 || y === 5 || y === 9 || y === 13 ? 'n' : 'H');
+  }
+  dots(g, [[9, 6, 'w'], [12, 6, 'w'], [9, 10, 'w'], [12, 10, 'w'], [10, 8, 'h'], [13, 8, 'h'], [10, 12, 'h'], [13, 12, 'h'], // Licht in den Scheiben
+    [10, 4, 'n'], [11, 4, 'n'], [12, 4, 'n'], [11, 3, 'n'], // Griff
+    [17, 9, 'L'], [19, 11, 'L'], [20, 14, 'L'], [16, 14, 'L'], // Strahlen der Rückenflosse
     [4, 16, 'L'], [5, 18, 'L'], [4, 22, 'L'], [11, 21, 'L'], [13, 22, 'L'],
     [10, 17, 'w'], [11, 16, 'w'], [12, 18, 'f'], [19, 17, 'f']]); // Glanz
   eye(g, 22, 16, 2, 2);
   dots(g, [[24, 20, 'D'], [25, 21, 'D'], [26, 20, 'D'], [21, 19, 'R'], [27, 18, 'R'],
-    [29, 9, 'A'], [30, 7, 'A'], [28, 6, 'w'], [22, 4, 'H'], [11, 4, 'H'], [20, 2, 'H'], [13, 2, 'h']]);
+    [29, 9, 'A'], [30, 7, 'A'], [28, 6, 'w'], [5, 2, 'H'], [16, 2, 'H'], [3, 6, 'h'], [18, 1, 'h']]);
   return done(g);
 }
 
