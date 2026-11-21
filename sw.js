@@ -97,6 +97,7 @@ const FILES = [
   "js/menu/backpack.js",
   "js/menu/backupPages.js",
   "js/menu/bookPage.js",
+  "js/menu/friendsPage.js",
   "js/menu/diaryPage.js",
   "js/menu/homePage.js",
   "js/menu/items.js",

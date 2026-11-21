@@ -12,6 +12,7 @@ import { settingsPage } from './settings.js';
 import { diaryPage } from './diaryPage.js';
 import { mapPage } from './mapPage.js';
 import { bookPage } from './bookPage.js';
+import { friendsPage } from './friendsPage.js';
 import { MENU_ITEMS } from './items.js';
 import { t } from '../i18n/i18n.js';
 
@@ -53,6 +54,7 @@ export function creaturePage(game) {
 const PAGES = {
   'menu.creature': creaturePage,
   'menu.book': bookPage,
+  'menu.friends': friendsPage,
   'menu.map': mapPage,
   'menu.diary': diaryPage,
   'menu.settings': settingsPage,

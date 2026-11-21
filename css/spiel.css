@@ -894,3 +894,11 @@ body:not([data-mode="walk"]) .menu-btn, body:not([data-mode="walk"]) .bag-btn { 
   .bp-album { flex: none; max-height: calc(var(--slot) * 2.5 + 20px); }
   .bp-card { flex-wrap: wrap; }
 }
+
+/* Freunde im Menü: eine Zeile je Freund, Bild links */
+.friend-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.friend-row { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 56px; padding: 4px 8px; border: 2px solid var(--frame); border-radius: 6px; background: var(--cream); color: var(--ink); font: inherit; text-align: left; }
+.friend-row canvas { flex: none; width: 48px; height: 48px; image-rendering: pixelated; image-rendering: crisp-edges; }
+.friend-text { display: flex; flex-direction: column; min-width: 0; overflow-wrap: anywhere; }
+.friend-with { font-size: var(--text-small); }
+.friend-card { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }

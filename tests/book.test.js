@@ -56,10 +56,10 @@ test('Jeder Eintrag sagt seinen Zustand mit Text, nicht nur mit Farbe', () => {
 });
 
 test('Menü in der Reihenfolge aus Design 13, mit dem Wesen-Buch', () => {
-  assert.deepEqual(MENU_ITEMS.map(k => t(k)), ['Wesen', 'Rucksack', 'Wesen-Buch', 'Karte', 'Tagebuch', 'Einstellungen']);
+  assert.deepEqual(MENU_ITEMS.map(k => t(k)), ['Wesen', 'Rucksack', 'Wesen-Buch', 'Freunde', 'Karte', 'Tagebuch', 'Einstellungen']);
   setLanguage('en');
   try {
-    assert.deepEqual(MENU_ITEMS.map(k => t(k)), ['Creature', 'Backpack', 'Creature Book', 'Map', 'Diary', 'Settings']);
+    assert.deepEqual(MENU_ITEMS.map(k => t(k)), ['Creature', 'Backpack', 'Creature Book', 'Friends', 'Map', 'Diary', 'Settings']);
   } finally {
     setLanguage('de');
   }
