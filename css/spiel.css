@@ -686,7 +686,9 @@ body:not([data-mode="walk"]) .menu-btn, body:not([data-mode="walk"]) .bag-btn { 
    nebeneinander statt übereinander, so berührt das Herz die Nummer nie, auch bei großer Schrift. */
 .book-top { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 2px; width: 100%; }
 .book-no { grid-column: 2; grid-row: 1; font-size: 0.75em; text-align: center; color: var(--frame-dark); }
-.book-name { font-weight: 700; font-size: 0.8em; text-align: center; overflow-wrap: anywhere; hyphens: manual; }
+/* Namen trennen an Silbengrenzen mit Bindestrich, in der Sprache der Seite (html lang folgt der
+   Spielsprache, js/app/gamePack.js). Nur ein Wort ohne passende Trennstelle bricht notfalls hart um. */
+.book-name { font-weight: 700; font-size: 0.8em; text-align: center; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; }
 .book-star { grid-column: 3; grid-row: 1; justify-self: end; font-size: 0.9em; line-height: 1; color: #b07a1a; font-weight: 800; }
 .book-heart { grid-column: 1; grid-row: 1; justify-self: start; font-size: 0.9em; line-height: 1; color: #b8412f; font-weight: 800; }
 .book-pictures { display: flex; gap: 16px; justify-content: center; align-items: flex-end; }
@@ -854,7 +856,7 @@ body:not([data-mode="walk"]) .menu-btn, body:not([data-mode="walk"]) .bag-btn { 
 .bp-card p { margin: 0; }
 .bp-card-img { flex: none; width: 96px; height: 96px; image-rendering: pixelated; image-rendering: crisp-edges; }
 .bp-card-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.bp-card-name { font-size: var(--text); font-weight: 800; }
+.bp-card-name { font-size: var(--text); font-weight: 800; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; } /* wie .book-name */
 .bp-card-count { margin-left: 10px; font-weight: 700; color: #7a5236; font-variant-numeric: tabular-nums; }
 .bp-card-place { color: #7a5236; }
 .bp-msg { font-weight: 700; }
@@ -902,6 +904,6 @@ body:not([data-mode="walk"]) .menu-btn, body:not([data-mode="walk"]) .bag-btn { 
 .friend-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
 .friend-row { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 56px; padding: 4px 8px; border: 2px solid var(--frame); border-radius: 6px; background: var(--cream); color: var(--ink); font: inherit; text-align: left; }
 .friend-row canvas { flex: none; width: 48px; height: 48px; image-rendering: pixelated; image-rendering: crisp-edges; }
-.friend-text { display: flex; flex-direction: column; min-width: 0; overflow-wrap: anywhere; }
+.friend-text { display: flex; flex-direction: column; min-width: 0; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; } /* wie .book-name */
 .friend-with { font-size: var(--text-small); }
 .friend-card { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }

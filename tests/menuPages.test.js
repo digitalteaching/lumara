@@ -95,3 +95,16 @@ test('Wesen-Buch: Herz, Nummer und Stern liegen nebeneinander in der Kopfzeile, 
     assert.doesNotMatch(rule(sel), /position: absolute/, sel);
   }
 });
+
+// Lange Namen („Jinglefeather“) brachen mitten im Wort ohne Bindestrich um. Sie trennen jetzt an
+// Silbengrenzen in der Spielsprache (html lang); hart umbrechen nur, wenn kein Trennpunkt passt.
+test('Namen im Buch, in der Freundesliste und auf der Rucksack-Karte trennen an Silbengrenzen', () => {
+  const css = readFileSync(new URL('../css/spiel.css', import.meta.url), 'utf8');
+  const rule = sel => css.match(new RegExp(`^\\${sel} \\{([^}]*)\\}`, 'm'))?.[1] ?? '';
+  for (const sel of ['.book-name', '.friend-text', '.bp-card-name']) {
+    assert.match(rule(sel), /hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word;/, sel);
+    assert.doesNotMatch(rule(sel), /anywhere|hyphens: manual/, sel);
+  }
+  // Ortsnamen auf der Karte und Knöpfe mit vielen Zielen trennen weiter nur an ihren festen Stellen.
+  assert.match(css, /\.map-cell \.map-name, \.choice\.many \.btn \{ hyphens: manual; -webkit-hyphens: manual; \}/);
+});
