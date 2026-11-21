@@ -4,7 +4,7 @@
 
 Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, erkundet eine geheimnisvolle Insel unter einem Nebel des Vergessens und besteht Duelle mit Aufgaben aus dem Unterricht. Dafür bekommt es Punkte, und sein Wesen entwickelt sich weiter. Die Inhalte kommen aus einem Lernpaket, einer Textdatei, die die Lehrkraft selbst schreibt. Dadurch funktioniert das Spiel in jedem Fach. Das erste Beispielpaket ist für Jahrgang 6 Englisch.
 
-**Status:** Das Spiel ist fertig (Spielfassung 1.1.0). Gebaut in den Plänen 1 bis 8, danach 1.0.x und 1.1. Es läuft unter https://digitalteaching.github.io/lumara/.
+**Status:** Das Spiel ist fertig (Spielfassung 1.2.0). Gebaut in den Plänen 1 bis 8, danach 1.0.x, 1.1 und 1.2. Es läuft unter https://digitalteaching.github.io/lumara/.
 
 **Für Lehrkräfte:** Die [Anleitung](anleitung.html) erklärt, wie man ein Lernpaket erstellt, prüft und an die Klasse verteilt. Auf der [Seite für Lehrkräfte](lehrkraft.html) prüft man Pakete und Statistiken. Dazu gibt es die [Vorlage](pakete/vorlage.txt), das [Beispielpaket](pakete/englisch-6-beispiel.txt), einen [KI-Prompt](pakete/KI-PROMPT-Lernpaket.md), mit dem eine KI ein gültiges Paket schreibt, und eine [Kurzanleitung als PDF](pakete/Lumara-Kurzanleitung.pdf) zum Ausdrucken.
 
@@ -103,6 +103,10 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
   - Der Rucksack klappt direkt im Spiel auf, nur beim Laufen. Er zeigt Futter, Steine, Schlüsselgegenstände und das Schatz-Album mit 24 Schätzen; man kann füttern, Glanzsteine einsetzen und Schätze ansehen. Antippen daneben schließt ihn. Bei „Bewegung reduzieren“ gibt es keine Klappen- und Flug-Animation.
   - Schätze findet man auf drei Wegen: an Glitzerstellen im Gras (etwa jedes dritte Mal statt eines Steins), unter Zetteln, die sonst nichts bringen (etwa jeder achte), und als seltene Beute wilder Wesen (jedes zehnte Mal). Die Zahlen stehen in `js/config.js` unter `treasures`.
   - Alle Schätze haben in allen vier Spielsprachen eigene, kindgerechte Namen und ein selbst gezeichnetes Bild. Alte Spielstände laden weiter: Format 9 ergänzt das Album leer, es zeigt 0 von 24.
+- **1.2**, Freunde:
+  - Befreunden: Nach einem gewonnenen Duell gegen ein wildes Wesen kann das Kind es mit dem Vertrauensring befreunden: 5 Fragen, 3 richtige. Die Antworten zählen in der Statistik wie bei den Zetteln.
+  - Die Freunde leben im Garten am Leuchtturm, und ein Begleiter läuft hinter dem Kind her (Menü → Freunde).
+  - 40 Verstecke öffnet man mit dem Geschenk des Begleiters: eine Frage aus dem Zettel-Pool oder eines von 8 neuen Wesen (das Buch hat jetzt 41 Plätze). Dazu gibt es je Gebiet eine kleine Spielaufgabe.
 
 - Design: [docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md](docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md)
 - Bauplan 1: [docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md](docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md)
@@ -121,6 +125,8 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
 - Bauplan 8: [docs/superpowers/plans/2026-11-04-lumara-plan-8-abschluss.md](docs/superpowers/plans/2026-11-04-lumara-plan-8-abschluss.md)
 - Design 1.1: [docs/superpowers/specs/2026-11-21-lumara-freunde-und-verstecke-design.md](docs/superpowers/specs/2026-11-21-lumara-freunde-und-verstecke-design.md)
 - Bauplan 1.1, Rucksack und Schätze: [docs/superpowers/plans/2026-11-21-lumara-1.1-rucksack-schaetze.md](docs/superpowers/plans/2026-11-21-lumara-1.1-rucksack-schaetze.md)
+- Bauplan 1.2a, Freunde, Begleiter, Garten: [docs/superpowers/plans/2026-11-21-lumara-1.2a-freunde-begleiter-garten.md](docs/superpowers/plans/2026-11-21-lumara-1.2a-freunde-begleiter-garten.md)
+- Bauplan 1.2b, Verstecke, Wesen, Aufgaben: [docs/superpowers/plans/2026-11-21-lumara-1.2b-verstecke-wesen-aufgaben.md](docs/superpowers/plans/2026-11-21-lumara-1.2b-verstecke-wesen-aufgaben.md)
 - Frühere Ideensammlung: [docs/2026-10-17-zwischenstand-ideensammlung.md](docs/2026-10-17-zwischenstand-ideensammlung.md)
 
 ## Für Lehrkräfte
@@ -151,12 +157,16 @@ Bleibt das Bild schwarz, einfach neu laden. Der einfache Python-Server bleibt be
 |---|---|
 | `/?dev` | direkt in die Bucht, Name „Test“, Wesen Funki |
 | `/?dev&wesen=kiesel` | wie oben mit einem anderen Startwesen (`funki`, `kiesel`, `nixi`, `flausch`, `pieks`) |
+| `/?dev&gebiet=garten` | gleich im Garten am Leuchtturm (mit `&freunde=12` mit Freunden) |
 | `/?dev&gebiet=moor` | direkt am Eingang eines Gebiets (`wald`, `moor`, `duenen`, `klippen`, `ruinen`, `see`, `wiese`), alle Leuchtsteine davor leuchten |
 | `/?duell=wild` | direkt ein Duell gegen ein wildes Wesen, danach das nächste |
 | `/?duell=trainer` | direkt das Duell gegen die Hüterin der Bucht |
 | `/?duell=wild&glanz` | jedes wilde Wesen als Glanzform |
+| `&freunde=n` | zu `?dev`: die ersten n befreundbaren Wesen sind Freunde, das erste läuft als Begleiter mit (mit `&gebiet=garten` gleich im Garten) |
+| `&leckerli=n` | zu `?dev`: n Leckerli im Rucksack, zum Befreunden |
 | `&level=40` | zu `?dev` oder `?duell`: das Wesen gleich auf diesem Level (Stufen und Entwicklung testen) |
 | `/?galerie` | alle Wesen in Originalgröße, A blättert weiter |
+| `/?galerie&klein` | die Galerie mit den kleinen Bildern (Minis) der Wesen |
 | `/?galerie&glanz` | alle Wesen als Glanzform |
 | `/?ipad` | so tun, als liefe das Spiel auf einem iPad in Safari (zeigt „Bevor es losgeht“, wenn es noch keinen Spielstand gibt) |
 | `/?sprache=xx` | Prüfmodus der Spielsprache: Jeder übersetzte Text steht in ⟦ ⟧, vergessene Texte fallen so sofort auf |
@@ -187,6 +197,7 @@ Kinder bekommen die neue Fassung beim nächsten Öffnen. Das laufende Spiel läd
 - Format 2 (seit Spielfassung 0.3.0) mit `tests/fixtures/spielstand-v2.txt`
 - Format 3 (seit Spielfassung 0.4.0, mit Zeitsteinen im Rucksack) mit `tests/fixtures/spielstand-v3.txt`
 - Format 9 (seit 1.1.0, Schätze und Album) mit `tests/fixtures/spielstand-v9.txt`
+- Format 10 (seit 1.2.0, Freunde, Begleiter, Leckerli, Verstecke, Spielaufgaben) mit `tests/fixtures/spielstand-v10.txt`
 
 Diese Dateien werden nie geändert. Für jede Änderung am Format gilt:
 
