@@ -199,7 +199,7 @@ async function probeStart() {
 }
 
 if (params.has('probe')) probeStart();
-else if (isLocal && params.has('galerie')) game.go(createGalleryScene(game, { shiny: params.has('glanz') }));
+else if (isLocal && params.has('galerie')) game.go(createGalleryScene(game, { shiny: params.has('glanz'), mini: params.has('klein') }));
 else if (isLocal && params.has('duell')) devDuel(params.get('duell'));
 else if (isLocal && params.has('dev')) devStart();
 else {
