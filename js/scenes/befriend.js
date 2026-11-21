@@ -9,7 +9,10 @@
 //   setRing(trust|null) Ring und Namensschild zeigen den Stand, null blendet beides aus
 //   heart()             das Herz steigt auf
 //   onLeave(fn|null)    fn läuft, wenn die Szene verlassen wird (räumt das Antwort-Panel weg)
+//   deck                das Deck des Duells: Der Ring zieht weiter daraus, damit eine Frage, deren
+//                       Antwort eben erst zu sehen war, nicht gleich wiederkommt (fehlt es, ein neues)
 // Ergebnis: 'friend' | 'shy' | 'left'.
+// deps ersetzt in Tests Dialoge und Panel: { say, choose, createDuelPanel }.
 
 import { CONFIG } from '../config.js';
 import { createDuel } from '../duel/duel.js';
@@ -25,8 +28,11 @@ import { createTrust, trustAnswer } from '../friends/trust.js';
 import { t } from '../i18n/i18n.js';
 
 const RESULT = { won: 'friend', lost: 'shy', open: 'left' };
+const UI = { say, choose, createDuelPanel };
 
-export async function playBefriend(game, setup, offer, view) {
+export async function playBefriend(game, setup, offer, view, deps = {}) {
+  const ui = { ...UI, ...deps };
+  const { say, choose } = ui;
   const name = speciesName(offer.species, 1);
   await say(game, [t('befriend.sits', { name })]);
   if (!view.alive()) return 'left';
@@ -50,7 +56,7 @@ export async function playBefriend(game, setup, offer, view) {
     const { questions, needed } = CONFIG.friends;
     await say(game, [t('befriend.start', { need: needed - trust.filled, questions, name })]);
     if (!view.alive()) return 'left';
-    await askRing(game, setup, trust, name, view);
+    await askRing(game, setup, trust, name, view, ui);
 
     if (trust.state === 'won') {
       // Erst der Freund, dann alles Sichtbare: Ein voller Ring zählt, auch wenn die Szene gerade endet.
@@ -82,14 +88,14 @@ export async function playBefriend(game, setup, offer, view) {
 // Duell für alle Fragen, damit die Antwortformen wechseln. Die hohen Energien sorgen dafür, dass es
 // nie von selbst endet; Stufe 1: keine zweite Chance und kein Schild. Nach jeder Antwort wird
 // gespeichert, damit das Schließen der App mitten im Ring nichts verliert.
-async function askRing(game, setup, trust, name, view) {
+async function askRing(game, setup, trust, name, view, ui) {
   const c = game.state.creature;
   const shortId = game.pack.data.shortId;
   const duel = createDuel({
     kind: 'befriend',
     player: { species: c.species, stage: 1, energy: 99, maxEnergy: 99 },
     foe: { maxEnergy: 99 },
-    deck: createDeck(setup.pool, packProgress(game.state, shortId).history, game.rng),
+    deck: view.deck ?? createDeck(setup.pool, packProgress(game.state, shortId).history, game.rng),
     rng: game.rng,
   });
   const ctx = { farsight: null };
@@ -101,7 +107,7 @@ async function askRing(game, setup, trust, name, view) {
       use: () => (ctx.farsight.enabled() && takeItem(game.state, 'farsight') ? duel.useFarsight() : null),
     };
   }
-  const panel = createDuelPanel(game);
+  const panel = ui.createDuelPanel(game);
   view.onLeave?.(() => {
     panel.interrupt({ type: 'moveon' });
     panel.remove();

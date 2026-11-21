@@ -1,6 +1,6 @@
 // Befreunden nach dem Duell (Lumara 1.2, Spec 6.1): was das Antwort-Panel beim Befreunden zeigt,
-// Vertrauensring und Herz in der Arena, und wie die Duellszene den Ablauf einbindet. Den Ablauf
-// selbst (Dialoge, Panel) prüft der Browser.
+// Vertrauensring und Herz in der Arena, wie die Duellszene den Ablauf einbindet, und der Ablauf
+// selbst mit Dialogen und Panel zum Mitschreiben statt im Browser.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -9,7 +9,13 @@ import { panelRules } from '../js/ui/duelPanel.js';
 import { RING, ringArcs, ringFill, heartPose, heartMs, drawTrustRing, drawHeart } from '../js/gfx/trustRing.js';
 import { PALETTE } from '../js/gfx/palette.js';
 import { ARENA } from '../js/gfx/arena.js';
-import { stubContext } from './helpers/fixtures.js';
+import { stubContext, q } from './helpers/fixtures.js';
+import { playBefriend } from '../js/scenes/befriend.js';
+import { newGameState } from '../js/state.js';
+import { createRng } from '../js/core/rng.js';
+import { createDeck, recordAnswer } from '../js/duel/questions.js';
+import { speciesName, speciesText } from '../js/data/species.js';
+import { t } from '../js/i18n/i18n.js';
 
 const src = p => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
 
@@ -106,6 +112,8 @@ test('Ring bei „Bewegung reduzieren“: gleich, egal wie spät', () => {
   assert.deepEqual(late.calls, early.calls);
 });
 
+// Die Duellszene selbst braucht den Browser. Hier nur, wie sie den Ablauf einbindet: Angebot gleich
+// nach dem Ergebnis, Befreunden nach der Beute und vor onEnd, der Ring mit dem Deck des Duells.
 test('Duellszene: Angebot gleich nach dem Ergebnis, Befreunden nach der Beute und vor onEnd', () => {
   const duel = src('js/scenes/duel.js');
   const apply = duel.indexOf('applyDuelResult(game.state');
@@ -114,20 +122,231 @@ test('Duellszene: Angebot gleich nach dem Ergebnis, Befreunden nach der Beute un
   const play = duel.indexOf('await playBefriend(game, setup, offer, view)');
   const end = duel.lastIndexOf('onEnd(report)');
   assert.ok(apply > 0 && offer > apply && loot > offer && play > loot && end > play);
+  assert.match(duel, /const deck = createDeck\(setup\.pool, progress\.history, game\.rng\);/);
+  const create = duel.slice(duel.indexOf('const duel = createDuel({'), duel.indexOf('});', duel.indexOf('const duel = createDuel({')));
+  assert.ok(create.includes('\n    deck,\n'), 'das Duell zieht aus demselben Deck');
+  assert.match(duel, /const view = \{\n {4}alive: \(\) => alive,\n {4}deck,\n/);
   assert.ok(src('sw.js').includes('"js/scenes/befriend.js"'));
 });
 
-test('Befreunden: speichert nach jeder Antwort und zählt sie wie einen Zettel', () => {
+test('Befreunden: Im Code heißt es befreunden, nie fangen', () => {
   const scene = src('js/scenes/befriend.js');
-  const loop = scene.slice(scene.indexOf('recordNoteAnswer('));
-  assert.ok(loop.indexOf('trustAnswer(') > 0 && loop.indexOf('game.save') > 0 && loop.indexOf('game.save') < loop.indexOf('feedback('));
   assert.ok(!/fang|catch\w*Creature/i.test(scene.replace(/\/\/.*$/gm, '')), 'man befreundet, man fängt nicht');
 });
 
-test('Entwickler-Schalter &leckerli=n nur auf dem eigenen Rechner', () => {
-  const main = src('js/main.js');
-  assert.match(main, /params\.get\('leckerli'\)/);
-  assert.match(main, /bag\.treat = /);
-  const fn = main.slice(main.indexOf('function devTreats'), main.indexOf('async function devStart'));
-  assert.ok(fn.includes('bag.treat'), 'eigene Funktion vor devStart');
+// ---------- Der Ablauf (js/scenes/befriend.js) mit vorgegebenen Antworten ----------
+
+const FRIEND = 'gischtling'; // befreundbar, Wasserwesen
+const NAME = speciesName(FRIEND, 1);
+const QUESTIONS = Array.from({ length: 8 }, (_, i) => q({ text: `Ring Frage ${i + 1}`, forms: ['choice'] }));
+
+// Spielt playBefriend mit Dialogen und Panel zum Mitschreiben. picks: Antworten auf choose der
+// Reihe nach; answers: was das Kind im Ring tut ('right', 'wrong', 'moveon' oder eine Funktion
+// run → Aktion); onFeedback(run, n) läuft bei der n-ten Rückmeldung. log hält alles der Reihe nach fest.
+async function runBefriend({ picks = [], answers = [], treat = 0, friends = {}, companion = null, offer = {}, deck, onFeedback } = {}) {
+  const state = newGameState({ name: 'Mia', species: 'nixi', nickname: null });
+  state.bag.treat = treat;
+  state.friends = structuredClone(friends);
+  state.companion = companion;
+  const log = [];
+  const run = { state, log, alive: true, leave: null, removed: 0, asked: [] };
+  const game = {
+    state,
+    pack: { data: { shortId: 'ring-test' } },
+    rng: createRng(7),
+    save: () => log.push(['save', structuredClone(state.friends), state.bag.treat]),
+  };
+  const view = {
+    alive: () => run.alive,
+    deck,
+    setRing: trust => log.push(['ring', trust ? trust.filled : null]),
+    heart: () => log.push(['heart']),
+    onLeave: fn => {
+      run.leave = fn;
+    },
+  };
+  const panel = {
+    async ask(duel) {
+      assert.ok(run.alive, 'keine Frage nach dem Verlassen der Szene');
+      const { question, choices } = duel.current;
+      run.asked.push(question.key);
+      log.push(['ask', question.key]);
+      const a = answers.shift();
+      if (typeof a === 'function') return a(run);
+      if (a === 'right') return { type: 'answer', response: { index: choices.correctIndex } };
+      if (a === 'wrong') return { type: 'answer', response: { index: (choices.correctIndex + 1) % choices.options.length } };
+      return { type: a };
+    },
+    async feedback(o) {
+      log.push(['feedback', o.ok]);
+      onFeedback?.(run, log.filter(e => e[0] === 'feedback').length);
+    },
+    interrupt: v => log.push(['interrupt', v.type]),
+    remove() {
+      run.removed++;
+      log.push(['remove']);
+    },
+  };
+  const deps = {
+    say: async (g, lines) => {
+      assert.ok(run.alive, `kein Text nach dem Verlassen der Szene: ${lines[0]}`);
+      log.push(['say', ...lines]);
+    },
+    choose: async (g, prompt) => {
+      assert.ok(run.alive, `keine Auswahl nach dem Verlassen der Szene: ${prompt}`);
+      log.push(['choose', prompt]);
+      return picks.shift();
+    },
+    createDuelPanel: () => {
+      log.push(['panel']);
+      return panel;
+    },
+  };
+  const setup = { kind: 'wild', pool: QUESTIONS };
+  run.result = await playBefriend(game, setup, { species: FRIEND, shiny: false, upgrade: false, ...offer }, view, deps);
+  run.said = log.filter(e => e[0] === 'say').flatMap(e => e.slice(1));
+  run.prompts = log.filter(e => e[0] === 'choose').map(e => e[1]);
+  return run;
+}
+
+const at = (log, entry) => log.findIndex(e => e[0] === entry);
+
+test('Ablauf: drei richtige, der Freund ist gespeichert, Herz, dann die Frage nach dem Begleiter', async () => {
+  const run = await runBefriend({ picks: [0, 0], answers: ['right', 'right', 'right'] });
+  const { log, state } = run;
+  assert.equal(run.result, 'friend');
+  assert.deepEqual(state.friends[FRIEND], { shiny: false });
+  assert.equal(state.companion, FRIEND, 'Ja auf die Frage nach dem Begleiter');
+  assert.deepEqual(run.prompts, [t('befriend.ask'), t('befriend.companionAsk', { name: NAME })], 'ohne Leckerli keine Frage danach');
+  assert.equal(run.said[0], t('befriend.sits', { name: NAME }));
+  assert.ok(run.said.includes(t(`befriend.done.${speciesText(FRIEND).gender}`, { name: NAME })));
+  assert.equal(run.said.at(-1), t('befriend.companionYes', { name: NAME }));
+  // Nach jeder Antwort gespeichert, vor der Rückmeldung; der Freund vor Herz und Texten.
+  const asks = log.map((e, i) => (e[0] === 'ask' ? i : -1)).filter(i => i >= 0);
+  assert.equal(asks.length, 3);
+  for (const i of asks) assert.deepEqual([log[i + 1][0], log[i + 2][0], log[i + 3][0]], ['save', 'ring', 'feedback']);
+  const saved = log.findIndex(e => e[0] === 'save' && e[1][FRIEND]);
+  assert.ok(saved > asks[2] && saved < at(log, 'heart'), 'erst gespeichert, dann das Herz');
+  // Die Antworten zählen wie Antworten auf Zettel.
+  const p = state.packs['ring-test'];
+  assert.equal(p.stats.total, 3);
+  assert.equal(Object.keys(p.history).length, 3);
+  // Ring aus, Panel weg.
+  assert.deepEqual(log.at(-1), ['ring', null]);
+  assert.equal(run.removed, 1);
+  assert.equal(run.leave, null, 'der Haken fürs Verlassen ist wieder frei');
+});
+
+test('Ablauf: drei falsche, das Wesen ist zu scheu', async () => {
+  const run = await runBefriend({ picks: [0], answers: ['wrong', 'wrong', 'wrong'] });
+  assert.equal(run.result, 'shy');
+  assert.deepEqual(run.state.friends, {});
+  assert.equal(run.said.at(-1), t('befriend.shy', { name: NAME }));
+  assert.equal(run.log.filter(e => e[0] === 'ask').length, 3, 'nach drei falschen ist der Ring nicht mehr zu füllen');
+  assert.deepEqual(run.log.at(-1), ['ring', null]);
+  assert.equal(run.removed, 1);
+});
+
+test('Ablauf: „Weiterziehen“ im Ring, das Leckerli bleibt verbraucht', async () => {
+  const run = await runBefriend({ picks: [0, 0], treat: 2, answers: ['right', 'moveon'] });
+  const { log, state } = run;
+  assert.equal(run.result, 'left');
+  assert.equal(state.bag.treat, 1, 'ein Leckerli gegeben');
+  assert.deepEqual(state.friends, {});
+  assert.deepEqual(run.prompts, [t('befriend.ask'), t('befriend.treatAsk', { name: NAME })]);
+  assert.ok(run.said.includes(t('befriend.treatTaken', { name: NAME })));
+  assert.equal(run.said.at(-1), t('befriend.left', { name: NAME }));
+  // Gleich nach dem Geben gespeichert, noch vor dem Ring; der Ring beginnt mit einem vollen Feld.
+  const treatSave = log.findIndex(e => e[0] === 'save');
+  assert.equal(log[treatSave][2], 1);
+  assert.ok(treatSave < at(log, 'ring'));
+  assert.deepEqual(log[at(log, 'ring')], ['ring', 1]);
+  assert.equal(run.removed, 1);
+});
+
+test('Ablauf: Leckerli abgelehnt, es bleibt im Rucksack', async () => {
+  const run = await runBefriend({ picks: [0, 1], treat: 1, answers: ['moveon'] });
+  assert.equal(run.result, 'left');
+  assert.equal(run.state.bag.treat, 1);
+  assert.deepEqual(run.log[at(run.log, 'ring')], ['ring', 0]);
+});
+
+test('Ablauf: „Weiterziehen“ gleich bei der ersten Frage endet still', async () => {
+  const run = await runBefriend({ picks: [1] });
+  assert.equal(run.result, 'left');
+  assert.deepEqual(run.said, [t('befriend.sits', { name: NAME })]);
+  assert.deepEqual(run.prompts, [t('befriend.ask')]);
+  assert.deepEqual(run.log.map(e => e[0]), ['say', 'choose'], 'kein Ring, kein Panel, nichts gespeichert');
+});
+
+test('Ablauf: eine Glanzform macht einen Freund glänzend; mit Begleiter keine Frage danach', async () => {
+  const run = await runBefriend({
+    picks: [0],
+    answers: ['right', 'wrong', 'right', 'right'],
+    friends: { [FRIEND]: { shiny: false }, moosling: { shiny: false } },
+    companion: 'moosling',
+    offer: { shiny: true, upgrade: true },
+  });
+  assert.equal(run.result, 'friend');
+  assert.deepEqual(run.state.friends[FRIEND], { shiny: true });
+  assert.equal(run.state.companion, 'moosling');
+  assert.equal(run.said.at(-1), t('befriend.shinyNow', { name: NAME }));
+  assert.deepEqual(run.prompts, [t('befriend.ask')], 'keine Frage nach dem Begleiter');
+});
+
+// Wie exit() in js/scenes/duel.js: Die Szene ist weg, ihr Haken räumt das Panel weg.
+function exitScene(run) {
+  run.alive = false;
+  run.leave?.();
+}
+
+test('Ablauf: Wird die Szene mitten im Ring verlassen, kommt nichts mehr und es gibt keinen Freund', async () => {
+  const run = await runBefriend({
+    picks: [0],
+    answers: ['right', r => {
+      exitScene(r);
+      return { type: 'moveon' }; // was interrupt dem offenen ask gibt
+    }],
+  });
+  const { log } = run;
+  assert.equal(run.result, 'left');
+  assert.deepEqual(run.state.friends, {});
+  assert.equal(run.log.filter(e => e[0] === 'ask').length, 2);
+  // Nach dem Verlassen nur noch Aufräumen: Panel weg, Ring aus. Texte und Auswahl prüft deps selbst.
+  const after = log.slice(log.findIndex(e => e[0] === 'interrupt'));
+  assert.deepEqual(after.map(e => e[0]), ['interrupt', 'remove', 'remove', 'ring']);
+  assert.deepEqual(after.at(-1), ['ring', null]);
+  assert.equal(run.leave, null);
+});
+
+test('Ablauf: Endet die Szene bei der dritten Rückmeldung, zählt der volle Ring trotzdem', async () => {
+  const run = await runBefriend({
+    picks: [0],
+    answers: ['right', 'right', 'right'],
+    onFeedback: (r, n) => n === 3 && exitScene(r),
+  });
+  assert.equal(run.result, 'friend');
+  assert.deepEqual(run.state.friends[FRIEND], { shiny: false });
+  const saves = run.log.filter(e => e[0] === 'save');
+  assert.deepEqual(saves.at(-1)[1], { [FRIEND]: { shiny: false } }, 'der Freund ist gespeichert');
+  assert.equal(at(run.log, 'heart'), -1, 'kein Herz mehr, die Szene ist weg');
+  assert.equal(run.state.companion, null);
+});
+
+test('Ring: zieht aus dem Deck des Duells, eben gestellte Fragen kommen nicht gleich wieder', async () => {
+  // Ein vorgegebenes Deck: Der Ring nimmt genau dessen Fragen, in dessen Reihenfolge.
+  const order = [QUESTIONS[5], QUESTIONS[2], QUESTIONS[7]];
+  const given = { draw: () => order.shift() };
+  const run = await runBefriend({ picks: [0], answers: ['right', 'right', 'right'], deck: given });
+  assert.deepEqual(run.asked, [QUESTIONS[5].key, QUESTIONS[2].key, QUESTIONS[7].key]);
+  // Das echte Deck nach einem Duell mit fünf Fragen, alle falsch beantwortet (sonst dreifach gewichtet):
+  // Der Ring stellt die drei, die im Duell noch nicht kamen.
+  const history = {};
+  const deck = createDeck(QUESTIONS, history, createRng(3));
+  const duelKeys = Array.from({ length: 5 }, () => deck.draw().key);
+  for (const k of duelKeys) recordAnswer(history, k, false);
+  const ring = await runBefriend({ picks: [0], answers: ['right', 'right', 'right'], deck });
+  assert.equal(ring.asked.length, 3);
+  for (const k of ring.asked) assert.ok(!duelKeys.includes(k), `${k} kam eben erst im Duell`);
+  assert.equal(new Set([...duelKeys, ...ring.asked]).size, QUESTIONS.length);
 });

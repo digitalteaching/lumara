@@ -108,11 +108,13 @@ export function createDuelScene(game, setup, onEnd) {
   const player = { species: c.species, stage, energy: c.energy, maxEnergy: maxEnergy(c) };
   const progress = packProgress(game.state, game.pack.data.shortId);
   const timeFor = timerFor(setup, c.species);
+  // Der Vertrauensring zieht später aus demselben Deck (js/scenes/befriend.js).
+  const deck = createDeck(setup.pool, progress.history, game.rng);
   const duel = createDuel({
     kind: setup.kind,
     player,
     foe: { maxEnergy: setup.foe.maxEnergy, phases: setup.foe.phases },
-    deck: createDeck(setup.pool, progress.history, game.rng),
+    deck,
     rng: game.rng,
     timeFor,
   });
@@ -173,6 +175,7 @@ export function createDuelScene(game, setup, onEnd) {
   let leaveHook = null; // räumt beim Verlassen der Szene das Panel des Rings weg
   const view = {
     alive: () => alive,
+    deck,
     setRing(trust) {
       clear(plates.foe.extra);
       if (!trust) {
