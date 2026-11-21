@@ -11,8 +11,9 @@ const LAYOUT = { 1: [2, 5], 2: [1, 4], 3: [1, 3], 4: [1, 2], 5: [2, 1], 6: [3, 2
 const CAVE = { col: 2, row: 3 };
 
 export function islandMap(state, pack) {
-  const defs = Object.values(MAPS).filter(d => !d.secret && !d.cave);
-  // In der Höhle steht „Du bist hier“ beim Berg, nicht beim Gebiet, zu dem die Höhle gehört.
+  const defs = Object.values(MAPS).filter(d => !d.secret && !d.cave && !d.garden);
+  // In der Höhle steht „Du bist hier“ beim Berg, nicht beim Gebiet, zu dem die Höhle gehört. Im Garten
+  // am Leuchtturm steht es bei der Bucht.
   const hereDef = MAPS[state.position?.map];
   const inCave = !!hereDef?.cave;
   const hereArea = inCave ? null : (hereDef?.area ?? null);

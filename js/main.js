@@ -156,9 +156,10 @@ async function devStart() {
   devLevel(game.state);
   devTreats(game.state);
   devFriends(game.state);
-  // ?dev&gebiet=wald (moor, …): gleich am Eingang des Gebiets, alle Steine davor leuchten
+  // ?dev&gebiet=wald (moor, …): gleich am Eingang des Gebiets, alle Steine davor leuchten.
+  // ?dev&gebiet=garten (mit &freunde=12): gleich im Garten am Leuchtturm.
   const def = MAPS[params.get('gebiet')];
-  if (def && def.area > 1) {
+  if (def && (def.area > 1 || def.garden)) {
     game.state.stones = Array.from({ length: def.area - 1 }, (_, i) => i + 1);
     game.state.position = { map: def.id, ...def.spawn };
   }

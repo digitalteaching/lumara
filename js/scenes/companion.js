@@ -20,8 +20,9 @@ export function companionOf(state) {
 }
 
 // Stehen und Hüpfen, je nach rechts (wie die Bilder) und nach links gespiegelt; einmal je Wesen erzeugt.
+// Der Garten (js/scenes/gardenEvents.js) zeichnet seine Freunde mit denselben Bildern.
 const images = new Map();
-function imagesOf(id, shiny) {
+export function miniImages(id, shiny) {
   const key = `${id}:${shiny ? 1 : 0}`;
   let set = images.get(key);
   if (!set) {
@@ -68,7 +69,7 @@ export function addCompanion(world, game) {
       if (!shown || follower.hidden()) return;
       const walking = player.moving && (follower.x !== follower.fromX || follower.y !== follower.fromY);
       const hop = walking && !game.reducedMotion ? Math.floor(world.time / HOP_MS) % 2 : 0;
-      const img = imagesOf(shown, game.state.friends[shown].shiny === true)[side][hop];
+      const img = miniImages(shown, game.state.friends[shown].shiny === true)[side][hop];
       const x = at.x - cam.x, y = at.y - cam.y - 2;
       world.drawShadow(ctx, x, y);
       ctx.drawImage(img, x, y);

@@ -2,6 +2,8 @@
 // Norden: Nebel über dem Weg zum Flüsterwald. Mitte: Fischerdorf. Osten: Leuchtturm. Süden: Strand, Steg, Meer.
 // Nordosten: Nebel über dem steilen Pfad hinauf zur Sternenwiese (offen nach dem Sieg über Trainer 8).
 
+import { GARTEN } from './garten.js';
+
 export const BUCHT = {
   id: 'bucht',
   name: 'Leuchtturmbucht',
@@ -17,7 +19,7 @@ export const BUCHT = {
     'TT.,,,,,,,,.....T.____......,,,,,,,,..%%',
     'TT.,,,,,,,,.......____......,,,,,,,,..%%',
     'TT.,,,,,,,,.......____.T..............%%',
-    'TT.,,,,,,,,.......____....**.....o.....T',
+    'TT.,,,,,,,,.......____....**...........T',
     'TT.,,,,,,,,.......____....**..........TT',
     'TT................____...............~~~',
     'TT.o.####.........____.....####.....~~~~',
@@ -68,6 +70,13 @@ export const BUCHT = {
       linesOpen: ['Du setzt die Nussschale aufs Wasser und ruderst zur Gezeiteninsel.'],
     },
     { type: 'building', id: 'leuchtturm', x: 33, y: 12, w: 2, h: 4, sprite: 'lighthouse', door: { dx: 1, dy: 3 }, onDoor: 'heal' },
+    // Lumara 1.2: Über dem Leuchtturm, wo früher ein Fels lag, führt ein Weidentor in den Garten der
+    // Freunde (js/world/maps/garten.js). Der Ausgang des Gartens führt zurück auf das Feld darunter.
+    {
+      type: 'garden', id: 'gartentor', prop: 'gardengate', x: 33, y: 9,
+      to: { map: 'garten', ...GARTEN.spawn },
+      lines: ['Ein Tor aus Weidenzweigen, voller Blüten. Dahinter liegt der Garten deiner Freunde.'],
+    },
     { type: 'building', id: 'haus-oda', x: 9, y: 11, w: 3, h: 3, sprite: 'housePlum', door: { dx: 1, dy: 2 }, onDoor: 'locked', lines: ['Odas Haus. Die Tür ist verschlossen.'] },
     { type: 'building', id: 'haus-ilvy', x: 23, y: 11, w: 3, h: 3, sprite: 'houseTeal', door: { dx: 1, dy: 2 }, onDoor: 'locked', lines: ['Ilvys Haus. Die Tür ist verschlossen.'] },
     { type: 'building', id: 'haus-bram', x: 13, y: 16, w: 3, h: 3, sprite: 'house', door: { dx: 1, dy: 2 }, onDoor: 'locked', lines: ['Brams Haus. Die Tür ist verschlossen.'] },

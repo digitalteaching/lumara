@@ -41,7 +41,7 @@ test('Gebietsnamen trennen an der richtigen Stelle (weicher Trennstrich), etwa �
   assert.equal(breakName('Uhrwerkruinen'), 'Uhrwerk\u00adruinen');
   assert.equal(breakName('Leuchtturmbucht'), 'Leucht\u00adturm\u00adbucht');
   assert.equal(breakName('Hierbleiben'), 'Hierbleiben');
-  for (const d of Object.values(MAPS).filter(m => !m.secret && !m.cave)) {
+  for (const d of Object.values(MAPS).filter(m => !m.secret && !m.cave && !m.garden)) {
     assert.ok(breakName(d.name).includes('\u00ad'), d.name);
     assert.equal(breakName(d.name).replaceAll('\u00ad', ''), d.name);
   }
@@ -54,4 +54,13 @@ test('In der Höhle steht „Du bist hier“ beim Berg, nicht auf der Sternenwie
   assert.equal(m.cave.here, true);
   assert.deepEqual(caveLabels({ lit: 8, here: true }), ['Berg mit Höhle', '8 von 8 Fassungen leuchten', '● Du bist hier']);
   assert.equal(islandMap(st([1]), pack(8)).cave.here, false);
+});
+
+test('Der Garten erscheint nicht auf der Inselkarte; wer darin steht, ist in der Bucht', () => {
+  assert.ok(MAPS.garten?.garden);
+  const m = islandMap(st([1], { map: 'garten', ...MAPS.garten.spawn }), pack(2));
+  assert.equal(m.areas.length, 8);
+  assert.ok(!m.areas.some(a => a.name === MAPS.garten.name));
+  assert.deepEqual(m.areas.filter(a => a.here).map(a => [a.area, a.name]), [[1, 'Leuchtturmbucht']]);
+  assert.equal(m.cave.here, false);
 });

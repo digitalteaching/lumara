@@ -25,6 +25,7 @@ export const FR_WORLD = {
     hoehle1: { name: 'Grotte de la Montagne', of: 'de la grotte', the: 'la grotte' },
     hoehle2: { name: 'Grotte de la Montagne', of: 'de la grotte', the: 'la grotte' },
     hoehle3: { name: 'Grotte de la Montagne', of: 'de la grotte', the: 'la grotte' },
+    garten: { name: 'Jardin', of: 'du jardin', the: 'le jardin' },
   },
 
   objects: {
@@ -36,6 +37,7 @@ export const FR_WORLD = {
         lines: ['Au bout du ponton, il y a un poteau avec une vieille corde.', 'Là-bas, il y a une petite île. Avec un bateau, on pourrait y aller.'],
         linesOpen: ['Tu poses la coquille de noix sur l’eau et tu rames jusqu’à l’Île des Marées.'],
       },
+      gartentor: { lines: ['Une porte en branches de saule, pleine de fleurs. Derrière, il y a le jardin de tes amis.'] },
       'haus-oda': { lines: ['La maison d’Oda. La porte est fermée à clé.'] },
       'haus-ilvy': { lines: ['La maison d’Ilvy. La porte est fermée à clé.'] },
       'haus-bram': { lines: ['La maison de Bram. La porte est fermée à clé.'] },
@@ -385,6 +387,9 @@ export const FR_WORLD = {
         lines: ['Un sentier descend vers la baie, mais le brouillard est trop épais.', 'Peut-être qu’il recule quand la pierre de lumière de la prairie brille à nouveau.'],
         linesOpen: ['Ouest : Baie du Phare', 'Le brouillard a reculé. Le sentier descend vers la baie.'],
       },
+    },
+    garten: {
+      'garten-schild': { lines: ['Jardin du Phare', 'Tes amis habitent ici.'] },
     },
   },
 };

@@ -25,6 +25,7 @@ export const ES_WORLD = {
     hoehle1: { name: 'Cueva de la Montaña', of: 'de la cueva', the: 'la cueva' },
     hoehle2: { name: 'Cueva de la Montaña', of: 'de la cueva', the: 'la cueva' },
     hoehle3: { name: 'Cueva de la Montaña', of: 'de la cueva', the: 'la cueva' },
+    garten: { name: 'Jardín', of: 'del jardín', the: 'el jardín' },
   },
 
   objects: {
@@ -36,6 +37,7 @@ export const ES_WORLD = {
         lines: ['Al final del muelle hay un poste con una cuerda vieja.', 'Allí fuera hay una isla pequeña. Con una barca podrías llegar hasta allí.'],
         linesOpen: ['Pones la cáscara de nuez en el agua y remas hasta la Isla de las Mareas.'],
       },
+      gartentor: { lines: ['Una puerta de ramas de sauce, llena de flores. Detrás está el jardín de tus amigos.'] },
       'haus-oda': { lines: ['La casa de Oda. La puerta está cerrada con llave.'] },
       'haus-ilvy': { lines: ['La casa de Ilvy. La puerta está cerrada con llave.'] },
       'haus-bram': { lines: ['La casa de Bram. La puerta está cerrada con llave.'] },
@@ -385,6 +387,9 @@ export const ES_WORLD = {
         lines: ['Un sendero baja a la bahía, pero la niebla es demasiado espesa.', 'Quizás se va si la piedra de luz del prado vuelve a brillar.'],
         linesOpen: ['Oeste: Bahía del Faro', 'La niebla se ha ido. El sendero baja a la bahía.'],
       },
+    },
+    garten: {
+      'garten-schild': { lines: ['Jardín del Faro', 'Aquí viven tus amigos.'] },
     },
   },
 };

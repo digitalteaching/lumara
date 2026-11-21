@@ -34,6 +34,7 @@ import { playNote } from './note.js';
 import { displayName, nameAtStage, evolutionLines, speciesName } from '../data/species.js';
 import { playEvolution } from './evolution.js';
 import { addCompanion } from './companion.js';
+import { addGarden } from './gardenEvents.js';
 import { questFor, acceptQuest, advanceQuest, finishQuest, activePickups, activeGuests } from '../world/quests.js';
 import { questText } from '../data/quests.js';
 import { maxEnergy, stageForLevel } from '../duel/progress.js';
@@ -523,6 +524,18 @@ export function createGameWorld(game) {
     return true;
   });
 
+  // ---------- Garten am Leuchtturm (Lumara 1.2) ----------
+  // Das Weidentor in der Bucht: ein Satz, dann geht es in den Garten. Gezeichnet wie die Eingänge
+  // der geheimen Orte; vor den allgemeinen Handlern, wie es die Eingänge auch sind.
+  world.propVariant.garden = o => o.prop;
+  world.onInteract.unshift(async ev => {
+    const o = ev.target;
+    if (o?.type !== 'garden') return false;
+    await say(game, worldLines(def, o, 'lines'));
+    await travelTo(game, o.to);
+    return true;
+  });
+
   // Geschichtsstein: beim ersten Mal das Geheimstück, danach nur ein Satz.
   // Ein Geschichtsstein mit eigenem Bild (der Kristall der Eisgrotte) hat dazu ein „gelesen“-Bild.
   world.propVariant.storystone = o => {
@@ -902,6 +915,10 @@ export function createGameWorld(game) {
     world.onTick.splice(world.onTick.indexOf(firstCheck), 1);
     if (trainerSpotsPlayer()) world.lock(() => trainerDuel({ spotted: true }));
   });
+
+  // Im Garten am Leuchtturm wohnen die Freunde, die nicht mitlaufen (Lumara 1.2). Vor dem Begleiter,
+  // damit sein A-Handler der letzte bleibt.
+  if (def.garden) addGarden(world, game);
 
   // Der Begleiter läuft mit (Lumara 1.2). Sein A-Handler muss der letzte in world.onInteract sein.
   addCompanion(world, game);

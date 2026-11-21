@@ -25,6 +25,7 @@ export const EN_WORLD = {
     hoehle1: { name: 'Cave in the Mountain', of: 'of the cave', the: 'the cave' },
     hoehle2: { name: 'Cave in the Mountain', of: 'of the cave', the: 'the cave' },
     hoehle3: { name: 'Cave in the Mountain', of: 'of the cave', the: 'the cave' },
+    garten: { name: 'Garden', of: 'of the garden', the: 'the garden' },
   },
 
   objects: {
@@ -36,6 +37,7 @@ export const EN_WORLD = {
         lines: ['At the end of the pier stands a post with an old rope.', 'Out there lies a little island. With a boat you could get across.'],
         linesOpen: ['You put the nutshell on the water and row to Tide Island.'],
       },
+      gartentor: { lines: ['A gate of willow branches, full of flowers. Behind it is your friends’ garden.'] },
       'haus-oda': { lines: ['Oda’s house. The door is locked.'] },
       'haus-ilvy': { lines: ['Ilvy’s house. The door is locked.'] },
       'haus-bram': { lines: ['Bram’s house. The door is locked.'] },
@@ -385,6 +387,9 @@ export const EN_WORLD = {
         lines: ['A path leads down to the bay, but the mist is too thick.', 'Maybe it moves back when the light stone of the meadow glows again.'],
         linesOpen: ['West: Lighthouse Bay', 'The mist has moved back. The path leads down to the bay.'],
       },
+    },
+    garten: {
+      'garten-schild': { lines: ['Garden by the Lighthouse', 'Your friends live here.'] },
     },
   },
 };

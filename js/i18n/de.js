@@ -528,6 +528,7 @@ export const DE = {
   'friends.isWithYou': '{name} begleitet dich gerade.',
   'friends.takeAlong': 'Als Begleiter mitnehmen',
   'friends.backToGarden': 'Zurück in den Garten',
+  'garden.count': 'Freunde: {n} von {max}',
   'befriend.sits': '{name} bleibt erschöpft sitzen und schaut dich an.',
   'befriend.ask': 'Möchtest du Freundschaft schließen?',
   'befriend.yes': 'Befreunden',

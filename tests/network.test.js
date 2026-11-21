@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { MAPS, areaOpen, openGatesFor, exitAt, resolveStart, beaconFront, packWorldKey, npcLines } from '../js/world/network.js';
+import { MAPS, areaOpen, openGatesFor, exitAt, resolveStart, beaconFront, packWorldKey, npcLines, mapOfArea } from '../js/world/network.js';
 import { createMap } from '../js/world/map.js';
 import { parsePack } from '../js/pack/parser.js';
 import { makePackText } from './helpers/fixtures.js';
@@ -43,12 +43,20 @@ test('Ausgänge führen auf begehbare Felder und zurück', () => {
       const open = createMap(target, { openGates: (target.gates ?? []).map(g => g.id) });
       assert.ok(open.canEnter(e.at.x, e.at.y), `${def.id} → ${e.to}`);
       assert.equal(exitAt(target, e.at.x, e.at.y), null, `Ankunft auf einem Ausgang: ${e.to}`);
-      // Zu einem geheimen Ort führt statt eines Ausgangs ein Eingang (type secret) zurück, in die Höhle das Höhlentor.
-      const back = target.exits.some(b => b.to === def.id) || ((def.secret || def.cave) && target.objects.some(o => o.to?.map === def.id));
+      // Zu einem geheimen Ort führt statt eines Ausgangs ein Eingang (type secret) zurück, in die Höhle das Höhlentor,
+      // in den Garten das Gartentor.
+      const back = target.exits.some(b => b.to === def.id) || ((def.secret || def.cave || def.garden) && target.objects.some(o => o.to?.map === def.id));
       assert.ok(back, `kein Rückweg von ${e.to}`);
       assert.equal(exitAt(def, e.x, e.y), e);
     }
   }
+});
+
+test('Gebiet 1 ist die Bucht, nicht der Garten am Leuchtturm', () => {
+  assert.equal(mapOfArea(1).id, 'bucht');
+  assert.equal(MAPS.garten.area, 1);
+  const inGarden = { map: 'garten', ...MAPS.garten.spawn };
+  assert.deepEqual(resolveStart(st([], inGarden), pack(1)), inGarden);
 });
 
 test('Startposition: im Nebel liegendes Gebiet → höchster offener Leuchtstein, sonst Leuchtturm', () => {

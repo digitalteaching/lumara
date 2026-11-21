@@ -20,6 +20,7 @@ import { STERNWARTE } from './maps/sternwarte.js';
 import { HOEHLE1 } from './maps/hoehle1.js';
 import { HOEHLE2 } from './maps/hoehle2.js';
 import { HOEHLE3 } from './maps/hoehle3.js';
+import { GARTEN } from './maps/garten.js';
 import { puzzleSolved } from './puzzles.js';
 import { caveOpen } from './caveGate.js';
 import { finaleDone } from './finale.js';
@@ -28,9 +29,9 @@ import { EN_WORLD } from '../i18n/en-world.js';
 import { FR_WORLD } from '../i18n/fr-world.js';
 import { ES_WORLD } from '../i18n/es-world.js';
 
-// Die Gebiete, dahinter die geheimen Orte (secret: eigene kleine Karten, Design 5.7) und die drei
-// Ebenen der Höhle (cave: 1 bis 3, Design 5.3).
-export const MAPS = { bucht: BUCHT, wald: WALD, moor: MOOR, duenen: DUENEN, klippen: KLIPPEN, ruinen: RUINEN, see: SEE, wiese: WIESE, eiche: EICHE, glasturm: GLASTURM, gezeiten: GEZEITEN, irrlicht: IRRLICHT, eisgrotte: EISGROTTE, sternwarte: STERNWARTE, hoehle1: HOEHLE1, hoehle2: HOEHLE2, hoehle3: HOEHLE3 };
+// Die Gebiete, dahinter die geheimen Orte (secret: eigene kleine Karten, Design 5.7), die drei
+// Ebenen der Höhle (cave: 1 bis 3, Design 5.3) und der Garten am Leuchtturm (garden, Lumara 1.2).
+export const MAPS = { bucht: BUCHT, wald: WALD, moor: MOOR, duenen: DUENEN, klippen: KLIPPEN, ruinen: RUINEN, see: SEE, wiese: WIESE, eiche: EICHE, glasturm: GLASTURM, gezeiten: GEZEITEN, irrlicht: IRRLICHT, eisgrotte: EISGROTTE, sternwarte: STERNWARTE, hoehle1: HOEHLE1, hoehle2: HOEHLE2, hoehle3: HOEHLE3, garten: GARTEN };
 
 const hasTrainer = (pack, n) => pack.trainers.some(t => t.number === n);
 
@@ -103,7 +104,8 @@ export function npcLines(o, state, area, pack) {
 const LOCAL_WORLD = { en: EN_WORLD, fr: FR_WORLD, es: ES_WORLD };
 const localWorld = () => LOCAL_WORLD[language()] ?? null;
 
-export const mapOfArea = area => Object.values(MAPS).find(d => d.area === area && !d.secret && !d.cave) ?? null;
+// Das Gebiet selbst, nicht ein geheimer Ort, die Höhle oder der Garten, die zu ihm gehören.
+export const mapOfArea = area => Object.values(MAPS).find(d => d.area === area && !d.secret && !d.cave && !d.garden) ?? null;
 
 // Ein Textfeld eines Objekts (lines, linesLit, linesOpen, linesNoClock, afterWin) in der Spielsprache.
 export function worldLines(def, o, field) {
