@@ -3,6 +3,7 @@
 
 import { t } from '../i18n/i18n.js';
 import { CONFIG } from '../config.js';
+import { emit } from '../world/events.js';
 import { findReady, takeFind } from './stones.js';
 import { CAVE_SPECIES } from '../data/species.js';
 
@@ -36,6 +37,7 @@ export function addTreasure(state, id, n = 1) {
   state.album ??= [];
   state.treasures[id] = (state.treasures[id] ?? 0) + n;
   if (!state.album.includes(id)) state.album = IDS.filter(x => x === id || state.album.includes(x));
+  emit(state, 'treasure');
   return n;
 }
 

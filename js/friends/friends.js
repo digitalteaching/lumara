@@ -4,6 +4,7 @@
 import { SPECIES } from '../data/species.js';
 import { BOOK_SLOTS } from '../data/book.js';
 import { t } from '../i18n/i18n.js';
+import { emit } from '../world/events.js';
 
 export const FRIEND_KINDS = new Set(['wild', 'secret', 'cave', 'hidden']);
 export const FRIENDABLE = BOOK_SLOTS.filter(id => id && FRIEND_KINDS.has(SPECIES[id].kind));
@@ -51,6 +52,10 @@ export function makeFriend(state, species, shiny) {
   if (!state.friends) state.friends = {};
   const old = state.friends[species];
   state.friends[species] = { shiny: !!(old?.shiny || shiny) };
+  if (!old) {
+    const area = SPECIES[species]?.area;
+    emit(state, 'befriend', area >= 1 && area <= 8 ? { area } : {});
+  }
   return { upgrade: !!old };
 }
 

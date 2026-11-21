@@ -18,8 +18,9 @@ import { validateName, emptyPackProgress, emptyWorld } from '../state.js';
 import { emptyBag, BAG_ITEMS } from '../items/bag.js';
 import { TREASURES, isTreasure } from '../items/treasures.js';
 import { FRIENDABLE } from '../friends/friends.js';
+import { EVENT_TYPES, BOARD_KINDS, WISH_GIVER_IDS } from '../world/events.js';
 
-export const CURRENT_VERSION = 10;
+export const CURRENT_VERSION = 11;
 
 const MIGRATIONS = {
   // 1 → 2 (Plan 3a): Leuchtsteine, Rucksack, Geschichte, Uhren für das Nachwachsen, gesamte Spielzeit.
@@ -59,6 +60,8 @@ const MIGRATIONS = {
     bag: { ...(isObject(s.bag) ? s.bag : {}), treat: 0 },
     world: { ...(isObject(s.world) ? s.world : {}), hideouts: {} },
   }),
+  // 10 → 11 (Lumara 1.3): Aushang, Wünsche und Ereignisse, zunächst leer.
+  10: s => ({ ...s, version: 11, board: null, wishes: {}, events: [] }),
 };
 
 const MAPS = WORLD_MAPS;
@@ -247,6 +250,48 @@ const repairCompanion = (raw, friends) => (typeof raw === 'string' && Object.has
 
 const repairTasks = raw => (Array.isArray(raw) ? [...new Set(raw.filter(n => isInt(n) && n >= 1 && n <= 8))].sort((a, b) => a - b) : []);
 
+const DAY = /^\d{4}-\d{2}-\d{2}$/;
+const isDay = v => typeof v === 'string' && DAY.test(v);
+
+// Der Aushang: null oder ein Tag mit höchstens drei brauchbaren Aufgaben. Eine kaputte Aufgabe fällt weg.
+function repairBoardTask(t) {
+  if (!isObject(t) || !BOARD_KINDS.includes(t.kind) || !isInt(t.n) || t.n < 1 || t.n > 5) return null;
+  const area = t.area === null ? null : isInt(t.area) && t.area >= 1 && t.area <= 8 ? t.area : undefined;
+  if (area === undefined) return null;
+  return { kind: t.kind, n: t.n, area, progress: clampInt(t.progress, 0, t.n, 0), done: t.done === true, rewarded: t.rewarded === true };
+}
+
+function repairBoard(raw) {
+  if (!isObject(raw) || !isDay(raw.day)) return null;
+  const tasks = (Array.isArray(raw.tasks) ? raw.tasks : []).map(repairBoardTask).filter(Boolean).slice(0, 3);
+  return { day: raw.day, tasks, bonus: raw.bonus === true, intro: raw.intro === true };
+}
+
+// Wünsche: nur bekannte Bewohner, mit bekanntem Schatz und Tag.
+function repairWishes(raw) {
+  const out = {};
+  if (!isObject(raw)) return out;
+  for (const id of WISH_GIVER_IDS) {
+    const w = raw[id];
+    if (isObject(w) && isTreasure(w.treasure) && isDay(w.day)) out[id] = { treasure: w.treasure, day: w.day, done: w.done === true };
+  }
+  return out;
+}
+
+// Ereignisse: höchstens maxEvents, nur bekannte Typen, correct nur bool, area nur 1 bis 8.
+function repairEvents(raw) {
+  if (!Array.isArray(raw)) return [];
+  const out = [];
+  for (const e of raw) {
+    if (!isObject(e) || !EVENT_TYPES.includes(e.type)) continue;
+    const ev = { type: e.type };
+    if (e.type === 'answer') ev.correct = e.correct === true;
+    if ((e.type === 'befriend' || e.type === 'visit') && isInt(e.area) && e.area >= 1 && e.area <= 8) ev.area = e.area;
+    out.push(ev);
+  }
+  return out.slice(-CONFIG.board.maxEvents);
+}
+
 const WORLD_KEY = /^[a-z]+:\d+,\d+$/;
 function repairWorld(raw) {
   const out = emptyWorld();
@@ -310,6 +355,9 @@ export function migrateState(raw) {
       friends,
       companion: repairCompanion(s.companion, friends),
       tasks: repairTasks(s.tasks),
+      board: repairBoard(s.board),
+      wishes: repairWishes(s.wishes),
+      events: repairEvents(s.events),
     },
   };
 }

@@ -13,6 +13,7 @@ import { addItem } from '../items/bag.js';
 import { AREA_TREASURES, addTreasure, rollTreasure } from '../items/treasures.js';
 import { recordNoteAnswer } from '../state.js';
 import { MAPS } from './network.js';
+import { emit } from './events.js';
 
 export const hideoutKey = h => `${h.map}:${h.x},${h.y}`;
 
@@ -103,6 +104,7 @@ export function openFind(state, h, area, correct, rng) {
     lost = reward;
   }
   refill(state, h);
+  emit(state, 'hideout');
   return { xp, item, treasure, lost, evolved: r.stageAfter > r.stageBefore };
 }
 
@@ -121,5 +123,6 @@ export function settleFind(state, shortId, h, answer, rng) {
 export function openCreature(state, h) {
   if (h.kind !== 'creature' || !hideoutReady(state, h)) return null;
   refill(state, h);
+  emit(state, 'hideout');
   return HIDDEN_SPECIES[MAPS[h.map].area - 1];
 }

@@ -1,4 +1,4 @@
-// Spielzustand im Speicher, Format Version 10 (Design 10.4, 11). Was dem Kind gehört (Name, Wesen,
+// Spielzustand im Speicher, Format Version 11 (Design 10.4, 11). Was dem Kind gehört (Name, Wesen,
 // Position, Einstellungen, Leuchtsteine, Rucksack, Geschichte, Spielzeit), liegt oben; was zum
 // Lernpaket gehört, liegt in packs[Kurzform].
 // Änderungen am Format brauchen eine Umwandlung in js/save/migrate.js.
@@ -15,6 +15,7 @@ import { t } from './i18n/i18n.js';
 import { finishFinale } from './world/finale.js';
 import { raiseTier } from './duel/rematch.js';
 import { recordFloor } from './duel/ascent.js';
+import { emit } from './world/events.js';
 
 export function emptyWorld() {
   return { bushes: {}, notes: {}, finds: {}, hideouts: {} };
@@ -24,7 +25,7 @@ export function newGameState({ name, species, nickname }) {
   const creature = { species, nickname: nickname || null, level: 1, xpInLevel: 0, energy: 0, lifeStones: 0 };
   creature.energy = maxEnergy(creature);
   return {
-    version: 10,
+    version: 11,
     savedAt: 0,
     name,
     creature,
@@ -48,6 +49,9 @@ export function newGameState({ name, species, nickname }) {
     friends: {},
     companion: null,
     tasks: [],
+    board: null,
+    wishes: {},
+    events: [],
   };
 }
 
@@ -98,6 +102,7 @@ export function recordNoteAnswer(state, shortId, answer) {
   const progress = packProgress(state, shortId);
   recordAnswer(progress.history, answer.key, answer.correct);
   countAnswers(progress.stats, [answer]);
+  emit(state, 'answer', { correct: answer.correct === true });
 }
 
 // Leuchtstein n entzünden (Design 5.1). Wahr, wenn er neu leuchtet. Der zuletzt entzündete Stein
@@ -117,7 +122,9 @@ export function applyDuelResult(state, shortId, setup, summary, rng = null) {
   const progress = packProgress(state, shortId);
   for (const a of summary.answers) recordAnswer(progress.history, a.key, a.correct);
   countAnswers(progress.stats, summary.answers);
+  for (const a of summary.answers) emit(state, 'answer', { correct: a.correct === true });
   if (summary.outcome === 'won') progress.stats.wins++;
+  if (summary.outcome === 'won' && setup.kind === 'wild') emit(state, 'wildWin');
   // Wesen-Buch (Design 6.4): gesehen bei jedem Ausgang, besiegt nur nach einem Sieg. Trainerwesen
   // zählen für ihre Art, Glanzformen gibt es nur bei wilden Wesen.
   if (setup.foe) recordSighting(state, setup.foe.species, { beaten: summary.outcome === 'won', shiny: setup.kind === 'wild' && setup.foe.shiny === true });

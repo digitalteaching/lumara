@@ -82,6 +82,8 @@ export const CONFIG = deepFreeze({
     rewards: { berry: 3, starfruit: 1, farsight: 2, shine: 1, life: 1 },
     rewardsTimed: { berry: 3, starfruit: 1, farsight: 2, shine: 1, life: 1, time: 2 },
   },
+  board: { counts: { hideouts: [2, 3], streak: [3, 5], wildWins: [2, 4], notes: [2, 3] }, bonusXp: 30, rewards: { treat: 1, treasure: 1 }, maxEvents: 100 }, // Aushang (Lumara 1.3)
+  wishes: { rewards: { starfruit: 2, stone: 2, treats: 2, xp: 2 }, treats: 2, xp: 30, otherAreaWeight: 3 }, // Wünsche (Lumara 1.3)
   treasures: { findChance: 1 / 3, noteChance: 0.25, wildDropChance: 0.1 }, // Schätze (Lumara 1.1)
   // Entwicklung (Design 6.3): Aufleuchten, Wechsel der Gestalt, Ausklingen; zusammen 3,8 s.
   evolution: { glowMs: 900, swapMs: [450, 450, 380, 380, 340], fadeMs: 900 },

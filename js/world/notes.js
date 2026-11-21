@@ -3,6 +3,7 @@
 // neuer Zettel unter dem Stein. DOM-frei.
 
 import { CONFIG } from '../config.js';
+import { emit } from './events.js';
 import { gainXp } from '../duel/progress.js';
 import { poolFor } from '../duel/questions.js';
 import { addItem } from '../items/bag.js';
@@ -40,6 +41,7 @@ const NOTHING = () => ({ xp: 0, item: null, lost: null, story: null, evolved: fa
 // später. Liegt gerade kein Zettel unter dem Stein (etwa bei einem Doppeltipp), passiert nichts.
 export function solveNote(state, key, area, correct, rng, timePressure = 'normal') {
   if (!correct || !noteReady(state, key)) return NOTHING();
+  emit(state, 'note');
   const c = state.creature;
   const xp = CONFIG.notes.xp;
   const r = gainXp(c, xp);

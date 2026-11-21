@@ -168,6 +168,7 @@ const FILES = [
   "js/world/follower.js",
   "js/world/garden.js",
   "js/world/hideouts.js",
+  "js/world/events.js",
   "js/world/islandMap.js",
   "js/world/map.js",
   "js/world/maps/bucht.js",
