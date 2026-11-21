@@ -105,6 +105,16 @@ test('Jedes Versteck liegt auf einem nicht begehbaren Feld, das zu seiner Gabe p
   assert.equal(hideoutAt('garten', 1, 1), null);
 });
 
+// Eine Kachelart, die keins der Verstecke nutzt, würde den Test oben schwächen: Ein Versteck könnte
+// auf sie rücken, ohne dass es auffällt (etwa Aufwind auf einer Düne).
+test('GIFT_TILES nennt je Gabe genau die Kachelarten ihrer Verstecke', () => {
+  for (const [gift, tiles] of Object.entries(GIFT_TILES)) {
+    const used = new Set(HIDEOUTS.filter(h => h.gift === gift).map(h => closed(MAPS[h.map]).tileAt(h.x, h.y)));
+    assert.deepEqual([...tiles].sort(), [...used].sort(), gift);
+  }
+  assert.ok(!GIFT_TILES.updraft.includes('dune')); // Aufwind: Felsnadeln und Simse über Wolken (Spec 6.4)
+});
+
 test('Das Vorfeld jedes Verstecks ist vom Start der Karte erreichbar, auch wenn alle Tore zu sind', () => {
   for (const id of AREA_MAPS) {
     const def = MAPS[id];

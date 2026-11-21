@@ -100,7 +100,7 @@ export const WALD = {
       linesOpen: ['Du zündest die Laterne an und kletterst in die Eiche.'],
     },
     // Spielaufgabe (Lumara 1.2, js/data/tasks.js): vier Bäume mit eingeritzten Zeichen (index: 0 Raute,
-    // 1 Dreieck, 2 Kreis, 3 Viereck) und der Zeichenstein am Eingang. Sie stehen auf früheren
+    // 1 Dreieck, 2 Kreis, 3 Quadrat) und der Zeichenstein am Eingang. Sie stehen auf früheren
     // Baum- und Pilzfeldern.
     { type: 'task', id: 'task2-clue', task: 2, role: 'clue', prop: 'runestone', x: 14, y: 28 },
     { type: 'task', id: 'task2-switch0', task: 2, role: 'switch', index: 0, prop: 'runetree0', x: 1, y: 21 }, // am Westrand beim Farn

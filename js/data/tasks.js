@@ -35,7 +35,7 @@ export const TASKS = {
   // Bucht: Drei Möwenküken stecken hinter einer Kiste, in einem Blütenbusch und unter einem alten
   // Boot am Strand. Die Möwenmutter sitzt auf ihrem Nest am Steg, gleich neben dem Start.
   1: { area: 1, map: 'bucht', type: 'collect', items: 3 },
-  // Flüsterwald: vier Bäume mit Zeichen (0 Raute, 1 Dreieck, 2 Kreis, 3 Viereck), der Zeichenstein
+  // Flüsterwald: vier Bäume mit Zeichen (0 Raute, 1 Dreieck, 2 Kreis, 3 Quadrat), der Zeichenstein
   // am Eingang nennt die Reihenfolge. Im letzten Baum öffnet sich das Astloch.
   2: { area: 2, map: 'wald', type: 'order', order: [2, 1, 3, 0] },
   // Pilzmoor: Das Irrlicht wartet über einem Leuchtpilz westlich vom Eingang, abseits vom Weg zum Steg

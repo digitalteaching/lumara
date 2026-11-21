@@ -7,16 +7,17 @@
 // IDs und Gaben sind englisch; was man dort sieht, steht im Kommentar. tests/hideouts.test.js prüft
 // Verteilung, Felder und Vorfelder.
 
-// Auf diesen Kachelarten darf ein Versteck der Gabe liegen.
+// Auf diesen Kachelarten darf ein Versteck der Gabe liegen, und nur auf denen, die eins nutzt (tests/
+// hideouts.test.js): So fällt auf, wenn ein Versteck auf eine Kachel rückt, die nicht zur Gabe passt.
 export const GIFT_TILES = {
   beachcomb: ['water', 'rock', 'dune'],
-  climb: ['tree', 'fortree', 'snowpine'],
-  glow: ['mushroom', 'glowshroom', 'rock', 'ruinwall', 'nightrock'],
+  climb: ['fortree', 'snowpine'],
+  glow: ['mushroom', 'glowshroom', 'ruinwall'],
   clearsight: ['mirage', 'clouds'],
-  updraft: ['clouds', 'spire', 'cliff', 'nightcliff', 'dune'],
-  tinker: ['ruinwall', 'fence', 'rock', 'nightrock'],
+  updraft: ['clouds', 'spire', 'cliff', 'nightcliff'],
+  tinker: ['ruinwall', 'nightrock'],
   dive: ['water', 'icewater', 'canal', 'bog'],
-  startrail: ['nightrock', 'nightstone', 'nightcliff', 'rock', 'dune', 'clouds', 'snowpine'],
+  startrail: ['nightrock', 'nightstone', 'dune', 'clouds', 'snowpine'],
 };
 
 export const HIDEOUTS = [
@@ -46,7 +47,7 @@ export const HIDEOUTS = [
   { id: 'duenen-shimmer', map: 'duenen', x: 13, y: 6, gift: 'clearsight', kind: 'find' }, // in der Luftspiegelung, die zum Glasturm zu führen scheint, schimmert etwas
   { id: 'duenen-bottle', map: 'duenen', x: 14, y: 24, gift: 'beachcomb', kind: 'find' }, // aus der kleinen Düne im Süden ragt der Hals einer Flasche
   { id: 'duenen-tracks', map: 'duenen', x: 25, y: 21, gift: 'startrail', kind: 'find' }, // leise glimmende Spuren führen in die kleine Düne östlich vom Weg
-  { id: 'duenen-crest', map: 'duenen', x: 30, y: 1, gift: 'updraft', kind: 'find' }, // oben auf dem hohen Dünenkamm im Norden glänzt etwas in der Sonne
+  { id: 'duenen-crest', map: 'duenen', x: 30, y: 1, gift: 'beachcomb', kind: 'find' }, // oben auf dem hohen Dünenkamm im Norden ragt etwas Glänzendes aus dem Sand
 
   // Gebiet 5: Windklippen
   { id: 'klippen-chimes', map: 'klippen', x: 11, y: 5, gift: 'updraft', kind: 'creature' }, // auf der Felsnadel direkt an der Plattform klingen im Wind kleine Glöckchen
