@@ -8,6 +8,8 @@ export const DUENEN = {
   id: 'duenen',
   name: 'Spiegeldünen',
   genitive: 'der Spiegeldünen',
+  at: 'in den Spiegeldünen', // „Freunde dich … an“
+  to: 'die Spiegeldünen', // „Besuche …“
   area: 4,
   ground: 'glasssand',
   rows: [

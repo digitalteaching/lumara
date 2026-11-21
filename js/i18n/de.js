@@ -210,7 +210,7 @@ export const DE = {
   'fog.beyondOne': 'Hinter dem Nebel liegt {name}.',
   'fog.beyondMany': 'Hinter dem Nebel liegen {name}.',
   'fog.building': 'Der Weg dorthin entsteht gerade. In einer der nächsten Spielfassungen kannst du hindurch.',
-  'board.task.befriend': 'Befreunde ein Wesen in {area}.',
+  'board.task.befriend': 'Freunde dich {area} mit einem Wesen an.',
   'board.task.hideouts': 'Öffne {n} Verstecke.',
   'board.task.streak': 'Beantworte {n} Fragen hintereinander richtig.',
   'board.task.wildWins': 'Gewinne {n} Duelle gegen wilde Wesen.',

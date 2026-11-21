@@ -8,6 +8,8 @@ export const BUCHT = {
   id: 'bucht',
   name: 'Leuchtturmbucht',
   genitive: 'der Leuchtturmbucht',
+  at: 'in der Leuchtturmbucht', // „Freunde dich … an“
+  to: 'die Leuchtturmbucht', // „Besuche …“
   area: 1,
   rows: [
     'TTTTTTTTTTTTTTT%%%%%%%%%%TTTTTTTTTTTTTTT',

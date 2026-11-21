@@ -8,6 +8,8 @@ export const WIESE = {
   id: 'wiese',
   name: 'Sternenwiese',
   genitive: 'der Sternenwiese',
+  at: 'auf der Sternenwiese', // „Freunde dich … an“
+  to: 'die Sternenwiese', // „Besuche …“
   area: 8,
   ground: 'nightgrass',
   rows: [

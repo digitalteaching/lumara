@@ -4,7 +4,7 @@
 import { CONFIG } from '../config.js';
 import { t } from '../i18n/i18n.js';
 import { BOARD_KINDS } from './events.js';
-import { MAPS, areaOpen, mapOfArea, areaWithArticle } from './network.js';
+import { MAPS, areaOpen, mapOfArea, areaAt, areaTo } from './network.js';
 import { AREA_WILD } from '../data/species.js';
 import { FRIENDABLE, isFriend, giftOf } from '../friends/friends.js';
 import { HIDEOUTS } from '../data/hideouts.js';
@@ -23,9 +23,7 @@ export function todayKey(date = new Date()) {
   return `${date.getFullYear()}-${p(date.getMonth() + 1)}-${p(date.getDate())}`;
 }
 
-const openAreas = (state, pack) => AREAS.filter(a => (pack
-  ? areaOpen(state, pack, a)
-  : a <= CONFIG.world.builtAreas && (a === 1 || state.stones.includes(a - 1))) && mapOfArea(a));
+const openAreas = (state, pack) => AREAS.filter(a => areaOpen(state, pack, a) && mapOfArea(a));
 
 // Gebiete, in denen noch eine Art fehlt, die man befreunden kann.
 const befriendAreas = (state, pack) => openAreas(state, pack).filter(a => {
@@ -97,7 +95,7 @@ function rewardTask(state, pack, rng) {
 
 // Zählt die Ereignisse, vergibt Belohnungen und den Tagesbonus. Ereignisse, die dabei entstehen,
 // kommen erst beim nächsten Aufruf dran.
-export function processEvents(state, rng, pack = null) {
+export function processEvents(state, rng, pack) {
   const events = Array.isArray(state.events) ? state.events : [];
   state.events = [];
   const board = state.board;
@@ -120,9 +118,11 @@ export function processEvents(state, rng, pack = null) {
   return news;
 }
 
-// Der Text einer Aufgabe; der gesuchte Ort steht mit Artikel darin.
+// Der Text einer Aufgabe; der Ort steht in der passenden Form darin (befriend: Ort, visit: Ziel).
 export function taskText(task) {
-  return t(`board.task.${task.kind}`, { n: task.n, area: task.area ? areaWithArticle(task.area) : '' });
+  const def = task.area ? mapOfArea(task.area) : null;
+  const area = !def ? '' : task.kind === 'visit' ? areaTo(def) : areaAt(def);
+  return t(`board.task.${task.kind}`, { n: task.n, area });
 }
 
 export function boardView(state) {

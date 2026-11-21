@@ -160,13 +160,7 @@ export function resolveStart(state, pack) {
   return highestOpenStone(state, pack) ?? { map: 'bucht', ...BUCHT.respawn };
 }
 
-// Der Name eines Gebiets mit Artikel („die Windklippen“ / „the Windy Cliffs“), so wie Nebelschilder
-// ihn bilden. Deutsch steht im Schild, das auf das Gebiet zeigt.
-export function areaWithArticle(area) {
-  const def = mapOfArea(area);
-  if (!def) return '';
-  const local = localWorld()?.areas[def.id]?.the;
-  if (local) return mark(local);
-  const sign = Object.values(MAPS).flatMap(d => d.objects).find(o => o.type === 'sign' && o.leadsTo === area && o.leadsToName);
-  return sign ? destinationName(sign) : areaName(def);
-}
+// Ortsangabe („in der Leuchtturmbucht“ / „in Lighthouse Bay“) und Ziel („die Windklippen“ / „the
+// Windy Cliffs“) eines Gebiets für die Texte des Aushangs; fehlt eine Form, steht der Name da.
+export const areaAt = def => mark(localWorld()?.areas[def.id]?.at ?? def.at ?? areaName(def));
+export const areaTo = def => mark(localWorld()?.areas[def.id]?.the ?? def.to ?? areaName(def));

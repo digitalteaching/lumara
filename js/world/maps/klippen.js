@@ -7,6 +7,8 @@ export const KLIPPEN = {
   id: 'klippen',
   name: 'Windklippen',
   genitive: 'der Windklippen',
+  at: 'auf den Windklippen', // „Freunde dich … an“
+  to: 'die Windklippen', // „Besuche …“
   area: 5,
   ground: 'cliffrock',
   rows: [

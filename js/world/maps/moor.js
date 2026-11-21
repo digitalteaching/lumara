@@ -7,6 +7,8 @@ export const MOOR = {
   id: 'moor',
   name: 'Pilzmoor',
   genitive: 'des Pilzmoors',
+  at: 'im Pilzmoor', // „Freunde dich … an“
+  to: 'das Pilzmoor', // „Besuche …“
   area: 3,
   ground: 'peat', // Boden unter Bäumen und Pilzen am Rand
   rows: [

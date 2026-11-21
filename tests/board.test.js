@@ -7,6 +7,8 @@ import { todayKey, ensureBoard, feasibleKinds, processEvents, taskText, boardVie
 import { setLanguage, t } from '../js/i18n/i18n.js';
 import { FRIENDABLE } from '../js/friends/friends.js';
 import { AREA_WILD } from '../js/data/species.js';
+import { mapOfArea, areaName, areaAt, areaTo } from '../js/world/network.js';
+import { giftOf } from '../js/friends/friends.js';
 import { CONFIG } from '../js/config.js';
 
 const pack = n => ({ trainers: Array.from({ length: n }, (_, i) => ({ number: i + 1 })) });
@@ -68,29 +70,29 @@ test('Fortschritt: Antworten in Folge, falsch setzt zurück', () => {
   const s = withBoard(st(), [task('streak', { n: 3 }), task('notes', { n: 2 }), task('treasure')]);
   const r = createRng(5);
   emit(s, 'answer', { correct: true }); emit(s, 'answer', { correct: true }); emit(s, 'answer', { correct: false }); emit(s, 'answer', { correct: true });
-  processEvents(s, r);
+  processEvents(s, r, pack(8));
   assert.equal(s.board.tasks[0].progress, 1);
   assert.deepEqual(s.events, []);
   emit(s, 'answer', { correct: true }); emit(s, 'answer', { correct: true });
-  const news = processEvents(s, r);
+  const news = processEvents(s, r, pack(8));
   assert.equal(s.board.tasks[0].done, true);
   assert.equal(news.filter(x => x.kind === 'task').length, 1);
   emit(s, 'answer', { correct: true });
-  processEvents(s, r);
+  processEvents(s, r, pack(8));
   assert.equal(s.board.tasks[0].progress, 3);
   emit(s, 'note');
-  processEvents(s, r);
+  processEvents(s, r, pack(8));
   assert.equal(s.board.tasks[1].progress, 1);
 });
 
 test('Befreunden und Besuchen zählen nur mit passendem Gebiet', () => {
   const s = withBoard(st([1]), [task('befriend', { area: 2 }), task('visit', { area: 2 }), task('wish')]);
   emit(s, 'befriend', { area: 1 }); emit(s, 'visit', { area: 1 });
-  processEvents(s, createRng(1));
+  processEvents(s, createRng(1), pack(8));
   assert.equal(s.board.tasks[0].done, false);
   assert.equal(s.board.tasks[1].done, false);
   emit(s, 'befriend', { area: 2 }); emit(s, 'visit', { area: 2 }); emit(s, 'wish');
-  processEvents(s, createRng(1));
+  processEvents(s, createRng(1), pack(8));
   assert.deepEqual(s.board.tasks.map(x => x.done), [true, true, true]);
 });
 
@@ -98,7 +100,7 @@ test('Jede Aufgabe belohnt genau einmal, der Tagesbonus auch, auch wenn alle dre
   const s = withBoard(st(), [task('notes'), task('wildWins'), task('wish')]);
   const hp = s.creature.level;
   emit(s, 'note'); emit(s, 'wildWin'); emit(s, 'wish');
-  const news = processEvents(s, createRng(7));
+  const news = processEvents(s, createRng(7), pack(8));
   assert.equal(news.filter(x => x.kind === 'task').length, 3);
   const bonus = news.filter(x => x.kind === 'bonus');
   assert.equal(bonus.length, 1);
@@ -109,7 +111,7 @@ test('Jede Aufgabe belohnt genau einmal, der Tagesbonus auch, auch wenn alle dre
   assert.ok(s.board.tasks.every(x => x.rewarded));
   assert.equal(s.board.bonus, true);
   emit(s, 'note'); emit(s, 'wildWin'); emit(s, 'wish');
-  assert.deepEqual(processEvents(s, createRng(8)).filter(x => x.kind !== 'treasure'), []);
+  assert.deepEqual(processEvents(s, createRng(8), pack(8)), []);
   assert.equal(s.bag.starfruit, 1);
 });
 
@@ -117,12 +119,12 @@ test('Ein Schatz als Belohnung erfüllt die Schatz-Aufgabe erst beim nächsten D
   const s = withBoard(st(), [task('notes'), task('treasure'), task('wish')]);
   emit(s, 'note');
   // Gewicht 1:1, 0.9 wählt den Schatz; danach Gebiet und Schatz
-  const news = processEvents(s, seq(0.9, 0, 0));
+  const news = processEvents(s, seq(0.9, 0, 0), pack(8));
   assert.equal(news[0].reward.item, 'treasure');
   assert.equal(s.board.tasks[1].done, false);
   assert.equal(s.events.length, 1);
   assert.equal(s.events[0].type, 'treasure');
-  const more = processEvents(s, seq(0.1));
+  const more = processEvents(s, seq(0.1), pack(8));
   assert.equal(s.board.tasks[1].done, true);
   assert.equal(more.filter(x => x.kind === 'task').length, 1);
 });
@@ -131,7 +133,7 @@ test('Bonus bei vollem Futter: Weitblickstein statt Sternfrucht', () => {
   const s = withBoard(st(), [task('notes'), task('wildWins'), task('wish')]);
   s.bag.berry = 99;
   emit(s, 'note'); emit(s, 'wildWin'); emit(s, 'wish');
-  const news = processEvents(s, createRng(3));
+  const news = processEvents(s, createRng(3), pack(8));
   const bonus = news.find(x => x.kind === 'bonus');
   assert.equal(bonus.starfruit, false);
   assert.equal(s.bag.farsight, 1);
@@ -142,7 +144,10 @@ test('Texte und Ansicht', () => {
   setLanguage('de');
   const s = withBoard(st(), [task('befriend', { area: 2 }), task('streak', { n: 4, progress: 1 }), task('treasure', { done: true, progress: 1 })]);
   assert.equal(taskText(s.board.tasks[1]), 'Beantworte 4 Fragen hintereinander richtig.');
-  assert.match(taskText(s.board.tasks[0]), /Flüsterwald/);
+  assert.equal(taskText(s.board.tasks[0]), 'Freunde dich im Flüsterwald mit einem Wesen an.');
+  assert.equal(taskText(task('visit', { area: 2 })), 'Besuche den Flüsterwald.');
+  assert.equal(taskText(task('befriend', { area: 4 })), 'Freunde dich in den Spiegeldünen mit einem Wesen an.');
+  assert.equal(taskText(task('visit', { area: 4 })), 'Besuche die Spiegeldünen.');
   const v = boardView(s);
   assert.equal(v.day, '2026-11-22');
   assert.equal(v.allDone, false);
@@ -161,5 +166,46 @@ test('Texte in jeder Sprache ohne Text fehlt', () => {
   }
   setLanguage('fr');
   assert.match(t('board.done'), / !$/);
+  setLanguage('de');
+});
+
+test('Nur die vier immer machbaren Arten: trotzdem drei verschiedene', () => {
+  const s = st();
+  for (const id of [...AREA_WILD[1].common, AREA_WILD[1].rare]) if (FRIENDABLE.includes(id)) s.friends[id] = { shiny: false };
+  assert.deepEqual(feasibleKinds(s, pack(1)).filter(k => k !== 'hideouts'), ['streak', 'wildWins', 'notes', 'treasure']); // die neuen Freunde öffnen Verstecke
+  s.board = null;
+  ensureBoard(s, pack(1), '2026-11-22', createRng(4));
+  assert.equal(new Set(s.board.tasks.map(x => x.kind)).size, 3);
+});
+
+test('Verstecke: machbar mit Strandgut-Freund, nicht nur mit Spürnase', () => {
+  const s = st();
+  assert.equal(feasibleKinds(s, pack(1)).includes('hideouts'), false);
+  const sniffer = FRIENDABLE.find(id => giftOf(id) === 'sniff');
+  s.friends[sniffer] = { shiny: false };
+  assert.equal(feasibleKinds(s, pack(1)).includes('hideouts'), false);
+  const beach = FRIENDABLE.find(id => giftOf(id) === 'beachcomb');
+  s.friends[beach] = { shiny: false };
+  assert.equal(feasibleKinds(s, pack(1)).includes('hideouts'), true);
+});
+
+test('Wunsch: nur mit offenem Wunsch machbar', () => {
+  const s = st();
+  assert.equal(feasibleKinds(s, pack(1)).includes('wish'), false);
+  s.wishes = { pim: { treasure: 'seashell', day: '2026-11-22', done: true } };
+  assert.equal(feasibleKinds(s, pack(1)).includes('wish'), false);
+  s.wishes.lio = { treasure: 'seashell', day: '2026-11-22', done: false };
+  assert.equal(feasibleKinds(s, pack(1)).includes('wish'), true);
+});
+
+test('Jedes Gebiet hat Ort und Ziel in allen Sprachen', () => {
+  for (const lang of ['de', 'en', 'fr', 'es']) {
+    setLanguage(lang);
+    for (const area of [1, 2, 3, 4, 5, 6, 7, 8]) {
+      const def = mapOfArea(area);
+      assert.ok(areaAt(def).trim() && areaAt(def) !== areaName(def), `${lang} at ${area}`);
+      assert.ok(areaTo(def).trim(), `${lang} to ${area}`);
+    }
+  }
   setLanguage('de');
 });

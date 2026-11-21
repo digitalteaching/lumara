@@ -8,14 +8,14 @@ const FOG_GONE = 'Le brouillard a reculé. Le chemin est libre.';
 
 export const FR_WORLD = {
   areas: {
-    bucht: { name: 'Baie du Phare', of: 'de la Baie du Phare', the: 'la Baie du Phare' },
-    wald: { name: 'Forêt des Murmures', of: 'de la Forêt des Murmures', the: 'la Forêt des Murmures' },
-    moor: { name: 'Marais aux Champignons', of: 'du Marais aux Champignons', the: 'le Marais aux Champignons' },
-    duenen: { name: 'Dunes Miroirs', of: 'des Dunes Miroirs', the: 'les Dunes Miroirs' },
-    klippen: { name: 'Falaises du Vent', of: 'des Falaises du Vent', the: 'les Falaises du Vent' },
-    ruinen: { name: 'Ruines des Horloges', of: 'des Ruines des Horloges', the: 'les Ruines des Horloges' },
-    see: { name: 'Lac de l’Aurore', of: 'du Lac de l’Aurore', the: 'le Lac de l’Aurore' },
-    wiese: { name: 'Prairie des Étoiles', of: 'de la Prairie des Étoiles', the: 'la Prairie des Étoiles' },
+    bucht: { name: 'Baie du Phare', of: 'de la Baie du Phare', the: 'la Baie du Phare', at: 'dans la Baie du Phare' },
+    wald: { name: 'Forêt des Murmures', of: 'de la Forêt des Murmures', the: 'la Forêt des Murmures', at: 'dans la Forêt des Murmures' },
+    moor: { name: 'Marais aux Champignons', of: 'du Marais aux Champignons', the: 'le Marais aux Champignons', at: 'dans le Marais aux Champignons' },
+    duenen: { name: 'Dunes Miroirs', of: 'des Dunes Miroirs', the: 'les Dunes Miroirs', at: 'dans les Dunes Miroirs' },
+    klippen: { name: 'Falaises du Vent', of: 'des Falaises du Vent', the: 'les Falaises du Vent', at: 'sur les Falaises du Vent' },
+    ruinen: { name: 'Ruines des Horloges', of: 'des Ruines des Horloges', the: 'les Ruines des Horloges', at: 'dans les Ruines des Horloges' },
+    see: { name: 'Lac de l’Aurore', of: 'du Lac de l’Aurore', the: 'le Lac de l’Aurore', at: 'au bord du Lac de l’Aurore' },
+    wiese: { name: 'Prairie des Étoiles', of: 'de la Prairie des Étoiles', the: 'la Prairie des Étoiles', at: 'dans la Prairie des Étoiles' },
     eiche: { name: 'Chêne Creux', of: 'du Chêne Creux', the: 'le Chêne Creux' },
     glasturm: { name: 'Tour de Verre', of: 'de la Tour de Verre', the: 'la Tour de Verre' },
     gezeiten: { name: 'Île des Marées', of: 'de l’Île des Marées', the: 'l’Île des Marées' },

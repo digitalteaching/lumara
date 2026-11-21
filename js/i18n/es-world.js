@@ -8,14 +8,14 @@ const FOG_GONE = 'La niebla se ha ido. El camino está libre.';
 
 export const ES_WORLD = {
   areas: {
-    bucht: { name: 'Bahía del Faro', of: 'de la Bahía del Faro', the: 'la Bahía del Faro' },
-    wald: { name: 'Bosque Susurrante', of: 'del Bosque Susurrante', the: 'el Bosque Susurrante' },
-    moor: { name: 'Pantano de las Setas', of: 'del Pantano de las Setas', the: 'el Pantano de las Setas' },
-    duenen: { name: 'Dunas Espejo', of: 'de las Dunas Espejo', the: 'las Dunas Espejo' },
-    klippen: { name: 'Acantilados del Viento', of: 'de los Acantilados del Viento', the: 'los Acantilados del Viento' },
-    ruinen: { name: 'Ruinas del Reloj', of: 'de las Ruinas del Reloj', the: 'las Ruinas del Reloj' },
-    see: { name: 'Lago de la Aurora', of: 'del Lago de la Aurora', the: 'el Lago de la Aurora' },
-    wiese: { name: 'Prado de las Estrellas', of: 'del Prado de las Estrellas', the: 'el Prado de las Estrellas' },
+    bucht: { name: 'Bahía del Faro', of: 'de la Bahía del Faro', the: 'la Bahía del Faro', at: 'en la Bahía del Faro' },
+    wald: { name: 'Bosque Susurrante', of: 'del Bosque Susurrante', the: 'el Bosque Susurrante', at: 'en el Bosque Susurrante' },
+    moor: { name: 'Pantano de las Setas', of: 'del Pantano de las Setas', the: 'el Pantano de las Setas', at: 'en el Pantano de las Setas' },
+    duenen: { name: 'Dunas Espejo', of: 'de las Dunas Espejo', the: 'las Dunas Espejo', at: 'en las Dunas Espejo' },
+    klippen: { name: 'Acantilados del Viento', of: 'de los Acantilados del Viento', the: 'los Acantilados del Viento', at: 'en los Acantilados del Viento' },
+    ruinen: { name: 'Ruinas del Reloj', of: 'de las Ruinas del Reloj', the: 'las Ruinas del Reloj', at: 'en las Ruinas del Reloj' },
+    see: { name: 'Lago de la Aurora', of: 'del Lago de la Aurora', the: 'el Lago de la Aurora', at: 'junto al Lago de la Aurora' },
+    wiese: { name: 'Prado de las Estrellas', of: 'del Prado de las Estrellas', the: 'el Prado de las Estrellas', at: 'en el Prado de las Estrellas' },
     eiche: { name: 'Roble Hueco', of: 'del Roble Hueco', the: 'el Roble Hueco' },
     glasturm: { name: 'Torre de Cristal', of: 'de la Torre de Cristal', the: 'la Torre de Cristal' },
     gezeiten: { name: 'Isla de las Mareas', of: 'de la Isla de las Mareas', the: 'la Isla de las Mareas' },

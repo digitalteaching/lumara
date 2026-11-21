@@ -8,14 +8,14 @@ const FOG_GONE = 'The mist has moved back. The way is free.';
 
 export const EN_WORLD = {
   areas: {
-    bucht: { name: 'Lighthouse Bay', of: 'of Lighthouse Bay', the: 'Lighthouse Bay' },
-    wald: { name: 'Whispering Woods', of: 'of the Whispering Woods', the: 'the Whispering Woods' },
-    moor: { name: 'Mushroom Marsh', of: 'of the Mushroom Marsh', the: 'the Mushroom Marsh' },
-    duenen: { name: 'Mirror Dunes', of: 'of the Mirror Dunes', the: 'the Mirror Dunes' },
-    klippen: { name: 'Windy Cliffs', of: 'of the Windy Cliffs', the: 'the Windy Cliffs' },
-    ruinen: { name: 'Clockwork Ruins', of: 'of the Clockwork Ruins', the: 'the Clockwork Ruins' },
-    see: { name: 'Aurora Lake', of: 'of Aurora Lake', the: 'Aurora Lake' },
-    wiese: { name: 'Starlight Meadow', of: 'of the Starlight Meadow', the: 'the Starlight Meadow' },
+    bucht: { name: 'Lighthouse Bay', of: 'of Lighthouse Bay', the: 'Lighthouse Bay', at: 'in Lighthouse Bay' },
+    wald: { name: 'Whispering Woods', of: 'of the Whispering Woods', the: 'the Whispering Woods', at: 'in the Whispering Woods' },
+    moor: { name: 'Mushroom Marsh', of: 'of the Mushroom Marsh', the: 'the Mushroom Marsh', at: 'in the Mushroom Marsh' },
+    duenen: { name: 'Mirror Dunes', of: 'of the Mirror Dunes', the: 'the Mirror Dunes', at: 'in the Mirror Dunes' },
+    klippen: { name: 'Windy Cliffs', of: 'of the Windy Cliffs', the: 'the Windy Cliffs', at: 'on the Windy Cliffs' },
+    ruinen: { name: 'Clockwork Ruins', of: 'of the Clockwork Ruins', the: 'the Clockwork Ruins', at: 'in the Clockwork Ruins' },
+    see: { name: 'Aurora Lake', of: 'of Aurora Lake', the: 'Aurora Lake', at: 'at Aurora Lake' },
+    wiese: { name: 'Starlight Meadow', of: 'of the Starlight Meadow', the: 'the Starlight Meadow', at: 'in the Starlight Meadow' },
     eiche: { name: 'Hollow Oak', of: 'of the Hollow Oak', the: 'the Hollow Oak' },
     glasturm: { name: 'Glass Tower', of: 'of the Glass Tower', the: 'the Glass Tower' },
     gezeiten: { name: 'Tide Island', of: 'of Tide Island', the: 'Tide Island' },

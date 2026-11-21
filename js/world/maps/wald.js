@@ -6,6 +6,8 @@ export const WALD = {
   id: 'wald',
   name: 'Flüsterwald',
   genitive: 'des Flüsterwalds',
+  at: 'im Flüsterwald', // „Freunde dich … an“
+  to: 'den Flüsterwald', // „Besuche …“
   area: 2,
   ground: 'moss', // Boden unter Bäumen und Pilzen am Rand
   rows: [

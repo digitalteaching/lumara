@@ -8,6 +8,8 @@ export const RUINEN = {
   id: 'ruinen',
   name: 'Uhrwerkruinen',
   genitive: 'der Uhrwerkruinen',
+  at: 'in den Uhrwerkruinen', // „Freunde dich … an“
+  to: 'die Uhrwerkruinen', // „Besuche …“
   area: 6,
   ground: 'cobble',
   rows: [

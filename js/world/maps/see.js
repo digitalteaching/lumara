@@ -7,6 +7,8 @@ export const SEE = {
   id: 'see',
   name: 'Nordlichtsee',
   genitive: 'des Nordlichtsees',
+  at: 'am Nordlichtsee', // „Freunde dich … an“
+  to: 'den Nordlichtsee', // „Besuche …“
   area: 7,
   ground: 'snow',
   rows: [
