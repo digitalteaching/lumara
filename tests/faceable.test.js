@@ -49,7 +49,7 @@ test('An jedem Ort kann man sich zu Stein, Geschichtsstein, Fundstück und Spiel
     const states = restStates(map, { ...def.spawn }, occupied);
     const targets = [
       ...(def.secretStone ? [['Stein', def.secretStone]] : []),
-      ...def.objects.filter(o => ['storystone', 'gear', 'gearhint', 'notestone', 'npc', 'boss', 'heal', 'task'].includes(o.type) || (o.type === 'deco' && o.lines)).map(o => [`${o.type} ${o.id}`, o]),
+      ...def.objects.filter(o => ['storystone', 'gear', 'gearhint', 'notestone', 'npc', 'boss', 'heal', 'task', 'board'].includes(o.type) || (o.type === 'deco' && o.lines)).map(o => [`${o.type} ${o.id}`, o]),
       ...QUESTS.flatMap(q => q.steps).filter(st => st.kind === 'pickup' && st.map === def.id).map(st => [st.id, st]),
     ];
     for (const [what, at] of targets) assert.ok(faces(states, at.x, at.y), `${def.id}: ${what} bei (${at.x}, ${at.y}) lässt sich nicht ansehen`);

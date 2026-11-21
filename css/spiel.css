@@ -701,6 +701,8 @@ body:not([data-mode="walk"]) .menu-btn, body:not([data-mode="walk"]) .bag-btn { 
 .quest-log li { display: grid; gap: 2px; }
 .quest-log .done b { color: var(--frame-dark); }
 .quest-hint { font-size: var(--text-small); }
+/* Aushang (Lumara 1.3): das Datum über den Aufgaben, die Liste wie die Aufträge */
+.board-date { font-weight: 600; color: var(--frame-dark); }
 
 /* Rucksack (Lumara 1.1): kommt groß von unten, die Klappe klappt hoch, dann liegen vier Fächer offen.
    Rahmen, Klappe und Bilder sind Pixelbilder (scharf vergrößert), Texte in der Systemschrift.

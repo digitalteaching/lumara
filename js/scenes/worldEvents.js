@@ -37,6 +37,7 @@ import { addCompanion } from './companion.js';
 import { addGarden } from './gardenEvents.js';
 import { addHideouts } from './hideoutEvents.js';
 import { addTasks } from './taskEvents.js';
+import { addBoard } from './boardEvents.js';
 import { questFor, acceptQuest, advanceQuest, finishQuest, activePickups, activeGuests } from '../world/quests.js';
 import { questText } from '../data/quests.js';
 import { maxEnergy, stageForLevel } from '../duel/progress.js';
@@ -354,13 +355,14 @@ export function createGameWorld(game) {
     if (result.story) await say(game, [result.story], { speaker: tr('world.storySpeaker') });
   }
 
-  // Level-Zeilen und Entwicklung nach XP außerhalb eines Duells (Zettel, Auftrag). Bis zur
-  // Entwicklung heißt das Wesen noch wie vorher (Design 6.3).
-  async function levelUps(levelBefore) {
+  // Level-Zeilen und Entwicklung nach XP außerhalb eines Duells (Zettel, Auftrag, Aushang). Bis zur
+  // Entwicklung heißt das Wesen noch wie vorher (Design 6.3). levelAfter: das Level gleich nach den XP,
+  // wenn die Zeilen erst später kommen (der Bonus am Aushang nach seiner Meldung).
+  async function levelUps(levelBefore, levelAfter = game.state.creature.level) {
     const c = game.state.creature;
-    const from = stageForLevel(levelBefore), to = stageForLevel(c.level);
-    if (c.level > levelBefore) jingle('levelup');
-    for (let lvl = levelBefore + 1; lvl <= c.level; lvl++) await say(game, [tr('duel.levelUp', { name: nameAtStage(c, from), level: lvl })]);
+    const from = stageForLevel(levelBefore), to = stageForLevel(levelAfter);
+    if (levelAfter > levelBefore) jingle('levelup');
+    for (let lvl = levelBefore + 1; lvl <= levelAfter; lvl++) await say(game, [tr('duel.levelUp', { name: nameAtStage(c, from), level: lvl })]);
     if (to > from) {
       jingle('evolution');
       await playEvolution(game, world, { species: c.species, from, to });
@@ -916,6 +918,10 @@ export function createGameWorld(game) {
   // Verstecke (Lumara 1.2, Spec 6.5): Ihr A-Handler kommt an den Anfang; Duell und Level-Zeilen
   // laufen über die Wege dieser Welt.
   addHideouts(world, game, { wildDuel, levelUps });
+
+  // Aushang (Lumara 1.3, Spec 7.1): neue Aufgaben am neuen Tag, Meldungen, die Tafel in der Bucht und
+  // Ilvys Hinweis. Der Bonus bringt die Level-Zeilen dieser Welt.
+  addBoard(world, game, { levelUps });
 
   // Spielaufgaben (Lumara 1.2, Spec 6.6): Ihr A-Handler kommt an den Anfang. Die Steine zum Betreten
   // (Sternenwiese) und das Folgen (Irrlicht im Moor, Pfotenspuren am See) hängen sich hinten an

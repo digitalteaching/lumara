@@ -892,6 +892,25 @@ function marked(rows, cells, ch) {
   return toRows(g);
 }
 
+const NOTICE_BOARD = [
+  '................',
+  '..kkkkkkkkkkkk..',
+  '.kbbbbbbbbbbbbk.',
+  'kbobobobobobobok',
+  '.kkkkkkkkkkkkkk.',
+  '.krrrrrrrrrrrrk.',
+  '.kroooocLcooork.',
+  '.krwCwocccohYrk.',
+  '.krwwwoyycoYYrk.',
+  '.krmmwocccoyYrk.',
+  '.krwwwooooooork.',
+  '.krrrrrrrrrrrrk.',
+  '.kkkkkkkkkkkkkk.',
+  '..kobk....kobk..',
+  '..kobk....kobk..',
+  '.lkobkl..lkobkl.',
+];
+
 // Leuchtstein: eine Säule auf einem Sockel mit einem Kristall, dunkel oder leuchtend (16 × 32).
 function beacon(lit) {
   const g = grid(16, 32, '.');
@@ -1658,6 +1677,11 @@ export const PROPS = {
     '.kook......krrk.',
     '.kkkk......kkkk.',
   ],
+  // Der Aushang am Leuchtturm (Lumara 1.3): ein Holzbrett mit Rahmen unter einem kleinen Dach, auf
+  // zwei Pfosten. Drei Zettel sind angepinnt (weiß, creme, sandfarben, mit roter, blauer und goldener
+  // Nadel). Solange eine Aufgabe offen ist, blitzt ab und zu ein Glanz zwischen den Zetteln auf.
+  noticeBoard: NOTICE_BOARD,
+  noticeBoardGlint: marked(marked(NOTICE_BOARD, [[6, 5], [5, 6], [7, 6], [6, 7]], 'H'), [[6, 6]], 'w'),
   iceedge: iceEdge(),
   icecrystal: iceCrystal(false),
   icecrystalDone: iceCrystal(true),

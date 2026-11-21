@@ -173,7 +173,9 @@ export const SONGS = {
   finale: { tempo: 120, voices: { sq1: 'd5/4 f#5/4 a5/4 d6/4 c#6/4 a5/4 d6/2', sq2: 'a4/2 d5/2 e5/2 f#5/2', tri: 'd3/2 a2/2 a2/2 d3/2' } },
   // Ein neuer Freund (Lumara 1.2): zwei warme Takte in F-Dur, die Melodie wiegt sich nach Hause.
   friendship: { tempo: 132, voices: { sq1: 'a4/8 c5/8 f5/4 e5/8 f5/8 a5/4 | g5/8 f5/8 e5/8 g5/8 f5/2', sq2: 'f4/2 c5/2 | bb4/2 a4/2', tri: 'f3/2 c3/2 | c3/2 f2/2' } },
+  // Aufgabe am Aushang erledigt (Lumara 1.3): zwei kurze helle Takte in G-Dur, ein Hüpfer nach oben.
+  board: { tempo: 150, voices: { sq1: 'g5/16 b5/16 d6/8 b5/8 d6/8 | g6/4 -/4', sq2: 'd5/4 g5/4 | b5/4 -/4', tri: 'g3/4 d3/4 | g3/4 -/4' } },
 };
 
 export const LOOPS = ['title', 'area1', 'area2', 'area3', 'area4', 'area5', 'area6', 'area7', 'area8', 'cave', 'wild', 'trainer', 'boss', 'ascent'];
-export const JINGLES = ['victory', 'defeat', 'levelup', 'evolution', 'find', 'beacon', 'finale', 'friendship'];
+export const JINGLES = ['victory', 'defeat', 'levelup', 'evolution', 'find', 'beacon', 'finale', 'friendship', 'board'];

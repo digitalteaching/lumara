@@ -1,4 +1,5 @@
-// Tagebuch (Design 5.4, 13): oben die Aufträge, darunter die gefundenen Geschichtsstücke nach Gebiet.
+// Tagebuch (Design 5.4, 13): ganz oben der Aushang von heute und die offenen Wünsche der Bewohner
+// (Lumara 1.3), dann die Aufträge, darunter die gefundenen Geschichtsstücke nach Gebiet.
 // Fehlende Stücke stehen als „Noch nicht gefunden“ da.
 
 import { el } from '../ui/dom.js';
@@ -7,8 +8,22 @@ import { SECRET_PLACES } from '../data/secrets.js';
 import { MAPS, mapOfArea, areaName as nameOf } from '../world/network.js';
 import { t } from '../i18n/i18n.js';
 import { questLog } from '../world/quests.js';
+import { boardView } from '../world/board.js';
+import { WISH_GIVERS, wishOf, wishHint } from '../world/wishes.js';
+import { treasureName } from '../items/treasures.js';
+import { boardTaskList } from './boardPage.js';
 
 const areaName = area => (mapOfArea(area) ? nameOf(mapOfArea(area)) : t('diary.area', { n: area }));
+
+// Offene Wünsche nach Gebiet: Name des Bewohners (aus seiner Karte), Schatz und wo man ihn findet.
+function openWishes(state) {
+  return Object.values(WISH_GIVERS).flatMap(({ map, npc }) => {
+    const w = wishOf(state, npc);
+    if (!w || w.done !== false) return [];
+    const name = MAPS[map].objects.find(o => o.id === npc)?.name ?? npc;
+    return [{ text: t('wish.diary', { name, treasure: treasureName(w.treasure) }), hint: wishHint(w.treasure) }];
+  });
+}
 
 export function diaryPage(game) {
   return {
@@ -17,7 +32,17 @@ export function diaryPage(game) {
       const found = game.state.story;
       const areas = Object.keys(STORY).map(Number).sort((a, b) => a - b);
       const log = questLog(game.state);
+      const board = boardView(game.state);
+      const wishes = openWishes(game.state);
       body.append(
+        el('div', { class: 'sheet-section diary-board' },
+          el('h3', {}, t('diary.board')),
+          board.tasks.length ? boardTaskList(board) : el('p', { class: 'small' }, t('diary.noBoard'))),
+        el('div', { class: 'sheet-section diary-wishes' },
+          el('h3', {}, t('diary.wishes')),
+          wishes.length
+            ? el('ul', { class: 'quest-log' }, wishes.map(w => el('li', { class: 'open' }, el('b', {}, w.text), el('span', { class: 'quest-hint' }, w.hint))))
+            : el('p', { class: 'small' }, t('diary.noWishes'))),
         el('div', { class: 'sheet-section diary-quests' },
           el('h3', {}, t('diary.quests')),
           log.length

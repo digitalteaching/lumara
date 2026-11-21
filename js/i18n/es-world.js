@@ -43,6 +43,10 @@ export const ES_WORLD = {
       'haus-bram': { lines: ['La casa de Bram. La puerta está cerrada con llave.'] },
       boot: { lines: ['La barca se mueve despacio sobre el agua.'] },
       ilvy: {
+        linesBoard: [
+          '¡Mira! Ahora hay un tablón de anuncios junto a la valla, cerca del faro.',
+          'Cada día tiene tres tareas nuevas. ¡Por cada una recibes un pequeño premio!',
+        ],
         linesAfter: ['Ahora Morrow vive con nosotros en el faro. Cada noche le llevo un té.'],
         lines: [
           '¡Te doy la bienvenida a la Bahía del Faro! Aquí cuido el faro.',

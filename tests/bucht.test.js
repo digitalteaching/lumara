@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createMap, reachable, cellKey, step } from '../js/world/map.js';
 import { BUCHT } from '../js/world/maps/bucht.js';
+import { HIDEOUTS } from '../js/data/hideouts.js';
 
 test('Bucht: 40 × 30, fehlerfrei, Start und Aufwachpunkt begehbar', () => {
   const m = createMap(BUCHT);
@@ -72,4 +73,31 @@ test('Bucht: Spielaufgabe – die Möwenmutter brütet am Steg, drei Küken stec
   const chicks = parts.filter(o => o.role === 'item');
   assert.deepEqual(chicks.map(o => o.prop).sort(), ['chickboat', 'chickbush', 'chickcrate']);
   for (const o of chicks) assert.ok([[0, 1], [0, -1], [1, 0], [-1, 0]].some(([dx, dy]) => r.has(cellKey(o.x + dx, o.y + dy))), o.id);
+});
+
+// Lumara 1.3: Der Aushang steht wie das Gartentor auf einem Feld, das man nie betreten konnte (dort
+// war ein Zaunstück, die Kartenzeile hat jetzt Boden darunter). Man liest ihn von vorn (unten).
+test('Bucht: Der Aushang steht höchstens 4 Felder vom Leuchtturm, sein Vorfeld ist erreichbar', () => {
+  const m = createMap(BUCHT), r = reachable(m, BUCHT.spawn);
+  const boards = BUCHT.objects.filter(o => o.type === 'board');
+  assert.equal(boards.length, 1);
+  const b = boards[0];
+  assert.equal(b.id, 'aushang');
+  assert.equal(m.tileAt(b.x, b.y), 'grass', 'Boden unter der Tafel');
+  assert.equal(m.objectAt(b.x, b.y), b, 'kein anderes Objekt auf dem Feld');
+  assert.ok(!m.canEnter(b.x, b.y));
+  assert.ok(r.has(cellKey(b.x, b.y + 1)), 'Vorfeld unter der Tafel');
+  const lh = BUCHT.objects.find(o => o.id === 'leuchtturm');
+  const dx = Math.max(lh.x - b.x, 0, b.x - (lh.x + lh.w - 1));
+  const dy = Math.max(lh.y - b.y, 0, b.y - (lh.y + lh.h - 1));
+  assert.ok(dx + dy <= 4, `Abstand ${dx + dy}`);
+  // Sie verstellt keinem anderen Objekt das letzte Vorfeld.
+  const m0 = createMap({ ...BUCHT, objects: BUCHT.objects.filter(o => o !== b) });
+  const r0 = reachable(m0, BUCHT.spawn);
+  const fronts = (o, rr) => [[0, 1], [0, -1], [1, 0], [-1, 0]].filter(([ddx, ddy]) => rr.has(cellKey(o.x + ddx, o.y + ddy))).length;
+  for (const o of BUCHT.objects.filter(o => o !== b && o.type !== 'building')) assert.equal(fronts(o, r), fronts(o, r0), `${o.type} ${o.id ?? o.number}`);
+  for (const h of HIDEOUTS.filter(h => h.map === 'bucht')) {
+    assert.ok(h.x !== b.x || h.y !== b.y, h.id);
+    assert.equal(fronts(h, r), fronts(h, r0), h.id);
+  }
 });

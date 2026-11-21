@@ -47,7 +47,7 @@ const lines = v => (Array.isArray(v) ? v.flat(Infinity) : [v]);
 const BUBBLES = /^(intro|eggs|world|duel|note|stone|cave|fog|trainer|recover)\./;
 const BUBBLE_MAX = 110;
 const WORLD_MAX = 130;
-const FIELDS = ['lines', 'linesLit', 'linesOpen', 'linesNoClock', 'linesAfter', 'afterWin'];
+const FIELDS = ['lines', 'linesLit', 'linesOpen', 'linesNoClock', 'linesAfter', 'afterWin', 'linesBoard'];
 
 for (const [lang, L] of Object.entries(FOREIGN)) {
   test(`${lang}: jeder deutsche Schlüssel, mit gleicher Art und gleichen Platzhaltern`, () => {

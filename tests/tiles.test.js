@@ -105,3 +105,11 @@ test('Zeichenbäume: goldene Krone, nicht grün wie der Flüsterbaum', () => {
     }
   }
 });
+
+test('Aushang (Lumara 1.3): eigenes Bild 16 × 16 mit Glanz-Bild, das sich nur im Glanz unterscheidet', () => {
+  const a = parseSprite('noticeBoard', PROPS.noticeBoard);
+  const b = parseSprite('noticeBoardGlint', PROPS.noticeBoardGlint);
+  assert.deepEqual([a.w, a.h, b.w, b.h], [16, 16, 16, 16]);
+  const diff = [...a.data].filter((v, i) => v !== b.data[i]).length;
+  assert.ok(diff > 0 && diff <= 5, `${diff} Pixel anders`);
+});

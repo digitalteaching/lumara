@@ -24,7 +24,7 @@ export const BUCHT = {
     'TT.,,,,,,,,.......____....**...........T',
     'TT.,,,,,,,,.......____....**..........TT',
     'TT................____...............~~~',
-    'TT.o.###..........____.....####.....~~~~',
+    'TT.o.###..........____.....###......~~~~',
     'TT................____..............~~~~',
     'TT...___________________________....~~~~',
     'TT.T.___________________________....~~~~',
@@ -79,6 +79,9 @@ export const BUCHT = {
       to: { map: 'garten', ...GARTEN.spawn },
       lines: ['Ein Tor aus Weidenzweigen, voller Blüten. Dahinter liegt der Garten deiner Freunde.'],
     },
+    // Lumara 1.3: Am Ende des Zauns zwischen Ilvys Haus und dem Leuchtturm, wo das letzte Zaunstück
+    // stand, steht der Aushang mit drei Aufgaben am Tag (js/scenes/boardEvents.js). Man liest ihn von vorn.
+    { type: 'board', id: 'aushang', x: 30, y: 12 },
     // Spielaufgabe (Lumara 1.2, js/data/tasks.js): Die Möwenmutter brütet auf einem Pfahl im Wasser am
     // Steg, drei Küken haben sich versteckt. Die Küken stehen dort, wo früher Zaun, Baum und Fels
     // waren; so bleibt jedes Feld frei, auf dem man stehen konnte.
@@ -93,6 +96,11 @@ export const BUCHT = {
 
     {
       type: 'npc', id: 'ilvy', name: 'Ilvy', x: 35, y: 16, dir: 'left', sprite: 'ilvy',
+      // Einmal, wenn es den Aushang gibt (Lumara 1.3, js/scenes/boardEvents.js)
+      linesBoard: [
+        'Schau mal! Am Zaun beim Leuchtturm hängt jetzt ein Aushang.',
+        'Jeden Tag stehen drei neue Aufgaben darauf. Für jede bekommst du eine kleine Belohnung!',
+      ],
       linesAfter: ['Morrow wohnt jetzt bei uns am Leuchtturm. Ich bringe ihm jeden Abend Tee.'],
       lines: [
         'Willkommen in der Leuchtturmbucht! Ich passe hier auf den Leuchtturm auf.',

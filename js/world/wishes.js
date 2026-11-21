@@ -95,7 +95,8 @@ export function giveWish(state, npc, rng) {
   return out;
 }
 
-// Wo man den Schatz findet: häufige im Gras, an Glitzerstellen und unter Zetteln, seltene in Verstecken und bei der Spielaufgabe.
+// Wo man den Schatz findet: häufige im Gras, an Glitzerstellen und unter Zetteln, seltene in Verstecken
+// und als Belohnung der Spielaufgabe (im Text: ein kleines Rätsel).
 export function wishHint(treasureId) {
   const tr = TREASURES.find(x => x.id === treasureId);
   const where = areaAt(mapOfArea(tr.area));

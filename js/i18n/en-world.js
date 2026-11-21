@@ -43,6 +43,10 @@ export const EN_WORLD = {
       'haus-bram': { lines: ['Bram’s house. The door is locked.'] },
       boot: { lines: ['The boat rocks gently on the water.'] },
       ilvy: {
+        linesBoard: [
+          'Look! There is a notice board by the fence at the lighthouse now.',
+          'Every day it has three new tasks. For each one, you get a small reward!',
+        ],
         linesAfter: ['Morrow lives with us at the lighthouse now. I bring it tea every evening.'],
         lines: [
           'Welcome to Lighthouse Bay! I look after the lighthouse here.',

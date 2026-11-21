@@ -5,7 +5,7 @@ import { parseSong } from '../js/audio/notes.js';
 
 test('Alle Stücke und Jingles aus Design 15 gibt es', () => {
   assert.deepEqual(LOOPS, ['title', 'area1', 'area2', 'area3', 'area4', 'area5', 'area6', 'area7', 'area8', 'cave', 'wild', 'trainer', 'boss', 'ascent']);
-  assert.deepEqual(JINGLES, ['victory', 'defeat', 'levelup', 'evolution', 'find', 'beacon', 'finale', 'friendship']);
+  assert.deepEqual(JINGLES, ['victory', 'defeat', 'levelup', 'evolution', 'find', 'beacon', 'finale', 'friendship', 'board']);
   for (const id of [...LOOPS, ...JINGLES]) assert.ok(SONGS[id], id);
 });
 
