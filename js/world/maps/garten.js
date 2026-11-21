@@ -36,7 +36,7 @@ export const GARTEN = {
     '*': 'flowers',
   },
   objects: [
-    // Am Ende des Wegs: Das Schild zählt die Freunde (js/scenes/gardenEvents.js).
+    // Am Ende des Wegs: Das Schild sagt seine Zeilen und zählt die Freunde (js/scenes/gardenEvents.js).
     {
       type: 'sign', id: 'garten-schild', role: 'friendCount', x: 12, y: 9,
       lines: ['Garten am Leuchtturm', 'Hier wohnen deine Freunde.'],

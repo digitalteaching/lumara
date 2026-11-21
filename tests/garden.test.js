@@ -7,8 +7,10 @@ import { createMap, cellKey, step } from '../js/world/map.js';
 import { createRng } from '../js/core/rng.js';
 import { FRIENDABLE, WATER_FRIENDS, makeFriend, setCompanion } from '../js/friends/friends.js';
 import { createWorldScene } from '../js/scenes/world.js';
-import { addGarden } from '../js/scenes/gardenEvents.js';
+import { addGarden, friendCountLines } from '../js/scenes/gardenEvents.js';
 import { CONFIG } from '../js/config.js';
+import { setLanguage, t } from '../js/i18n/i18n.js';
+import { EN_WORLD } from '../js/i18n/en-world.js';
 
 const NEIGHBOURS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
 const parse = k => { const [x, y] = k.split(',').map(Number); return { x, y }; };
@@ -225,4 +227,23 @@ test('A ins Leere neben den Freunden: Der Garten-Handler lässt den Begleiter sp
   const empty = free.find(c => !world.blocked.has(cellKey(c.x, c.y)));
   for (const fn of world.onInteract.slice(0, 2)) assert.equal(await fn({ target: null, x: empty.x, y: empty.y }), false);
   assert.equal(await world.onInteract[0]({ target: { type: 'sign', role: 'fogEdge' }, x: 0, y: 0 }), false);
+});
+
+test('Das Schild im Garten: erst seine eigenen Zeilen, dann die Zahl der Freunde, ohne Freunde ein Hinweis', () => {
+  const sign = GARTEN.objects.find(o => o.role === 'friendCount');
+  const max = FRIENDABLE.length;
+  const state = { friends: {}, companion: null };
+  assert.deepEqual(friendCountLines(state, sign), [...sign.lines, t('garden.count', { n: 0, max }), t('friends.none')]);
+  makeFriend(state, 'moosling', false);
+  makeFriend(state, 'gischtling', true);
+  setCompanion(state, 'gischtling');
+  assert.deepEqual(friendCountLines(state, sign), [...sign.lines, t('garden.count', { n: 2, max })], 'der Begleiter zählt mit');
+  setLanguage('en');
+  try {
+    const lines = friendCountLines(state, sign);
+    assert.deepEqual(lines, [...EN_WORLD.objects.garten['garten-schild'].lines, t('garden.count', { n: 2, max })]);
+    assert.ok(lines.every(l => !/[äöüß]|Freunde/.test(l)), lines.join(' | '));
+  } finally {
+    setLanguage('de');
+  }
 });

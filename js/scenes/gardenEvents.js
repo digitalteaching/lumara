@@ -1,11 +1,13 @@
 // Der Garten am Leuchtturm in der Welt (Lumara 1.2): Die Freunde, die nicht mitlaufen, stehen als
 // Kleinbilder auf der Wiese. Jeder ruht eine Weile und geht dann langsam ein Feld weiter, die
 // Wasserwesen nur am Teich. Ihre Felder stehen in world.blocked. A auf einen Freund öffnet seine
-// Freundeskarte, das Schild zählt die Freunde. Befreundete Wesen kämpfen nie.
+// Freundeskarte, das Schild sagt seine Zeilen und zählt die Freunde. Befreundete Wesen kämpfen nie.
 
 import { CONFIG } from '../config.js';
 import { cellKey, step } from '../world/map.js';
 import { gardenFriends, placeFriends, wanderTarget } from '../world/garden.js';
+import { worldLines } from '../world/network.js';
+import { GARTEN } from '../world/maps/garten.js';
 import { FRIENDABLE, WATER_FRIENDS, friendList } from '../friends/friends.js';
 import { miniImages } from './companion.js';
 import { friendCard } from '../menu/friendsPage.js';
@@ -19,6 +21,15 @@ const HOP_MS = 130; // wie beim Begleiter
 const RETRY_MS = 1000; // fand ein Freund keinen Platz, sucht er so oft wieder
 const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 const NEIGHBOURS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+
+// Was das Schild am Ende des Wegs sagt: erst seine eigenen Zeilen in der Spielsprache, dann wie viele
+// Freunde es gibt (alle, auch den Begleiter), ohne Freunde noch, wie man einen findet.
+export function friendCountLines(state, sign) {
+  const n = friendList(state).length;
+  const lines = [...(worldLines(GARTEN, sign, 'lines') ?? []), t('garden.count', { n, max: FRIENDABLE.length })];
+  if (!n) lines.push(t('friends.none'));
+  return lines;
+}
 
 export function addGarden(world, game) {
   const { map, player } = world;
@@ -199,10 +210,7 @@ export function addGarden(world, game) {
   world.onInteract.unshift(async ev => {
     const o = ev.target;
     if (o?.type !== 'sign' || o.role !== 'friendCount') return false;
-    const n = friendList(game.state).length;
-    const lines = [t('garden.count', { n, max: FRIENDABLE.length })];
-    if (!n) lines.push(t('friends.none'));
-    await say(game, lines);
+    await say(game, friendCountLines(game.state, o));
     return true;
   });
 
