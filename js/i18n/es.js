@@ -547,41 +547,71 @@ export const ES = {
   'befriend.shy': '{name} todavía tiene miedo y se va.',
   'befriend.left': '{name} te mira mientras te vas.',
 
-  // Begleiter (Lumara 1.2): zwei Sätze je Gabe, wenn man A drückt und vor der Figur nichts ist
+  // Begleiter (Lumara 1.2): zwei Sätze je Gabe, wenn man A drückt und vor der Figur nichts ist. Sie
+  // versprechen nichts, denn sie kommen überall. Ist ein bereites Versteck seiner Gabe nah (die
+  // Spürnase: irgendeins), sagt er stattdessen companion.near.<Gabe>.
   'companion.beachcomb': [
-    '¡Algo brilla en la arena! ¿Cavamos?',
-    'A veces llega una botella con una carta.',
+    'Me gusta el mar. Trae cosas muy bonitas.',
+    'Me encanta buscar cosas en la playa.',
   ],
   'companion.climb': [
-    'Los mejores secretos están arriba en los árboles.',
-    '¡Subo a todas partes donde hay una rama!',
+    'Arriba en los árboles se está mejor.',
+    'Me gustan las ramas, los nidos y el aire fresco.',
   ],
   'companion.glow': [
-    '¿Rincones oscuros? ¡No pasa nada, yo los ilumino!',
-    'Bajo las raíces brillo todavía más.',
+    'En la oscuridad brillo todavía más.',
+    'No tengas miedo de la oscuridad, estoy contigo.',
   ],
   'companion.clearsight': [
-    'No todos los caminos son reales. Yo veo el bueno.',
-    '¡Ese aire que tiembla allí nos engaña un poco!',
+    'No todo lo que tiembla en el aire es real.',
+    'Me gusta mirar todo muy de cerca.',
   ],
   'companion.updraft': [
-    '¿Sientes el viento? ¡Quiere llevarnos hacia arriba!',
+    '¿Sientes el viento? Me gusta mucho.',
     'Desde muy alto se ve por encima de las nubes.',
   ],
   'companion.tinker': [
-    '¿Cajas oxidadas y engranajes? ¡Yo te ayudo!',
-    '¡Clic, clac! Cada cerradura tiene un secreto.',
+    '¡Clic, clac! Me gustan las cerraduras y los engranajes.',
+    'El óxido no me da miedo. Me gusta arreglar cosas.',
   ],
   'companion.dive': [
-    '¡Huelo agua! Por aquí hay un sitio profundo.',
-    'Bajo el agua se ven cosas que nadie ve arriba.',
+    'Me encanta el agua, cuanto más profunda, mejor.',
+    'Bajo el agua todo está tranquilo y bonito.',
   ],
   'companion.startrail': [
-    '¿No ves las huellas? ¡Yo las hago brillar!',
     'Algunos caminos solo brillan bajo las estrellas.',
+    'Me gustan la noche y las estrellas que brillan.',
   ],
   'companion.sniff': [
-    'Snif, snif … ¡aquí hay algo escondido!',
-    'Mi nariz sabe dónde hay cosas escondidas.',
+    'Snif, snif … ¡aquí huele bien!',
+    'Mi nariz siempre tiene curiosidad.',
   ],
+  'companion.near.beachcomb': '¡Allí! El mar ha traído algo.',
+  'companion.near.climb': '¡Allí arriba, en un árbol! Siento algo.',
+  'companion.near.glow': 'Allí hay un agujero oscuro. ¡Siento algo!',
+  'companion.near.clearsight': '¡Allí, en la bruma! Veo una sombra.',
+  'companion.near.updraft': '¡Allí, en el viento! Siento algo.',
+  'companion.near.tinker': '¡Allí hay algo oxidado atascado!',
+  'companion.near.dive': '¡Allí, en el agua! Siento algo.',
+  'companion.near.startrail': '¡Allí brilla una huella! ¿La ves?',
+  'companion.near.sniff': '¡Snif! Allí hay un escondite.',
+
+  // Verstecke (Lumara 1.2): A vor einem Versteck. Ein Hinweis je Gabe passt zu allen Feldern, auf
+  // denen Verstecke dieser Gabe liegen (js/data/hideouts.js), auch zur Luftspiegelung („Nur eine
+  // Luftspiegelung!“).
+  'hideout.hint.beachcomb': 'Aquí hay algo atascado que trajo el mar – una criatura que busca en la playa podría encontrarlo.',
+  'hideout.hint.climb': 'Hay un nido en lo alto del árbol – una criatura que sabe trepar podría llegar.',
+  'hideout.hint.glow': 'Aquí hay un agujero oscuro – una criatura que sabe brillar podría mirar dentro.',
+  'hideout.hint.clearsight': 'Hay una sombra en la bruma – una criatura con vista clara podría ver qué es.',
+  'hideout.hint.updraft': 'Allí, en el viento, brilla algo – una criatura que el viento lleva podría llegar.',
+  'hideout.hint.tinker': 'Aquí hay algo oxidado atascado – una criatura que sabe arreglar cosas podría abrirlo.',
+  'hideout.hint.dive': 'Algo brilla en el fondo del agua – una criatura que sabe bucear podría llegar.',
+  'hideout.hint.startrail': 'Aquí hay una huella que casi no se ve – una criatura que hace brillar las huellas podría ayudar.',
+  'hideout.sniff': '¡Snif! Aquí hace falta el don {gift}.',
+  'hideout.empty': 'Ahora no hay nada aquí. Quizá más tarde.',
+  'hideout.stays': 'El escondite sigue cerrado. ¡Inténtalo pronto otra vez!',
+  'hideout.found': '¡Encuentras {item} en el escondite!',
+  'hideout.foundTreat': '¡Encuentras una golosina en el escondite!',
+  'hideout.foundTreasure': '¡Encuentras un tesoro en el escondite: {name}!',
+  'hideout.foundFull': 'Encuentras {item} en el escondite, pero tu mochila está llena.',
 };

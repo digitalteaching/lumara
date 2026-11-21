@@ -1,13 +1,15 @@
 // Der Begleiter in der Welt (Lumara 1.2): Das befreundete Wesen aus state.companion läuft als
 // Kleinbild hinter der Spielfigur her (js/world/follower.js). Drückt man A und vor der Figur ist
-// nichts, das reagiert, sagt es etwas zu seiner Gabe. Befreundete Wesen kämpfen nie.
+// nichts, das reagiert, sagt es etwas zu seiner Gabe, in der Nähe eines bereiten Verstecks seiner
+// Gabe einen eigenen Satz (companionLine). Befreundete Wesen kämpfen nie.
 
 import { createFollower } from '../world/follower.js';
+import { nearHideouts } from '../world/hideouts.js';
 import { miniImages } from '../gfx/miniImages.js';
 import { giftOf } from '../friends/friends.js';
 import { speciesName } from '../data/species.js';
 import { say } from '../ui/dialog.js';
-import { tl } from '../i18n/i18n.js';
+import { t, tl } from '../i18n/i18n.js';
 
 const T = 16;
 const HOP_MS = 130; // beim Laufen wechseln Stehen und Hüpfen so schnell wie die Schritte der Bewohner
@@ -18,12 +20,26 @@ export function companionOf(state) {
   return id && state.friends?.[id] && giftOf(id) ? id : null;
 }
 
+// Was der Begleiter auf A sagt, wenn die Figur bei (x, y) auf der Karte mapId steht. Ist ein bereites
+// Versteck seiner Gabe höchstens nearRadius Felder entfernt, sein Satz companion.near.<Gabe>; die
+// Spürnase öffnet keins, sie riecht jedes. Sonst abwechselnd (index) die allgemeinen Sätze.
+export function companionLine(state, mapId, x, y, index) {
+  const id = companionOf(state);
+  if (!id) return null;
+  const gift = giftOf(id);
+  const near = nearHideouts(state, mapId, x, y);
+  if (gift === 'sniff' ? near.length : near.some(h => h.gift === gift)) return t(`companion.near.${gift}`);
+  const lines = tl(`companion.${gift}`);
+  return lines[index % lines.length];
+}
+
 export function addCompanion(world, game) {
   const { player } = world;
   const follower = createFollower(world.map, player, world.blocked);
   let shown = null; // das Wesen, das gerade mitläuft
   let side = follower.dir === 'left' ? 'left' : 'right'; // nach oben und unten behält er seine Seite
   let at = follower.pixel();
+  let pose = null; // eine Szene stellt ihn kurz woanders hin, siehe world.companion
   let said = 0;
 
   // Den Begleiter neu lesen und der Figur folgen. Kommt einer dazu, steht er sofort hinter ihr.
@@ -40,20 +56,34 @@ export function addCompanion(world, game) {
   }
   world.onTick.push(sync);
 
+  // Für Szenen wie das Öffnen eines Verstecks (js/scenes/hideoutEvents.js):
+  // - pixel(): wo er gerade gezeichnet wird, in Spielpixeln (null ohne Begleiter)
+  // - cell(): sein Feld (null ohne Begleiter)
+  // - setPose({ x, y, side, walking }): zeichnet ihn dort statt hinter der Figur, walking lässt ihn
+  //   hüpfen (nicht bei „Bewegung reduzieren“); setPose(null) stellt ihn wieder hinter die Figur.
+  world.companion = {
+    pixel: () => (shown ? (pose ? { x: pose.x, y: pose.y } : follower.pixel()) : null),
+    cell: () => (shown ? { x: follower.x, y: follower.y } : null),
+    setPose(p) {
+      pose = p ?? null;
+    },
+  };
+
   world.actors.push({
     z() {
       sync();
       at = follower.pixel();
-      return at.y / T;
+      return (pose ?? at).y / T;
     },
     draw(ctx, cam) {
-      if (!shown || follower.hidden()) return;
-      const walking = player.moving && (follower.x !== follower.fromX || follower.y !== follower.fromY);
+      if (!shown || (!pose && follower.hidden())) return;
+      const walking = pose ? !!pose.walking : player.moving && (follower.x !== follower.fromX || follower.y !== follower.fromY);
       const hop = walking && !game.reducedMotion ? Math.floor(world.time / HOP_MS) % 2 : 0;
       // Ein Kleinbild, das sich nicht bauen lässt, fehlt nur (js/gfx/miniImages.js warnt einmal).
-      const img = miniImages(shown, game.state.friends[shown].shiny === true)?.[side][hop];
+      const img = miniImages(shown, game.state.friends[shown].shiny === true)?.[pose?.side ?? side][hop];
       if (!img) return;
-      const x = at.x - cam.x, y = at.y - cam.y - 2;
+      const p = pose ?? at;
+      const x = p.x - cam.x, y = p.y - cam.y - 2;
       world.drawShadow(ctx, x, y);
       ctx.drawImage(img, x, y);
     },
@@ -63,8 +93,8 @@ export function addCompanion(world, game) {
   world.onInteract.push(async ev => {
     const id = companionOf(game.state);
     if (ev.target || !id) return false;
-    const lines = tl(`companion.${giftOf(id)}`);
-    await say(game, [lines[said++ % lines.length]], { speaker: speciesName(id, 1) });
+    const line = companionLine(game.state, world.mapId, player.x, player.y, said++);
+    await say(game, [line], { speaker: speciesName(id, 1) });
     return true;
   });
 }

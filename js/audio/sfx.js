@@ -18,6 +18,8 @@ export const SFX = {
   bagClose: [{ drum: 'h', at: 0 }, { drum: 'h', at: 0.04 }, { drum: 'h', at: 0.09 }, { type: 'triangle', from: 392, to: 262, at: 0.06, dur: 0.12, level: 0.24 }],
   // Ein Feld im Vertrauensring leuchtet auf (Lumara 1.2): zwei weiche, steigende Dreiecktöne.
   trust: [{ type: 'triangle', from: 659, at: 0, dur: 0.12, level: 0.26 }, { type: 'triangle', from: 880, to: 988, at: 0.11, dur: 0.22, level: 0.26 }],
+  // Ein Versteck geht auf (Lumara 1.2): kurzes Rascheln, ein weicher Ton gleitet hoch, ein heller Klang.
+  hideout: [{ drum: 'h', at: 0 }, { drum: 'h', at: 0.05 }, { type: 'triangle', from: 440, to: 784, at: 0.04, dur: 0.16, level: 0.24 }, { type: 'triangle', from: 1175, at: 0.2, dur: 0.2, level: 0.18 }],
 };
 
 export function playSfx(synth, id, when) {

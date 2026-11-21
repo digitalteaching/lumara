@@ -21,8 +21,9 @@ const FOUND = {
 
 // settle(answer) wird nach der Antwort genau einmal gerufen (answer = { key, correct, trainer })
 // und liefert { xp, item, lost, story, evolved }. Ergebnis: null bei „Später“, sonst
-// { correct, xp, item, lost, story, evolved }.
-export async function playNote(game, pool, settle) {
+// { correct, xp, item, lost, story, evolved }. opts.stays: der Satz bei einer falschen Antwort
+// (ein Versteck sagt, dass es zu bleibt, js/scenes/hideoutEvents.js).
+export async function playNote(game, pool, settle, { stays = 'note.stays' } = {}) {
   const c = game.state.creature;
   const history = packProgress(game.state, game.pack.data.shortId).history;
   const question = createDeck(pool, history, game.rng).draw();
@@ -56,7 +57,7 @@ export async function playNote(game, pool, settle) {
       await panel.feedback({
         ok: false,
         title: r.almost ? t('feedback.almost') : t('feedback.wrong'),
-        lines: [t('duel.correctIs', { answer: r.correctText }), t('note.stays')],
+        lines: [t('duel.correctIs', { answer: r.correctText }), t(stays)],
         minMs: CONFIG.duel.wrongMinMs,
       });
     }

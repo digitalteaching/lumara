@@ -38,6 +38,38 @@ export function nearHideouts(state, mapId, x, y, radius = CONFIG.hideouts.nearRa
     .sort((a, b) => distance(a, x, y) - distance(b, x, y));
 }
 
+// ---------- Was die Welt zeigt und was A tut (js/scenes/hideoutEvents.js) ----------
+
+// Die Gabe des Begleiters, wenn er ein Freund ist, sonst null.
+export function companionGift(state) {
+  const c = state.companion;
+  return c && isFriend(state, c) ? giftOf(c) : null;
+}
+
+// A vor einem Versteck: 'empty' (gerade leer, das zählt zuerst), 'hint' (ohne passenden Begleiter)
+// oder 'open'.
+export function hideoutAction(state, h) {
+  if (!hideoutReady(state, h)) return 'empty';
+  return canOpen(state, h) ? 'open' : 'hint';
+}
+
+// Ein bereites Versteck sieht man schwach. Sternenspur-Verstecke nur, wenn ein Begleiter mit
+// Sternenspur höchstens nearRadius Felder entfernt ist (at: sein Feld).
+export function hideoutShown(state, h, at) {
+  if (!hideoutReady(state, h)) return false;
+  if (h.gift !== 'startrail') return true;
+  return canOpen(state, h) && distance(h, at.x, at.y) <= CONFIG.hideouts.nearRadius;
+}
+
+// „!“ über dem Begleiter: ein bereites Versteck, das er öffnen kann, nahe der Figur bei (x, y).
+export const companionAlert = (state, mapId, x, y) => nearHideouts(state, mapId, x, y).some(h => canOpen(state, h));
+
+// Mit der Spürnase: alle bereiten Verstecke in sniffRadius, die nächsten zuerst. Sonst keine.
+export function sniffedHideouts(state, mapId, x, y) {
+  if (companionGift(state) !== 'sniff') return [];
+  return nearHideouts(state, mapId, x, y, CONFIG.hideouts.sniffRadius);
+}
+
 function refill(state, h) {
   state.world.hideouts ??= {};
   state.world.hideouts[hideoutKey(h)] = state.playMs + CONFIG.hideouts.refillMs;

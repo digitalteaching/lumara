@@ -339,6 +339,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
   }
 
   const scene = {
+    mapId: def.id, // etwa für den Begleiter und die Verstecke dieser Karte
     map,
     player,
     onStepped,

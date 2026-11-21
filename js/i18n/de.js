@@ -547,41 +547,71 @@ export const DE = {
   'befriend.shy': '{name} ist noch scheu und läuft davon.',
   'befriend.left': '{name} schaut dir nach.',
 
-  // Begleiter (Lumara 1.2): zwei Sätze je Gabe, wenn man A drückt und vor der Figur nichts ist
+  // Begleiter (Lumara 1.2): zwei Sätze je Gabe, wenn man A drückt und vor der Figur nichts ist. Sie
+  // versprechen nichts, denn sie kommen überall. Ist ein bereites Versteck seiner Gabe nah (die
+  // Spürnase: irgendeins), sagt er stattdessen companion.near.<Gabe>.
   'companion.beachcomb': [
-    'Da glitzert was im Sand! Wollen wir graben?',
-    'Manchmal treibt eine Flasche mit einem Brief an.',
+    'Ich mag das Meer. Es bringt so schöne Dinge.',
+    'Am liebsten suche ich am Ufer nach Strandgut.',
   ],
   'companion.climb': [
-    'Ganz oben in den Bäumen wohnen die besten Geheimnisse.',
-    'Ich klettere überall hoch, wo ein Ast ist!',
+    'Ganz oben in den Bäumen ist es am schönsten.',
+    'Ich mag Äste, Nester und frische Luft.',
   ],
   'companion.glow': [
-    'Dunkle Ecken? Keine Angst, ich mache sie hell!',
-    'Unter den Wurzeln leuchte ich am schönsten.',
+    'Im Dunkeln leuchte ich am schönsten.',
+    'Keine Angst im Dunkeln, ich bin ja bei dir.',
   ],
   'companion.clearsight': [
-    'Nicht jeder Weg ist echt. Ich sehe, welcher es ist.',
-    'Die flirrende Luft da drüben schummelt ein bisschen!',
+    'Nicht alles, was flimmert, ist auch echt.',
+    'Ich schaue gern ganz genau hin.',
   ],
   'companion.updraft': [
-    'Spürst du den Wind? Er will uns nach oben tragen!',
+    'Spürst du den Wind? Ich mag ihn so gern.',
     'Von ganz oben sieht man über die Wolken.',
   ],
   'companion.tinker': [
-    'Rostige Kisten und Zahnräder? Da kann ich helfen!',
-    'Klick, klack! Jedes Schloss hat ein Geheimnis.',
+    'Klick, klack! Ich mag Schlösser und Zahnräder.',
+    'Rost macht mir keine Angst. Ich tüftle gern.',
   ],
   'companion.dive': [
-    'Ich rieche Wasser! Irgendwo hier ist es tief.',
-    'Unter Wasser sieht man Dinge, die oben keiner sieht.',
+    'Ich liebe Wasser, je tiefer, desto besser.',
+    'Unter Wasser ist es still und schön.',
   ],
   'companion.startrail': [
-    'Siehst du die Spuren nicht? Ich lasse sie leuchten!',
     'Manche Wege schimmern nur im Licht der Sterne.',
+    'Ich mag die Nacht und das Funkeln am Himmel.',
   ],
   'companion.sniff': [
-    'Schnupper, schnupper … hier ist etwas versteckt!',
-    'Meine Nase verrät mir jedes Versteck.',
+    'Schnupper, schnupper … hier riecht es gut!',
+    'Meine Nase ist immer neugierig.',
   ],
+  'companion.near.beachcomb': 'Da drüben! Da liegt etwas Strandgut.',
+  'companion.near.climb': 'Da oben in einem Baum! Ich spüre etwas.',
+  'companion.near.glow': 'Da drüben ist ein dunkles Loch. Ich spüre etwas!',
+  'companion.near.clearsight': 'Da drüben im Dunst! Ich sehe einen Schatten.',
+  'companion.near.updraft': 'Da drüben im Wind! Ich spüre etwas.',
+  'companion.near.tinker': 'Da drüben klemmt etwas Rostiges! Ich spüre es.',
+  'companion.near.dive': 'Da drüben im Wasser! Ich spüre etwas.',
+  'companion.near.startrail': 'Da drüben glimmt eine Spur! Siehst du sie?',
+  'companion.near.sniff': 'Schnupper! Da drüben ist ein Versteck.',
+
+  // Verstecke (Lumara 1.2): A vor einem Versteck. Ein Hinweis je Gabe passt zu allen Feldern, auf
+  // denen Verstecke dieser Gabe liegen (js/data/hideouts.js), auch zur Luftspiegelung („Nur eine
+  // Luftspiegelung!“).
+  'hideout.hint.beachcomb': 'Hier steckt etwas Angespültes fest – ein Wesen, das Strandgut sucht, könnte es finden.',
+  'hideout.hint.climb': 'Hoch oben im Baum ist ein Nest – ein Wesen, das klettern kann, käme hin.',
+  'hideout.hint.glow': 'Hier ist ein dunkles Loch – ein Wesen, das leuchten kann, könnte hineinsehen.',
+  'hideout.hint.clearsight': 'Im Dunst ist ein Schatten – ein Wesen mit klarem Blick könnte ihn erkennen.',
+  'hideout.hint.updraft': 'Da drüben im Wind glänzt etwas – ein Wesen, das der Aufwind trägt, käme hin.',
+  'hideout.hint.tinker': 'Hier klemmt etwas Verrostetes – ein Wesen, das tüfteln kann, könnte es öffnen.',
+  'hideout.hint.dive': 'Tief unten im Wasser glitzert etwas – ein Wesen, das tauchen kann, käme hin.',
+  'hideout.hint.startrail': 'Hier ist eine Spur, die man kaum sieht – ein Wesen, das Spuren leuchten lässt, könnte helfen.',
+  'hideout.sniff': 'Schnupper! Hier braucht es die Gabe {gift}.',
+  'hideout.empty': 'Hier ist gerade nichts mehr. Später vielleicht wieder.',
+  'hideout.stays': 'Das Versteck bleibt zu. Versuch es gleich noch einmal!',
+  'hideout.found': 'Im Versteck findest du {item}!',
+  'hideout.foundTreat': 'Im Versteck findest du ein Leckerli!',
+  'hideout.foundTreasure': 'Im Versteck findest du einen Schatz: {name}!',
+  'hideout.foundFull': 'Im Versteck findest du {item}, aber dein Rucksack ist voll.',
 };

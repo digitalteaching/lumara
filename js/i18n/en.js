@@ -547,41 +547,71 @@ export const EN = {
   'befriend.shy': '{name} is still shy and runs away.',
   'befriend.left': '{name} watches you go.',
 
-  // Begleiter (Lumara 1.2): zwei Sätze je Gabe, wenn man A drückt und vor der Figur nichts ist
+  // Begleiter (Lumara 1.2): zwei Sätze je Gabe, wenn man A drückt und vor der Figur nichts ist. Sie
+  // versprechen nichts, denn sie kommen überall. Ist ein bereites Versteck seiner Gabe nah (die
+  // Spürnase: irgendeins), sagt er stattdessen companion.near.<Gabe>.
   'companion.beachcomb': [
-    'Something is shiny in the sand! Shall we dig?',
-    'Sometimes a bottle with a letter floats in.',
+    'I love the sea. It brings such pretty things.',
+    'I like looking for beach finds on the shore.',
   ],
   'companion.climb': [
-    'The best secrets live high up in the trees.',
-    'I can climb up anything with a branch!',
+    'High up in the trees is the best place.',
+    'I like branches, nests and fresh air.',
   ],
   'companion.glow': [
-    'Dark corners? Don’t worry, I make them bright!',
-    'Under the roots I shine best of all.',
+    'I shine most beautifully in the dark.',
+    'Don’t be afraid of the dark, I am with you.',
   ],
   'companion.clearsight': [
-    'Not every path is real. I can see which one is.',
-    'That shimmering air over there plays a little trick!',
+    'Not everything that shimmers is real.',
+    'I like to look very closely.',
   ],
   'companion.updraft': [
-    'Can you feel the wind? It wants to carry us up!',
+    'Can you feel the wind? I like it so much.',
     'From up high you can see over the clouds.',
   ],
   'companion.tinker': [
-    'Rusty boxes and gears? I can help with that!',
-    'Click, clack! Every lock has a secret.',
+    'Click, clack! I like locks and gears.',
+    'Rust doesn’t scare me. I like fixing things.',
   ],
   'companion.dive': [
-    'I can smell water! It is deep somewhere here.',
-    'Under water you see things nobody sees up here.',
+    'I love water, the deeper the better.',
+    'Under water it is quiet and beautiful.',
   ],
   'companion.startrail': [
-    'Can’t you see the tracks? I make them glow!',
     'Some paths only shine in the light of the stars.',
+    'I like the night and the sparkle in the sky.',
   ],
   'companion.sniff': [
-    'Sniff, sniff … something is hidden here!',
-    'My nose tells me where things are hidden.',
+    'Sniff, sniff … it smells nice here!',
+    'My nose is always curious.',
   ],
+  'companion.near.beachcomb': 'Over there! Something has washed up.',
+  'companion.near.climb': 'Up in a tree over there! I can feel something.',
+  'companion.near.glow': 'There is a dark hole over there. I can feel something!',
+  'companion.near.clearsight': 'Over there in the haze! I can see a shadow.',
+  'companion.near.updraft': 'Over there in the wind! I can feel something.',
+  'companion.near.tinker': 'Something rusty is stuck over there! I can feel it.',
+  'companion.near.dive': 'Over there in the water! I can feel something.',
+  'companion.near.startrail': 'A trail is glowing over there! Can you see it?',
+  'companion.near.sniff': 'Sniff! There is a hiding place over there.',
+
+  // Verstecke (Lumara 1.2): A vor einem Versteck. Ein Hinweis je Gabe passt zu allen Feldern, auf
+  // denen Verstecke dieser Gabe liegen (js/data/hideouts.js), auch zur Luftspiegelung („Nur eine
+  // Luftspiegelung!“).
+  'hideout.hint.beachcomb': 'Something washed up is stuck here – a creature that looks for beach finds could find it.',
+  'hideout.hint.climb': 'There is a nest high up in the tree – a creature that can climb could get there.',
+  'hideout.hint.glow': 'There is a dark hole here – a creature that can glow could look inside.',
+  'hideout.hint.clearsight': 'There is a shadow in the haze – a creature with clear sight could see what it is.',
+  'hideout.hint.updraft': 'Something shines over there in the wind – a creature the wind can carry could get there.',
+  'hideout.hint.tinker': 'Something rusty is stuck here – a creature that is good at fixing could open it.',
+  'hideout.hint.dive': 'Something glitters deep down in the water – a creature that can dive could get there.',
+  'hideout.hint.startrail': 'There is a trail here you can hardly see – a creature that makes tracks glow could help.',
+  'hideout.sniff': 'Sniff! This needs the gift {gift}.',
+  'hideout.empty': 'Nothing is here right now. Maybe later.',
+  'hideout.stays': 'The hiding place stays closed. Try again soon!',
+  'hideout.found': 'You find {item} in the hiding place!',
+  'hideout.foundTreat': 'You find a treat in the hiding place!',
+  'hideout.foundTreasure': 'You find a treasure in the hiding place: {name}!',
+  'hideout.foundFull': 'You find {item} in the hiding place, but your backpack is full.',
 };

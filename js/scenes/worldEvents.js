@@ -35,6 +35,7 @@ import { displayName, nameAtStage, evolutionLines, speciesName } from '../data/s
 import { playEvolution } from './evolution.js';
 import { addCompanion } from './companion.js';
 import { addGarden } from './gardenEvents.js';
+import { addHideouts } from './hideoutEvents.js';
 import { questFor, acceptQuest, advanceQuest, finishQuest, activePickups, activeGuests } from '../world/quests.js';
 import { questText } from '../data/quests.js';
 import { maxEnergy, stageForLevel } from '../duel/progress.js';
@@ -129,8 +130,8 @@ export function createGameWorld(game) {
     return { left: false };
   }
 
-  async function wildDuel() {
-    const setup = makeWildSetup(game, def.area, wildTableFor(def), starChance(star, player.x, player.y));
+  // Ohne setup ein Wesen aus dem hohen Gras; ein Wesen-Versteck bringt seinen eigenen Aufbau mit.
+  async function wildDuel(setup = makeWildSetup(game, def.area, wildTableFor(def), starChance(star, player.x, player.y))) {
     if (def.arena) setup.arena = def.arena; // eigene Arena, etwa die Höhle
     const report = await runDuel(setup, 'wild');
     await backToWorld(report);
@@ -915,6 +916,10 @@ export function createGameWorld(game) {
     world.onTick.splice(world.onTick.indexOf(firstCheck), 1);
     if (trainerSpotsPlayer()) world.lock(() => trainerDuel({ spotted: true }));
   });
+
+  // Verstecke (Lumara 1.2, Spec 6.5): Ihr A-Handler kommt an den Anfang; Duell und Level-Zeilen
+  // laufen über die Wege dieser Welt.
+  addHideouts(world, game, { wildDuel, levelUps });
 
   // Im Garten am Leuchtturm wohnen die Freunde, die nicht mitlaufen (Lumara 1.2). Vor dem Begleiter,
   // damit sein A-Handler der letzte bleibt.

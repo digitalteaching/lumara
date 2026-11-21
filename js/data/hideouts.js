@@ -49,7 +49,7 @@ export const HIDEOUTS = [
   { id: 'duenen-crest', map: 'duenen', x: 30, y: 1, gift: 'updraft', kind: 'find' }, // oben auf dem hohen Dünenkamm im Norden glänzt etwas in der Sonne
 
   // Gebiet 5: Windklippen
-  { id: 'klippen-chimes', map: 'klippen', x: 11, y: 5, gift: 'updraft', kind: 'creature' }, // zwischen Plattform und Felsnadel klingen im Wind kleine Glöckchen
+  { id: 'klippen-chimes', map: 'klippen', x: 11, y: 5, gift: 'updraft', kind: 'creature' }, // auf der Felsnadel direkt an der Plattform klingen im Wind kleine Glöckchen
   { id: 'klippen-ledge', map: 'klippen', x: 29, y: 14, gift: 'updraft', kind: 'find' }, // ein Sims über den Wolken, vor der Felsnadel am Gipfel
   { id: 'klippen-outcrop', map: 'klippen', x: 24, y: 25, gift: 'updraft', kind: 'find' }, // unter der Südkante ragt ein Felsvorsprung aus den Wolken
   { id: 'klippen-cloudbank', map: 'klippen', x: 3, y: 10, gift: 'clearsight', kind: 'find' }, // im Wolkenmeer am Eingang zeichnet sich ein Schatten ab

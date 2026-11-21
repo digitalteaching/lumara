@@ -549,41 +549,71 @@ export const FR = {
   'befriend.shy': '{name} est encore timide et s’en va.',
   'befriend.left': '{name} te regarde partir.',
 
-  // Begleiter (Lumara 1.2): zwei Sätze je Gabe, wenn man A drückt und vor der Figur nichts ist
+  // Begleiter (Lumara 1.2): zwei Sätze je Gabe, wenn man A drückt und vor der Figur nichts ist. Sie
+  // versprechen nichts, denn sie kommen überall. Ist ein bereites Versteck seiner Gabe nah (die
+  // Spürnase: irgendeins), sagt er stattdessen companion.near.<Gabe>.
   'companion.beachcomb': [
-    'Ça brille dans le sable ! On creuse ?',
-    'Parfois, une bouteille avec une lettre arrive ici.',
+    'J’aime la mer. Elle apporte de jolies choses.',
+    'J’aime chercher des trésors sur la plage.',
   ],
   'companion.climb': [
-    'Les plus beaux secrets sont en haut des arbres.',
-    'Je grimpe partout où il y a une branche !',
+    'Tout en haut des arbres, c’est le plus beau.',
+    'J’aime les branches, les nids et l’air frais.',
   ],
   'companion.glow': [
-    'Des coins sombres ? N’aie pas peur, je les éclaire !',
-    'Sous les racines, je brille encore plus fort.',
+    'Dans le noir, je brille encore plus fort.',
+    'N’aie pas peur du noir, je suis avec toi.',
   ],
   'companion.clearsight': [
-    'Tous les chemins ne sont pas vrais. Je vois le bon.',
-    'L’air qui tremble là-bas nous joue un tour !',
+    'Tout ce qui tremble dans l’air n’est pas vrai.',
+    'J’aime bien regarder de très près.',
   ],
   'companion.updraft': [
-    'Tu sens le vent ? Il veut nous porter en haut !',
+    'Tu sens le vent ? Je l’aime tellement.',
     'Tout en haut, on voit au-dessus des nuages.',
   ],
   'companion.tinker': [
-    'Des caisses rouillées, des engrenages ? Je t’aide !',
-    'Clic, clac ! Chaque serrure a un secret.',
+    'Clic, clac ! J’aime les serrures et les engrenages.',
+    'La rouille ne me fait pas peur. J’aime bricoler.',
   ],
   'companion.dive': [
-    'Je sens l’eau ! Quelque part ici, c’est profond.',
-    'Sous l’eau, on voit des choses que personne ne voit.',
+    'J’adore l’eau, plus c’est profond, mieux c’est.',
+    'Sous l’eau, tout est calme et beau.',
   ],
   'companion.startrail': [
-    'Tu ne vois pas les traces ? Je les fais briller !',
     'Certains chemins brillent seulement sous les étoiles.',
+    'J’aime la nuit et les étoiles qui brillent.',
   ],
   'companion.sniff': [
-    'Snif, snif … quelque chose est caché ici !',
-    'Mon nez sait où les choses sont cachées.',
+    'Snif, snif … ça sent bon ici !',
+    'Mon nez est toujours curieux.',
   ],
+  'companion.near.beachcomb': 'Là-bas ! La mer a apporté quelque chose.',
+  'companion.near.climb': 'Là-haut, dans un arbre ! Je sens quelque chose.',
+  'companion.near.glow': 'Là-bas, il y a un trou sombre. Je sens quelque chose !',
+  'companion.near.clearsight': 'Là-bas, dans la brume ! Je vois une ombre.',
+  'companion.near.updraft': 'Là-bas, dans le vent ! Je sens quelque chose.',
+  'companion.near.tinker': 'Là-bas, quelque chose de rouillé est coincé !',
+  'companion.near.dive': 'Là-bas, dans l’eau ! Je sens quelque chose.',
+  'companion.near.startrail': 'Une trace brille là-bas ! Tu la vois ?',
+  'companion.near.sniff': 'Snif ! Il y a une cachette là-bas.',
+
+  // Verstecke (Lumara 1.2): A vor einem Versteck. Ein Hinweis je Gabe passt zu allen Feldern, auf
+  // denen Verstecke dieser Gabe liegen (js/data/hideouts.js), auch zur Luftspiegelung („Nur eine
+  // Luftspiegelung!“).
+  'hideout.hint.beachcomb': 'Quelque chose apporté par la mer est coincé ici – une créature qui cherche des trésors pourrait le trouver.',
+  'hideout.hint.climb': 'Il y a un nid tout en haut de l’arbre – une créature qui sait grimper pourrait y arriver.',
+  'hideout.hint.glow': 'Il y a un trou sombre ici – une créature qui sait briller pourrait regarder dedans.',
+  'hideout.hint.clearsight': 'Il y a une ombre dans la brume – une créature à la vue claire pourrait voir ce que c’est.',
+  'hideout.hint.updraft': 'Quelque chose brille là-bas dans le vent – une créature portée par le vent pourrait y arriver.',
+  'hideout.hint.tinker': 'Quelque chose de rouillé est coincé ici – une créature qui sait bricoler pourrait l’ouvrir.',
+  'hideout.hint.dive': 'Quelque chose brille tout au fond de l’eau – une créature qui sait plonger pourrait y arriver.',
+  'hideout.hint.startrail': 'Il y a ici une trace qu’on voit à peine – une créature qui fait briller les traces pourrait aider.',
+  'hideout.sniff': 'Snif ! Ici, il faut le don {gift}.',
+  'hideout.empty': 'Il n’y a plus rien ici pour le moment. Peut-être plus tard.',
+  'hideout.stays': 'La cachette reste fermée. Réessaie bientôt !',
+  'hideout.found': 'Tu trouves {item} dans la cachette !',
+  'hideout.foundTreat': 'Tu trouves une friandise dans la cachette !',
+  'hideout.foundTreasure': 'Tu trouves un trésor dans la cachette : {name} !',
+  'hideout.foundFull': 'Tu trouves {item} dans la cachette, mais ton sac à dos est plein.',
 };
