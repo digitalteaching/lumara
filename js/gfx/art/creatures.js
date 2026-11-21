@@ -1312,6 +1312,31 @@ function sternhirsch() {
   return done(g);
 }
 
+// ---------- Die Verstecke (Plan 1.2b): vorläufige Bilder, Task 2 ersetzt sie ----------
+
+// VORLÄUFIG: ein runder Klecks in der Hauptfarbe des Wesens, mit Augen und einem eigenen Merkmal.
+function placeholder(tones, { rx = 9, ry = 8, extra = () => {} } = {}) {
+  const g = canvas(32);
+  extra(g);
+  ellipse(g, 16, 20, rx, ry, tones);
+  outline(g);
+  eye(g, 13, 17, 2, 2);
+  eye(g, 19, 17, 2, 2);
+  return done(g);
+}
+const earsAt = (g, tones, xs) => xs.forEach(x => ellipse(g, x, 9, 2.5, 4, tones));
+
+const HIDDEN_PLACEHOLDER = {
+  flaschling: placeholder(['w', 'A', 'L'], { rx: 6, ry: 9, extra: g => ellipse(g, 16, 8, 2.5, 3, ['w', 'A', 'L']) }),
+  wipfelwusel: placeholder(['G', 'g', 'l'], { extra: g => earsAt(g, ['G', 'g', 'l'], [9, 23]) }),
+  glimmwurz: placeholder(['H', 'h', 'r'], { rx: 7, ry: 7, extra: g => ellipse(g, 16, 8, 4, 3, ['c', 'Y', 'y']) }),
+  spiegelechse: placeholder(['c', 'Y', 'y'], { rx: 11, ry: 6 }),
+  klingfeder: placeholder(['V', 'v', 'P'], { rx: 8, ry: 8, extra: g => earsAt(g, ['w', 'A', 'L'], [14, 18]) }),
+  rostbold: placeholder(['R', 'p', 's'], { rx: 8, ry: 9 }),
+  eisflosse: placeholder(['w', 'A', 'L'], { rx: 11, ry: 7, extra: g => ellipse(g, 16, 9, 3, 4, ['c', 'Y', 'y']) }),
+  kometwiesel: placeholder(['H', 'h', 'r'], { rx: 10, ry: 6, extra: g => earsAt(g, ['w', 'A', 'L'], [10, 22]) }),
+};
+
 export const CREATURE_ART = {
   tupfling: { 1: tupfling(), 2: schirmling() },
   irrfunke: { 1: irrfunke() },
@@ -1351,6 +1376,7 @@ export const CREATURE_ART = {
   echomaus: { 1: echomaus() },
   kristallraupe: { 1: kristallraupe() },
   morrow: { 1: morrow1(), 2: morrow2(), 3: morrow3() },
+  ...Object.fromEntries(Object.entries(HIDDEN_PLACEHOLDER).map(([id, rows]) => [id, { 1: rows }])),
 };
 
 // Höchste vorhandene Stufe ≤ der gewünschten: Wilde Arten haben ein oder zwei Stufen.

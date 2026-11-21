@@ -14,7 +14,7 @@ const shape = r => r.map(x => x.replace(/[^.]/g, '#')).join('/');
 
 test('Das Buch ist voll: Plätze 31 bis 33 für die Höhle und Morrow', () => {
   assert.equal(BOOK_SLOTS.length, BOOK_SIZE);
-  assert.deepEqual(BOOK_SLOTS.slice(30), ['echomaus', 'kristallraupe', 'morrow']);
+  assert.deepEqual(BOOK_SLOTS.slice(30, 33), ['echomaus', 'kristallraupe', 'morrow']);
   assert.ok(BOOK_SLOTS.every(Boolean), 'keine leeren Plätze mehr');
   assert.deepEqual([CAVE_SPECIES, BOSS_SPECIES], [['echomaus', 'kristallraupe'], ['morrow']]);
   const s = newGameState({ name: 'A', species: 'nixi', nickname: null });

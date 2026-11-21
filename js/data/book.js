@@ -1,22 +1,23 @@
-// Das Wesen-Buch (Design 6.4): 33 Einträge. Ein Eintrag ist „gesehen“ nach der ersten Begegnung
+// Das Wesen-Buch (Design 6.4): 41 Einträge. Ein Eintrag ist „gesehen“ nach der ersten Begegnung
 // (Silhouette und Fundort) und „besiegt“ nach dem ersten Sieg (Bild in Farbe und Beschreibung).
 // Eine gesehene Glanzform bekommt einen Stern. Das Buch gehört dem Kind (Design 10.4). DOM-frei.
 
-import { AREA_WILD, SECRET_SPECIES, CAVE_SPECIES, BOSS_SPECIES, speciesText } from './species.js';
+import { AREA_WILD, SECRET_SPECIES, CAVE_SPECIES, BOSS_SPECIES, HIDDEN_SPECIES, speciesText } from './species.js';
 import { MAPS, mapOfArea, areaName } from '../world/network.js';
 import { t } from '../i18n/i18n.js';
 import { SPECIES } from './species.js';
 
-export const BOOK_SIZE = 33;
+export const BOOK_SIZE = 41;
 
 // Nummer = Platz + 1. 1–24: wilde Arten nach Gebiet (häufig, häufig, selten). 25–30: die seltenen
-// Arten der geheimen Orte (Plan 4c, 4d). 31–32: die Arten der Höhle, 33: Morrow (Finale).
+// Arten der geheimen Orte (Plan 4c, 4d). 31–32: die Arten der Höhle, 33: Morrow (Finale), 34–41: die Wesen der Verstecke.
 export const BOOK_SLOTS = [
   ...[1, 2, 3, 4, 5, 6, 7, 8].flatMap(a => [...AREA_WILD[a].common, AREA_WILD[a].rare]),
   ...SECRET_SPECIES,
   ...CAVE_SPECIES,
   ...BOSS_SPECIES,
-  ...Array(Math.max(0, BOOK_SIZE - 24 - SECRET_SPECIES.length - CAVE_SPECIES.length - BOSS_SPECIES.length)).fill(null),
+  ...HIDDEN_SPECIES,
+  ...Array(Math.max(0, BOOK_SIZE - 24 - SECRET_SPECIES.length - CAVE_SPECIES.length - BOSS_SPECIES.length - HIDDEN_SPECIES.length)).fill(null),
 ];
 const IN_BOOK = new Set(BOOK_SLOTS.filter(Boolean));
 

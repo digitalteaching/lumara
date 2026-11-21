@@ -79,4 +79,12 @@ export const EN_SPECIES = {
   zeitschnecke: { names: ['Clocksnail'], description: 'A snail with a shell like clockwork. It is slow, but it is never late.' },
   kristallotter: { names: ['Crystalotter'], description: 'An otter with fur like frost. Little ice crystals grow on its back and sparkle in the northern lights.' },
   irrlichtfee: { names: ['Wispfairy'], description: 'A tiny fairy made of light. It dances over the marsh and shows everyone who is lost the way home.' },
+  flaschling: { names: ['Bottlet'], description: 'A little creature that lives in bottles washed up on the beach. It collects the letters inside.' },
+  wipfelwusel: { names: ['Canopip'], description: 'A tiny creature from the treetops. Its ears are two green leaves.' },
+  glimmwurz: { names: ['Lanternroot'], description: 'A root with a flower like a lantern. It lives in the dark root tunnels.' },
+  spiegelechse: { names: ['Miragecko'], description: 'A lizard you can only see when you look through a mirage. Otherwise it is invisible.' },
+  klingfeder: { names: ['Jinglefeather'], description: 'A bird made of feathers and tiny bells. It builds its nest on a tall rock needle.' },
+  rostbold: { names: ['Rustimp'], description: 'A little goblin that lives in rusty crates. It collects screws and counts them every evening.' },
+  eisflosse: { names: ['Frostlamp'], description: 'A fish with a fin like a lantern. It swims quietly under the ice.' },
+  kometwiesel: { names: ['Cometweasel'], description: 'A quick weasel that leaves glowing paw prints when it runs.' },
 };

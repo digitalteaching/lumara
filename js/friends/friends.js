@@ -8,7 +8,7 @@ import { t } from '../i18n/i18n.js';
 export const FRIEND_KINDS = new Set(['wild', 'secret', 'cave', 'hidden']);
 export const FRIENDABLE = BOOK_SLOTS.filter(id => id && FRIEND_KINDS.has(SPECIES[id].kind));
 export const GIFTS = ['beachcomb', 'climb', 'glow', 'clearsight', 'updraft', 'tinker', 'dive', 'startrail', 'sniff'];
-export const WATER_FRIENDS = new Set(['gischtling', 'haeuschel', 'glimmqualle', 'nebelunke', 'frostrobbe', 'perlkrabbe', 'kristallotter']);
+export const WATER_FRIENDS = new Set(['gischtling', 'haeuschel', 'glimmqualle', 'nebelunke', 'frostrobbe', 'perlkrabbe', 'kristallotter', 'flaschling', 'eisflosse']);
 
 export function giftOf(speciesId) {
   if (!FRIENDABLE.includes(speciesId)) return null;

@@ -8,8 +8,9 @@ import { setLanguage, LANGUAGES } from '../js/i18n/i18n.js';
 const s0 = () => newGameState({ name: 'Test', species: 'funki' });
 const wild = (species, shiny = false) => ({ kind: 'wild', foe: { species, shiny } });
 
-test('32 befreundbare Arten: wilde, geheime Orte, Höhle; nie Startwesen oder Morrow', () => {
-  assert.equal(FRIENDABLE.length, 32);
+test('40 befreundbare Arten: wilde, geheime Orte, Höhle, Verstecke; nie Startwesen oder Morrow', () => {
+  assert.equal(FRIENDABLE.length, 40);
+  assert.equal(giftOf('rostbold'), 'tinker');
   for (const id of ['gischtling', 'wurzelgeist', 'echomaus']) assert.ok(FRIENDABLE.includes(id), id);
   assert.ok(!FRIENDABLE.includes('funki'));
   assert.ok(!FRIENDABLE.includes('morrow'));

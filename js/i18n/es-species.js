@@ -85,4 +85,12 @@ export const ES_SPECIES = {
   zeitschnecke: { names: ['Caracol Reloj'], gender: 'm', description: 'Un caracol con una concha que parece un reloj. Es lento, pero nunca llega tarde.' },
   kristallotter: { names: ['Nutria Cristal'], gender: 'f', description: 'Una nutria con el pelo blanco como el hielo. En la espalda le crecen pequeños cristales de hielo que brillan con la aurora boreal.' },
   irrlichtfee: { names: ['Hadita de Luz'], gender: 'f', description: 'Un hada muy pequeña, hecha de luz. Baila sobre el pantano y enseña el camino a casa a todos los que se han perdido.' },
+  flaschling: { names: ['Botellín'], gender: 'm', description: 'Una criatura pequeña que vive en botellas que llegan a la playa. Colecciona las cartas que hay dentro.' },
+  wipfelwusel: { names: ['Hojarín'], gender: 'm', description: 'Una criatura diminuta de las copas de los árboles. Sus orejas son dos hojas verdes.' },
+  glimmwurz: { names: ['Raíz Farol'], gender: 'f', description: 'Una raíz con una flor como un farol. Vive en los túneles oscuros de las raíces.' },
+  spiegelechse: { names: ['Lagarto Espejo'], gender: 'm', description: 'Un lagarto que solo se ve si miras a través de un espejismo. Si no, es invisible.' },
+  klingfeder: { names: ['Pluma Cascabel'], gender: 'f', description: 'Un pájaro hecho de plumas y cascabeles pequeños. Construye su nido en una aguja de roca muy alta.' },
+  rostbold: { names: ['Duende Óxido'], gender: 'm', description: 'Un duendecillo que vive en cajas oxidadas. Colecciona tornillos y los cuenta cada noche.' },
+  eisflosse: { names: ['Pez Escarcha'], gender: 'm', description: 'Un pez con una aleta como un farol. Nada tranquilo bajo el hielo.' },
+  kometwiesel: { names: ['Comadreja Cometa'], gender: 'f', description: 'Una comadreja rápida que deja huellas brillantes cuando corre.' },
 };

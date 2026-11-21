@@ -1,8 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { SPECIES, STARTERS, AREA_WILD, TRAINER_CREATURES, displayName, speciesName, wildName } from '../js/data/species.js';
+import { SPECIES, STARTERS, AREA_WILD, HIDDEN_SPECIES, TRAINER_CREATURES, displayName, speciesName, wildName } from '../js/data/species.js';
 import { creatureRows } from '../js/gfx/art/creatures.js';
 import { EN_SPECIES } from '../js/i18n/en-species.js';
+import { FR_SPECIES } from '../js/i18n/fr-species.js';
+import { ES_SPECIES } from '../js/i18n/es-species.js';
 import { setLanguage, t } from '../js/i18n/i18n.js';
 import { speciesText } from '../js/data/species.js';
 
@@ -105,4 +107,23 @@ test('Namen und Sätze mit Wesen auf Englisch', () => {
   }
   assert.equal(speciesName('kiesel', 4), 'Bergherz');
   assert.equal(wildName('eichhuscher', 1, 'a'), 'Ein wilder Eichhuscher');
+});
+
+test('Neue Wesen: eine Stufe, Gebiet, selten, eigene Namen in jeder Sprache', () => {
+  assert.equal(HIDDEN_SPECIES.length, 8);
+  HIDDEN_SPECIES.forEach((id, i) => {
+    const sp = SPECIES[id];
+    assert.equal(sp.kind, 'hidden', id);
+    assert.equal(sp.area, i + 1, id);
+    assert.equal(sp.rarity, 'rare', id);
+    assert.equal(sp.names.length, 1, id);
+    assert.ok(sp.description.length > 20, id);
+    assert.equal(creatureRows(id, 1).length, 32, id);
+    assert.equal(creatureRows(id, 4), creatureRows(id, 1), `${id}: nur eine Stufe`);
+    for (const [lang, L] of [['en', EN_SPECIES], ['fr', FR_SPECIES], ['es', ES_SPECIES]]) {
+      const e = L[id];
+      assert.ok(e && e.names.length === 1 && e.names[0] !== sp.names[0] && e.description.length > 20, `${lang} ${id}`);
+      if (lang !== 'en') assert.ok(['m', 'f'].includes(e.gender), `${lang} ${id}`);
+    }
+  });
 });

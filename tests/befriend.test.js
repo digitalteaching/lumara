@@ -350,3 +350,15 @@ test('Ring: zieht aus dem Deck des Duells, eben gestellte Fragen kommen nicht gl
   for (const k of ring.asked) assert.ok(!duelKeys.includes(k), `${k} kam eben erst im Duell`);
   assert.equal(new Set([...duelKeys, ...ring.asked]).size, QUESTIONS.length);
 });
+
+test('Entwickler-Schalter &leckerli=n: nur auf localhost, setzt den Vorrat im Rucksack', () => {
+  const main = src('js/main.js');
+  assert.match(main, /const isLocal = \['localhost', '127\.0\.0\.1'\]\.includes\(location\.hostname\)/);
+  const fn = main.match(/function devTreats\(state\) \{[\s\S]*?\n\}/)[0];
+  assert.match(fn, /params\.get\('leckerli'\)/);
+  assert.match(fn, /state\.bag\.treat = n/);
+  // erreichbar nur über die Zweige mit isLocal
+  assert.match(main, /else if \(isLocal && params\.has\('dev'\)\) devStart\(\)/);
+  assert.match(main, /else if \(isLocal && params\.has\('duell'\)\) devDuel/);
+  assert.doesNotMatch(fn, /save|store/);
+});

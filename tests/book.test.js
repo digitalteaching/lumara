@@ -1,17 +1,19 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { BOOK_SIZE, BOOK_SLOTS, recordSighting, bookView, bookLabels } from '../js/data/book.js';
-import { AREA_WILD, SPECIES } from '../js/data/species.js';
+import { AREA_WILD, SPECIES, HIDDEN_SPECIES } from '../js/data/species.js';
 import { newGameState } from '../js/state.js';
 import { setLanguage, t } from '../js/i18n/i18n.js';
 import { MENU_ITEMS } from '../js/menu/items.js';
 
-test('Das Buch hat 33 Plätze: 1 bis 24 die wilden Arten nach Gebiet, 25 bis 33 kommen später', () => {
-  assert.equal(BOOK_SIZE, 33);
-  assert.equal(BOOK_SLOTS.length, 33);
+test('Das Buch hat 41 Plätze: 34 bis 41 die Wesen der Verstecke', () => {
+  assert.equal(BOOK_SIZE, 41);
+  assert.equal(BOOK_SLOTS.length, 41);
+  assert.equal(BOOK_SLOTS[32], 'morrow');
+  assert.deepEqual(BOOK_SLOTS.slice(33), HIDDEN_SPECIES);
   assert.deepEqual(BOOK_SLOTS.slice(0, 24), [1, 2, 3, 4, 5, 6, 7, 8].flatMap(a => [...AREA_WILD[a].common, AREA_WILD[a].rare]));
   assert.deepEqual(BOOK_SLOTS.slice(24, 30), ['wurzelgeist', 'prismalibelle', 'perlkrabbe', 'irrlichtfee', 'kristallotter', 'zeitschnecke']); // geheime Orte ab Platz 25
-  assert.deepEqual(BOOK_SLOTS.slice(30), ['echomaus', 'kristallraupe', 'morrow']);
+  assert.deepEqual(BOOK_SLOTS.slice(30, 33), ['echomaus', 'kristallraupe', 'morrow']);
 });
 
 test('Eintragen: erst gesehen, dann besiegt und Glanz, nichts wird zurückgenommen', () => {
@@ -30,7 +32,7 @@ test('Eintragen: erst gesehen, dann besiegt und Glanz, nichts wird zurückgenomm
 test('Ansicht: Zähler, Zustand, und Name, Fundort, Beschreibung erst, wenn man sie kennt', () => {
   const s = { ...newGameState({ name: 'A', species: 'nixi', nickname: null }), book: { gischtling: { beaten: true, shiny: false }, rindenwicht: { beaten: false, shiny: true } } };
   const v = bookView(s);
-  assert.deepEqual([v.total, v.seen, v.beaten], [33, 2, 1]);
+  assert.deepEqual([v.total, v.seen, v.beaten], [41, 2, 1]);
   assert.deepEqual(v.entries[0], { number: 1, id: 'gischtling', status: 'beaten', shiny: false, friend: false, name: 'Gischtling', place: 'Leuchtturmbucht', description: SPECIES.gischtling.description });
   assert.deepEqual(v.entries[5], { number: 6, id: 'rindenwicht', status: 'seen', shiny: true, friend: false, name: 'Rindenwicht', place: 'Flüsterwald', description: null });
   assert.deepEqual(v.entries[1], { number: 2, id: 'haeuschel', status: 'unknown', shiny: false, friend: false, name: null, place: null, description: null });

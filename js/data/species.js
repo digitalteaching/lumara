@@ -362,6 +362,78 @@ export const SPECIES = {
     names: ['Kristallraupe'],
     description: 'Eine Raupe, deren Rücken aus bunten Kristallen besteht. Sie frisst nur Steine, die im Dunkeln leuchten.',
   },
+  flaschling: {
+    id: 'flaschling',
+    kind: 'hidden',
+    gender: 'm',
+    area: 1,
+    rarity: 'rare',
+    names: ['Flaschling'],
+    description: 'Ein kleines Wesen, das in angespülten Flaschen wohnt. Es sammelt die Briefe, die darin schwimmen.',
+  },
+  wipfelwusel: {
+    id: 'wipfelwusel',
+    kind: 'hidden',
+    gender: 'm',
+    area: 2,
+    rarity: 'rare',
+    names: ['Wipfelwusel'],
+    description: 'Ein winziges Wesen aus den Baumkronen. Seine Ohren sind zwei grüne Blätter.',
+  },
+  glimmwurz: {
+    id: 'glimmwurz',
+    kind: 'hidden',
+    gender: 'f',
+    area: 3,
+    rarity: 'rare',
+    names: ['Glimmwurz'],
+    description: 'Eine Wurzel mit einer Blüte wie eine Laterne. Sie wohnt in den dunklen Wurzelgängen.',
+  },
+  spiegelechse: {
+    id: 'spiegelechse',
+    kind: 'hidden',
+    gender: 'f',
+    area: 4,
+    rarity: 'rare',
+    names: ['Spiegelechse'],
+    description: 'Eine Echse, die man nur sieht, wenn man durch eine Luftspiegelung schaut. Sonst ist sie unsichtbar.',
+  },
+  klingfeder: {
+    id: 'klingfeder',
+    kind: 'hidden',
+    gender: 'f',
+    area: 5,
+    rarity: 'rare',
+    names: ['Klingfeder'],
+    description: 'Ein Vogel aus Federn und kleinen Glöckchen. Er baut sein Nest auf einer hohen Felsnadel.',
+  },
+  rostbold: {
+    id: 'rostbold',
+    kind: 'hidden',
+    gender: 'm',
+    area: 6,
+    rarity: 'rare',
+    names: ['Rostbold'],
+    description: 'Ein kleiner Kobold, der in rostigen Kisten wohnt. Er sammelt Schrauben und zählt sie jeden Abend.',
+  },
+  eisflosse: {
+    id: 'eisflosse',
+    kind: 'hidden',
+    gender: 'f',
+    area: 7,
+    rarity: 'rare',
+    names: ['Eisflosse'],
+    description: 'Ein Fisch mit einer Flosse wie eine Laterne. Er schwimmt still unter dem Eis.',
+  },
+  kometwiesel: {
+    id: 'kometwiesel',
+    kind: 'hidden',
+    gender: 'n',
+    area: 8,
+    rarity: 'rare',
+    names: ['Kometwiesel'],
+    description: 'Ein flinkes Wiesel, das beim Laufen leuchtende Pfotenspuren hinterlässt.',
+  },
   morrow: {
     id: 'morrow',
     kind: 'boss',
@@ -379,6 +451,8 @@ export const SECRET_SPECIES = ['wurzelgeist', 'prismalibelle', 'perlkrabbe', 'ir
 // Die Höhle im Berg (Plan 5a): zwei eigene Arten, dazu Morrow, der Endgegner.
 export const CAVE_SPECIES = ['echomaus', 'kristallraupe'];
 export const BOSS_SPECIES = ['morrow'];
+// Die Wesen der Verstecke (Plan 1.2b): je Gebiet eines, Buchplätze 34 bis 41 (Index + 1 = Gebiet).
+export const HIDDEN_SPECIES = ['flaschling', 'wipfelwusel', 'glimmwurz', 'spiegelechse', 'klingfeder', 'rostbold', 'eisflosse', 'kometwiesel'];
 
 export const AREA_WILD = {
   1: { common: ['gischtling', 'haeuschel'], rare: 'glimmqualle' },

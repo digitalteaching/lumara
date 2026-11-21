@@ -198,8 +198,8 @@ test('Französisch: vor : ; ? ! steht nie ein normales Leerzeichen, sondern ein 
   const L = FOREIGN.fr;
   const all = [L.ui, L.species, L.world, L.story, L.secret, L.quests].flatMap(strings);
   assert.ok(all.length > 1000, `${all.length} Texte`);
-  assert.deepEqual(all.filter(s => / [:;?!]/.test(s)), []);
-  assert.ok(all.some(s => / [:;?!]/.test(s)), 'geschützte Leerzeichen gibt es');
+  assert.deepEqual(all.filter(s => /[ ][:;?!]/.test(s)), []); // kein normales Leerzeichen davor
+  assert.ok(all.some(s => /\u00a0[:;?!]/.test(s)), 'geschützte Leerzeichen gibt es');
 });
 
 test('Zahlen im Satz: Bei 1 steht keine Mehrzahl (Karte, Tasche)', () => {
