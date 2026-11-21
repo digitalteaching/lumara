@@ -45,7 +45,8 @@ export function takeTreasure(state, id) {
   return true;
 }
 
-// Immer ein häufiger Schatz des Gebiets; die seltenen kommen von Fundstellen und Zetteln.
+// Immer ein häufiger Schatz des Gebiets. Die seltenen gibt es erst ab 1.2 (Spielaufgaben, selten in
+// Verstecken, Spec 5.2); in 1.1 stehen sie als „?“ im Album.
 export function rollTreasure(area, rng) {
   const { common } = AREA_TREASURES[area];
   return common[Math.min(common.length - 1, Math.floor(rng.next() * common.length))];

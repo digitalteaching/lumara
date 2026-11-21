@@ -101,7 +101,7 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
 - **1.0.2**, ohne Copyright-Hinweis: Die Hinweise mit Namen sind aus den Seiten, dem README, dem PDF und den Plänen entfernt. Ein Test sorgt dafür, dass keiner zurückkommt.
 - **1.1**, Rucksack und Schätze:
   - Der Rucksack klappt direkt im Spiel auf, nur beim Laufen. Er zeigt Futter, Steine, Schlüsselgegenstände und das Schatz-Album mit 24 Schätzen; man kann füttern, Glanzsteine einsetzen und Schätze ansehen. Antippen daneben schließt ihn. Bei „Bewegung reduzieren“ gibt es keine Klappen- und Flug-Animation.
-  - Schätze findet man auf drei Wegen: beim Pflücken an Sträuchern (etwa jedes dritte Mal), unter Zetteln, die sonst nichts bringen (etwa jeder achte), und als seltene Beute wilder Wesen (jedes zehnte Mal). Die Zahlen stehen in `js/config.js` unter `treasures`.
+  - Schätze findet man auf drei Wegen: an Glitzerstellen im Gras (etwa jedes dritte Mal statt eines Steins), unter Zetteln, die sonst nichts bringen (etwa jeder achte), und als seltene Beute wilder Wesen (jedes zehnte Mal). Die Zahlen stehen in `js/config.js` unter `treasures`.
   - Alle Schätze haben in allen vier Spielsprachen eigene, kindgerechte Namen und ein selbst gezeichnetes Bild. Alte Spielstände laden weiter: Format 9 ergänzt das Album leer, es zeigt 0 von 24.
 
 - Design: [docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md](docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md)
