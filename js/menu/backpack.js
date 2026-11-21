@@ -168,7 +168,8 @@ export function openBackpack(game) {
         card.append(el('p', { class: 'bp-hint' }, t('bag.pick')));
         return;
       }
-      const place = entry.kind === 'treasure' ? mapOfArea(AREA_OF[entry.id]) : null;
+      // Fundort nur bei schon gefundenen Schätzen (seltene gibt es in 1.1 noch nirgends).
+      const place = entry.kind === 'treasure' && entry.known ? mapOfArea(AREA_OF[entry.id]) : null;
       // appendAll: Schätze und Schlüssel haben keine Handlung (null fiele sonst als Text „null“ hinein).
       appendAll(card,
         picture(entry.id, !entry.known, 'bp-card-img'),
