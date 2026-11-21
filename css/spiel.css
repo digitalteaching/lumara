@@ -784,8 +784,9 @@ body:not([data-mode="walk"]) .menu-btn, body:not([data-mode="walk"]) .bag-btn { 
   gap: 6px;
   padding: 4px;
   margin: -4px;
+  /* Ohne overscroll-behavior: Ein Fach, das nichts zu scrollen hat, gibt das Wischen an den Rucksack weiter
+     (auf schmalen Bildschirmen scrollt sonst nichts, wenn der Finger auf Futter, Steinen oder Schlüsseln liegt). */
   overflow-y: auto;
-  overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
 .bp-note { margin: 0; }
