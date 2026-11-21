@@ -17,8 +17,9 @@ import { MAPS as WORLD_MAPS } from '../world/network.js';
 import { validateName, emptyPackProgress, emptyWorld } from '../state.js';
 import { emptyBag, BAG_ITEMS } from '../items/bag.js';
 import { TREASURES, isTreasure } from '../items/treasures.js';
+import { FRIENDABLE } from '../friends/friends.js';
 
-export const CURRENT_VERSION = 9;
+export const CURRENT_VERSION = 10;
 
 const MIGRATIONS = {
   // 1 → 2 (Plan 3a): Leuchtsteine, Rucksack, Geschichte, Uhren für das Nachwachsen, gesamte Spielzeit.
@@ -47,6 +48,17 @@ const MIGRATIONS = {
   7: s => ({ ...s, version: 8 }),
   // 8 → 9 (Lumara 1.1): Schätze im Rucksack und das Album, beides zunächst leer.
   8: s => ({ ...s, version: 9, treasures: {}, album: [] }),
+  // 9 → 10 (Lumara 1.2): Freunde, Begleiter, gelöste Spielaufgaben, Leckerli im Rucksack, Verstecke.
+  // Rucksack und Welt kommen unverändert mit; ist eines kaputt, baut die Reparatur es neu auf.
+  9: s => ({
+    ...s,
+    version: 10,
+    friends: {},
+    companion: null,
+    tasks: [],
+    bag: { ...(isObject(s.bag) ? s.bag : {}), treat: 0 },
+    world: { ...(isObject(s.world) ? s.world : {}), hideouts: {} },
+  }),
 };
 
 const MAPS = WORLD_MAPS;
@@ -221,6 +233,20 @@ function repairAlbum(raw, treasures) {
   return TREASURES.map(x => x.id).filter(id => seen.has(id) || id in treasures);
 }
 
+// Nur Arten, die man befreunden kann; shiny ist wahr nur bei genau true.
+const FRIEND_IDS = new Set(FRIENDABLE);
+function repairFriends(raw) {
+  const out = {};
+  if (!isObject(raw)) return out;
+  for (const [id, e] of Object.entries(raw)) if (FRIEND_IDS.has(id) && isObject(e)) out[id] = { shiny: e.shiny === true };
+  return out;
+}
+
+// Der Begleiter muss ein Freund sein, sonst läuft keiner mit.
+const repairCompanion = (raw, friends) => (typeof raw === 'string' && Object.hasOwn(friends, raw) ? raw : null);
+
+const repairTasks = raw => (Array.isArray(raw) ? [...new Set(raw.filter(n => isInt(n) && n >= 1 && n <= 8))].sort((a, b) => a - b) : []);
+
 const WORLD_KEY = /^[a-z]+:\d+,\d+$/;
 function repairWorld(raw) {
   const out = emptyWorld();
@@ -251,6 +277,7 @@ export function migrateState(raw) {
   const stones = repairStones([...(Array.isArray(s.stones) ? s.stones : []), ...beaten]);
 
   const treasures = repairTreasures(s.treasures);
+  const friends = repairFriends(s.friends);
 
   return {
     ok: true,
@@ -280,6 +307,9 @@ export function migrateState(raw) {
       finale: { done: s.finale?.done === true },
       treasures,
       album: repairAlbum(s.album, treasures),
+      friends,
+      companion: repairCompanion(s.companion, friends),
+      tasks: repairTasks(s.tasks),
     },
   };
 }

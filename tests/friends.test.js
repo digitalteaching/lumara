@@ -39,7 +39,7 @@ test('Abgebrochen heißt nicht befreundet: Das Angebot kommt wieder', () => {
   const s = s0();
   const a = befriendOffer(s, wild('moosling'), 'won');
   assert.deepEqual(befriendOffer(s, wild('moosling'), 'won'), a);
-  assert.equal(s.friends, undefined);
+  assert.deepEqual(s.friends, {});
 });
 
 test('Glanz eines Begleiters: Er bleibt Begleiter und glänzt', () => {

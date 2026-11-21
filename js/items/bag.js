@@ -5,7 +5,7 @@ import { CONFIG } from '../config.js';
 import { hasKey } from './keys.js';
 
 export const FOOD = ['berry', 'starfruit'];
-export const BAG_ITEMS = ['berry', 'starfruit', 'farsight', 'shine', 'time'];
+export const BAG_ITEMS = ['berry', 'starfruit', 'farsight', 'shine', 'time', 'treat'];
 
 export const foodCount = bag => FOOD.reduce((n, k) => n + (bag[k] ?? 0), 0);
 
@@ -13,7 +13,7 @@ export const foodCount = bag => FOOD.reduce((n, k) => n + (bag[k] ?? 0), 0);
 export const foodMax = state => (hasKey(state, 'foodbag') ? CONFIG.bag.foodMaxBag : CONFIG.bag.foodMax);
 
 export function emptyBag() {
-  return { berry: 0, starfruit: 0, farsight: 0, shine: 0, time: 0 };
+  return { berry: 0, starfruit: 0, farsight: 0, shine: 0, time: 0, treat: 0 };
 }
 
 // Gibt zurück, wie viele wirklich dazukamen.

@@ -56,7 +56,7 @@ test('erkennt falsche Dateien', () => {
   assert.deepEqual(parseBackupText(''), { ok: false, reason: 'unknown' });
   assert.deepEqual(parseBackupText('LUMARA-SICHERUNG 2\nabc'), { ok: false, reason: 'newer' });
   assert.deepEqual(parseBackupText(head + 'kaputt'), { ok: false, reason: 'damaged' });
-  assert.deepEqual(parseBackupText(head + encodeSave({ state: { ...state, version: 10 }, pack: PACK })), { ok: false, reason: 'newer' });
+  assert.deepEqual(parseBackupText(head + encodeSave({ state: { ...state, version: 11 }, pack: PACK })), { ok: false, reason: 'newer' });
   assert.deepEqual(parseBackupText(head + encodeSave({ state: { version: 1 }, pack: PACK })), { ok: false, reason: 'damaged' });
   assert.deepEqual(parseBackupText(head + encodeSave({ state, pack: 42 })), { ok: false, reason: 'damaged' });
 });

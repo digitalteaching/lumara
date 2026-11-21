@@ -21,37 +21,42 @@ import { SPIELSTAND_V8 } from './fixtures/spielstand-v8.js';
 // Format 9: Schätze und Album, ältere Stände bekommen beides leer.
 const toV9 = s => ({ ...toV8(s), version: 9, treasures: {}, album: [] });
 import { SPIELSTAND_V9 } from './fixtures/spielstand-v9.js';
-const v7 = s => toV9({ ...s, version: 7, packs: Object.fromEntries(Object.entries(s.packs).map(([id, p]) => [id, { ...p, tiers: {} }])) });
+// Format 10: Freunde, Begleiter, Aufgaben, Leckerli und Verstecke, ältere Stände bekommen alles leer.
+const v9to10 = s => ({ ...s, version: 10, friends: {}, companion: null, tasks: [], bag: { ...s.bag, treat: 0 }, world: { ...s.world, hideouts: {} } });
+const toV10 = s => v9to10(toV9(s));
+import { SPIELSTAND_V10 } from './fixtures/spielstand-v10.js';
+const v7 = s => toV10({ ...s, version: 7, packs: Object.fromEntries(Object.entries(s.packs).map(([id, p]) => [id, { ...p, tiers: {} }])) });
 import { SPIELSTAND_V6 } from './fixtures/spielstand-v6.js';
 import { TRAINER_CREATURES } from '../js/data/species.js';
 const bookOf = stones => Object.fromEntries(stones.map(n => [TRAINER_CREATURES[n].species, { beaten: true, shiny: false }]));
 import { foodCount } from '../js/items/bag.js';
 import { createMap } from '../js/world/map.js';
 
-test('Spielstand der Fassung 1 bleibt für immer ladbar und wird zu Format 9', () => {
+test('Spielstand der Fassung 1 bleibt für immer ladbar und wird zu Format 10', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v1.txt', import.meta.url), 'utf8'));
   assert.equal(d.ok, true);
   const m = migrateState(d.value);
   assert.equal(m.ok, true);
-  assert.equal(m.state.version, 9);
-  const { version, playMs, stones, lastStone, bag, shineActive, story, world, book, quests, keys, secrets, finale, treasures, album, ...rest } = m.state;
+  assert.equal(m.state.version, 10);
+  const { version, playMs, stones, lastStone, bag, shineActive, story, world, book, quests, keys, secrets, finale, treasures, album, friends, companion, tasks, ...rest } = m.state;
   assert.deepEqual({ quests, keys, secrets }, V5_EMPTY);
   assert.deepEqual(finale, { done: false });
   assert.deepEqual({ treasures, album }, { treasures: {}, album: [] });
+  assert.deepEqual({ friends, companion, tasks }, { friends: {}, companion: null, tasks: [] });
   assert.deepEqual(book, { haeuschel: { beaten: true, shiny: false } }); // Maren war besiegt
   const { version: _v, ...v1 } = SPIELSTAND_V1;
-  const { version: _w, treasures: _t, album: _a, ...v1Latest } = v7(v1);
+  const { version: _w, treasures: _t, album: _a, friends: _f, companion: _c, tasks: _k, bag: _b, world: _o, ...v1Latest } = v7(v1);
   assert.deepEqual(rest, v1Latest);
   assert.deepEqual(stones, [1]); // Hüterin war mit ENQ9 besiegt → Stein 1 leuchtet
   assert.equal(lastStone, null);
   assert.equal(playMs, 5700000); // Spielzeit aus allen Paketen zusammen
-  assert.deepEqual(bag, { berry: 0, starfruit: 0, farsight: 0, shine: 0, time: 0 });
+  assert.deepEqual(bag, { berry: 0, starfruit: 0, farsight: 0, shine: 0, time: 0, treat: 0 });
   assert.equal(shineActive, false);
   assert.deepEqual(story, {});
-  assert.deepEqual(world, { bushes: {}, notes: {}, finds: {} });
+  assert.deepEqual(world, { bushes: {}, notes: {}, finds: {}, hideouts: {} });
 });
 
-test('Spielstand der Fassung 2 bleibt für immer ladbar und wird zu Format 9', () => {
+test('Spielstand der Fassung 2 bleibt für immer ladbar und wird zu Format 10', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v2.txt', import.meta.url), 'utf8'));
   assert.deepEqual(migrateState(d.value), { ok: true, state: v7({ ...SPIELSTAND_V2, version: 5, bag: { ...SPIELSTAND_V2.bag, time: 0 }, book: bookOf(SPIELSTAND_V2.stones), ...V5_EMPTY, ...V6 }) });
 });
@@ -82,7 +87,7 @@ test('Format 2: unmögliche Werte werden repariert', () => {
   assert.equal(m.state.bag.farsight, 0);
   assert.equal(m.state.bag.shine, 0);
   assert.deepEqual(m.state.story, { 1: 3 }); // höchstens 3 Stücke je Gebiet, nur Gebiete 1..8
-  assert.deepEqual(m.state.world, { bushes: { 'bucht:1,1': 5 }, notes: {}, finds: {} });
+  assert.deepEqual(m.state.world, { bushes: { 'bucht:1,1': 5 }, notes: {}, finds: {}, hideouts: {} });
 });
 
 test('Format 2: ein besiegter Hüter in irgendeinem Paket lässt seinen Leuchtstein leuchten', () => {
@@ -113,7 +118,7 @@ test('Position in einer Wand oder außerhalb der Karte wird zum Startpunkt', () 
 });
 
 test('aus einer neueren Fassung oder unbrauchbar', () => {
-  assert.deepEqual(migrateState({ ...SPIELSTAND_V9, version: 10 }), { ok: false, reason: 'newer' });
+  assert.deepEqual(migrateState({ ...SPIELSTAND_V10, version: 11 }), { ok: false, reason: 'newer' });
   const bad = [
     null, 'x', {}, { version: 1 },
     { ...SPIELSTAND_V1, name: '' },
@@ -153,17 +158,48 @@ test('Spielstand der Fassung 6 bleibt für immer ladbar', () => {
 
 test('Spielstand der Fassung 7 bleibt für immer ladbar', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v7.txt', import.meta.url), 'utf8'));
-  assert.deepEqual(migrateState(d.value), { ok: true, state: toV9(SPIELSTAND_V7) });
+  assert.deepEqual(migrateState(d.value), { ok: true, state: toV10(SPIELSTAND_V7) });
 });
 
 test('Spielstand der Fassung 8 bleibt für immer ladbar', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v8.txt', import.meta.url), 'utf8'));
-  assert.deepEqual(migrateState(d.value), { ok: true, state: { ...SPIELSTAND_V8, version: 9, treasures: {}, album: [] } });
+  assert.deepEqual(migrateState(d.value), { ok: true, state: v9to10({ ...SPIELSTAND_V8, version: 9, treasures: {}, album: [] }) });
 });
 
 test('Spielstand der Fassung 9 bleibt für immer ladbar', () => {
   const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v9.txt', import.meta.url), 'utf8'));
-  assert.deepEqual(migrateState(d.value), { ok: true, state: SPIELSTAND_V9 });
+  assert.deepEqual(migrateState(d.value), { ok: true, state: v9to10(SPIELSTAND_V9) });
+});
+
+test('Spielstand der Fassung 10 bleibt für immer ladbar', () => {
+  const d = decodeSave(readFileSync(new URL('./fixtures/spielstand-v10.txt', import.meta.url), 'utf8'));
+  assert.deepEqual(migrateState(d.value), { ok: true, state: SPIELSTAND_V10 });
+});
+
+test('Format 10: Freunde, Begleiter, Aufgaben, Leckerli und Verstecke werden repariert', () => {
+  const base = () => ({ ...structuredClone(SPIELSTAND_V10), keys: [] }); // ohne Futterbeutel: 10 Futterplätze
+  const m = migrateState({ ...base(), friends: { gischtling: { shiny: true }, funki: {}, morrow: {}, moosling: 'x', drache: {} }, companion: 'moosling' });
+  assert.deepEqual(m.state.friends, { gischtling: { shiny: true } });
+  assert.equal(m.state.companion, null); // kein Freund mehr
+  assert.equal(migrateState({ ...base(), friends: { gischtling: {} }, companion: 'gischtling' }).state.companion, 'gischtling');
+  assert.deepEqual(migrateState({ ...base(), friends: { gischtling: { shiny: 'ja' } } }).state.friends, { gischtling: { shiny: false } });
+  assert.deepEqual(migrateState({ ...base(), friends: [1], companion: 5 }).state.friends, {});
+  assert.equal(migrateState({ ...base(), companion: 5 }).state.companion, null);
+  assert.deepEqual(migrateState({ ...base(), tasks: [3, 1, 3, 9, 'x', 0, 2.5] }).state.tasks, [1, 3]);
+  assert.deepEqual(migrateState({ ...base(), tasks: 'x' }).state.tasks, []);
+  assert.equal(migrateState({ ...base(), bag: { ...base().bag, treat: -2 } }).state.bag.treat, 0);
+  assert.equal(migrateState({ ...base(), bag: { ...base().bag, berry: 10, starfruit: 5, treat: 7 } }).state.bag.treat, 7);
+  assert.equal(foodCount(migrateState({ ...base(), bag: { ...base().bag, berry: 10, starfruit: 5, treat: 7 } }).state.bag), 10);
+  assert.deepEqual(migrateState({ ...base(), world: { ...base().world, hideouts: { 'wald:3,4': 5, quatsch: 3, 'see:1,1': -1 } } }).state.world.hideouts, { 'wald:3,4': 5 });
+});
+
+test('Format 10: ein kaputter Rucksack oder eine kaputte Welt in einem Stand der Fassung 9 geht nicht verloren', () => {
+  for (const broken of ['x', null, 5, []]) {
+    const m = migrateState({ ...structuredClone(SPIELSTAND_V9), bag: broken, world: broken });
+    assert.equal(m.ok, true);
+    assert.deepEqual(m.state.bag, { berry: 0, starfruit: 0, farsight: 0, shine: 0, time: 0, treat: 0 });
+    assert.deepEqual(m.state.world, { bushes: {}, notes: {}, finds: {}, hideouts: {} });
+  }
 });
 
 test('Format 9: kaputte Schätze und Album werden repariert', () => {
