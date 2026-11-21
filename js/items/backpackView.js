@@ -47,9 +47,10 @@ export function backpackView(state) {
   };
 }
 
-// Der Rucksack geht nur beim Laufen auf, nicht in Duell, Dialog oder Menü und nicht, solange die
-// Welt gesperrt ist (etwa während eines Gesprächs oder einer Überblendung).
-export const canOpenBackpack = ({ mode, locked }) => mode === 'walk' && !locked;
+// Der Rucksack geht nur beim Laufen auf, nicht in Duell, Dialog oder Menü, nicht, solange die
+// Welt gesperrt ist (etwa während eines Gesprächs), und nicht während einer Überblendung (fading):
+// Eine neue Welt ist beim Aufblenden noch nicht gesperrt, danach kann gleich ein Dialog kommen.
+export const canOpenBackpack = ({ mode, locked, fading = false }) => mode === 'walk' && !locked && !fading;
 
 export function itemName(entry) {
   if (entry.kind === 'treasure') return treasureName(entry.id);

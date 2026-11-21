@@ -839,9 +839,10 @@ export function createGameWorld(game) {
     hud.append(el('div', { class: 'plate-head' }, el('span', {}, displayName(c)), el('span', { class: 'plate-lv' }, `Lv ${c.level}`)), bar);
   });
 
-  // Menüknopf oben rechts und Taste M (Design 13)
+  // Menüknopf oben rechts und Taste M (Design 13). Nicht während einer Überblendung (game.overlay):
+  // Eine neue Welt ist beim Aufblenden noch nicht gesperrt, danach kann gleich ein Dialog kommen.
   function showMenu() {
-    if (game.mode !== 'walk' || world.locked) return;
+    if (game.mode !== 'walk' || world.locked || game.overlay) return;
     world.lock(async () => {
       // Auch eine neue Fassung desselben Pakets (gleiche KENNUNG) kann Tore öffnen oder schließen.
       // Eine neue Sprache (Design 10.6) baut die Welt ebenfalls neu auf, damit alles Sichtbare passt.
@@ -853,9 +854,10 @@ export function createGameWorld(game) {
     });
   }
 
-  // Rucksack-Knopf links neben ☰ und Taste R (Lumara 1.1): nur beim Laufen und ohne Sperre.
+  // Rucksack-Knopf links neben ☰ und Taste R (Lumara 1.1): nur beim Laufen, ohne Sperre und
+  // ohne Überblendung.
   function showBag() {
-    if (!canOpenBackpack({ mode: game.mode, locked: world.locked })) return;
+    if (!canOpenBackpack({ mode: game.mode, locked: world.locked, fading: !!game.overlay })) return;
     world.lock(() => openBackpack(game));
   }
 

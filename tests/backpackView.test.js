@@ -75,3 +75,11 @@ test('Rucksack öffnet nur beim Laufen und ohne Sperre', () => {
   assert.equal(canOpenBackpack({ mode: 'screen', locked: false }), false);
   assert.equal(canOpenBackpack({ mode: 'duel', locked: false }), false);
 });
+
+// Nach einer Niederlage auf einer anderen Karte ist die neue Welt beim Aufblenden noch nicht gesperrt.
+// Ginge der Rucksack dann auf, öffnete sich der Dialog darunter, und am Ende bliebe das Spiel hängen.
+test('Rucksack öffnet nicht während einer Überblendung', () => {
+  assert.equal(canOpenBackpack({ mode: 'walk', locked: false, fading: true }), false);
+  assert.equal(canOpenBackpack({ mode: 'walk', locked: false, fading: false }), true);
+  assert.equal(canOpenBackpack({ mode: 'walk', locked: true, fading: true }), false);
+});
