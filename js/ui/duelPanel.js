@@ -191,6 +191,7 @@ export function createDuelPanel(game) {
   game.panel.append(root);
   let disposeForm = () => {};
   let finishOpen = null; // beendet ein offenes ask (Zeitablauf)
+  let closeFeedback = null; // beendet eine offene Rückmeldung ohne Tipp (Panel geleert oder entfernt)
   let bar = null;
   // Jede neu gezeigte Frage oder Rückmeldung nimmt kurz keine Tipps an (Doppeltipp-Schutz).
   const fresh = createFreshGuard();
@@ -198,6 +199,7 @@ export function createDuelPanel(game) {
   const species = game.state?.creature?.species;
 
   function reset() {
+    closeFeedback?.();
     disposeForm();
     disposeForm = () => {};
     bar = null;
@@ -348,14 +350,18 @@ export function createDuelPanel(game) {
       const reveal = setTimeout(() => { more.hidden = false; }, minMs);
       const auto = autoMs ? setTimeout(() => finish(true), autoMs) : null;
 
-      function finish(force = false) {
-        if (done) return;
-        if (!force && (performance.now() - start < minMs || fresh.isFresh())) return;
+      function stop() {
         done = true;
+        if (closeFeedback === close) closeFeedback = null;
         clearTimeout(reveal);
         clearTimeout(auto);
         offA();
         window.removeEventListener('pointerdown', onPointer);
+      }
+      function finish(force = false) {
+        if (done) return;
+        if (!force && (performance.now() - start < minMs || fresh.isFresh())) return;
+        stop();
         game.input.consume();
         resolve();
       }
@@ -366,6 +372,14 @@ export function createDuelPanel(game) {
       const offA = game.input.on('a', () => finish());
       // Den Tipp, der die Antwort abgeschickt hat, wertet der Frische-Schutz nicht als „Weiter“.
       window.addEventListener('pointerdown', onPointer);
+      // Wird das Panel geleert oder entfernt (etwa beim Verlassen der Szene), endet die Rückmeldung
+      // still: Ihre Zuhörer gehen mit, sonst schluckten A und Tipp den ersten Druck der nächsten Szene.
+      function close() {
+        if (done) return;
+        stop();
+        resolve();
+      }
+      closeFeedback = close;
     });
   }
 
@@ -380,6 +394,7 @@ export function createDuelPanel(game) {
     setTime(left, limit, frozen) {
       bar?.set(left, limit, frozen);
     },
+    // Leert das Panel; eine offene Rückmeldung endet dabei (wie bei remove).
     clear: reset,
     remove() {
       reset();
