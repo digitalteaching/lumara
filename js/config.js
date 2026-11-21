@@ -90,4 +90,6 @@ export const CONFIG = deepFreeze({
     ringColors: ['#ffe08a', '#7fd17a', '#c69ae8', '#f2c26b', '#9fd8ef', '#e8a272', '#bfe9ff', '#f5f0a8'],
   },
   play: { idleMs: 120000 },
+  friends: { questions: 5, needed: 3 }, // Vertrauensring beim Befreunden (Lumara 1.2)
+  garden: { stepMs: 400, restMinMs: 1500, restMaxMs: 4000, pondRadius: 2 },
 });

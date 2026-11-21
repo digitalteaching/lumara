@@ -8,7 +8,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 
 // Alle Dateien mit Texten für das Kind: scenes, ui, menu (ohne die Seite für die Lehrkraft), items,
 // world (ohne die Karten, deren Texte tests/i18n.test.js prüft) und die Standardtexte.
-const DIRS = ['js/scenes', 'js/ui', 'js/menu', 'js/items', 'js/world'];
+const DIRS = ['js/scenes', 'js/ui', 'js/menu', 'js/items', 'js/world', 'js/friends'];
 const SKIP = new Set(['js/menu/teacherPage.js']);
 export const CONVERTED = [
   ...DIRS.flatMap(d => readdirSync(new URL(`../${d}`, import.meta.url)).filter(f => f.endsWith('.js')).map(f => `${d}/${f}`)),
