@@ -659,7 +659,7 @@ export const ES = {
   'task.4.tip': 'Ahora no mira a la piedra de luz. ¡Sigue girándola hasta que la mire!',
   'task.4.solved': ['Las tres miran a la piedra de luz. ¡El cristal empieza a brillar!', 'Algo brilla en la arena delante de una estatua.'],
   'task.4.done': 'Las estatuas miran a la piedra de luz. Su cristal brilla suavemente.',
-  'task.4.set': '¡Ahora mira a la piedra de luz!',
+  'task.4.set': '¡Ahora mira a la piedra de luz! Estatua {n} de {of}.',
   'task.5.intro': ['Tres molinos de viento están quietos. Sus banderas apuntan mal.', 'Con A giras un molino. Las banderas de los mástiles muestran hacia dónde sopla el viento.', 'Cuando te vas de los acantilados, el viento los gira otra vez.'],
   'task.5.clue': 'La bandera del mástil apunta hacia {dir}. Hacia allí sopla el viento.',
   'task.5.turned': 'La bandera del molino ahora apunta hacia {dir}.',

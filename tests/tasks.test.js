@@ -16,7 +16,7 @@ import { parseSprite } from '../js/gfx/sprites.js';
 import { TASKS, facing } from '../js/data/tasks.js';
 import { act, createRun, foundCount, orderLit, solveTask, stationNow, taskOn, taskSolved, turnState } from '../js/world/tasks.js';
 import { createWorldScene } from '../js/scenes/world.js';
-import { addTasks } from '../js/scenes/taskEvents.js';
+import { addTasks, pawPaths } from '../js/scenes/taskEvents.js';
 import { t } from '../js/i18n/i18n.js';
 import { DE } from '../js/i18n/de.js';
 import { EN } from '../js/i18n/en.js';
@@ -725,12 +725,48 @@ test('In der Welt: Ein Windrad, das richtig im Wind steht, sagt es; erst alle dr
   assert.deepEqual(await use('task5-switch0'), [t('task.5.done')]);
 });
 
-test('In der Welt: Die Statuen der Dünen sagen es auch, wenn eine zum Leuchtstein schaut', async () => {
+test('In der Welt: Die Statuen der Dünen sagen es auch, wenn eine zum Leuchtstein schaut, und zählen mit', async () => {
   const { w, def, said } = world('duenen');
   const task = TASKS[4];
+  const toGoal = async k => {
+    for (let n = 0; n < (task.goal[k] - task.start[k] + 4) % 4; n++) await w.onInteract[0]({ target: partOf(def, `task4-switch${k}`), x: 0, y: 0 });
+  };
   const i = [0, 1, 2].find(k => (task.start[k] + 1) % 4 === task.goal[k]) ?? 0;
-  for (let n = 0; n < (task.goal[i] - task.start[i] + 4) % 4; n++) await w.onInteract[0]({ target: partOf(def, `task4-switch${i}`), x: 0, y: 0 });
-  assert.equal(said.at(-1), t('task.4.set'));
+  await toGoal(i);
+  assert.equal(said.at(-1), t('task.4.set', { n: 1, of: 3 }));
+  assert.ok(said.at(-1).includes('1 von 3'), said.at(-1));
+  await toGoal([0, 1, 2].find(k => k !== i));
+  assert.equal(said.at(-1), t('task.4.set', { n: 2, of: 3 }));
+  for (const table of [DE, EN, FR, ES]) assert.ok(table['task.4.set'].includes('{n}') && table['task.4.set'].includes('{of}'));
+});
+
+test('Die drei Statuen der Aufgabe tragen am Sockel ein Leuchtzeichen, die Statuen zum Anschauen nicht', () => {
+  const base = rows => rows.slice(25).join('');
+  for (const d of [0, 1, 2, 3]) assert.ok(/H/.test(base(PROPS[`glassstatue${d}`])) && /h/.test(base(PROPS[`glassstatue${d}`])), `glassstatue${d}`);
+  assert.ok(!/[Hh]/.test(base(PROPS.statue)), 'die Statue zum Anschauen hat einen glatten Sockel');
+  // Das Zeichen sieht bei jeder Blickrichtung gleich aus, auch gespiegelt (3).
+  assert.equal(new Set([0, 1, 2, 3].map(d => base(PROPS[`glassstatue${d}`]))).size, 1);
+});
+
+test('Pfotenspuren am See: jedes Stück zwischen zwei Stationen hat eine Spur, Tore zu und offen', () => {
+  const task = TASKS[7], def = MAPS.see;
+  for (const map of [createMap(def), createMap(def, { openGates: (def.gates ?? []).map(g => g.id) })]) {
+    const paths = pawPaths(map, task);
+    assert.equal(paths.length, task.stations.length - 1);
+    paths.forEach((cells, i) => {
+      const [from, to] = [task.stations[i], task.stations[i + 1]];
+      assert.ok(cells.length > 0, `Stück ${i}: leer`);
+      assert.deepEqual([cells[0].x, cells[0].y], [from.x, from.y], `Stück ${i} beginnt an Station ${i}`);
+      const end = cells.at(-1);
+      assert.ok(Math.abs(end.x - to.x) + Math.abs(end.y - to.y) <= 1, `Stück ${i} endet an Station ${i + 1}`);
+      cells.forEach((c, n) => {
+        assert.ok([0, 1, 2, 3].includes(c.dir), `Stück ${i}, Feld ${n}: Richtung`);
+        if (n === 0) return;
+        assert.ok(map.canEnter(c.x, c.y) && !map.isTallGrass(c.x, c.y), `Stück ${i}: ${c.x},${c.y}`);
+        assert.equal(Math.abs(c.x - cells[n - 1].x) + Math.abs(c.y - cells[n - 1].y), 1, `Stück ${i}: Lücke vor ${c.x},${c.y}`);
+      });
+    });
+  }
 });
 
 test('In der Welt: Hebel der Ruinen: der falsche zuerst ist kein Fehler; richtig gezogen läuft das Kanalstück leer', async () => {

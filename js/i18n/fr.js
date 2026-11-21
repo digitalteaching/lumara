@@ -661,7 +661,7 @@ export const FR = {
   'task.4.tip': 'Maintenant, elle ne regarde plus la pierre de lumière. Continue à la tourner !',
   'task.4.solved': ['Les trois regardent la pierre de lumière. Le verre se met à briller !', 'Quelque chose brille dans le sable devant une statue.'],
   'task.4.done': 'Les statues regardent la pierre de lumière. Leur verre brille doucement.',
-  'task.4.set': 'Maintenant, elle regarde la pierre de lumière !',
+  'task.4.set': 'Maintenant, elle regarde la pierre de lumière ! Statue {n} sur {of}.',
   'task.5.intro': ['Trois moulins à vent ne bougent pas. Leurs drapeaux pointent dans le mauvais sens.', 'Appuie sur A pour tourner un moulin. Les drapeaux sur les mâts montrent où va le vent.', 'Quand tu quittes les falaises, le vent les remet en place.'],
   'task.5.clue': 'Le drapeau sur le mât pointe vers {dir}. C’est là que souffle le vent.',
   'task.5.turned': 'Le drapeau du moulin pointe maintenant vers {dir}.',

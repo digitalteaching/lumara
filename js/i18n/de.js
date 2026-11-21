@@ -663,7 +663,7 @@ export const DE = {
   'task.4.tip': 'Jetzt schaut sie am Leuchtstein vorbei. Dreh sie weiter, bis sie wieder hinschaut!',
   'task.4.solved': ['Alle drei schauen zum Leuchtstein. Das Glas fängt an zu leuchten!', 'Im Sand vor einer Statue glitzert etwas.'],
   'task.4.done': 'Die Statuen schauen zum Leuchtstein. Ihr Glas schimmert warm.',
-  'task.4.set': 'Jetzt schaut sie zum Leuchtstein!',
+  'task.4.set': 'Jetzt schaut sie zum Leuchtstein! Statue {n} von {of}.',
   'task.5.intro': ['Drei Windräder stehen still. Ihre Wimpel zeigen in die falsche Richtung.', 'Mit A drehst du ein Windrad. Die Wimpel an den Stangen zeigen, wohin der Wind weht.', 'Wenn du die Klippen verlässt, dreht der Wind sie wieder zurück.'],
   'task.5.clue': 'Der Wimpel an der Stange weht nach {dir}. So weht hier oben der Wind.',
   'task.5.turned': 'Der Wimpel am Windrad zeigt jetzt nach {dir}.',

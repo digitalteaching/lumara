@@ -659,7 +659,7 @@ export const EN = {
   'task.4.tip': 'Now it looks past the light stone. Keep turning it until it looks at it again!',
   'task.4.solved': ['All three look at the light stone. The glass starts to glow!', 'Something glitters in the sand in front of a statue.'],
   'task.4.done': 'The statues look at the light stone. Their glass shimmers warmly.',
-  'task.4.set': 'Now it looks at the light stone!',
+  'task.4.set': 'Now it looks at the light stone! Statue {n} of {of}.',
   'task.5.intro': ['Three windmills stand still. Their flags point the wrong way.', 'Press A to turn a windmill. The flags on the poles show where the wind blows.', 'When you leave the cliffs, the wind turns them back.'],
   'task.5.clue': 'The flag on the pole points {dir}. That is where the wind blows up here.',
   'task.5.turned': 'The windmill’s flag now points {dir}.',

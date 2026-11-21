@@ -1280,7 +1280,14 @@ const wispStump = (() => {
 })();
 
 // Glasstatue der Spielaufgabe (16 × 32): schaut nach oben (0, man sieht den Hinterkopf), rechts (1,
-// zeigt mit dem Arm), unten (2, das Gesicht mit zwei Augen) oder links (3).
+// zeigt mit dem Arm), unten (2, das Gesicht mit zwei Augen) oder links (3). Vorn am Sockel leuchtet
+// ein kleiner Kristall mit Strahlen wie der des Leuchtsteins: So erkennt man die drei Statuen der
+// Aufgabe neben den Glasstatuen zum Anschauen (statue), deren Sockel glatt ist.
+const STATUE_MARK = [
+  [5, 26, 'h'], [10, 26, 'h'], [4, 28, 'h'], [11, 28, 'h'], [5, 30, 'h'], [10, 30, 'h'], // Strahlen
+  [7, 26, 'w'], [8, 26, 'H'], [7, 27, 'H'], [8, 27, 'h'], [6, 28, 'H'], [7, 28, 'w'], [8, 28, 'H'], [9, 28, 'h'],
+  [7, 29, 'H'], [8, 29, 'h'], [7, 30, 'h'], [8, 30, 'H'], // Kristall
+];
 function glassStatue(dir) {
   const g = grid(16, 32, '.');
   const glass = (x, x0, x1) => (x === x0 || x === x1 ? 'S' : x === x0 + 1 ? 'w' : x === x1 - 1 ? 'L' : 'A');
@@ -1307,9 +1314,12 @@ function glassStatue(dir) {
     for (let x = 10; x <= 14; x++) { g[12][x] = 'S'; g[13][x] = x === 14 ? 'S' : 'A'; } // ausgestreckter Arm
     g[14][14] = 'S';
   }
-  for (let y = 25; y < 32; y++) for (let x = 2; x < 14; x++) g[y][x] = y === 25 || y === 31 || x === 2 || x === 13 ? 'k' : y < 27 ? 'm' : 's';
-  const rows = toRows(g);
-  return dir === 3 ? mirror(rows) : rows;
+  const figure = toRows(g);
+  const out = (dir === 3 ? mirror(figure) : figure).map(r => [...r]);
+  // Sockel und Zeichen erst nach dem Spiegeln: Das Licht fällt immer von links oben.
+  for (let y = 25; y < 32; y++) for (let x = 2; x < 14; x++) out[y][x] = y === 25 || y === 31 || x === 2 || x === 13 ? 'k' : y < 27 ? 'm' : 's';
+  for (const [x, y, ch] of STATUE_MARK) out[y][x] = ch;
+  return toRows(out);
 }
 
 // ---------- Windklippen: Windräder, Wimpel an Stangen und ein Drachen ----------
@@ -1507,17 +1517,27 @@ const SKY_SMALL = [
   ['XXX', 'X.X', 'XXX'],
 ];
 
-// Ein flacher Stein im Gras der Sternenwiese (16 × 16), darauf ein Zeichen: eingeritzt oder leuchtend.
+// Ein flacher Stein im Gras der Sternenwiese (16 × 16), eben mit dem Boden wie eine Trittplatte: hell,
+// flach, ohne Schatten, nur ein dünner Rand, über den ein paar Halme wachsen. So sieht er nicht aus wie
+// die runden dunklen Felsen, die sonst den Weg versperren. Darauf ein Zeichen: eingeritzt oder
+// leuchtend (dann mit goldenem Rand).
 function starPlate(i, lit) {
   const g = grid(16, 16, '.');
-  for (let y = 3; y < 15; y++) for (let x = 0; x < 16; x++) {
-    const dx = (x - 7.5) / 7.6, dy = (y - 8.5) / 5.6;
-    const d = dx * dx + dy * dy;
-    if (d > 1) continue;
-    g[y][x] = d > 0.8 ? (y > 9 ? 'n' : 'd') : y < 6 ? 'm' : y > 11 ? 'd' : 's';
+  const inside = (x, y) => x >= 0 && x < 16 && ((x - 7.5) / 7.8) ** 2 + ((y - 9) / 4.6) ** 2 <= 1;
+  for (let y = 4; y < 15; y++) for (let x = 0; x < 16; x++) {
+    if (!inside(x, y)) continue;
+    const rim = !inside(x - 1, y) || !inside(x + 1, y) || !inside(x, y - 1) || !inside(x, y + 1);
+    g[y][x] = rim ? (lit ? 'h' : y > 9 ? 'd' : 's') : 'm';
   }
-  SKY[i].forEach((r, y) => [...r].forEach((ch, x) => { if (ch === 'X') g[5 + y][4 + x] = lit ? 'H' : 'n'; }));
-  if (lit) g[8][7] = 'w';
+  for (const [x, y] of [[2, 8], [13, 10], [12, 6], [3, 11]]) g[y][x] = 'f'; // Sprenkel im Stein
+  const mark = [];
+  SKY[i].forEach((r, y) => [...r].forEach((ch, x) => { if (ch === 'X') mark.push([4 + x, 6 + y]); }));
+  if (lit) { // goldener Schein um das helle Zeichen, damit es auf dem hellen Stein leuchtet
+    for (const [x, y] of mark) for (const [dx, dy] of [[0, -1], [1, 0], [0, 1], [-1, 0]]) if (g[y + dy][x + dx] === 'm') g[y + dy][x + dx] = 'h';
+  }
+  for (const [x, y] of mark) g[y][x] = lit ? 'H' : 'd';
+  if (lit) g[9][7] = 'w';
+  for (const [x, y] of [[0, 9], [1, 11], [14, 7], [15, 10], [9, 13]]) g[y][x] = 'l'; // Halme über dem Rand
   return toRows(g);
 }
 

@@ -167,8 +167,10 @@ export function addTasks(world, game, io = {}) {
     const out = [...introOnce(), say1('turned', { dir: t(`gear.dir.${r.dir}`) })];
     if (r.away) out.push(say1('tip'));
     if (r.result === 'solved') return finish([...out, ...lines('solved')]);
-    // Ein Teil steht jetzt richtig: Das sagt ein kurzer Satz, die anderen fehlen vielleicht noch.
-    if (set) out.push(say1('set'));
+    // Ein Teil steht jetzt richtig: Das sagt ein kurzer Satz, die anderen fehlen vielleicht noch. {n}:
+    // so viele stehen gerade richtig, {of}: so viele gibt es (die Dünen zählen mit).
+    const n = task.goal.filter((g, i) => turnState(run, i) === g).length;
+    if (set) out.push(say1('set', { n, of: task.goal.length }));
     return speak(game, out);
   }
 
@@ -322,8 +324,7 @@ function addWisp(world, game, task, run, solved) {
 // bis zur nächsten Station; frühere Stücke bleiben blass. Gelöst sind die Hasen daheim, ohne Spur.
 // Die Spuren liegen auf einem kürzesten Weg ohne hohes Gras, am liebsten über Schnee.
 function addPaws(world, task, run, solved) {
-  const { stations } = task;
-  const paths = stations.slice(1).map((to, i) => trail(world.map, stations[i], to));
+  const paths = pawPaths(world.map, task);
   world.groundRender.push((ctx, cam) => {
     if (solved() || run.solved) return;
     const pieces = run.station === 0 ? [[paths[0].slice(0, STUB), 1]] : paths.slice(0, run.station).map((p, i) => [p, i === run.station - 1 ? 1 : 0.45]);
@@ -336,6 +337,9 @@ function addPaws(world, task, run, solved) {
   });
   return { moveTo() {} }; // die Spuren folgen dem Lauf (run.station) von selbst
 }
+
+// Die Stücke der Spur: von jeder Station zur nächsten (tests/tasks.test.js prüft, dass keins leer ist).
+export const pawPaths = (map, { stations }) => stations.slice(1).map((to, i) => trail(map, stations[i], to));
 
 const STEPS = [[0, -1], [1, 0], [0, 1], [-1, 0]]; // nach Richtung 0 oben, 1 rechts, 2 unten, 3 links
 

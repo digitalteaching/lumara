@@ -111,13 +111,14 @@ export function drawChamber(ctx, x, y, { w, h }, drained) {
   }
 }
 
-// Der Schein unter einem hellen Stein der Sternenwiese (x, y: linke obere Ecke des Felds). Mit ms > 0
-// atmet er langsam (unter 1 Hz), sonst leuchtet er ruhig.
+// Der Schein um einen hellen Stein der Sternenwiese (x, y: linke obere Ecke des Felds), flach wie der
+// Stein selbst: ein breites Oval auf dem Boden. Mit ms > 0 atmet er langsam (unter 1 Hz), sonst
+// leuchtet er ruhig.
 export function drawPlateGlow(ctx, x, y, ms = 0) {
   ctx.fillStyle = LAMP;
-  ctx.globalAlpha = ms ? 0.28 + 0.1 * Math.sin(ms / 600) : 0.32;
-  ctx.fillRect(x - 1, y + 6, 18, 7);
-  ctx.fillRect(x + 1, y + 3, 14, 13);
-  ctx.fillRect(x + 4, y + 1, 8, 16);
+  ctx.globalAlpha = ms ? 0.3 + 0.1 * Math.sin(ms / 600) : 0.35;
+  ctx.fillRect(x - 3, y + 7, 22, 5);
+  ctx.fillRect(x - 1, y + 5, 18, 9);
+  ctx.fillRect(x + 3, y + 3, 10, 13);
   ctx.globalAlpha = 1;
 }
