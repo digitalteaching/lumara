@@ -91,5 +91,16 @@ export const CONFIG = deepFreeze({
   },
   play: { idleMs: 120000 },
   friends: { questions: 5, needed: 3 }, // Vertrauensring beim Befreunden (Lumara 1.2)
+  // Verstecke (Lumara 1.2, Spec 6.5): Nachfüllen nach Spielzeit, XP für eine richtige Antwort, „!“ und
+  // Spürnase in Feldern, Dauer der kurzen Szene, Gewichte der Funde (rare: der seltene Schatz des Gebiets).
+  hideouts: {
+    refillMs: 600000,
+    xp: 15,
+    nearRadius: 3,
+    sniffRadius: 6,
+    sceneMs: 1500,
+    sceneMsReduced: 500,
+    rewards: { treasure: 5, treat: 4, berry: 3, starfruit: 1, farsight: 2, shine: 1, rare: 1 },
+  },
   garden: { stepMs: 400, restMinMs: 1500, restMaxMs: 4000, pondRadius: 2 },
 });
