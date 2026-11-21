@@ -9,7 +9,7 @@ import { gardenFriends, placeFriends, wanderTarget } from '../world/garden.js';
 import { worldLines } from '../world/network.js';
 import { GARTEN } from '../world/maps/garten.js';
 import { FRIENDABLE, WATER_FRIENDS, friendList } from '../friends/friends.js';
-import { miniImages } from './companion.js';
+import { miniImages } from '../gfx/miniImages.js';
 import { friendCard } from '../menu/friendsPage.js';
 import { openSheet } from '../ui/sheet.js';
 import { say } from '../ui/dialog.js';
@@ -66,23 +66,16 @@ export function addGarden(world, game) {
       progress: 0,
       rest: restTime(),
       side: rng.next() < 0.5 ? 'left' : 'right', // die Bilder schauen nach rechts
-      images: undefined,
       z: () => pixelY(f) / T,
       draw(ctx, cam) {
         const sx = pixelX(f) - cam.x, sy = pixelY(f) - cam.y - 2;
         if (sx < -T || sy < -T || sx > 240 || sy > 160) return;
-        // Ein Kleinbild, das sich nicht bauen lässt, fehlt nur, statt den Garten anzuhalten.
-        if (f.images === undefined) {
-          try {
-            f.images = miniImages(f.species, f.shiny);
-          } catch {
-            f.images = null;
-          }
-        }
-        if (!f.images) return;
+        // Ein Kleinbild, das sich nicht bauen lässt, fehlt nur (js/gfx/miniImages.js warnt einmal).
+        const images = miniImages(f.species, f.shiny);
+        if (!images) return;
         const hop = f.moving && !game.reducedMotion ? Math.floor(world.time / HOP_MS) % 2 : 0;
         world.drawShadow(ctx, sx, sy);
-        ctx.drawImage(f.images[f.side][hop], sx, sy);
+        ctx.drawImage(images[f.side][hop], sx, sy);
       },
     };
     return f;
@@ -117,10 +110,7 @@ export function addGarden(world, game) {
     for (const f of [...friends.values()]) {
       const w = wanted.get(f.species);
       if (!w) remove(f);
-      else if (w.shiny !== f.shiny) {
-        f.shiny = w.shiny;
-        f.images = undefined;
-      }
+      else if (w.shiny !== f.shiny) f.shiny = w.shiny;
     }
     const newcomers = list.filter(f => !friends.has(f.species));
     pending = false;

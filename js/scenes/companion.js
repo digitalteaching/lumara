@@ -3,8 +3,7 @@
 // nichts, das reagiert, sagt es etwas zu seiner Gabe. Befreundete Wesen kämpfen nie.
 
 import { createFollower } from '../world/follower.js';
-import { miniFrames } from '../gfx/art/minis.js';
-import { spriteFrom } from '../gfx/canvasSprites.js';
+import { miniImages } from '../gfx/miniImages.js';
 import { giftOf } from '../friends/friends.js';
 import { speciesName } from '../data/species.js';
 import { say } from '../ui/dialog.js';
@@ -17,24 +16,6 @@ const HOP_MS = 130; // beim Laufen wechseln Stehen und Hüpfen so schnell wie di
 export function companionOf(state) {
   const id = state?.companion ?? null;
   return id && state.friends?.[id] && giftOf(id) ? id : null;
-}
-
-// Stehen und Hüpfen, je nach rechts (wie die Bilder) und nach links gespiegelt; einmal je Wesen erzeugt.
-// Der Garten (js/scenes/gardenEvents.js) zeichnet seine Freunde mit denselben Bildern.
-const images = new Map();
-export function miniImages(id, shiny) {
-  const key = `${id}:${shiny ? 1 : 0}`;
-  let set = images.get(key);
-  if (!set) {
-    const suffix = shiny ? ':glanz' : '';
-    const frames = miniFrames(id, { shiny });
-    set = {
-      right: frames.map((rows, f) => spriteFrom(`mini:${id}:${f}${suffix}`, rows)),
-      left: frames.map((rows, f) => spriteFrom(`mini:${id}:${f}${suffix}`, rows, { flip: true })),
-    };
-    images.set(key, set);
-  }
-  return set;
 }
 
 export function addCompanion(world, game) {
@@ -69,7 +50,9 @@ export function addCompanion(world, game) {
       if (!shown || follower.hidden()) return;
       const walking = player.moving && (follower.x !== follower.fromX || follower.y !== follower.fromY);
       const hop = walking && !game.reducedMotion ? Math.floor(world.time / HOP_MS) % 2 : 0;
-      const img = miniImages(shown, game.state.friends[shown].shiny === true)[side][hop];
+      // Ein Kleinbild, das sich nicht bauen lässt, fehlt nur (js/gfx/miniImages.js warnt einmal).
+      const img = miniImages(shown, game.state.friends[shown].shiny === true)?.[side][hop];
+      if (!img) return;
       const x = at.x - cam.x, y = at.y - cam.y - 2;
       world.drawShadow(ctx, x, y);
       ctx.drawImage(img, x, y);

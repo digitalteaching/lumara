@@ -8,6 +8,9 @@ import { createRng } from '../js/core/rng.js';
 import { FRIENDABLE, WATER_FRIENDS, makeFriend, setCompanion } from '../js/friends/friends.js';
 import { createWorldScene } from '../js/scenes/world.js';
 import { addGarden, friendCountLines } from '../js/scenes/gardenEvents.js';
+import { addCompanion } from '../js/scenes/companion.js';
+import { miniImages } from '../js/gfx/miniImages.js';
+import { stubContext } from './helpers/fixtures.js';
 import { CONFIG } from '../js/config.js';
 import { setLanguage, t } from '../js/i18n/i18n.js';
 import { EN_WORLD } from '../js/i18n/en-world.js';
@@ -246,4 +249,32 @@ test('Das Schild im Garten: erst seine eigenen Zeilen, dann die Zahl der Freunde
   } finally {
     setLanguage('de');
   }
+});
+
+// In Node gibt es kein Canvas: Jedes Kleinbild scheitert hier so, wie ein kaputtes Bild im Browser.
+// Kein anderer Test dieser Datei zeichnet, daher hat noch kein Wesen gewarnt.
+test('Kleinbild lässt sich nicht bauen: eine Warnung je Wesen, Garten und Begleiter lassen es nur weg', t => {
+  const warnings = [];
+  t.mock.method(console, 'warn', (...args) => warnings.push(String(args[0])));
+  const { world, game } = gardenWorld({ reducedMotion: true });
+  addCompanion(world, game);
+  const spot = gardenCells(world.map).free.find(c => !world.blocked.has(cellKey(c.x, c.y)) && !world.blocked.has(cellKey(c.x, c.y + 1)));
+  world.player.teleport(spot.x, spot.y, 'up');
+  const ctx = stubContext();
+  for (let round = 0; round < 3; round++) {
+    world.update(16);
+    for (const a of world.actors) {
+      a.z();
+      const cam = a.species ? { x: a.x * 16 - 100, y: a.y * 16 - 60 } : { x: spot.x * 16 - 100, y: spot.y * 16 - 60 };
+      assert.doesNotThrow(() => a.draw(ctx, cam));
+    }
+  }
+  assert.deepEqual(ctx.calls, [], 'nichts gezeichnet, auch kein Schatten');
+  const species = warnings.map(w => w.match(/"(\w+)"/)?.[1]);
+  assert.equal(new Set(species).size, species.length, 'je Wesen nur einmal');
+  assert.deepEqual([...species].sort(), [...FRIENDABLE].sort(), 'alle Freunde im Garten und der Begleiter');
+  // Auch die andere Farbe desselben Wesens warnt nicht noch einmal.
+  assert.equal(miniImages(FRIENDABLE[1], true), null);
+  assert.equal(miniImages(FRIENDABLE[1], false), null);
+  assert.equal(warnings.length, FRIENDABLE.length);
 });

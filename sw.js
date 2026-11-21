@@ -65,6 +65,7 @@ const FILES = [
   "js/gfx/canvasSprites.js",
   "js/gfx/creatureImage.js",
   "js/gfx/evolution.js",
+  "js/gfx/miniImages.js",
   "js/gfx/palette.js",
   "js/gfx/particles.js",
   "js/gfx/screen.js",
