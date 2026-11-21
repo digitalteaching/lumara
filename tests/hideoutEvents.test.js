@@ -9,12 +9,12 @@ import { createWorldScene } from '../js/scenes/world.js';
 import { addCompanion } from '../js/scenes/companion.js';
 import { addHideouts } from '../js/scenes/hideoutEvents.js';
 import { MAPS } from '../js/world/network.js';
-import { createMap } from '../js/world/map.js';
+import { createMap, step } from '../js/world/map.js';
 import { newGameState } from '../js/state.js';
 import { createRng } from '../js/core/rng.js';
 import { FRIENDABLE, giftOf, makeFriend } from '../js/friends/friends.js';
 import { HIDEOUTS } from '../js/data/hideouts.js';
-import { hideoutReady } from '../js/world/hideouts.js';
+import { companionAlert, hideoutReady } from '../js/world/hideouts.js';
 import { HIDDEN_SPECIES } from '../js/data/species.js';
 import { CONFIG } from '../js/config.js';
 import { stubContext } from './helpers/fixtures.js';
@@ -123,6 +123,32 @@ test('„!“ über dem Begleiter: nur mit passender Gabe und nicht, solange die
   await held;
   assert.equal(alertDrawn(world), true);
   assert.equal(alertDrawn(setupWorld({ gift: 'climb' }).world), false, 'ein Kletterer am Eisloch');
+});
+
+test('Kein „!“, solange der Begleiter unsichtbar auf dem Feld der Figur steht', () => {
+  const { h, world, state } = setupWorld();
+  const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
+  // Ein Feld nahe dem Versteck, hinter dem (gegen die Blickrichtung) kein Platz für ihn ist, und
+  // weiter als ein Feld von ihm entfernt: Dann stellt er sich nach dem Versetzen neu auf.
+  const was = world.companion.cell();
+  let spot = null;
+  for (let y = h.y - 3; y <= h.y + 3 && !spot; y++) {
+    for (let x = h.x - 3; x <= h.x + 3 && !spot; x++) {
+      if (Math.abs(x - h.x) + Math.abs(y - h.y) > CONFIG.hideouts.nearRadius || !world.map.canEnter(x, y)) continue;
+      if (Math.abs(x - was.x) + Math.abs(y - was.y) <= 1) continue;
+      const dir = Object.keys(OPPOSITE).find(d => {
+        const b = step({ x, y }, OPPOSITE[d]);
+        return !world.map.canEnter(b.x, b.y);
+      });
+      if (dir) spot = { x, y, dir };
+    }
+  }
+  assert.ok(spot);
+  world.player.teleport(spot.x, spot.y, spot.dir);
+  world.update(16);
+  assert.equal(world.companion.visible(), false);
+  assert.equal(companionAlert(state, h.map, spot.x, spot.y), true, 'das Versteck ist nah');
+  assert.equal(alertDrawn(world), false);
 });
 
 test('Karten ohne Verstecke (Garten, Höhle, geheime Orte) bekommen keine Handler', () => {

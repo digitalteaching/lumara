@@ -2,9 +2,10 @@
 // js/data/hideouts.js.
 // - Anzeige: Jedes bereite Versteck zeigt sein schwaches Zeichen (HIDEOUT_ART) auf seinem Feld.
 //   Sternenspur-Verstecke sieht man nur mit einem Sternenspur-Begleiter in der Nähe, dann leuchten sie.
-// - „!“ über dem Begleiter, wenn ein bereites Versteck seiner Gabe nahe der Figur ist (nicht, solange
-//   die Welt gesperrt ist). Die Spürnase zeigt über jedem bereiten Versteck in ihrer Reichweite das
-//   Zeichen der Gabe, die es braucht.
+// - „!“ beim Begleiter (über ihm oder seitlich, nie auf der Figur), wenn ein bereites Versteck seiner
+//   Gabe nahe der Figur ist (nicht, solange die Welt gesperrt ist oder man ihn nicht sieht).
+// - Die Spürnase zeigt über jedem bereiten Versteck in ihrer Reichweite das Zeichen der Gabe, die es
+//   braucht.
 // - A vor einem Versteck: leer, ein Hinweis oder mit dem passenden Begleiter eine kurze Szene. Danach
 //   eine Frage aus dem Pool der Zettel (Fund-Versteck) oder ein wildes Duell (Wesen-Versteck).
 // Alles nach A läuft unter der Sperre der Welt (world.update ruft die Handler in world.lock auf);
@@ -161,7 +162,20 @@ const EFFECTS = {
   },
 };
 
-// Kleines „!“ über dem Begleiter: weiß auf dunkel, wie eine kleine Sprechblase (x, y: oben links).
+// Wo das „!“ steht (oben links, Spielpixel). c: Begleiter, p: Figur, beide wie player.pixel().
+// Über seinem Kopf, solange es die Figur nicht berührt (sie belegt x … x+15 und y-2 … y+13). Steht er
+// unter oder halb hinter ihr (sie läuft nach oben), seitlich oben neben ihm, auf der Seite weg von der
+// Figur; direkt dahinter rechts.
+const ALERT_W = 6, ALERT_H = 10;
+const touchesPlayer = (b, p) => b.x < p.x + T && b.x + ALERT_W > p.x && b.y < p.y + T - 2 && b.y + ALERT_H > p.y - 2;
+export function alertSpot(c, p) {
+  const above = { x: c.x + 5, y: c.y - 12 };
+  if (!touchesPlayer(above, p)) return above;
+  const y = c.y - 8;
+  return c.x < p.x ? { x: Math.min(c.x - 2, p.x - ALERT_W), y } : { x: Math.max(c.x + 12, p.x + T), y };
+}
+
+// Kleines „!“ beim Begleiter: weiß auf dunkel, wie eine kleine Sprechblase (x, y: oben links, 6 × 10).
 function drawAlert(ctx, x, y) {
   ctx.fillStyle = '#1b1a2e';
   ctx.fillRect(x + 1, y, 4, 9);
@@ -190,7 +204,7 @@ export function addHideouts(world, game, { wildDuel, levelUps }) {
     const at = companionCell();
     for (const h of list) {
       const x = h.x * T - cam.x, y = h.y * T - cam.y;
-      if (!onScreen(x, y) || !hideoutShown(game.state, h, at)) continue;
+      if (!onScreen(x, y) || !hideoutShown(game.state, h, at, player)) continue;
       if (h.gift === 'startrail') {
         // Leuchten unter 1 Hz, bei „Bewegung reduzieren“ ruhig.
         const glow = game.reducedMotion ? 0.85 : 0.7 + 0.2 * Math.sin(world.time / 400);
@@ -222,8 +236,9 @@ export function addHideouts(world, game, { wildDuel, levelUps }) {
       }
     }
     if (world.locked || !companionAlert(game.state, world.mapId, player.x, player.y)) return;
-    const p = world.companion?.pixel();
-    if (p) drawAlert(ctx, p.x - cam.x + 5, p.y - cam.y - 12);
+    if (!world.companion?.visible()) return; // unsichtbar auf dem Feld der Figur: kein „!“
+    const spot = alertSpot(world.companion.pixel(), player.pixel());
+    drawAlert(ctx, spot.x - cam.x, spot.y - cam.y);
   });
 
   // Die Szene: sceneMs lang läuft der Begleiter zum Versteck und zurück, dazu der Effekt der Gabe.

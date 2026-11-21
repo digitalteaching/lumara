@@ -53,12 +53,14 @@ export function hideoutAction(state, h) {
   return canOpen(state, h) ? 'open' : 'hint';
 }
 
-// Ein bereites Versteck sieht man schwach. Sternenspur-Verstecke nur, wenn ein Begleiter mit
-// Sternenspur höchstens nearRadius Felder entfernt ist (at: sein Feld).
-export function hideoutShown(state, h, at) {
+// Ein bereites Versteck sieht man schwach. Sternenspur-Verstecke nur mit einem Begleiter mit
+// Sternenspur, wenn er oder die Figur höchstens nearRadius Felder entfernt ist (places: sein Feld und
+// das der Figur). „!“ und sein Satz companion.near messen von der Figur aus; er steht ein Feld hinter
+// ihr. So leuchtet die Spur immer, wenn er auf sie hinweist.
+export function hideoutShown(state, h, ...places) {
   if (!hideoutReady(state, h)) return false;
   if (h.gift !== 'startrail') return true;
-  return canOpen(state, h) && distance(h, at.x, at.y) <= CONFIG.hideouts.nearRadius;
+  return canOpen(state, h) && places.some(p => p && distance(h, p.x, p.y) <= CONFIG.hideouts.nearRadius);
 }
 
 // „!“ über dem Begleiter: ein bereites Versteck, das er öffnen kann, nahe der Figur bei (x, y).

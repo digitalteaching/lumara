@@ -7,7 +7,8 @@ import { FRIENDABLE, giftOf, makeFriend } from '../js/friends/friends.js';
 import { HIDEOUTS } from '../js/data/hideouts.js';
 import { companionAlert, companionGift, hideoutAction, hideoutKey, hideoutShown, sniffedHideouts } from '../js/world/hideouts.js';
 import { CONFIG } from '../js/config.js';
-import { SCENE, foundLine, scenePose } from '../js/scenes/hideoutEvents.js';
+import { SCENE, alertSpot, foundLine, scenePose } from '../js/scenes/hideoutEvents.js';
+import { companionLine } from '../js/scenes/companion.js';
 import { treasureName } from '../js/items/treasures.js';
 import { setLanguage, t } from '../js/i18n/i18n.js';
 
@@ -76,6 +77,23 @@ test('Sternenspur-Verstecke sieht man nur mit einem Sternenspur-Begleiter in nea
   assert.equal(hideoutShown(s, h, near), false, 'leer');
 });
 
+// Der Begleiter steht ein Feld hinter der Figur: Bleibt sie genau nearRadius Felder vor der Spur
+// stehen, ist er oft nearRadius + 1 entfernt. „!“ und sein Satz messen von der Figur aus, also muss
+// die Spur dann auch leuchten.
+test('Sternenspur: Figur 3 Felder entfernt, Begleiter 4: Die Spur leuchtet, wie „!“ und Satz sagen', () => {
+  setLanguage('de');
+  const h = byId('wiese-boulder'); // (14,11)
+  const s = state('startrail');
+  const player = { x: h.x + R, y: h.y };
+  const companion = { x: h.x + R + 1, y: h.y };
+  assert.equal(companionAlert(s, 'wiese', player.x, player.y), true);
+  assert.equal(companionLine(s, 'wiese', player.x, player.y, 0), t('companion.near.startrail'));
+  assert.equal(hideoutShown(s, h, companion, player), true);
+  assert.equal(hideoutShown(s, h, companion), false, 'vom Begleiter allein zu weit');
+  assert.equal(hideoutShown(s, h, companion, { x: h.x + R + 2, y: h.y }), false, 'beide zu weit');
+  assert.equal(hideoutShown(state('updraft'), h, companion, player), false, 'nur mit Sternenspur');
+});
+
 test('„!“ über dem Begleiter: ein bereites Versteck seiner Gabe höchstens nearRadius von der Figur', () => {
   const h = byId('bucht-bottle'); // Strandgut bei (6,23)
   const s = state('beachcomb');
@@ -131,4 +149,21 @@ test('Fundzeile: für jeden Gegenstand der Tabelle ein eigener Satz, auch bei vo
   assert.equal(foundLine({ item: 'berry', treasure: null, lost: null }), t('hideout.found', { item: t('item.aBerry') }));
   assert.equal(foundLine({ item: null, treasure: null, lost: 'starfruit' }), t('hideout.foundFull', { item: t('item.aStarfruit') }));
   assert.equal(foundLine({ item: 'rare', treasure: 'glassshell', lost: null }), t('hideout.foundTreasure', { name: treasureName('glassshell') }));
+});
+
+test('„!“ steht über dem Begleiter oder seitlich neben ihm, nie auf der Figur', () => {
+  const p = { x: 160, y: 160 };
+  assert.deepEqual(alertSpot({ x: 160, y: 144 }, p), { x: 165, y: 132 }, 'über ihr: oben drüber');
+  assert.deepEqual(alertSpot({ x: 144, y: 160 }, p), { x: 149, y: 148 }, 'links: oben drüber');
+  assert.deepEqual(alertSpot({ x: 176, y: 160 }, p), { x: 181, y: 148 }, 'rechts: oben drüber');
+  assert.deepEqual(alertSpot({ x: 160, y: 176 }, p), { x: 176, y: 168 }, 'direkt dahinter: rechts daneben');
+  assert.ok(alertSpot({ x: 152, y: 168 }, p).x <= p.x - 6, 'halb links dahinter: links daneben');
+  // Die Figur belegt x … x+15 und y-2 … y+13, das „!“ 6 × 10 Pixel. Alle Lagen, auch mitten im Schritt.
+  for (let dx = -16; dx <= 16; dx += 2) {
+    for (let dy = -16; dy <= 16; dy += 2) {
+      const b = alertSpot({ x: p.x + dx, y: p.y + dy }, p);
+      const overlap = b.x < p.x + 16 && b.x + 6 > p.x && b.y < p.y + 14 && b.y + 10 > p.y - 2;
+      assert.ok(!overlap, `Begleiter bei ${dx},${dy}: „!“ bei ${b.x},${b.y}`);
+    }
+  }
 });

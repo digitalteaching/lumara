@@ -59,11 +59,13 @@ export function addCompanion(world, game) {
   // Für Szenen wie das Öffnen eines Verstecks (js/scenes/hideoutEvents.js):
   // - pixel(): wo er gerade gezeichnet wird, in Spielpixeln (null ohne Begleiter)
   // - cell(): sein Feld (null ohne Begleiter)
+  // - visible(): ob man ihn sieht (nicht, wenn er ohne Szene auf dem Feld der stehenden Figur steht)
   // - setPose({ x, y, side, walking }): zeichnet ihn dort statt hinter der Figur, walking lässt ihn
   //   hüpfen (nicht bei „Bewegung reduzieren“); setPose(null) stellt ihn wieder hinter die Figur.
   world.companion = {
     pixel: () => (shown ? (pose ? { x: pose.x, y: pose.y } : follower.pixel()) : null),
     cell: () => (shown ? { x: follower.x, y: follower.y } : null),
+    visible: () => !!shown && (!!pose || !follower.hidden()),
     setPose(p) {
       pose = p ?? null;
     },
