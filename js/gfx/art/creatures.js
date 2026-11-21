@@ -1453,32 +1453,32 @@ function klingfeder() {
   return done(g);
 }
 
-// Rostbold: ein kleiner Kobold aus rostigen Kisten. Er trägt eine Unterlegscheibe als Ohrring, eine
-// Mutter am Schwanz und drückt seine liebste Schraube an sich (Gebiet 6).
+// Rostbold: ein kleiner Kobold mit grüner Patina, der hinter seiner rostigen Kiste hervorschaut. Eine
+// Schraubenmutter trägt er als Krone, seine liebste Schraube hält er im Arm (Gebiet 6).
 function rostbold() {
   const g = canvas(32);
-  poly(g, [[9.5, 24], [4.5, 21.5], [3.5, 23], [8.5, 26]], ['h', 'r', 'o']); // Schwanz
-  ellipse(g, 3, 20.5, 2.3, 2.3, ['f', 'm', 's']); // Mutter am Schwanz
-  ellipse(g, 12, 29, 2.5, 1.5, ['h', 'r', 'o']); // Füße
-  ellipse(g, 19, 29, 2.5, 1.5, ['h', 'r', 'o']);
-  ellipse(g, 15.5, 23, 6, 5.5, ['h', 'r', 'o']); // Körper
-  ellipse(g, 16, 24, 3.3, 3.3, ['Y', 'y', 'r']); // Bauch
-  poly(g, [[14, 10], [4.5, 6], [5.5, 8.5], [13.5, 14]], ['h', 'r', 'o']); // Spitzohren
-  poly(g, [[24, 9.5], [31, 5.5], [30, 8.5], [25, 13.5]], ['h', 'r', 'o']);
-  ellipse(g, 19, 12.5, 6.5, 5.5, ['h', 'r', 'o']); // Kopf
-  ellipse(g, 26.5, 15.5, 3, 1.6, ['w', 'f', 'm']); // Schraube: Kopf
-  poly(g, [[25, 16.5], [28, 16.5], [28, 25], [26.5, 28], [25, 25]], ['f', 'm', 's']); // Schraube: Schaft
-  ellipse(g, 24, 21, 1.8, 1.6, ['h', 'r', 'o']); // Händchen
+  ellipse(g, 8, 16, 2.3, 3.8, ['t', 'F', 'F']); // Schlappohr, nach hinten unten
+  ellipse(g, 15, 20, 6.5, 3, ['T', 't', 'F']); // Schultern
+  ellipse(g, 15, 13, 6.5, 5.5, ['T', 't', 't']); // Kopf
+  poly(g, [[11, 6], [19, 6], [19, 8], [17, 9.5], [13, 9.5], [11, 8]], ['m', 'm', 's']); // Mutter als Krone
+  poly(g, [[11, 6], [13, 4.5], [17, 4.5], [19, 6], [17, 7.5], [13, 7.5]], ['w', 'f', 'm']);
+  ellipse(g, 23.5, 9.5, 3, 1.5, ['w', 'f', 'm']); // Schraube: Kopf
+  poly(g, [[22, 10.5], [25, 10.5], [25, 20], [22, 20]], ['f', 'm', 's']); // Schraube: Schaft
+  poly(g, [[3, 20], [27, 20], [27, 30], [3, 30]], ['r', 'o', 'b']); // rostige Kiste
+  ellipse(g, 9.5, 20, 1.6, 1.3, ['T', 't', 'F']); // Händchen am Kistenrand
+  ellipse(g, 21, 15.5, 1.7, 1.5, ['T', 't', 'F']); // Händchen um die Schraube
   outline(g);
-  for (const y of [18, 20, 22, 24]) dots(g, [[25, y, 'w'], [26, y, 'f'], [27, y, 'f'], [25, y + 1, 's'], [26, y + 1, 's'], [27, y + 1, 'm']]); // Gewinde
-  dots(g, [[2, 20, 'k'], [3, 20, 'k'], [29, 7, 'f'], [28, 7, 'm'], [29, 8, 'k'], // Loch in der Mutter, Unterlegscheibe
-    [25, 15, 'd'], [26, 15, 'd'], [27, 15, 'd'], // Schlitz
-    [17, 6, 'o'], [19, 5, 'o'], [21, 6, 'o'], // Haarborsten
-    [9, 8, 'o'], [10, 9, 'o'], [14, 20, 'o'], [13, 21, 'o'], [10, 22, 'o'], [21, 27, 'o'], [15, 9, 'o'], [16, 9, 'o']]); // Rostflecken
-  eye(g, 18, 10, 2, 3);
-  eye(g, 22, 10, 2, 3);
-  dots(g, [[20, 13, 'C'], [21, 13, 'C'], [20, 14, 'e'], // Knubbelnase
-    [18, 15, 'k'], [19, 16, 'k'], [20, 16, 'k'], [21, 16, 'k'], [22, 15, 'k'], [17, 13, 'p'], [24, 13, 'p']]);
+  for (const y of [12, 14, 16, 18]) dots(g, [[22, y, 'w'], [23, y, 'f'], [24, y, 'f'], [22, y + 1, 's'], [23, y + 1, 's'], [24, y + 1, 'm']]); // Gewinde
+  for (let x = 3; x <= 26; x++) dots(g, [[x, 20, 'r'], [x, 25, 'b']]); // Kistenrand, Fuge
+  dots(g, [[22, 9, 'd'], [23, 9, 'd'], [24, 9, 'd'], // Schlitz
+    [14, 6, 'k'], [15, 6, 'k'], [16, 6, 'k'], [15, 5, 'm'], [13, 8, 's'], [17, 8, 's'], // Loch und Kanten der Mutter
+    [4, 22, 'm'], [4, 28, 'm'], [25, 22, 'm'], [25, 28, 'm'], [4, 21, 'f'], [25, 21, 'f'], // Nieten
+    [4, 23, 'C'], [4, 24, 'e'], [25, 23, 'C'], [25, 24, 'C'], [25, 29, 'e'], [12, 22, 'C'], [12, 23, 'e'], [18, 27, 'C'], [18, 28, 'e'], [9, 27, 'C'], // Roststreifen
+    [7, 15, 't'], [7, 16, 't'], [20, 15, 'F'], [19, 17, 'F'], [10, 18, 'F'], // Falte im Ohr, Schatten
+    [11, 11, 'o'], [12, 10, 'C'], [17, 10, 'C'], [16, 11, 'o'], [11, 19, 'o'], [13, 20, 'C'], [19, 19, 'C']]); // Rostsommersprossen
+  eye(g, 14, 12, 2, 3);
+  eye(g, 18, 12, 2, 3);
+  dots(g, [[15, 16, 'k'], [16, 17, 'k'], [17, 17, 'k'], [18, 16, 'k']]); // Lächeln
   return done(g);
 }
 
