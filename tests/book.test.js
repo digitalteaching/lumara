@@ -49,7 +49,7 @@ test('Jeder Eintrag sagt seinen Zustand mit Text, nicht nur mit Farbe', () => {
   assert.deepEqual(bookLabels({ status: 'beaten', shiny: true }), ['● Besiegt', '✦ Glanzform gesehen']);
   setLanguage('en');
   try {
-    assert.deepEqual(bookLabels({ status: 'beaten', shiny: true }), ['● Beaten', '✦ Shiny form seen']);
+    assert.deepEqual(bookLabels({ status: 'beaten', shiny: true }), ['● Beaten', '✦ Glimmer form seen']);
   } finally {
     setLanguage('de');
   }

@@ -191,6 +191,17 @@ test('Französisch: keine fehlende Elision vor Namen, kein Wesenname mit Vokal a
   assert.equal(wildName('eichhuscher', 1, 'the'), `${FR_SPECIES.eichhuscher.gender === 'f' ? 'La' : 'Le'} ${FR_SPECIES.eichhuscher.names[0]} sauvage`);
 });
 
+// Alle Zeichenketten in einem Wert, auch in Listen und verschachtelten Objekten (nur die Texte, kein Code).
+const strings = v => (typeof v === 'string' ? [v] : v && typeof v === 'object' ? Object.values(v).flatMap(strings) : []);
+
+test('Französisch: vor : ; ? ! steht nie ein normales Leerzeichen, sondern ein geschütztes', () => {
+  const L = FOREIGN.fr;
+  const all = [L.ui, L.species, L.world, L.story, L.secret, L.quests].flatMap(strings);
+  assert.ok(all.length > 1000, `${all.length} Texte`);
+  assert.deepEqual(all.filter(s => / [:;?!]/.test(s)), []);
+  assert.ok(all.some(s => / [:;?!]/.test(s)), 'geschützte Leerzeichen gibt es');
+});
+
 test('Zahlen im Satz: Bei 1 steht keine Mehrzahl (Karte, Tasche)', () => {
   const PLURAL_AFTER_ONE = /\b1 (lampes|places|huecos|sitios|sockets|places used)\b|Brillan 1\b|\b1 \w+ are\b|\b1 of 8 sockets are\b/;
   for (const lang of ['en', 'fr', 'es']) {

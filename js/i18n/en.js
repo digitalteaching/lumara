@@ -395,11 +395,11 @@ export const EN = {
   'book.seen': '◐ Seen',
   'book.beaten': '● Beaten',
   'book.friend': '♥ Friend',
-  'book.shinySeen': '✦ Shiny form seen',
+  'book.shinySeen': '✦ Glimmer form seen',
 
   // Glanzform
   'duel.shinyAppears': '✦ It shimmers in a rare colour!',
-  'duel.shinyMark': '✦ Shiny form',
+  'duel.shinyMark': '✦ Glimmer form',
 
   // Entwicklung und Fähigkeiten
   'ability.2.name': 'Second Chance',
@@ -501,7 +501,7 @@ export const EN = {
   'gear.hint2': 'On the star map, the star of the first gear points {a}.',
   'gear.hint3': 'For the second it points {b}, for the third {c}.',
   'gear.domeClosed': 'The dome is shut tight. Maybe the gears next to it can open it.',
-  'gift.beachcomb.name': 'Beachcombing',
+  'gift.beachcomb.name': 'Beach finds',
   'gift.beachcomb.text': 'Finds bottle mail and things buried in the sand.',
   'gift.climb.name': 'Climbing',
   'gift.climb.text': 'Reaches nests and caves high up in the trees.',
@@ -509,10 +509,10 @@ export const EN = {
   'gift.glow.text': 'Makes dark corners, root tunnels and shadows bright.',
   'gift.clearsight.name': 'Clear sight',
   'gift.clearsight.text': 'Sees which mirage hides a real path.',
-  'gift.updraft.name': 'Updraft',
-  'gift.updraft.text': 'Carries you to rock spikes and ledges above clouds and water.',
-  'gift.tinker.name': 'Tinkering',
-  'gift.tinker.text': 'Opens rusty boxes, wall drawers and lock boxes.',
+  'gift.updraft.name': 'Wind lift',
+  'gift.updraft.text': 'Carries you up to high rocks above clouds and water.',
+  'gift.tinker.name': 'Fixing',
+  'gift.tinker.text': 'Opens rusty boxes, wall drawers and old boxes at the canal.',
   'gift.dive.name': 'Diving',
   'gift.dive.text': 'Dives into ice holes, canals, ponds and the sea.',
   'gift.startrail.name': 'Star trail',
