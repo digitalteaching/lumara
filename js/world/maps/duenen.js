@@ -14,14 +14,14 @@ export const DUENEN = {
     'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD',
     'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD',
     'DDDsssssssDDDDDDDDDDDDDDssssssssssssssDD',
-    'DDDsssssssDDDDDDDDDDDDDDssssssssssssssDD',
+    'DDDsssssssDDDDDDsDDDDDDDssssssssssssssDD',
     'DDDsssssssMMMMssssssssDDdddddddddddsssDD',
     'DDDsssssssMMMMssssssssDDdddddddddddsssDD',
     'DDDsssssssDDMMssssssssDDdddddddddddsssDD',
     'DDDDDDDDDDDDMMssssssssDDdddddddddddsssDD',
     'DDDDDDDDDDDDMMssssssssDDdddddddddddsssDD',
-    'DDDDDDDDDDDDMMssssssssDDssssssssssssssDD',
-    'DDDDDDDDDDDDssssssssssssssssssssssssssDD',
+    'DDDDDDDDDDDDMMsssssssssDssssssssssssssDD',
+    'DDDDDDDDDDDsssssssssssssssssssssssssssDD',
     'DDDDDDDDDDDDssssssssssssssssssssssssssDD',
     'DDDDDDDDDDDDssssssssssssssssssssssssssDD',
     'DDDDDDDDDDDDssssss____________________%%',
@@ -93,6 +93,12 @@ export const DUENEN = {
     { type: 'deco', id: 'statue-sued-ost', x: 22, y: 19, prop: 'statue', lines: ['Eine Statue aus Glas. Auf dem Sockel steht:', '„Was du weißt, kann dir niemand nehmen.“'] },
     { type: 'deco', id: 'statue-platz', x: 26, y: 11, prop: 'statue', lines: ['Eine Statue aus Glas. Auf dem Sockel steht:', '„Früher spiegelte sich hier das Wissen der ganzen Insel.“'] },
     { type: 'deco', id: 'statue-west', x: 12, y: 12, prop: 'statue', lines: ['Eine Statue aus Glas. Auf dem Sockel steht:', '„Nicht jeder Weg, der glänzt, ist ein Weg.“'] },
+    // Spielaufgabe (Lumara 1.2, js/data/tasks.js): drei Glasstatuen, die man mit A dreht, bis alle zum
+    // Leuchtstein schauen. Sie stehen auf früheren Dünenfeldern westlich, östlich und nördlich von
+    // ihm; prop ist ihre Anfangsstellung (TASKS[4].start).
+    { type: 'task', id: 'task4-switch0', task: 4, role: 'switch', index: 0, prop: 'glassstatue3', x: 11, y: 10 },
+    { type: 'task', id: 'task4-switch1', task: 4, role: 'switch', index: 1, prop: 'glassstatue0', x: 22, y: 9 },
+    { type: 'task', id: 'task4-switch2', task: 4, role: 'switch', index: 2, prop: 'glassstatue0', x: 16, y: 3 },
     // Der Glasturm: zu sehen, aber noch nicht erreichbar (Platz für Plan 4)
     { type: 'deco', id: 'glasturm', x: 6, y: 4, prop: 'glasstower' },
 

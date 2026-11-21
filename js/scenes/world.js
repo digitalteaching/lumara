@@ -87,6 +87,8 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
     // Zierobjekte: Riesenpilze, Glasstatuen, Glasturm, Windräder. anim wechselt alle 300 ms das
     // Bild (Windradflügel), bei „Bewegung reduzieren“ steht es still.
     deco: o => (o.anim ? `${o.prop}${game.reducedMotion ? 0 : Math.floor(time / 300) % 2}` : o.prop),
+    // Teile einer Spielaufgabe im Anfangszustand; js/scenes/taskEvents.js zeigt den Stand.
+    task: o => o.prop,
   };
 
   async function lock(fn) {

@@ -2,6 +2,8 @@
 // Natürliche Flächen werden aus festem Rauschen erzeugt (immer gleich), feste Dinge sind von Hand gezeichnet.
 // Zeichen: siehe gfx/palette.js. '.' ist durchsichtig.
 
+import { TASKS } from '../../data/tasks.js'; // nur für die Reihenfolge auf dem Zeichenstein
+
 function noise(x, y, seed) {
   let h = (Math.imul(x + 1, 374761393) + Math.imul(y + 1, 668265263) + Math.imul(seed + 7, 2246822519)) | 0;
   h = Math.imul(h ^ (h >>> 13), 1274126177);
@@ -1141,7 +1143,195 @@ function windmill(frame) {
   return toRows(g);
 }
 
+// ---------- Spielaufgaben (Lumara 1.2, js/data/tasks.js) ----------
+
+// Ein Bild auf ein anderes legen; mit under nur auf dessen leere Pixel (es steht dann dahinter).
+function layer(rows, sprite, ox, oy, { under = false } = {}) {
+  const g = rows.map(r => [...r]);
+  sprite.forEach((line, y) => [...line].forEach((ch, x) => {
+    const gx = ox + x, gy = oy + y;
+    if (ch === '.' || gy < 0 || gy >= g.length || gx < 0 || gx >= g[0].length) return;
+    if (!under || g[gy][gx] === '.') g[gy][gx] = ch;
+  }));
+  return toRows(g);
+}
+const mirror = rows => rows.map(r => [...r].reverse().join(''));
+
+// Kopf eines Möwenkükens, das nach rechts schaut: graues Flaumkleid, schwarzes Auge, gelber Schnabel.
+const CHICK = [
+  '.kkk..',
+  'kwffk.',
+  'kfkfhh',
+  'kfffk.',
+  'kfffk.',
+];
+
+// Holzkiste (Bucht): Rahmen, drei Bretter, darüber schaut ein Küken heraus.
+const crate = (() => {
+  const g = grid(16, 16, '.');
+  for (let y = 6; y < 16; y++) for (let x = 2; x < 14; x++) {
+    const edge = y === 6 || y === 15 || x === 2 || x === 13;
+    const frame = y === 7 || y === 14 || x === 3 || x === 12;
+    g[y][x] = edge ? 'k' : frame ? 'r' : y === 10 || y === 11 ? 'b' : (x + y) % 7 === 0 ? 'b' : 'o';
+  }
+  for (const [x, y] of [[3, 7], [12, 7], [3, 14], [12, 14]]) g[y][x] = 'm'; // Nägel
+  return toRows(g);
+})();
+
+// Ein Blütenbusch: wie der Beerenstrauch, aber mit rosa Blüten statt Beeren.
+const flowerBush = () => retint(bush, { e: 'R' });
+
+// Ein altes Ruderboot liegt kieloben am Strand; darunter ist es dunkel.
+const upturnedBoat = (() => {
+  const g = grid(16, 16, '.');
+  for (let y = 4; y <= 12; y++) for (let x = 0; x < 16; x++) {
+    const dx = (x - 7.5) / 7.5, dy = (12.5 - y) / 8.5;
+    if (dx * dx + dy * dy > 1) continue;
+    g[y][x] = y === 12 ? 'r' : y === 9 ? 'b' : y < 7 && x < 8 ? 'r' : (x * 3 + y) % 11 === 0 ? 'b' : 'o';
+  }
+  outline(g);
+  for (let x = 2; x < 14; x++) g[13][x] = x === 2 || x === 13 ? 'k' : 'n'; // Schatten unter dem Rand
+  g[14][3] = 'k'; g[14][12] = 'k'; // Klötze, auf denen es liegt
+  return toRows(g);
+})();
+
+// Die Möwenmutter auf ihrem Nest, das oben auf einem Pfahl im Wasser sitzt (sie schaut nach links);
+// vor ihr im Nest n Küken (0 bis 3).
+function gullNest(n) {
+  const g = grid(16, 16, '.');
+  for (let y = 11; y < 16; y++) for (let x = 6; x <= 9; x++) g[y][x] = x === 6 || x === 9 ? 'k' : x === 7 ? 'r' : 'o'; // Pfahl
+  for (let y = 0; y < 10; y++) for (let x = 0; x < 16; x++) {
+    const body = ((x - 11.5) / 4) ** 2 + ((y - 6.5) / 2.8) ** 2 <= 1;
+    const head = ((x - 9.5) / 2.9) ** 2 + ((y - 3) / 2.5) ** 2 <= 1;
+    if (body || head) g[y][x] = body && !head && y < 7 && x > 10 ? 's' : 'w';
+  }
+  outline(g);
+  for (const [x, y] of [[12, 5], [13, 5], [12, 6], [13, 6], [14, 6]]) g[y][x] = 'm'; // Flügel
+  g[3][9] = 'k'; // Auge
+  g[3][6] = 'h'; g[3][5] = 'h'; g[4][6] = 'e'; // Schnabel mit rotem Punkt
+  for (let y = 8; y <= 11; y++) for (let x = 0; x <= 15; x++) { // Nest aus Zweigen
+    const inset = [1, 0, 0, 2][y - 8];
+    if (x < inset || x > 15 - inset) continue;
+    g[y][x] = x === inset || x === 15 - inset || y === 11 ? 'k' : (x + y * 2) % 4 === 0 ? 'r' : (x + y) % 3 === 0 ? 'b' : 'o';
+  }
+  let out = toRows(g);
+  const small = ['.kk.', 'kwfk', 'kfkh']; // Kükenkopf, nach rechts; er sitzt auf dem Nestrand
+  for (const [x, y] of [[0, 6], [4, 6], [8, 7]].slice(0, n)) out = layer(out, small, x, y);
+  return out;
+}
+
+// Zeichen, in die Rinde geritzt (5 × 5): 0 Raute, 1 Dreieck, 2 Kreis, 3 Viereck. Das Viereck ist
+// ausgefüllt, damit es sich auf dem kleinen Bild deutlich vom Kreis unterscheidet.
+const RUNES = [
+  ['..X..', '.X.X.', 'X...X', '.X.X.', '..X..'],
+  ['..X..', '.X.X.', '.X.X.', 'X...X', 'XXXXX'],
+  ['.XXX.', 'X...X', 'X...X', 'X...X', '.XXX.'],
+  ['XXXXX', 'XXXXX', 'XXXXX', 'XXXXX', 'XXXXX'],
+];
+const rune = (i, ch) => RUNES[i].map(r => r.replace(/X/g, ch));
+
+// Ein Zeichenbaum im Flüsterwald (16 × 32): ein alter Baum ohne Gesicht, im Stamm ein Zeichen. Es
+// leuchtet (lit), wenn der Baum in der Reihenfolge dran war; open: darunter das offene Astloch.
+function runeTree(i, { lit = false, open = false } = {}) {
+  const g = grid(16, 32, '.');
+  for (let y = 0; y < 18; y++) for (let x = 0; x < 16; x++) {
+    const dx = (x - 7.5) / 8, dy = (y - 8.5) / 9;
+    const d = dx * dx + dy * dy;
+    if (d <= 1) g[y][x] = d > 0.8 ? 'k' : noise(x, y, 43 + i) < 0.3 ? 'F' : noise(x, y, 44) < 0.25 ? 'g' : 'l';
+  }
+  for (let y = 15; y < 31; y++) for (let x = 4; x < 12; x++) g[y][x] = x === 4 || x === 11 ? 'k' : (x + y) % 5 === 0 && (y < 18 || y > 24) ? 'b' : 'o';
+  for (const [x, y] of [[3, 29], [2, 30], [12, 29], [13, 30], [4, 31], [5, 31], [10, 31], [11, 31]]) g[y][x] = 'k';
+  if (open) {
+    for (let y = 25; y <= 29; y++) for (let x = 6; x <= 9; x++) g[y][x] = (y === 25 || y === 29) && (x === 6 || x === 9) ? 'o' : y === 25 || x === 6 || x === 9 || y === 29 ? 'b' : 'k';
+  }
+  return layer(toRows(g), rune(i, lit ? 'H' : 'y'), 6, 19);
+}
+
+// Der Zeichenstein am Eingang des Waldes: eine Steintafel mit den vier Zeichen in der Reihenfolge der
+// Aufgabe, zu lesen wie ein Buch (oben links, oben rechts, unten links, unten rechts).
+function runeStone(order) {
+  const g = grid(16, 16, '.');
+  for (let y = 1; y < 16; y++) for (let x = 1; x < 15; x++) {
+    if (y === 1 && (x === 1 || x === 14)) continue;
+    const edge = y === 1 || y === 15 || x === 1 || x === 14 || (y === 2 && (x === 1 || x === 14));
+    g[y][x] = edge ? 'k' : y < 4 && x < 5 ? 'm' : (x * 5 + y * 3) % 13 === 0 ? 'd' : 's';
+  }
+  let out = toRows(g);
+  order.forEach((i, n) => {
+    out = layer(out, rune(i, 'H'), n % 2 ? 9 : 2, n < 2 ? 3 : 9);
+  });
+  return out;
+}
+
+// Ein alter Wurzelstock im Moor, auf dem das Irrlicht am Ende ausruht.
+const wispStump = (() => {
+  const g = grid(16, 16, '.');
+  for (let y = 4; y < 14; y++) for (let x = 3; x < 13; x++) {
+    const top = ((x - 7.5) / 4.5) ** 2 + ((y - 6) / 2) ** 2 <= 1;
+    if (top) g[y][x] = ((x - 7.5) / 2.6) ** 2 + ((y - 6) / 1.1) ** 2 <= 1 ? 'y' : 'r';
+    else if (y > 6) g[y][x] = (x + y) % 4 === 0 ? 'b' : 'o';
+  }
+  for (const [x, y] of [[1, 13], [2, 13], [2, 12], [13, 13], [14, 13], [13, 12], [5, 14], [6, 14], [10, 14]]) g[y][x] = 'o'; // Wurzeln
+  g[6][7] = 'r'; g[6][8] = 'r'; // Jahresringe
+  outline(g);
+  for (const [x, y] of [[4, 9], [5, 10], [11, 8], [10, 11], [4, 12]]) g[y][x] = 'g'; // Moos
+  g[8][11] = 'T'; // ein winziger Leuchtpilz
+  return toRows(g);
+})();
+
+// Glasstatue der Spielaufgabe (16 × 32): schaut nach oben (0, man sieht den Hinterkopf), rechts (1,
+// zeigt mit dem Arm), unten (2, das Gesicht mit zwei Augen) oder links (3).
+function glassStatue(dir) {
+  const g = grid(16, 32, '.');
+  const glass = (x, x0, x1) => (x === x0 || x === x1 ? 'S' : x === x0 + 1 ? 'w' : x === x1 - 1 ? 'L' : 'A');
+  for (let y = 2; y < 10; y++) for (let x = 3; x < 13; x++) {
+    const dx = (x - 7.5) / 3.6, dy = (y - 5.5) / 3.3;
+    const d = dx * dx + dy * dy;
+    if (d <= 1) g[y][x] = d > 0.62 ? 'S' : x < 7 ? 'w' : 'A';
+  }
+  for (let y = 10; y < 25; y++) {
+    const half = 2 + Math.floor((y - 10) / 5);
+    const x0 = 8 - half, x1 = 7 + half;
+    for (let x = x0; x <= x1; x++) g[y][x] = glass(x, x0, x1);
+  }
+  if (dir === 2) {
+    for (const [x, y] of [[6, 5], [9, 5], [6, 6], [9, 6]]) g[y][x] = 'D'; // Augen
+    g[8][7] = 'L'; g[8][8] = 'L'; // Mund
+  } else if (dir === 0) {
+    for (let y = 3; y <= 8; y++) g[y][7] = 'L'; // Scheitel und Nacken
+    g[2][7] = 'S'; g[2][8] = 'S'; g[1][7] = 'S'; g[1][8] = 'S'; // Haarknoten
+  } else {
+    // Profil nach rechts; links ist das Spiegelbild
+    g[5][10] = 'D'; g[6][10] = 'D'; // Auge
+    g[6][12] = 'S'; g[7][12] = 'S'; g[6][11] = 'A'; g[7][11] = 'A'; // Nase
+    for (let x = 10; x <= 14; x++) { g[12][x] = 'S'; g[13][x] = x === 14 ? 'S' : 'A'; } // ausgestreckter Arm
+    g[14][14] = 'S';
+  }
+  for (let y = 25; y < 32; y++) for (let x = 2; x < 14; x++) g[y][x] = y === 25 || y === 31 || x === 2 || x === 13 ? 'k' : y < 27 ? 'm' : 's';
+  const rows = toRows(g);
+  return dir === 3 ? mirror(rows) : rows;
+}
+
+const TASK_PROPS = {
+  chickcrate: layer(crate, CHICK, 5, 2, { under: true }),
+  chickcrateDone: crate,
+  chickbush: layer(flowerBush(), CHICK, 10, 0, { under: true }),
+  chickbushDone: flowerBush(),
+  chickboat: layer(upturnedBoat, mirror(CHICK), 1, 11),
+  chickboatDone: upturnedBoat,
+  ...Object.fromEntries([0, 1, 2, 3].map(n => [`gullnest${n}`, gullNest(n)])),
+  ...Object.fromEntries([0, 1, 2, 3].flatMap(i => [
+    [`runetree${i}`, runeTree(i)],
+    [`runetree${i}Lit`, runeTree(i, { lit: true })],
+    [`runetree${i}Open`, runeTree(i, { lit: true, open: true })],
+  ])),
+  runestone: runeStone(TASKS[2].order),
+  wispstump: wispStump,
+  ...Object.fromEntries([0, 1, 2, 3].map(d => [`glassstatue${d}`, glassStatue(d)])),
+};
+
 export const PROPS = {
+  ...TASK_PROPS,
   bigshroom: bigShroom(),
   statue: statue(),
   glasstower: glassTower(),

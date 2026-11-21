@@ -43,6 +43,7 @@ const FILES = [
   "js/data/secrets.js",
   "js/data/species.js",
   "js/data/story.js",
+  "js/data/tasks.js",
   "js/data/texts.js",
   "js/duel/answers.js",
   "js/duel/duel.js",
@@ -138,6 +139,7 @@ const FILES = [
   "js/scenes/pack.js",
   "js/scenes/recover.js",
   "js/scenes/start.js",
+  "js/scenes/taskEvents.js",
   "js/scenes/title.js",
   "js/scenes/transition.js",
   "js/scenes/world.js",
@@ -193,6 +195,7 @@ const FILES = [
   "js/world/finale.js",
   "js/world/stars.js",
   "js/world/slide.js",
+  "js/world/tasks.js",
   "js/world/player.js"
 ];
 

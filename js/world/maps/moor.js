@@ -27,7 +27,7 @@ export const MOOR = {
     'YYBBBBBBBBBBBBBBBBB==BBBBBBBBBBBBBBBBBYY',
     'YYBBBBBBBBBBBBBBBBB==BBBBBBBBBBBBBBBBBYY',
     'YYaaaaaaaaaaaaaaaaaaaaaaaaaaaaaBBBBaaaYY',
-    'YYauaaaaaaaaaaaaaaaaaaaaaaaaaaaBBBBaaaYY',
+    'YYaaaaaaaaaaaaaaaaaaaaaaaaaaaaaBBBBaaaYY',
     'YYaarrrrrrrraaaaaaaaaaaaaaaaaaaaaaaaaaYY',
     'YYaarrrrrrrraaaaaaaaaaaaaaarrrrrrrraaaYY',
     'YYaarrrrrrrraaaaaaaaaaaaaaarrrrrrrraaaYY',
@@ -101,6 +101,9 @@ export const MOOR = {
       ],
     },
 
+    // Spielaufgabe (Lumara 1.2, js/data/tasks.js): Ein Irrlicht führt vom Eingang über fünf Stationen
+    // zu diesem Wurzelstock (früher ein Leuchtpilz). Die Stationen sind keine Objekte.
+    { type: 'task', id: 'task3-rest', task: 3, role: 'rest', prop: 'wispstump', x: 3, y: 17 },
     { type: 'notestone', id: 'zettel-nord', x: 24, y: 3 },
     { type: 'notestone', id: 'zettel-marsch', x: 14, y: 22 },
     { type: 'notestone', id: 'zettel-tuempel', x: 10, y: 24 },

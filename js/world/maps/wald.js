@@ -30,14 +30,14 @@ export const WALD = {
     'YYmm;;;;;;;mmmmmmm____mmmmmmmmmmmmmmmmYY',
     'YYm;;;;;;;;;mmmmmm____mmmmmmmmm;;;;mmmYY',
     'YYm;;;;;;;;;mmmmmm____mmmmmmmm;;;;;;mmYY',
-    'YYm;;;;;;;;mmmmmmm____mmmmmmmm;;;;;;mmYY',
+    'Ymm;;;;;;;;mmmmmmm____mmmmmmmm;;;;;;mmYY',
     'YYmm;;;;;;mmmmmmmm____mmmmmmmmm;;;;mmmYY',
     'YYmmmmmmmmmmmmpmmm____mmmmmmmmmmmmmmmmYY',
-    'YYmmmmmmmmmmmmmmmm____mmmmmmmpmmmmmmmmYY',
-    'YYYmmmmmmmmmmmmmmm____mmmmmmmmmmmmmmmYYY',
-    'YYYYmmmmmmmmmmmmmm____mmmmmmmmmmmmmmYYYY',
+    'YYmmmmmmmmmmmmmmmm____mmmmmmmmmmmmmmmmYY',
+    'YYYmmmmmmmmmmmmmmm____mmmmmmmmmmmmmmmmYY',
+    'YYYmmmmmmmmmmmmmmm____mmmmmmmmmmmmmmYYYY',
     'YYYYYmmmmmmmmmmmmm____mmmmmmmmmmmmmYYYYY',
-    'YYYYYYYYYYYYYYYmmm____mmmYYYYYYYYYYYYYYY',
+    'YYYYYYYYYYYYYYmmmm____mmmYYYYYYYYYYYYYYY',
     'YYYYYYYYYYYYYYYYYY____YYYYYYYYYYYYYYYYYY',
   ],
   legend: {
@@ -99,6 +99,14 @@ export const WALD = {
       lines: ['In der alten Eiche ist ein Loch, so groß wie eine Tür.', 'Drinnen ist es stockdunkel. Mit einer Laterne könntest du hineingehen.'],
       linesOpen: ['Du zündest die Laterne an und kletterst in die Eiche.'],
     },
+    // Spielaufgabe (Lumara 1.2, js/data/tasks.js): vier Bäume mit eingeritzten Zeichen (index: 0 Raute,
+    // 1 Dreieck, 2 Kreis, 3 Viereck) und der Zeichenstein am Eingang. Sie stehen auf früheren
+    // Baum- und Pilzfeldern.
+    { type: 'task', id: 'task2-clue', task: 2, role: 'clue', prop: 'runestone', x: 14, y: 28 },
+    { type: 'task', id: 'task2-switch0', task: 2, role: 'switch', index: 0, prop: 'runetree0', x: 1, y: 21 }, // am Westrand beim Farn
+    { type: 'task', id: 'task2-switch1', task: 2, role: 'switch', index: 1, prop: 'runetree1', x: 29, y: 24 }, // im Südosten, wo ein Pilz stand
+    { type: 'task', id: 'task2-switch2', task: 2, role: 'switch', index: 2, prop: 'runetree2', x: 37, y: 25 }, // am Ostrand
+    { type: 'task', id: 'task2-switch3', task: 2, role: 'switch', index: 3, prop: 'runetree3', x: 3, y: 26 }, // im Südwesten
     { type: 'notestone', id: 'zettel-farn', x: 5, y: 24 },
     { type: 'notestone', id: 'zettel-bach', x: 33, y: 16 },
     { type: 'notestone', id: 'zettel-lichtung', x: 12, y: 4 },

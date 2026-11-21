@@ -22,16 +22,16 @@ export const BUCHT = {
     'TT.,,,,,,,,.......____....**...........T',
     'TT.,,,,,,,,.......____....**..........TT',
     'TT................____...............~~~',
-    'TT.o.####.........____.....####.....~~~~',
+    'TT.o.###..........____.....####.....~~~~',
     'TT................____..............~~~~',
     'TT...___________________________....~~~~',
     'TT.T.___________________________....~~~~',
     'TT....****........____.***....______~~~~',
-    'TT....****..T.....____.***..T.______~~~~',
+    'TT....****..T.....____.***....______~~~~',
     'TT::::::::::::::::____::::::::......~~~~',
     'TTo:::::::::::::::____::::::::......~~~~',
     '::::::::::::::::::____::::::::^^^^^^^~~~',
-    ':::::::::::::::o::____:::::o::::::::~~~~',
+    '::::::::::::::::::____:::::o::::::::~~~~',
     '::::::::::::::::::==::::::::::::::::~~~~',
     '~~~~~~~~~~~~~~~~~~==~~~~~~~~~~~~~~~~~~~~',
     '~~~~~~~~~~~~~~~~~~==~~~~~~~~~~~~~~~~~~~~',
@@ -77,6 +77,13 @@ export const BUCHT = {
       to: { map: 'garten', ...GARTEN.spawn },
       lines: ['Ein Tor aus Weidenzweigen, voller Blüten. Dahinter liegt der Garten deiner Freunde.'],
     },
+    // Spielaufgabe (Lumara 1.2, js/data/tasks.js): Die Möwenmutter brütet auf einem Pfahl im Wasser am
+    // Steg, drei Küken haben sich versteckt. Die Küken stehen dort, wo früher Zaun, Baum und Fels
+    // waren; so bleibt jedes Feld frei, auf dem man stehen konnte.
+    { type: 'task', id: 'task1-giver', task: 1, role: 'giver', prop: 'gullnest0', x: 20, y: 23 },
+    { type: 'task', id: 'task1-item0', task: 1, role: 'item', index: 0, prop: 'chickcrate', x: 8, y: 12 }, // Kiste am Zaun bei Odas Haus
+    { type: 'task', id: 'task1-item1', task: 1, role: 'item', index: 1, prop: 'chickbush', x: 28, y: 17 }, // Blütenbusch östlich vom Weg
+    { type: 'task', id: 'task1-item2', task: 1, role: 'item', index: 2, prop: 'chickboat', x: 15, y: 21 }, // altes Boot kieloben am Strand
     { type: 'building', id: 'haus-oda', x: 9, y: 11, w: 3, h: 3, sprite: 'housePlum', door: { dx: 1, dy: 2 }, onDoor: 'locked', lines: ['Odas Haus. Die Tür ist verschlossen.'] },
     { type: 'building', id: 'haus-ilvy', x: 23, y: 11, w: 3, h: 3, sprite: 'houseTeal', door: { dx: 1, dy: 2 }, onDoor: 'locked', lines: ['Ilvys Haus. Die Tür ist verschlossen.'] },
     { type: 'building', id: 'haus-bram', x: 13, y: 16, w: 3, h: 3, sprite: 'house', door: { dx: 1, dy: 2 }, onDoor: 'locked', lines: ['Brams Haus. Die Tür ist verschlossen.'] },

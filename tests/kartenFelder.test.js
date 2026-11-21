@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createMap } from '../js/world/map.js';
+import { cellKey, createMap } from '../js/world/map.js';
 import { BUCHT } from '../js/world/maps/bucht.js';
 import { WALD } from '../js/world/maps/wald.js';
 import { MOOR } from '../js/world/maps/moor.js';
@@ -25,5 +25,17 @@ test('Jedes Feld, auf dem man in 1.1 stehen konnte, ist weiter begehbar', () => 
       return !now.canEnter(x, y);
     });
     assert.deepEqual(lost, [], def.id);
+  }
+});
+
+// Keine neuen Wege (Lumara 1.2): Verstecke und Spielaufgaben liegen auf Feldern, die schon vorher
+// Hindernisse waren. Wird unter einem Teil einer Aufgabe Boden daraus, belegt das Teil das Feld.
+test('Keine neuen Wege: Auf den Gebietskarten kann man nur dort stehen, wo man in 1.1 stand', () => {
+  for (const def of [BUCHT, WALD, MOOR, DUENEN, KLIPPEN, RUINEN, SEE, WIESE]) {
+    const m = open(def);
+    const old = new Set(KARTEN_1_1[def.id]);
+    const extra = [];
+    for (let y = 0; y < m.height; y++) for (let x = 0; x < m.width; x++) if (m.canEnter(x, y) && !old.has(cellKey(x, y))) extra.push(cellKey(x, y));
+    assert.deepEqual(extra, [], def.id);
   }
 });

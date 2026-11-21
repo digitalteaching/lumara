@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createMap, reachable, cellKey, step } from '../js/world/map.js';
 import { MOOR } from '../js/world/maps/moor.js';
 import { beaconFront } from '../js/world/network.js';
+import { TASKS } from '../js/data/tasks.js';
 
 const NEAR = [[0, 1], [0, -1], [1, 0], [-1, 0]];
 
@@ -62,4 +63,13 @@ test('Moor: Spieltexte sind kurz und nennen Morrow nicht', () => {
       assert.equal(/morrow/i.test(l), false, l);
     }
   }
+});
+
+test('Moor: Das Irrlicht der Spielaufgabe wartet gleich am Eingang und endet am Wurzelstock', () => {
+  const [first] = TASKS[3].stations, last = TASKS[3].stations.at(-1);
+  // Vom Eingang aus auf dem Schirm (15 × 10 Felder)
+  assert.ok(Math.abs(first.x - MOOR.spawn.x) <= 6 && Math.abs(first.y - MOOR.spawn.y) <= 4);
+  const stump = MOOR.objects.find(o => o.type === 'task' && o.role === 'rest');
+  assert.deepEqual({ x: stump.x, y: stump.y }, last);
+  assert.equal(stump.prop, 'wispstump');
 });

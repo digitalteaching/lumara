@@ -48,3 +48,12 @@ test('Wald: der Leuchtstein liegt nicht im Blickfeld des Waldläufers', () => {
   for (let i = 0; i < t.sight; i++) seen.push(cellKey(...Object.values((p = step(p, t.dir)))));
   assert.ok(!seen.includes(cellKey(b.x, b.y)));
 });
+
+test('Wald: Spielaufgabe – vier Zeichenbäume im Süden, der Zeichenstein nah am Eingang', () => {
+  const parts = WALD.objects.filter(o => o.type === 'task' && o.task === 2);
+  const trees = parts.filter(o => o.role === 'switch');
+  assert.equal(trees.length, 4);
+  assert.ok(trees.every(o => o.y > 15), 'südlich vom Bach, ohne am Waldläufer vorbei zu müssen');
+  const clue = parts.find(o => o.role === 'clue');
+  assert.ok(Math.abs(clue.x - WALD.spawn.x) + Math.abs(clue.y - WALD.spawn.y) <= 6, 'Zeichenstein am Eingang');
+});

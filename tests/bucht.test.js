@@ -62,3 +62,14 @@ test('Trainerin 1 blickt über mindestens 2 begehbare Felder', () => {
   }
   assert.ok(n >= 2);
 });
+
+test('Bucht: Spielaufgabe – die Möwenmutter brütet am Steg, drei Küken stecken im Dorf und am Strand', () => {
+  const m = createMap(BUCHT), r = reachable(m, BUCHT.spawn);
+  const parts = BUCHT.objects.filter(o => o.type === 'task' && o.task === 1);
+  const mother = parts.find(o => o.role === 'giver');
+  assert.equal(m.tileAt(mother.x, mother.y), 'water');
+  assert.ok([[0, 1], [0, -1], [1, 0], [-1, 0]].some(([dx, dy]) => m.tileAt(mother.x + dx, mother.y + dy) === 'pier'), 'am Steg');
+  const chicks = parts.filter(o => o.role === 'item');
+  assert.deepEqual(chicks.map(o => o.prop).sort(), ['chickboat', 'chickbush', 'chickcrate']);
+  for (const o of chicks) assert.ok([[0, 1], [0, -1], [1, 0], [-1, 0]].some(([dx, dy]) => r.has(cellKey(o.x + dx, o.y + dy))), o.id);
+});

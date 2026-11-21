@@ -36,6 +36,7 @@ import { playEvolution } from './evolution.js';
 import { addCompanion } from './companion.js';
 import { addGarden } from './gardenEvents.js';
 import { addHideouts } from './hideoutEvents.js';
+import { addTasks } from './taskEvents.js';
 import { questFor, acceptQuest, advanceQuest, finishQuest, activePickups, activeGuests } from '../world/quests.js';
 import { questText } from '../data/quests.js';
 import { maxEnergy, stageForLevel } from '../duel/progress.js';
@@ -920,6 +921,10 @@ export function createGameWorld(game) {
   // Verstecke (Lumara 1.2, Spec 6.5): Ihr A-Handler kommt an den Anfang; Duell und Level-Zeilen
   // laufen über die Wege dieser Welt.
   addHideouts(world, game, { wildDuel, levelUps });
+
+  // Spielaufgaben (Lumara 1.2, Spec 6.6): Ihr A-Handler kommt an den Anfang, das Folgen des
+  // Irrlichts hängt sich hinten an onStepped.
+  addTasks(world, game);
 
   // Im Garten am Leuchtturm wohnen die Freunde, die nicht mitlaufen (Lumara 1.2). Vor dem Begleiter,
   // damit sein A-Handler der letzte bleibt.

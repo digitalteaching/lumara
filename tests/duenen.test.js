@@ -67,3 +67,11 @@ test('Dünen: Spieltexte sind kurz und nennen Morrow nicht', () => {
     }
   }
 });
+
+test('Dünen: Spielaufgabe – drei drehbare Glasstatuen um den Leuchtstein, die Inschrift-Statuen bleiben', () => {
+  const b = DUENEN.objects.find(o => o.type === 'beacon');
+  const turning = DUENEN.objects.filter(o => o.type === 'task' && o.task === 4);
+  assert.equal(turning.length, 3);
+  for (const s of turning) assert.ok(Math.abs(s.x - b.x) + Math.abs(s.y - b.y) <= 8, s.id);
+  assert.equal(DUENEN.objects.filter(o => o.type === 'deco' && o.prop === 'statue').length, 4);
+});

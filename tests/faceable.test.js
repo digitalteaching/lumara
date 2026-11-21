@@ -41,7 +41,7 @@ function restStates(map, spawn, occupied) {
 
 const faces = (states, x, y) => states.some(s => { const f = step(s, s.dir); return f.x === x && f.y === y; });
 
-test('An jedem Ort kann man sich zu Stein, Geschichtsstein und Fundstück drehen und sie mit A nehmen', () => {
+test('An jedem Ort kann man sich zu Stein, Geschichtsstein, Fundstück und Spielaufgabe drehen und sie mit A nehmen', () => {
   const state = newGameState({ name: 'A', species: 'nixi', nickname: null });
   for (const def of Object.values(MAPS)) {
     const map = createMap(def, { openGates: (def.gates ?? []).map(g => g.id) });
@@ -49,7 +49,7 @@ test('An jedem Ort kann man sich zu Stein, Geschichtsstein und Fundstück drehen
     const states = restStates(map, { ...def.spawn }, occupied);
     const targets = [
       ...(def.secretStone ? [['Stein', def.secretStone]] : []),
-      ...def.objects.filter(o => ['storystone', 'gear', 'gearhint', 'notestone', 'npc', 'boss', 'heal'].includes(o.type) || (o.type === 'deco' && o.lines)).map(o => [`${o.type} ${o.id}`, o]),
+      ...def.objects.filter(o => ['storystone', 'gear', 'gearhint', 'notestone', 'npc', 'boss', 'heal', 'task'].includes(o.type) || (o.type === 'deco' && o.lines)).map(o => [`${o.type} ${o.id}`, o]),
       ...QUESTS.flatMap(q => q.steps).filter(st => st.kind === 'pickup' && st.map === def.id).map(st => [st.id, st]),
     ];
     for (const [what, at] of targets) assert.ok(faces(states, at.x, at.y), `${def.id}: ${what} bei (${at.x}, ${at.y}) lässt sich nicht ansehen`);
