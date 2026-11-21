@@ -1453,29 +1453,31 @@ function klingfeder() {
   return done(g);
 }
 
-// Rostbold: ein kleiner Kobold mit grüner Patina, der hinter seiner rostigen Kiste hervorschaut. Eine
-// Schraubenmutter trägt er als Krone, seine liebste Schraube hält er im Arm (Gebiet 6).
+// Rostbold: ein kleiner fliederfarbener Kobold, der hinter seiner rostigen Kiste hervorschaut. Eine
+// Schraubenmutter trägt er als Armreif, seine liebste Schraube hält er im Arm (Gebiet 6).
 function rostbold() {
   const g = canvas(32);
-  ellipse(g, 8, 16, 2.3, 3.8, ['t', 'F', 'F']); // Schlappohr, nach hinten unten
-  ellipse(g, 15, 20, 6.5, 3, ['T', 't', 'F']); // Schultern
-  ellipse(g, 15, 13, 6.5, 5.5, ['T', 't', 't']); // Kopf
-  poly(g, [[11, 6], [19, 6], [19, 8], [17, 9.5], [13, 9.5], [11, 8]], ['m', 'm', 's']); // Mutter als Krone
-  poly(g, [[11, 6], [13, 4.5], [17, 4.5], [19, 6], [17, 7.5], [13, 7.5]], ['w', 'f', 'm']);
-  ellipse(g, 23.5, 9.5, 3, 1.5, ['w', 'f', 'm']); // Schraube: Kopf
-  poly(g, [[22, 10.5], [25, 10.5], [25, 20], [22, 20]], ['f', 'm', 's']); // Schraube: Schaft
-  poly(g, [[3, 20], [27, 20], [27, 30], [3, 30]], ['r', 'o', 'b']); // rostige Kiste
-  ellipse(g, 9.5, 20, 1.6, 1.3, ['T', 't', 'F']); // Händchen am Kistenrand
-  ellipse(g, 21, 15.5, 1.7, 1.5, ['T', 't', 'F']); // Händchen um die Schraube
+  ellipse(g, 7.5, 13.5, 2.2, 3, ['v', 'P', 'P']); // Schlappohr, nach hinten unten
+  ellipse(g, 15, 20, 6.5, 3, ['V', 'v', 'P']); // Schultern
+  ellipse(g, 15, 13, 6.5, 5.5, ['V', 'v', 'v']); // Kopf
+  poly(g, [[13.5, 8], [14.5, 5], [16, 7.5]], ['C', 'C', 'e']); // rostroter Haarschopf
+  poly(g, [[15.5, 8], [17.5, 5.5], [18, 8.5]], ['C', 'C', 'e']);
+  ellipse(g, 7.5, 19, 1.6, 2, ['V', 'v', 'P']); // Arm
+  poly(g, [[5.5, 17.5], [9.5, 17.5], [9.5, 19.5], [5.5, 19.5]], ['w', 'f', 'm']); // Mutter als Armreif
+  ellipse(g, 26, 13, 3, 1.5, ['w', 'f', 'm']); // Schraube: Kopf
+  poly(g, [[24.5, 14], [27.5, 14], [27.5, 21], [24.5, 21]], ['f', 'm', 's']); // Schraube: Schaft
+  poly(g, [[3, 20], [29, 20], [29, 30], [3, 30]], ['r', 'o', 'b']); // rostige Kiste
+  for (let x = 3; x <= 28; x++) dots(g, [[x, 20, 'r'], [x, 25, 'b']]); // Kistenrand, Fuge
+  ellipse(g, 7.5, 20.5, 1.6, 1.2, ['V', 'v', 'P']); // Händchen auf dem Kistenrand
+  ellipse(g, 23.5, 16.5, 1.7, 1.5, ['V', 'v', 'P']); // Händchen um die Schraube
   outline(g);
-  for (const y of [12, 14, 16, 18]) dots(g, [[22, y, 'w'], [23, y, 'f'], [24, y, 'f'], [22, y + 1, 's'], [23, y + 1, 's'], [24, y + 1, 'm']]); // Gewinde
-  for (let x = 3; x <= 26; x++) dots(g, [[x, 20, 'r'], [x, 25, 'b']]); // Kistenrand, Fuge
-  dots(g, [[22, 9, 'd'], [23, 9, 'd'], [24, 9, 'd'], // Schlitz
-    [14, 6, 'k'], [15, 6, 'k'], [16, 6, 'k'], [15, 5, 'm'], [13, 8, 's'], [17, 8, 's'], // Loch und Kanten der Mutter
-    [4, 22, 'm'], [4, 28, 'm'], [25, 22, 'm'], [25, 28, 'm'], [4, 21, 'f'], [25, 21, 'f'], // Nieten
-    [4, 23, 'C'], [4, 24, 'e'], [25, 23, 'C'], [25, 24, 'C'], [25, 29, 'e'], [12, 22, 'C'], [12, 23, 'e'], [18, 27, 'C'], [18, 28, 'e'], [9, 27, 'C'], // Roststreifen
-    [7, 15, 't'], [7, 16, 't'], [20, 15, 'F'], [19, 17, 'F'], [10, 18, 'F'], // Falte im Ohr, Schatten
-    [11, 11, 'o'], [12, 10, 'C'], [17, 10, 'C'], [16, 11, 'o'], [11, 19, 'o'], [13, 20, 'C'], [19, 19, 'C']]); // Rostsommersprossen
+  for (const y of [15, 17, 19]) dots(g, [[25, y, 'w'], [26, y, 'f'], [27, y, 's']]); // Gewinde
+  dots(g, [[25, 13, 'd'], [26, 13, 'd'], [27, 13, 'd'], // Schlitz
+    [7, 18, 's'], [9, 18, 's'], [6, 17, 'w'], // Kanten der Mutter
+    [4, 22, 'm'], [4, 28, 'm'], [27, 22, 'm'], [27, 28, 'm'], [4, 21, 'f'], [27, 21, 'f'], // Nieten
+    [4, 23, 'C'], [4, 24, 'e'], [27, 23, 'C'], [27, 24, 'C'], [27, 29, 'e'], [12, 22, 'C'], [12, 23, 'e'], [19, 27, 'C'], [19, 28, 'e'], [9, 27, 'C'], // Roststreifen
+    [7, 13, 'v'], [7, 14, 'v'], [20, 15, 'P'], [19, 17, 'P'], [21, 13, 'P'], // Falte im Ohr, Schatten
+    [11, 11, 'C'], [12, 10, 'o'], [17, 10, 'C'], [16, 11, 'C'], [11, 19, 'C'], [13, 18, 'o'], [19, 19, 'C']]); // Rostsommersprossen
   eye(g, 14, 12, 2, 3);
   eye(g, 18, 12, 2, 3);
   dots(g, [[15, 16, 'k'], [16, 17, 'k'], [17, 17, 'k'], [18, 16, 'k']]); // Lächeln
