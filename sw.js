@@ -162,6 +162,7 @@ const FILES = [
   "js/ui/toast.js",
   "js/version.js",
   "js/world/beacons.js",
+  "js/world/board.js",
   "js/world/caveGate.js",
   "js/world/encounters.js",
   "js/world/fogEdge.js",
