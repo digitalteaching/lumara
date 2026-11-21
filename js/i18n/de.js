@@ -536,4 +536,42 @@ export const DE = {
   'befriend.companionYes': '{name} läuft jetzt hinter dir her.',
   'befriend.shy': '{name} ist noch scheu und läuft davon.',
   'befriend.left': '{name} schaut dir nach.',
+
+  // Begleiter (Lumara 1.2): zwei Sätze je Gabe, wenn man A drückt und vor der Figur nichts ist
+  'companion.beachcomb': [
+    'Da glitzert was im Sand! Wollen wir graben?',
+    'Manchmal treibt eine Flasche mit einem Brief an.',
+  ],
+  'companion.climb': [
+    'Ganz oben in den Bäumen wohnen die besten Geheimnisse.',
+    'Ich klettere überall hoch, wo ein Ast ist!',
+  ],
+  'companion.glow': [
+    'Dunkle Ecken? Keine Angst, ich mache sie hell!',
+    'Unter den Wurzeln leuchte ich am schönsten.',
+  ],
+  'companion.clearsight': [
+    'Nicht jeder Weg ist echt. Ich sehe, welcher es ist.',
+    'Die flirrende Luft da drüben schummelt ein bisschen!',
+  ],
+  'companion.updraft': [
+    'Spürst du den Wind? Er will uns nach oben tragen!',
+    'Von ganz oben sieht man über die Wolken.',
+  ],
+  'companion.tinker': [
+    'Rostige Kisten und Zahnräder? Da kann ich helfen!',
+    'Klick, klack! Jedes Schloss hat ein Geheimnis.',
+  ],
+  'companion.dive': [
+    'Ich rieche Wasser! Irgendwo hier ist es tief.',
+    'Unter Wasser sieht man Dinge, die oben keiner sieht.',
+  ],
+  'companion.startrail': [
+    'Siehst du die Spuren nicht? Ich lasse sie leuchten!',
+    'Manche Wege schimmern nur im Licht der Sterne.',
+  ],
+  'companion.sniff': [
+    'Schnupper, schnupper … hier ist etwas versteckt!',
+    'Meine Nase verrät mir jedes Versteck.',
+  ],
 };

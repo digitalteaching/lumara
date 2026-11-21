@@ -536,4 +536,42 @@ export const EN = {
   'befriend.companionYes': '{name} walks behind you now.',
   'befriend.shy': '{name} is still shy and runs away.',
   'befriend.left': '{name} watches you go.',
+
+  // Begleiter (Lumara 1.2): zwei Sätze je Gabe, wenn man A drückt und vor der Figur nichts ist
+  'companion.beachcomb': [
+    'Something is shiny in the sand! Shall we dig?',
+    'Sometimes a bottle with a letter floats in.',
+  ],
+  'companion.climb': [
+    'The best secrets live high up in the trees.',
+    'I can climb up anything with a branch!',
+  ],
+  'companion.glow': [
+    'Dark corners? Don’t worry, I make them bright!',
+    'Under the roots I shine best of all.',
+  ],
+  'companion.clearsight': [
+    'Not every path is real. I can see which one is.',
+    'That shimmering air over there plays a little trick!',
+  ],
+  'companion.updraft': [
+    'Can you feel the wind? It wants to carry us up!',
+    'From up high you can see over the clouds.',
+  ],
+  'companion.tinker': [
+    'Rusty boxes and gears? I can help with that!',
+    'Click, clack! Every lock has a secret.',
+  ],
+  'companion.dive': [
+    'I can smell water! It is deep somewhere here.',
+    'Under water you see things nobody sees up here.',
+  ],
+  'companion.startrail': [
+    'Can’t you see the tracks? I make them glow!',
+    'Some paths only shine in the light of the stars.',
+  ],
+  'companion.sniff': [
+    'Sniff, sniff … something is hidden here!',
+    'My nose tells me where things are hidden.',
+  ],
 };

@@ -28,6 +28,7 @@ import { el } from './ui/dom.js';
 import { setGamePack } from './app/gamePack.js';
 import { setPseudo, t } from './i18n/i18n.js';
 import { createAudio } from './audio/audio.js';
+import { FRIENDABLE, makeFriend, setCompanion } from './friends/friends.js';
 import { SONGS } from './audio/songs.js';
 import { setAudio } from './audio/bus.js';
 
@@ -141,12 +142,20 @@ function devTreats(state) {
   const n = Number(params.get('leckerli'));
   if (Number.isInteger(n) && n > 0) state.bag.treat = n;
 }
+// &freunde=n: die ersten n befreundbaren Wesen sind Freunde, das erste läuft als Begleiter mit.
+function devFriends(state) {
+  const n = Number(params.get('freunde'));
+  if (!Number.isInteger(n) || n < 1) return;
+  for (const id of FRIENDABLE.slice(0, n)) makeFriend(state, id, false);
+  setCompanion(state, FRIENDABLE[0]);
+}
 async function devStart() {
   setGamePack(game, await devPack());
   const species = STARTERS.includes(params.get('wesen')) ? params.get('wesen') : 'funki';
   game.state = newGameState({ name: 'Test', species, nickname: null });
   devLevel(game.state);
   devTreats(game.state);
+  devFriends(game.state);
   // ?dev&gebiet=wald (moor, …): gleich am Eingang des Gebiets, alle Steine davor leuchten
   const def = MAPS[params.get('gebiet')];
   if (def && def.area > 1) {
@@ -162,6 +171,7 @@ async function devDuel(kind) {
   game.state = newGameState({ name: 'Test', species, nickname: null });
   devLevel(game.state);
   devTreats(game.state);
+  devFriends(game.state);
   const again = () => {
     game.state.creature.energy = Math.max(game.state.creature.energy, 1);
     const setup = kind === 'trainer' ? makeTrainerSetup(game, 1) : makeWildSetup(game, 1);

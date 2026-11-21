@@ -33,6 +33,7 @@ import { notePool, noteKey, noteReady, solveNote } from '../world/notes.js';
 import { playNote } from './note.js';
 import { displayName, nameAtStage, evolutionLines, speciesName } from '../data/species.js';
 import { playEvolution } from './evolution.js';
+import { addCompanion } from './companion.js';
 import { questFor, acceptQuest, advanceQuest, finishQuest, activePickups, activeGuests } from '../world/quests.js';
 import { questText } from '../data/quests.js';
 import { maxEnergy, stageForLevel } from '../duel/progress.js';
@@ -902,5 +903,7 @@ export function createGameWorld(game) {
     if (trainerSpotsPlayer()) world.lock(() => trainerDuel({ spotted: true }));
   });
 
+  // Der Begleiter läuft mit (Lumara 1.2). Sein A-Handler muss der letzte in world.onInteract sein.
+  addCompanion(world, game);
   return world;
 }

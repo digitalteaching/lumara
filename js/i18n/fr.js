@@ -538,4 +538,42 @@ export const FR = {
   'befriend.companionYes': '{name} marche maintenant derrière toi.',
   'befriend.shy': '{name} est encore timide et s’en va.',
   'befriend.left': '{name} te regarde partir.',
+
+  // Begleiter (Lumara 1.2): zwei Sätze je Gabe, wenn man A drückt und vor der Figur nichts ist
+  'companion.beachcomb': [
+    'Ça brille dans le sable ! On creuse ?',
+    'Parfois, une bouteille avec une lettre arrive ici.',
+  ],
+  'companion.climb': [
+    'Les plus beaux secrets sont en haut des arbres.',
+    'Je grimpe partout où il y a une branche !',
+  ],
+  'companion.glow': [
+    'Des coins sombres ? N’aie pas peur, je les éclaire !',
+    'Sous les racines, je brille encore plus fort.',
+  ],
+  'companion.clearsight': [
+    'Tous les chemins ne sont pas vrais. Je vois le bon.',
+    'L’air qui tremble là-bas nous joue un tour !',
+  ],
+  'companion.updraft': [
+    'Tu sens le vent ? Il veut nous porter en haut !',
+    'Tout en haut, on voit au-dessus des nuages.',
+  ],
+  'companion.tinker': [
+    'Des caisses rouillées, des engrenages ? Je t’aide !',
+    'Clic, clac ! Chaque serrure a un secret.',
+  ],
+  'companion.dive': [
+    'Je sens l’eau ! Quelque part ici, c’est profond.',
+    'Sous l’eau, on voit des choses que personne ne voit.',
+  ],
+  'companion.startrail': [
+    'Tu ne vois pas les traces ? Je les fais briller !',
+    'Certains chemins brillent seulement sous les étoiles.',
+  ],
+  'companion.sniff': [
+    'Snif, snif … quelque chose est caché ici !',
+    'Mon nez sait où les choses sont cachées.',
+  ],
 };

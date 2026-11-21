@@ -536,4 +536,42 @@ export const ES = {
   'befriend.companionYes': '{name} ahora camina detrás de ti.',
   'befriend.shy': '{name} todavía tiene miedo y se va.',
   'befriend.left': '{name} te mira mientras te vas.',
+
+  // Begleiter (Lumara 1.2): zwei Sätze je Gabe, wenn man A drückt und vor der Figur nichts ist
+  'companion.beachcomb': [
+    '¡Algo brilla en la arena! ¿Cavamos?',
+    'A veces llega una botella con una carta.',
+  ],
+  'companion.climb': [
+    'Los mejores secretos están arriba en los árboles.',
+    '¡Subo a todas partes donde hay una rama!',
+  ],
+  'companion.glow': [
+    '¿Rincones oscuros? ¡No pasa nada, yo los ilumino!',
+    'Bajo las raíces brillo todavía más.',
+  ],
+  'companion.clearsight': [
+    'No todos los caminos son reales. Yo veo el bueno.',
+    '¡Ese aire que tiembla allí nos engaña un poco!',
+  ],
+  'companion.updraft': [
+    '¿Sientes el viento? ¡Quiere llevarnos hacia arriba!',
+    'Desde muy alto se ve por encima de las nubes.',
+  ],
+  'companion.tinker': [
+    '¿Cajas oxidadas y engranajes? ¡Yo te ayudo!',
+    '¡Clic, clac! Cada cerradura tiene un secreto.',
+  ],
+  'companion.dive': [
+    '¡Huelo agua! Por aquí hay un sitio profundo.',
+    'Bajo el agua se ven cosas que nadie ve arriba.',
+  ],
+  'companion.startrail': [
+    '¿No ves las huellas? ¡Yo las hago brillar!',
+    'Algunos caminos solo brillan bajo las estrellas.',
+  ],
+  'companion.sniff': [
+    'Snif, snif … ¡aquí hay algo escondido!',
+    'Mi nariz sabe dónde hay cosas escondidas.',
+  ],
 };

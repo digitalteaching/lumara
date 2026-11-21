@@ -347,6 +347,9 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
     onTick,
     afterRender,
     groundRender,
+    // Weitere Figuren { z(), draw(ctx, cam) }, nach z (in Feldern) zwischen Gebäude, Bewohner und
+    // Spielfigur sortiert, etwa der Begleiter (js/scenes/companion.js).
+    actors: [],
     blocked: new Set(), // zusätzlich belegte Felder, etwa ein noch liegender seltener Stein
     lock,
     camera,
@@ -371,10 +374,14 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
         idx = Math.min(1, frames.length - 1);
         if (d !== 'side' && step === 2) flip = !flip;
       }
+      scene.drawShadow(ctx, x, y);
+      ctx.drawImage(spriteFrom(`char:${key}:${d}:${idx}`, frames[idx], { flip }), x, y);
+    },
+    // Schatten unter den Füßen eines 16 × 16-Bilds, das bei (x, y) beginnt.
+    drawShadow(ctx, x, y) {
       ctx.fillStyle = 'rgba(27, 26, 46, 0.28)';
       ctx.fillRect(x + 4, y + 15, 8, 2);
       ctx.fillRect(x + 3, y + 16, 10, 1);
-      ctx.drawImage(spriteFrom(`char:${key}:${d}:${idx}`, frames[idx], { flip }), x, y);
     },
     turnToward(o, dir) {
       facing.set(o, dir);
@@ -451,7 +458,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
 
       for (const fn of groundRender) fn(ctx, cam);
 
-      // Gebäude, Figuren und Spielfigur nach unterer Kante sortiert
+      // Gebäude, Figuren, weitere Figuren (scene.actors) und Spielfigur nach unterer Kante sortiert
       const drawables = [];
       for (const o of def.objects) {
         if (o.id && hiddenIds.has(o.id)) continue;
@@ -487,6 +494,7 @@ export function createWorldScene(game, def = BUCHT, opts = {}) {
           }
         },
       });
+      for (const a of scene.actors) drawables.push({ z: a.z(), draw: () => a.draw(ctx, cam) });
       drawables.sort((a, b) => a.z - b.z);
       for (const d of drawables) d.draw();
 
