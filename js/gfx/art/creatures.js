@@ -1312,30 +1312,221 @@ function sternhirsch() {
   return done(g);
 }
 
-// ---------- Die Verstecke (Plan 1.2b): vorläufige Bilder, Task 2 ersetzt sie ----------
+// ---------- Die Verstecke (Plan 1.2b): je Gebiet ein seltenes Wesen ----------
 
-// VORLÄUFIG: ein runder Klecks in der Hauptfarbe des Wesens, mit Augen und einem eigenen Merkmal.
-function placeholder(tones, { rx = 9, ry = 8, extra = () => {} } = {}) {
+// Spitzes Blatt vom Stiel (x0, y0) zur Spitze (x1, y1), w = halbe Breite.
+function leaf(g, x0, y0, x1, y1, w, tones) {
+  const dx = x1 - x0, dy = y1 - y0, len = Math.hypot(dx, dy);
+  const nx = (-dy / len) * w, ny = (dx / len) * w;
+  const mx = x0 + dx * 0.45, my = y0 + dy * 0.45;
+  poly(g, [[x0, y0], [mx + nx, my + ny], [x1, y1], [mx - nx, my - ny]], tones);
+}
+
+// Goldenes Glöckchen, oben Mitte (x, y): Kuppel und breiter Rand. Vor dem Umriss zeichnen.
+function bell(g, x, y) {
+  dots(g, [[x - 1, y, 'H'], [x, y, 'H'], [x + 1, y, 'h'], [x - 1, y + 1, 'H'], [x, y + 1, 'h'], [x + 1, y + 1, 'h'],
+    [x - 2, y + 2, 'h'], [x - 1, y + 2, 'h'], [x, y + 2, 'h'], [x + 1, y + 2, 'r'], [x + 2, y + 2, 'r']]);
+}
+
+// Flaschling: ein kleiner Meereswicht, der in einer angespülten Flasche wohnt. Er klettert aus dem
+// Flaschenhals, trägt den Korken als Hut, und drinnen liegt ein zusammengerollter Brief (Gebiet 1).
+function flaschling() {
   const g = canvas(32);
-  extra(g);
-  ellipse(g, 16, 20, rx, ry, tones);
+  poly(g, [[1, 20], [3, 18], [13, 18], [17, 21], [21, 21], [21, 27], [17, 27], [13, 30], [3, 30], [1, 28]], ['w', 'T', 't']); // Flasche aus Meerglas
+  poly(g, [[4, 22], [12, 22], [12, 25.5], [4, 25.5]], ['w', 'c', 'Y']); // Brief
+  poly(g, [[19.5, 12], [15, 7.5], [15.5, 11], [15, 14.5]], ['R', 'C', 'e']); // Flossenohr
+  poly(g, [[19.5, 20.5], [23, 16], [25, 19], [22.5, 24]], ['p', 'p', 'C']); // Körper aus dem Hals
+  ellipse(g, 23.5, 13.5, 5.5, 5, ['p', 'p', 'C']); // Kopf
+  poly(g, [[21, 20], [23, 20], [23, 28], [21, 28]], ['w', 'T', 't']); // Flaschenrand
+  ellipse(g, 23.5, 19.5, 1.5, 1.3, ['p', 'p', 'C']); // Händchen am Rand
+  poly(g, [[19.5, 5.5], [24.5, 4.5], [25.5, 9], [20.5, 10]], ['Y', 'y', 'r']); // Korkenhut
   outline(g);
-  eye(g, 13, 17, 2, 2);
-  eye(g, 19, 17, 2, 2);
+  dots(g, [[7, 22, 'e'], [7, 23, 'e'], [7, 24, 'e'], [7, 25, 'e'], [8, 23, 'e'], // Schleife
+    [4, 23, 'y'], [4, 24, 'Y'], [12, 23, 'Y'], // eingerollte Enden
+    [3, 20, 'w'], [4, 19, 'w'], [6, 19, 'w'], [7, 19, 'w'], [9, 19, 'w'], [15, 20, 'w'], [18, 22, 'w'], [21, 21, 'w'], // Glanz
+    [5, 28, 't'], [9, 28, 't'], [19, 26, 't']]);
+  eye(g, 22, 12, 2, 2);
+  eye(g, 26, 12, 2, 2);
+  dots(g, [[24, 15, 'k'], [25, 16, 'k'], [26, 15, 'k'], [21, 15, 'R'], [28, 15, 'R'], [16, 9, 'e'], [16, 12, 'e'],
+    [20, 11, 'c'], [21, 10, 'c'], [19, 13, 'c'], // Glanz auf dem Kopf
+    [21, 7, 'r'], [23, 8, 'r'], [22, 6, 'Y'],
+    [29, 6, 'A'], [30, 4, 'A'], [28, 3, 'w'], [26, 29, 'y'], [29, 28, 'y'], [16, 31, 'y']]);
   return done(g);
 }
-const earsAt = (g, tones, xs) => xs.forEach(x => ellipse(g, x, 9, 2.5, 4, tones));
 
-const HIDDEN_PLACEHOLDER = {
-  flaschling: placeholder(['w', 'A', 'L'], { rx: 6, ry: 9, extra: g => ellipse(g, 16, 8, 2.5, 3, ['w', 'A', 'L']) }),
-  wipfelwusel: placeholder(['G', 'g', 'l'], { extra: g => earsAt(g, ['G', 'g', 'l'], [9, 23]) }),
-  glimmwurz: placeholder(['H', 'h', 'r'], { rx: 7, ry: 7, extra: g => ellipse(g, 16, 8, 4, 3, ['c', 'Y', 'y']) }),
-  spiegelechse: placeholder(['c', 'Y', 'y'], { rx: 11, ry: 6 }),
-  klingfeder: placeholder(['V', 'v', 'P'], { rx: 8, ry: 8, extra: g => earsAt(g, ['w', 'A', 'L'], [14, 18]) }),
-  rostbold: placeholder(['R', 'p', 's'], { rx: 8, ry: 9 }),
-  eisflosse: placeholder(['w', 'A', 'L'], { rx: 11, ry: 7, extra: g => ellipse(g, 16, 9, 3, 4, ['c', 'Y', 'y']) }),
-  kometwiesel: placeholder(['H', 'h', 'r'], { rx: 10, ry: 6, extra: g => earsAt(g, ['w', 'A', 'L'], [10, 22]) }),
-};
+// Wipfelwusel: ein winziges Baumkronenwesen mit zwei Blättern als Ohren. Es sitzt auf einem Zweig und
+// hält sich mit dem Schwanz daran fest (Gebiet 2).
+function wipfelwusel() {
+  const g = canvas(32);
+  poly(g, [[0, 26], [30, 23.5], [30.5, 26.5], [0, 30]], ['r', 'o', 'b']); // Zweig
+  leaf(g, 26, 24.5, 30, 19, 1.8, ['G', 'g', 'l']); // Blatt am Zweig
+  ellipse(g, 13, 21, 6.5, 5, ['Y', 'y', 'r']); // Körper
+  poly(g, [[8, 21.5], [4, 24.5], [4, 30], [6.5, 30], [6, 25.5], [9, 24]], ['Y', 'y', 'r']); // Schwanz um den Zweig
+  leaf(g, 17, 11, 11, 4, 2.8, ['G', 'g', 'l']); // Blattohren
+  leaf(g, 22, 10, 27, 4, 2.8, ['G', 'g', 'l']);
+  ellipse(g, 19.5, 14.5, 6.5, 5.5, ['Y', 'y', 'r']); // Kopf
+  ellipse(g, 18, 25.5, 1.8, 1.3, ['Y', 'y', 'r']); // Pfötchen auf dem Zweig
+  ellipse(g, 21.5, 25, 1.8, 1.3, ['Y', 'y', 'r']);
+  outline(g);
+  line(g, 16, 10, 12, 5, 'l');
+  line(g, 23, 9, 26, 5, 'l');
+  eye(g, 18, 12, 2, 3);
+  eye(g, 22, 12, 2, 3);
+  dots(g, [[24, 16, 'R'], [17, 16, 'R'], [20, 16, 'k'], [21, 16, 'k'],
+    [12, 22, 'c'], [13, 22, 'c'], [14, 23, 'c'], [12, 19, 'Y'], [10, 18, 'Y'],
+    [5, 29, 'G'], [4, 29, 'g'], [3, 27, 'b'], [26, 25, 'b'], [10, 28, 'r'], [16, 28, 'b']]);
+  return done(g);
+}
+
+// Glimmwurz: eine helle Wurzel aus dunklen Gängen. Wurzelhaar weht nach hinten, sie hüpft auf ihrer
+// eingerollten Spitze und trägt ihre Laternenblüte am Stiel vor sich her (Gebiet 3).
+function glimmwurz() {
+  const g = canvas(32);
+  for (const [x0, y0, x1, y1, x2, y2] of [[9, 9, 6, 7, 2, 7], [8, 12, 5, 12, 1, 11], [8, 15, 5, 16, 3, 19]]) { // Wurzelhaar
+    line(g, x0, y0, x1, y1, 'r');
+    line(g, x1, y1, x2, y2, 'r');
+  }
+  ellipse(g, 14, 13.5, 7.5, 7, ['c', 'Y', 'y']); // Knolle
+  poly(g, [[7.5, 16], [20.5, 16], [14.5, 25], [12, 25]], ['c', 'Y', 'y']); // spitz zulaufend
+  ellipse(g, 10.5, 27, 2.6, 2.2, ['Y', 'y', 'r']); // eingerollte Spitze
+  poly(g, [[19.5, 15], [22, 11.5], [23.5, 12.5], [21, 17.5]], ['Y', 'y', 'r']); // Wurzelarm
+  poly(g, [[27, 9.5], [29.5, 12], [30, 15.5], [28.5, 18.5], [25.5, 18.5], [24, 15.5], [24.5, 12]], ['H', 'p', 'C']); // Laternenblüte
+  outline(g);
+  dots(g, [[22, 10, 'o'], [22, 9, 'o'], [22, 8, 'o'], [23, 7, 'o'], [24, 6, 'o'], [25, 6, 'o'], [26, 7, 'o'], [27, 8, 'o'], // Stiel
+    [26, 12, 'C'], [25, 14, 'C'], [25, 16, 'C'], [28, 12, 'C'], [29, 14, 'C'], [29, 16, 'C'], [27, 18, 'C'], // Rippen
+    [27, 11, 'w'], [26, 13, 'H'], [27, 13, 'w'], [28, 13, 'H'], [27, 14, 'w'], [26, 15, 'H'], [27, 15, 'H'], [28, 15, 'H'], [27, 16, 'H'], // Licht
+    [10, 27, 'r'], [11, 26, 'r'], [12, 27, 'r'], [10, 28, 'y'], // Spirale
+    [10, 19, 'y'], [11, 19, 'y'], [12, 19, 'y'], [15, 19, 'y'], [16, 19, 'y'], [12, 22, 'y'], [13, 22, 'y'], [14, 22, 'y'], // Ringe
+    [6, 21, 'r'], [5, 22, 'r'], [18, 22, 'r'], [19, 23, 'r'], // feine Würzelchen
+    [9, 9, 'w'], [10, 8, 'w']]);
+  eye(g, 14, 12, 2, 2);
+  eye(g, 18, 12, 2, 2);
+  dots(g, [[16, 15, 'k'], [17, 15, 'k'], [13, 14, 'R'], [20, 14, 'R'],
+    [31, 10, 'H'], [31, 18, 'H'], [23, 20, 'H'], [28, 21, 'h'], [20, 5, 'H']]);
+  return done(g);
+}
+
+// Spiegelechse: eine Echse mit Schuppen wie kleine Spiegel. Ihre Schwanzspitze flimmert in der Hitze,
+// als wäre sie nur halb da (Gebiet 4).
+function spiegelechse() {
+  const g = canvas(32);
+  poly(g, [[9, 16.5], [9, 22], [4, 22.5], [1.5, 20], [1.5, 17], [3.5, 16.5], [3.5, 19], [5.5, 19.5]], ['A', 'A', 'L']); // Schwanz
+  ellipse(g, 14.5, 19, 7.5, 4, ['A', 'A', 'L']); // Körper
+  ellipse(g, 23.5, 15.5, 5, 4, ['A', 'A', 'L']); // Kopf
+  poly(g, [[26.5, 13.5], [31, 16], [26.5, 18.5]], ['A', 'A', 'L']); // Schnauze
+  poly(g, [[9.5, 20.5], [12.5, 21.5], [11, 24], [13.5, 25], [13.5, 27], [7.5, 27], [8, 24]], ['A', 'L', 'S']); // Hinterbein
+  poly(g, [[17.5, 20.5], [20.5, 20.5], [21, 24], [23.5, 25], [23.5, 27], [18, 27], [18.5, 24]], ['A', 'L', 'S']); // Vorderbein
+  outline(g);
+  eye(g, 24, 14, 2, 2);
+  dots(g, [[8, 17, 'h'], [11, 16, 'h'], [14, 16, 'h'], [17, 16, 'h'], [20, 14, 'h'], [22, 12, 'h'], // goldene Rückenschuppen
+    [9, 18, 'w'], [10, 19, 'w'], [11, 20, 'w'], [10, 18, 'w'], [11, 19, 'w'], // Spiegelglanz
+    [15, 17, 'w'], [16, 18, 'w'], [17, 19, 'w'], [20, 15, 'w'], [21, 16, 'w'], [26, 14, 'w'],
+    [13, 21, 'L'], [16, 21, 'L'], [29, 16, 'k'], [28, 17, 'k'], [26, 17, 'R'],
+    [8, 26, 'S'], [10, 26, 'S'], [18, 26, 'S'], [20, 26, 'S'], // Zehen
+    [1, 18, 'A'], [2, 18, '.'], [2, 17, 'f'], [0, 16, 'A'], [2, 15, 'w'], // Schwanzspitze flimmert weg
+    [3, 29, 'A'], [4, 29, 'A'], [8, 30, 'f'], [14, 29, 'A'], [15, 29, 'A'], [19, 30, 'f'], [25, 29, 'A'], [26, 29, 'f'], [28, 30, 'A']]); // Hitzeflimmern
+  return done(g);
+}
+
+// Klingfeder: ein Vogel aus Federn und Glöckchen. Seine Schwanzfedern und sein Schopf enden in
+// kleinen goldenen Glocken (Gebiet 5).
+function klingfeder() {
+  const g = canvas(32);
+  poly(g, [[10, 17], [3, 19], [3, 21], [11, 20]], ['V', 'v', 'P']); // Schwanzfedern
+  poly(g, [[10, 19], [5, 24], [7, 25], [12, 21]], ['V', 'v', 'P']);
+  bell(g, 2, 21);
+  bell(g, 6, 25);
+  poly(g, [[14, 21], [13, 27], [14, 27], [15, 21]], ['h', 'h', 'r']); // Beine
+  poly(g, [[18, 21], [18, 27], [19, 27], [19, 21]], ['h', 'h', 'r']);
+  ellipse(g, 15, 16, 7, 6.5, ['V', 'v', 'P']); // Körper
+  ellipse(g, 18.5, 18.5, 3.5, 3.5, ['w', 'c', 'Y']); // Brust
+  ellipse(g, 12, 15.5, 5, 3.5, ['w', 'V', 'v']); // Flügel
+  poly(g, [[19, 5.5], [17, 3], [21, 4.5]], ['V', 'v', 'P']); // Schopf
+  bell(g, 17, 1);
+  ellipse(g, 21, 9, 5, 4.5, ['V', 'v', 'P']); // Kopf
+  poly(g, [[25, 8], [29, 10], [25, 11]], ['H', 'h', 'r']); // Schnabel
+  outline(g);
+  eye(g, 22, 8, 2, 2);
+  dots(g, [[11, 14, 'v'], [13, 15, 'v'], [10, 16, 'v'], [12, 17, 'v'], [14, 17, 'v'], // Federn am Flügel
+    [20, 10, 'R'], [24, 11, 'k'], [12, 27, 'h'], [15, 27, 'h'], [17, 27, 'h'], [20, 27, 'h'],
+    [2, 24, 'r'], [6, 28, 'r'], [17, 4, 'r']]); // Klöppel
+  return done(g);
+}
+
+// Rostbold: ein kleiner Kobold aus rostigen Kisten. Er trägt eine Unterlegscheibe als Ohrring, eine
+// Mutter am Schwanz und drückt seine liebste Schraube an sich (Gebiet 6).
+function rostbold() {
+  const g = canvas(32);
+  poly(g, [[9.5, 24], [4.5, 21.5], [3.5, 23], [8.5, 26]], ['h', 'r', 'o']); // Schwanz
+  ellipse(g, 3, 20.5, 2.3, 2.3, ['f', 'm', 's']); // Mutter am Schwanz
+  ellipse(g, 12, 29, 2.5, 1.5, ['h', 'r', 'o']); // Füße
+  ellipse(g, 19, 29, 2.5, 1.5, ['h', 'r', 'o']);
+  ellipse(g, 15.5, 23, 6, 5.5, ['h', 'r', 'o']); // Körper
+  ellipse(g, 16, 24, 3.3, 3.3, ['Y', 'y', 'r']); // Bauch
+  poly(g, [[14, 10], [4.5, 6], [5.5, 8.5], [13.5, 14]], ['h', 'r', 'o']); // Spitzohren
+  poly(g, [[24, 9.5], [31, 5.5], [30, 8.5], [25, 13.5]], ['h', 'r', 'o']);
+  ellipse(g, 19, 12.5, 6.5, 5.5, ['h', 'r', 'o']); // Kopf
+  ellipse(g, 26.5, 15.5, 3, 1.6, ['w', 'f', 'm']); // Schraube: Kopf
+  poly(g, [[25, 16.5], [28, 16.5], [28, 25], [26.5, 28], [25, 25]], ['f', 'm', 's']); // Schraube: Schaft
+  ellipse(g, 24, 21, 1.8, 1.6, ['h', 'r', 'o']); // Händchen
+  outline(g);
+  for (const y of [18, 20, 22, 24]) dots(g, [[25, y, 'w'], [26, y, 'f'], [27, y, 'f'], [25, y + 1, 's'], [26, y + 1, 's'], [27, y + 1, 'm']]); // Gewinde
+  dots(g, [[2, 20, 'k'], [3, 20, 'k'], [29, 7, 'f'], [28, 7, 'm'], [29, 8, 'k'], // Loch in der Mutter, Unterlegscheibe
+    [25, 15, 'd'], [26, 15, 'd'], [27, 15, 'd'], // Schlitz
+    [17, 6, 'o'], [19, 5, 'o'], [21, 6, 'o'], // Haarborsten
+    [9, 8, 'o'], [10, 9, 'o'], [14, 20, 'o'], [13, 21, 'o'], [10, 22, 'o'], [21, 27, 'o'], [15, 9, 'o'], [16, 9, 'o']]); // Rostflecken
+  eye(g, 18, 10, 2, 3);
+  eye(g, 22, 10, 2, 3);
+  dots(g, [[20, 13, 'C'], [21, 13, 'C'], [20, 14, 'e'], // Knubbelnase
+    [18, 15, 'k'], [19, 16, 'k'], [20, 16, 'k'], [21, 16, 'k'], [22, 15, 'k'], [17, 13, 'p'], [24, 13, 'p']]);
+  return done(g);
+}
+
+// Eisflosse: ein runder Fisch unter dem Eis. In seiner Rückenflosse sitzt eine kleine Laterne, in der
+// ein warmes Licht brennt (Gebiet 7).
+function eisflosse() {
+  const g = canvas(32);
+  poly(g, [[8, 19], [1, 12], [3, 19.5], [1, 27]], ['A', 'L', 'S']); // Schwanzflosse
+  poly(g, [[8, 17], [9, 10], [11.5, 12], [13, 7], [20, 7], [21.5, 11], [24, 9], [25, 16]], ['A', 'L', 'S']); // Rückenflosse
+  ellipse(g, 16.5, 10.5, 3.6, 4, ['w', 'H', 'h']); // Laterne
+  ellipse(g, 16.5, 19.5, 10, 7, ['A', 'A', 'L']); // Körper
+  ellipse(g, 17.5, 23.5, 6, 2.2, ['w', 'f', 'A']); // heller Bauch
+  ellipse(g, 13, 21, 3.5, 2, ['A', 'L', 'S']); // Brustflosse
+  outline(g, 'D');
+  dots(g, [[14, 6, 'D'], [15, 6, 'D'], [16, 6, 'D'], [17, 6, 'D'], [18, 6, 'D'], [19, 6, 'D'], [16, 5, 'D'], [17, 5, 'D'], [16, 4, 'D'], [17, 4, 'D'], // Dach
+    [16, 8, 'h'], [16, 13, 'h'], [16, 9, 'w'], [16, 10, 'w'], [17, 10, 'w'], [16, 11, 'H'], [17, 11, 'w'], [16, 12, 'H'], // Flamme
+    [10, 13, 'L'], [12, 14, 'L'], [21, 13, 'L'], [23, 13, 'L'], // Strahlen der Rückenflosse
+    [4, 16, 'L'], [5, 18, 'L'], [4, 22, 'L'], [11, 21, 'L'], [13, 22, 'L'],
+    [10, 17, 'w'], [11, 16, 'w'], [12, 18, 'f'], [19, 17, 'f']]); // Glanz
+  eye(g, 22, 16, 2, 2);
+  dots(g, [[24, 20, 'D'], [25, 21, 'D'], [26, 20, 'D'], [21, 19, 'R'], [27, 18, 'R'],
+    [29, 9, 'A'], [30, 7, 'A'], [28, 6, 'w'], [22, 4, 'H'], [11, 4, 'H'], [20, 2, 'H'], [13, 2, 'h']]);
+  return done(g);
+}
+
+// Kometwiesel: ein flinkes Wiesel mitten im Sprung. Seine Schwanzspitze leuchtet wie ein Komet, und
+// hinter ihm glimmen Pfotenspuren (Gebiet 8).
+function kometwiesel() {
+  const g = canvas(32);
+  poly(g, [[8, 16], [3, 10], [5.5, 8.5], [10.5, 14.5]], ['Y', 'y', 'r']); // Schwanz
+  ellipse(g, 3.5, 8.5, 2.7, 2.7, ['w', 'w', 'H']); // Kometenspitze
+  poly(g, [[8.5, 19], [4, 22.5], [5.5, 24], [11, 20.5]], ['Y', 'y', 'r']); // Hinterbein
+  poly(g, [[21, 18.5], [25, 22], [23.5, 23.5], [19.5, 20]], ['Y', 'y', 'r']); // Vorderbein
+  ellipse(g, 14.5, 16.5, 8.5, 3.8, ['Y', 'y', 'r']); // langer Körper
+  ellipse(g, 21.5, 15.5, 3.5, 3.3, ['Y', 'y', 'r']); // Brust
+  ellipse(g, 23.5, 10.5, 1.5, 1.5, ['y', 'r', 'o']); // Ohr
+  ellipse(g, 25.5, 13.5, 3.8, 3.2, ['Y', 'y', 'r']); // Kopf
+  poly(g, [[27.5, 12], [31, 14.5], [27.5, 16.5]], ['Y', 'y', 'r']); // Schnauze
+  outline(g);
+  eye(g, 26, 12, 2, 2);
+  const paw = (x, y) => dots(g, [[x - 1, y - 1, 'H'], [x, y - 2, 'H'], [x + 1, y - 1, 'H'], [x - 1, y, 'h'], [x, y, 'H'], [x + 1, y, 'h'], [x, y + 1, 'h']]);
+  paw(8, 28);
+  paw(16, 27);
+  dots(g, [[30, 14, 'k'], [27, 16, 'c'], [26, 16, 'c'], [24, 17, 'c'], [28, 15, 'R'], [25, 10, 'H'], // Nase, Kinn, Wange, Stern
+    [9, 19, 'c'], [12, 19, 'c'], [15, 19, 'c'], [18, 19, 'c'], [21, 18, 'c'], // heller Bauch
+    [2, 7, 'w'], [7, 5, 'V'], [8, 3, 'H'], [1, 3, 'V'], [5, 2, 'H'], [9, 7, 'V'], [0, 11, 'H']]); // Kometenglanz
+  return done(g);
+}
 
 export const CREATURE_ART = {
   tupfling: { 1: tupfling(), 2: schirmling() },
@@ -1376,7 +1567,14 @@ export const CREATURE_ART = {
   echomaus: { 1: echomaus() },
   kristallraupe: { 1: kristallraupe() },
   morrow: { 1: morrow1(), 2: morrow2(), 3: morrow3() },
-  ...Object.fromEntries(Object.entries(HIDDEN_PLACEHOLDER).map(([id, rows]) => [id, { 1: rows }])),
+  flaschling: { 1: flaschling() },
+  wipfelwusel: { 1: wipfelwusel() },
+  glimmwurz: { 1: glimmwurz() },
+  spiegelechse: { 1: spiegelechse() },
+  klingfeder: { 1: klingfeder() },
+  rostbold: { 1: rostbold() },
+  eisflosse: { 1: eisflosse() },
+  kometwiesel: { 1: kometwiesel() },
 };
 
 // Höchste vorhandene Stufe ≤ der gewünschten: Wilde Arten haben ein oder zwei Stufen.

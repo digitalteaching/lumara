@@ -2,7 +2,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { parseSprite } from '../js/gfx/sprites.js';
 import { CREATURE_ART, STAGE_SIZE, creatureRows } from '../js/gfx/art/creatures.js';
-import { STARTERS, AREA_WILD, TRAINER_CREATURES } from '../js/data/species.js';
+import { shinyRows } from '../js/gfx/art/shiny.js';
+import { STARTERS, AREA_WILD, TRAINER_CREATURES, HIDDEN_SPECIES } from '../js/data/species.js';
 
 test('jedes Startwesen und jede wilde Art von Gebiet 1 hat Stufe 1, das Trainerwesen seine Stufe', () => {
   for (const id of [...STARTERS, ...AREA_WILD[1].common, AREA_WILD[1].rare]) assert.ok(CREATURE_ART[id]?.[1], id);
@@ -59,5 +60,34 @@ test('Jede Stufe trägt die Hauptfarbe ihres Startwesens', () => {
       const px = CREATURE_ART[id][s].join('').replace(/[.k]/g, '');
       assert.ok([...px].filter(c => c === main).length / px.length >= 0.08, `${id}.${s} ohne ${main}`);
     }
+  }
+});
+
+const shape = rows => rows.map(r => r.replace(/[^.]/g, '#')).join('/');
+
+test('Jedes neue Wesen hat ein Bild in 32 × 32', () => {
+  for (const id of HIDDEN_SPECIES) {
+    const rows = CREATURE_ART[id]?.[1];
+    assert.equal(rows?.length, 32, id);
+    for (const r of rows) assert.equal(r.length, 32, id);
+    // Von Hand gezeichnet wie die übrigen Wesen: eigene Silhouette, Augen und Details in mindestens sieben Farben.
+    assert.ok(new Set(rows.join('').replace(/\./g, '')).size >= 7, `${id}: zu wenig Farben`);
+    for (const [other, stages] of Object.entries(CREATURE_ART)) {
+      if (other !== id && stages[1]) assert.notEqual(shape(stages[1]), shape(rows), `${id} wie ${other}`);
+    }
+  }
+});
+
+test('Glanzform unterscheidet sich in mindestens 20 % der Pixel', () => {
+  for (const id of HIDDEN_SPECIES) {
+    const rows = CREATURE_ART[id][1];
+    const out = shinyRows(rows, id);
+    let filled = 0, changed = 0;
+    rows.forEach((r, y) => [...r].forEach((ch, x) => {
+      if (ch === '.' || ch === 'k') return;
+      filled++;
+      if (out[y][x] !== ch) changed++;
+    }));
+    assert.ok(changed / filled >= 0.2, `${id}: nur ${Math.round((100 * changed) / filled)} % anders`);
   }
 });
