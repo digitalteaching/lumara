@@ -878,9 +878,11 @@ body:not([data-mode="walk"]) .menu-btn, body:not([data-mode="walk"]) .bag-btn { 
   .backpack, .backpack .bp-bag { animation: none !important; }
 }
 
-/* Schmal (Handy, geteilter Bildschirm): Fächer untereinander, der ganze Rucksack scrollt. */
+/* Schmal (Handy, geteilter Bildschirm): Fächer untereinander, der ganze Rucksack scrollt.
+   Der Kopf mit Energie und ✕ bleibt dabei oben stehen (Creme wie das Innere des Rahmens). */
 @media (max-width: 599px) {
-  .bp-body { overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+  .bp-body { overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding-top: 0; }
+  .bp-head { position: sticky; top: 0; z-index: 1; padding: 4px 0 6px; background: var(--cream); }
   .bp-pockets { flex: none; overflow: visible; }
   .bp-row { flex-direction: column; }
   .bp-row-big { flex: none; min-height: 0; }

@@ -6,7 +6,7 @@
 
 import { sound } from '../audio/bus.js';
 import { el, clear, appendAll } from '../ui/dom.js';
-import { createFreshGuard, guardClicks } from '../ui/freshGuard.js';
+import { createFreshGuard, guardClicks, FRESH_MS } from '../ui/freshGuard.js';
 import { backpackView, itemName, itemText } from '../items/backpackView.js';
 import { TREASURES } from '../items/treasures.js';
 import { eat } from '../items/food.js';
@@ -90,8 +90,9 @@ export function openBackpack(game) {
 
     // Doppeltipp-Schutz wie im Menü: Was gerade unter dem Finger erschien, nimmt kurz nichts an,
     // auch nicht der Rand neben dem Rucksack (sonst schlösse ihn der zweite Tipp auf den Knopf gleich).
+    // Nach dem Schließen nimmt nichts darin mehr einen Tipp an, solange er noch daliegt.
     const guard = createFreshGuard();
-    guardClicks(root, guard);
+    guardClicks(root, { isFresh: () => closed || guard.isFresh() });
     root.addEventListener('click', e => {
       if (e.target === root && !guard.isFresh()) close();
     });
@@ -287,11 +288,12 @@ export function openBackpack(game) {
       if (root.contains(document.activeElement)) document.activeElement.blur();
       game.mode = prevMode;
       game.input.consume();
-      // Er rutscht weg (ohne Bewegung: ist sofort unsichtbar) und fängt so lange noch Tipps ab, damit
-      // ein Doppeltipp auf ✕ nicht auf dem Rucksack-Knopf darunter landet und ihn gleich wieder öffnet.
-      guard.reset();
+      // Er rutscht weg (ohne Bewegung: ist sofort unsichtbar) und fängt dann unsichtbar noch Tipps ab,
+      // bis die Doppeltipp-Zeit vorbei ist (FRESH_MS, länger als CLOSE_MS). So landet ein Doppeltipp
+      // auf ✕ nicht auf dem Rucksack-Knopf darunter und öffnet ihn gleich wieder. Modus und Sperre der
+      // Welt sind schon jetzt zurück; Tasten wirken sofort.
       root.classList.add('closing');
-      setTimeout(() => root.remove(), CLOSE_MS);
+      setTimeout(() => root.remove(), Math.max(CLOSE_MS, FRESH_MS));
       resolve();
     }
 
