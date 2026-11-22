@@ -3,7 +3,9 @@ import assert from 'node:assert/strict';
 import { newGameState } from '../js/state.js';
 import { createRng } from '../js/core/rng.js';
 import { WISH_GIVER_IDS } from '../js/world/events.js';
-import { WISH_GIVERS, ensureWishes, pickWishTreasure, wishOf, wishersOf, canGive, giveWish, wishHint } from '../js/world/wishes.js';
+import { WISH_GIVERS, ensureWishes, pickWishTreasure, wishOf, wishersOf, canGive, giveWish, wishHint, wishReachable } from '../js/world/wishes.js';
+import { feasibleKinds } from '../js/world/board.js';
+import { solveTask } from '../js/world/tasks.js';
 import { MAPS, mapOfArea, areaAt } from '../js/world/network.js';
 import { TREASURES, AREA_TREASURES, addTreasure } from '../js/items/treasures.js';
 import { setLanguage, t } from '../js/i18n/i18n.js';
@@ -106,7 +108,7 @@ test('Nächster Wunsch erst am nächsten Kalendertag', () => {
   const s = st();
   ensureWishes(s, pack(1), TODAY, createRng(3));
   addTreasure(s, wishOf(s, 'pim').treasure);
-  giveWish(s, 'pim', createRng(4));
+  giveWish(s, 'pim', createRng(4), TODAY);
   assert.deepEqual(ensureWishes(s, pack(1), TODAY, createRng(5)), []);
   assert.equal(wishOf(s, 'pim').done, true);
   assert.deepEqual(ensureWishes(s, pack(1), '2026-11-23', createRng(5)), ['pim']);
@@ -114,6 +116,79 @@ test('Nächster Wunsch erst am nächsten Kalendertag', () => {
   assert.equal(wishOf(s, 'pim').day, '2026-11-23');
   // ein offener Wunsch bleibt, auch Tage später
   assert.deepEqual(ensureWishes(s, pack(1), '2026-12-30', createRng(6)), []);
+});
+
+// „Komm morgen wieder!“ stimmt auch, wenn der Wunsch schon Tage offen war: Es zählt der Tag des Tauschs.
+test('Nach dem Tausch kommt der nächste Wunsch erst am Tag danach, auch bei einem alten Wunsch', () => {
+  const s = st();
+  ensureWishes(s, pack(1), '2026-11-20', createRng(3));
+  assert.equal(wishOf(s, 'pim').day, '2026-11-20');
+  addTreasure(s, wishOf(s, 'pim').treasure);
+  giveWish(s, 'pim', createRng(4), '2026-11-22');
+  assert.equal(wishOf(s, 'pim').day, '2026-11-22', 'der Tag des Tauschs');
+  assert.deepEqual(ensureWishes(s, pack(1), '2026-11-22', createRng(5)), []);
+  assert.equal(wishOf(s, 'pim').done, true);
+  assert.deepEqual(ensureWishes(s, pack(1), '2026-11-23', createRng(5)), ['pim']);
+  assert.equal(wishOf(s, 'pim').done, false);
+});
+
+// Seltene Schätze: die Spielaufgabe des Gebiets bringt ihn sicher. Nach dem Lösen gäbe es ihn nur noch
+// selten in Verstecken, darum wünscht ihn sich dann keiner mehr, es sei denn, das Kind hat ihn schon.
+test('Ein seltener Schatz nur, solange die Spielaufgabe seines Gebiets offen ist oder das Kind ihn hat', () => {
+  const picks = s => new Set(Array.from({ length: 400 }, (_, i) => pickWishTreasure(s, pack(1), 1, createRng(i))));
+  const s = st();
+  assert.ok(picks(s).has('amber'), 'Aufgabe offen: kommt vor');
+  solveTask(s, 1); // bringt den Bernstein
+  assert.equal(s.treasures.amber, 1);
+  assert.ok(picks(s).has('amber'), 'gelöst, aber im Rucksack: kommt vor');
+  s.treasures.amber = 0; // etwa einem anderen Bewohner gegeben
+  assert.deepEqual([...picks(s)].sort(), [...AREA_TREASURES[1].common].sort(), 'gelöst und weg: nie');
+  // mehrere Gebiete: nur die seltenen der Gebiete mit offener Aufgabe
+  const m = st([1, 2, 3]);
+  m.tasks = [1, 3];
+  const many = new Set(Array.from({ length: 2000 }, (_, i) => pickWishTreasure(m, pack(4), 2, createRng(i))));
+  const rares = [...many].filter(id => TREASURES.find(x => x.id === id).rarity === 'rare');
+  assert.deepEqual(rares.sort(), [AREA_TREASURES[2].rare, AREA_TREASURES[4].rare].sort());
+});
+
+test('Jeder neue Wunsch ist erfüllbar, und der Hinweis stimmt', () => {
+  for (let seed = 0; seed < 300; seed++) {
+    const r = createRng(seed);
+    const s = st([1, 2, 3, 4, 5, 6, 7]);
+    s.tasks = [1, 2, 3, 4, 5, 6, 7, 8].filter(() => r.next() < 0.5);
+    for (const a of s.tasks) if (r.next() < 0.3) addTreasure(s, AREA_TREASURES[a].rare);
+    ensureWishes(s, pack(8), TODAY, r);
+    for (const [npc, w] of Object.entries(s.wishes)) {
+      const tr = TREASURES.find(x => x.id === w.treasure);
+      assert.ok(wishReachable(s, pack(8), npc), `seed ${seed} ${npc} ${w.treasure}`);
+      if (tr.rarity === 'rare') {
+        assert.ok(!s.tasks.includes(tr.area) || s.treasures[tr.id] > 0, `seed ${seed} ${w.treasure}`);
+        assert.equal(wishHint(w.treasure), t('wish.hint.rare', { area: areaAtOf(w.treasure) }));
+      }
+    }
+    assert.ok(feasibleKinds(s, pack(8)).includes('wish'));
+  }
+});
+
+test('Erfüllbar: nicht erfüllt, Bewohner und Schatz in offenen Gebieten, selten nur mit offener Aufgabe oder im Rucksack', () => {
+  const s = st();
+  assert.equal(wishReachable(s, pack(1), 'pim'), false, 'kein Wunsch');
+  s.wishes = { pim: { treasure: 'glassshell', day: TODAY, done: false } };
+  assert.equal(wishReachable(s, pack(1), 'pim'), true);
+  s.wishes.pim.done = true;
+  assert.equal(wishReachable(s, pack(1), 'pim'), false, 'schon erfüllt');
+  s.wishes = { pim: { treasure: 'acorncap', day: TODAY, done: false } };
+  assert.equal(wishReachable(s, pack(1), 'pim'), false, 'der Wald ist zu');
+  addTreasure(s, 'acorncap');
+  assert.equal(wishReachable(s, pack(1), 'pim'), true, 'aber im Rucksack');
+  s.wishes = { lio: { treasure: 'glassshell', day: TODAY, done: false } };
+  assert.equal(wishReachable(s, pack(1), 'lio'), false, 'Lio wohnt im Wald, der ist zu');
+  s.wishes = { pim: { treasure: 'amber', day: TODAY, done: false } };
+  assert.equal(wishReachable(s, pack(1), 'pim'), true, 'die Spielaufgabe der Bucht ist offen');
+  s.tasks = [1];
+  assert.equal(wishReachable(s, pack(1), 'pim'), false, 'gelöst und nicht im Rucksack');
+  addTreasure(s, 'amber');
+  assert.equal(wishReachable(s, pack(1), 'pim'), true);
 });
 
 test('Sternfrucht bei vollem Futter wird ein Stein', () => {
@@ -146,6 +221,10 @@ test('Texte in jeder Sprache', () => {
       if (lang === 'fr') assert.ok(!bareFr(x), x);
     }
     for (const r of ['starfruit', 'stone', 'treats', 'xp']) assert.ok(!/[{}]/.test(t(`wish.thanks.${r}`)), r);
+    // Der Dank nennt die Zahl der Leckerli (CONFIG.wishes.treats) und das Wort des Spiels dafür.
+    assert.equal(CONFIG.wishes.treats, 2);
+    const two = { de: 'zwei', en: 'two', fr: 'deux', es: 'dos' }[lang];
+    assert.ok(t('wish.thanks.treats').toLowerCase().includes(`${two} ${t('item.treat.name').toLowerCase().slice(0, 7)}`), t('wish.thanks.treats'));
     assert.ok(t('wish.nextDay') && !/[{}]/.test(t('wish.nextDay')));
     for (const tr of TREASURES) {
       const name = treasureName(tr.id);

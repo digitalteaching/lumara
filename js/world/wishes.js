@@ -1,12 +1,14 @@
 // Wünsche der Bewohner (Lumara 1.3, Spec 7.2): Acht Bewohner wünschen sich je einen Schatz. Gibt das
 // Kind ihn her, gibt es eine Belohnung. Ein Wunsch bleibt offen, bis er erfüllt ist; der nächste
-// kommt am nächsten Kalendertag. DOM-frei. Der Tag kommt immer als Argument.
+// kommt am Kalendertag nach dem Tausch. day ist der Tag, an dem der Wunsch kam, nach dem Tausch der
+// Tag des Tauschs. DOM-frei. Der Tag kommt immer als Argument.
 
 import { CONFIG } from '../config.js';
 import { t } from '../i18n/i18n.js';
 import { emit } from './events.js';
 import { MAPS, areaOpen, mapOfArea, areaAt } from './network.js';
 import { TREASURES, AREA_TREASURES, takeTreasure } from '../items/treasures.js';
+import { taskSolved } from './tasks.js';
 import { addItem } from '../items/bag.js';
 import { gainXp } from '../duel/progress.js';
 
@@ -25,6 +27,7 @@ export const WISH_GIVERS = {
 const AREAS = Object.keys(WISH_GIVERS).map(Number);
 const areaOfNpc = npc => AREAS.find(a => WISH_GIVERS[a].npc === npc);
 const open = (state, pack) => AREAS.filter(a => areaOpen(state, pack, a));
+const holds = (state, id) => (state.treasures?.[id] ?? 0) > 0;
 
 export const wishOf = (state, npc) => state.wishes?.[npc] ?? null;
 
@@ -39,12 +42,14 @@ export const wishersOf = (state, treasureId) =>
   Object.entries(state.wishes ?? {}).filter(([, w]) => w && w.done === false && w.treasure === treasureId).map(([npc]) => npc);
 
 // Häufige Schätze aller offenen Gebiete (die aus anderen Gebieten mit otherAreaWeight), dazu selten
-// ein seltener (Gewicht 1 zusammen). Nie einer, den sich ein anderer Bewohner gerade wünscht, solange es Alternativen gibt.
+// ein seltener (Gewicht 1 zusammen). Den seltenen eines Gebiets nur, solange seine Spielaufgabe noch
+// nicht gelöst ist (sie bringt ihn sicher, so stimmt auch der Hinweis) oder das Kind ihn schon hat.
+// Nie einer, den sich ein anderer Bewohner gerade wünscht, solange es Alternativen gibt.
 export function pickWishTreasure(state, pack, area, rng) {
   const areas = open(state, pack);
   const taken = new Set(Object.entries(state.wishes ?? {}).filter(([npc, w]) => w?.done === false && npc !== WISH_GIVERS[area]?.npc).map(([, w]) => w.treasure));
   const w = CONFIG.wishes.otherAreaWeight;
-  const rares = areas.map(a => AREA_TREASURES[a].rare);
+  const rares = areas.filter(a => !taskSolved(state, a) || holds(state, AREA_TREASURES[a].rare)).map(a => AREA_TREASURES[a].rare);
   let cands = [
     ...areas.flatMap(a => AREA_TREASURES[a].common.map(id => ({ id, weight: a === area ? 1 : w }))),
     ...rares.map(id => ({ id, weight: 1 / rares.length })),
@@ -70,11 +75,25 @@ export function ensureWishes(state, pack, today, rng) {
 
 export const canGive = (state, npc) => {
   const w = wishOf(state, npc);
-  return !!w && w.done === false && (state.treasures?.[w.treasure] ?? 0) > 0;
+  return !!w && w.done === false && holds(state, w.treasure);
 };
 
+// Kann das Kind diesen offenen Wunsch erfüllen? Der Bewohner wohnt in einem offenen Gebiet, und den
+// Schatz hat es schon oder findet ihn noch: einen häufigen in seinem offenen Gebiet, einen seltenen
+// sicher nur über die Spielaufgabe, solange sie noch nicht gelöst ist.
+export function wishReachable(state, pack, npc) {
+  const w = wishOf(state, npc);
+  const area = areaOfNpc(npc);
+  if (!w || w.done !== false || !area || !areaOpen(state, pack, area)) return false;
+  if (holds(state, w.treasure)) return true;
+  const tr = TREASURES.find(x => x.id === w.treasure);
+  if (!tr || !areaOpen(state, pack, tr.area)) return false;
+  return tr.rarity !== 'rare' || !taskSolved(state, tr.area);
+}
+
 // Nimmt den Schatz (das Album behält ihn) und gibt eine Belohnung. Null, wenn nichts zu geben ist.
-export function giveWish(state, npc, rng) {
+// today ist der Tag des Tauschs: Erst am Tag danach kommt der nächste Wunsch.
+export function giveWish(state, npc, rng, today) {
   if (!canGive(state, npc)) return null;
   const w = state.wishes[npc];
   const levelBefore = state.creature.level;
@@ -97,6 +116,7 @@ export function giveWish(state, npc, rng) {
     gainXp(state.creature, R.xp);
   }
   w.done = true;
+  w.day = today ?? w.day;
   emit(state, 'wish');
   return out;
 }

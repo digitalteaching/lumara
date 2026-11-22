@@ -37,7 +37,7 @@ const T = 16;
 const rewardRng = reward => ({ ...createRng(3), weighted: items => (items.includes(reward) ? reward : items[0]), pick: a => a[0] });
 
 // Die Figur steht rechts neben dem Bewohner und schaut ihn an.
-function setup({ map = 'bucht', npc = 'pim', wish = { treasure: 'glassshell', day: DAY, done: false }, has = 1, rng = createRng(3), reducedMotion = false, state: given, at } = {}) {
+function setup({ map = 'bucht', npc = 'pim', wish = { treasure: 'glassshell', day: DAY, done: false }, has = 1, rng = createRng(3), reducedMotion = false, state: given, at, today = DAY } = {}) {
   const def = MAPS[map];
   const o = def.objects.find(x => x.id === npc);
   const state = given ?? newGameState({ name: 'A', species: 'nixi', nickname: null });
@@ -71,6 +71,7 @@ function setup({ map = 'bucht', npc = 'pim', wish = { treasure: 'glassshell', da
       if (hold) return new Promise(r => (hold.release = () => r(answer)));
       return answer;
     },
+    today: () => today,
   });
   // A drücken: ein Takt der Welt mit A, wie beim Tippen auf den A-Knopf.
   const tap = () => {
@@ -144,6 +145,17 @@ test('Ja tauscht einmal: erst gespeichert, dann Abgabe, Dank und was es gibt', a
   assert.deepEqual(log.says.at(-1), { lines: [...normal(o, state), t('wish.nextDay')], speaker: 'Pim' });
   assert.equal(log.asks.length, 1);
   assert.equal(log.saves, 1);
+});
+
+// Ein Wunsch von vorgestern, heute erfüllt: „Komm morgen wieder!“ stimmt, heute kommt kein neuer.
+test('Der Tausch merkt sich den heutigen Tag', async () => {
+  const { state, log, tap, o } = setup({ wish: { treasure: 'glassshell', day: '2026-11-20', done: false }, today: DAY, rng: rewardRng('stone') });
+  tap();
+  await settle();
+  assert.deepEqual(state.wishes.pim, { treasure: 'glassshell', day: DAY, done: true });
+  tap();
+  await settle();
+  assert.deepEqual(log.says.at(-1), { lines: [...normal(o, state), t('wish.nextDay')], speaker: 'Pim' });
 });
 
 test('Doppeltipp tauscht nicht zweimal', async () => {

@@ -11,7 +11,8 @@
 //     Nein: Er wartet, nichts ändert sich.
 //   - Ohne den Schatz: erst seine normalen Sätze (wie ohne Wunsch, etwa Pims Tipp zum Fliehen mit B),
 //     dann sein eigener Satz, der Wunsch und wo man ihn findet.
-//   - Erfüllt: seine normalen Sätze, dann: Morgen kommt ein neuer Wunsch.
+//   - Erfüllt: seine normalen Sätze, dann: Morgen kommt ein neuer Wunsch. Das stimmt: Der Tausch
+//     merkt sich seinen Kalendertag, der nächste Wunsch kommt erst am Tag danach.
 //   - Ohne Wunsch (sein Gebiet ist noch zu): Er redet wie immer (der allgemeine Bewohner-Handler).
 // - Ein Auftrag, dessen Schritt gerade bei ihm ist (Talia, Greta), geht vor: Dann antwortet der Auftrag,
 //   und so lange zeigt er keine Blase.
@@ -19,6 +20,7 @@
 // zusätzlich vor einem doppelten Start (Doppeltipp).
 
 import { WISH_GIVERS, wishOf, canGive, giveWish, wishHint } from '../world/wishes.js';
+import { todayKey } from '../world/board.js';
 import { questFor } from '../world/quests.js';
 import { npcLines } from '../world/network.js';
 import { treasureName } from '../items/treasures.js';
@@ -76,8 +78,8 @@ function drawBubble(ctx, img, x, y, tail) {
 const onScreen = (x, y) => x > -BOX && y > -BOX - TAIL && x < SCREEN_W && y < SCREEN_H;
 
 // levelUps(levelBefore): Level-Zeilen und Entwicklung nach XP außerhalb eines Duells (aus
-// createGameWorld). say und choose ersetzen in Tests den Dialog.
-export function addWishes(world, game, { levelUps = async () => {}, say: speak = say, choose: ask = choose } = {}) {
+// createGameWorld). say und choose ersetzen in Tests den Dialog, today den Kalendertag.
+export function addWishes(world, game, { levelUps = async () => {}, say: speak = say, choose: ask = choose, today = () => todayKey() } = {}) {
   const giver = Object.values(WISH_GIVERS).find(g => g.map === world.mapId);
   const npc = giver && world.map.def.objects.find(o => o.type === 'npc' && o.id === giver.npc);
   if (!npc) return; // keine Karte eines Wunsch-Bewohners (Garten, Höhle, geheime Orte)
@@ -119,7 +121,7 @@ export function addWishes(world, game, { levelUps = async () => {}, say: speak =
   }
 
   async function trade(treasure) {
-    const out = giveWish(game.state, npc.id, game.rng);
+    const out = giveWish(game.state, npc.id, game.rng, today());
     if (!out) return speak(game, [t('wish.waiting', { treasure })], { speaker: npc.name });
     game.save();
     await speak(game, [t('wish.give', { treasure })]);
