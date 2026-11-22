@@ -213,6 +213,13 @@ test('Format 11: Aushang, Wünsche und Ereignisse werden repariert', () => {
   assert.deepEqual(fix({ board: board({ tasks: [{ ...task, kind: 'fliegen' }, task, { ...task, n: 9 }, { ...task, area: 9 }, { ...task, n: 2.5 }] }) }).board.tasks, [task]);
   assert.deepEqual(fix({ board: board({ tasks: [{ ...task, progress: 7 }, { ...task, progress: -1, done: 'ja', rewarded: 1 }] }) }).board.tasks, [{ ...task, progress: 2 }, { ...task, progress: 0 }]);
   assert.equal(fix({ board: board({ tasks: [task, task, task, task, task] }) }).board.tasks.length, 3);
+  // befriend und visit nur mit Gebiet 1 bis 8, alle anderen Arten nur ohne (null)
+  const visit = { kind: 'visit', n: 1, area: 4, progress: 0, done: false, rewarded: false };
+  const befriend = { ...visit, kind: 'befriend', area: 8 };
+  const { area: _, ...noArea } = task;
+  assert.deepEqual(fix({ board: board({ tasks: [{ ...visit, area: null }, { ...befriend, area: 0 }, visit] }) }).board.tasks, [visit]);
+  assert.deepEqual(fix({ board: board({ tasks: [{ ...befriend, area: '3' }, befriend, { ...visit, area: 2.5 }] }) }).board.tasks, [befriend]);
+  assert.deepEqual(fix({ board: board({ tasks: [{ ...task, area: 3 }, noArea, { ...task, kind: 'wish', n: 1, area: 1 }, { ...task, kind: 'streak', area: null }] }) }).board.tasks, [{ ...task, kind: 'streak' }]);
   assert.deepEqual(fix({ board: board({ tasks: 'x', bonus: 'ja', intro: 1 }) }).board, { day: '2026-11-22', tasks: [], bonus: false, intro: false });
   const w = { treasure: 'acorncap', day: '2026-11-22', done: true };
   assert.deepEqual(fix({ wishes: { pim: w, fremder: w, lio: { ...w, treasure: 'gold' }, nele: { ...w, day: 'heute' }, ari: 'x', kai: { ...w, done: 'ja' } } }).wishes, { pim: w, kai: { ...w, done: false } });

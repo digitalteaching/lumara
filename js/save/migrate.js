@@ -253,12 +253,14 @@ const repairTasks = raw => (Array.isArray(raw) ? [...new Set(raw.filter(n => isI
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 const isDay = v => typeof v === 'string' && DAY.test(v);
 
-// Der Aushang: null oder ein Tag mit höchstens drei brauchbaren Aufgaben. Eine kaputte Aufgabe fällt weg.
+// Der Aushang: null oder ein Tag mit höchstens drei brauchbaren Aufgaben. Eine kaputte Aufgabe fällt weg,
+// auch eine mit falschem Gebiet: befriend und visit brauchen eins von 1 bis 8, alle anderen Arten null.
+const AREA_KINDS = ['befriend', 'visit'];
 function repairBoardTask(t) {
   if (!isObject(t) || !BOARD_KINDS.includes(t.kind) || !isInt(t.n) || t.n < 1 || t.n > 5) return null;
-  const area = t.area === null ? null : isInt(t.area) && t.area >= 1 && t.area <= 8 ? t.area : undefined;
-  if (area === undefined) return null;
-  return { kind: t.kind, n: t.n, area, progress: clampInt(t.progress, 0, t.n, 0), done: t.done === true, rewarded: t.rewarded === true };
+  const areaOk = AREA_KINDS.includes(t.kind) ? isInt(t.area) && t.area >= 1 && t.area <= 8 : t.area === null;
+  if (!areaOk) return null;
+  return { kind: t.kind, n: t.n, area: t.area, progress: clampInt(t.progress, 0, t.n, 0), done: t.done === true, rewarded: t.rewarded === true };
 }
 
 function repairBoard(raw) {
