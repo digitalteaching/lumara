@@ -2,9 +2,10 @@
 
 import { el } from './dom.js';
 
-// Hinweis oben in der Mitte. Liegt über allem, auch über dem Menü.
-export function showToast(text, ms = 6000) {
-  const node = el('div', { class: 'toast', role: 'status' }, text);
+// Hinweis oben in der Mitte. Liegt über allem, auch über dem Menü. kind: eine Art mit eigenem Platz,
+// etwa 'news' (Meldungen des Aushangs, css/spiel.css).
+export function showToast(text, ms = 6000, kind = null) {
+  const node = el('div', { class: kind ? `toast ${kind}` : 'toast', role: 'status' }, text);
   document.body.append(node);
   setTimeout(() => node.remove(), ms);
   return node;

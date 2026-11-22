@@ -1,10 +1,12 @@
 // Der Aushang in der Welt (Lumara 1.3, Spec 7.1). Regeln: js/world/board.js, Wünsche:
 // js/world/wishes.js, Seite an der Tafel: js/menu/boardPage.js.
 // - Beim Aufbau jeder Welt: Ist ein neuer Tag, zählen erst die Ereignisse für den alten Aushang, dann
-//   kommen neue Aufgaben. Wünsche bekommt jedes offene Gebiet. In einem Gebiet (nicht im Garten, in
-//   der Höhle oder an einem geheimen Ort) zählt der Besuch.
+//   kommen neue Wünsche und danach neue Aufgaben (so kann schon am ersten Tag „Erfülle einen Wunsch“
+//   dabei sein). Wünsche bekommt jedes offene Gebiet. „Besuche …“ nennt nie das Gebiet dieser Welt.
+//   In einem Gebiet (nicht im Garten, in der Höhle oder an einem geheimen Ort) zählt der Besuch.
 // - Nur wenn die Welt frei ist (keine Sperre, Laufen, keine Überblendung), prüft jeder Takt den Tag
-//   und zählt die Ereignisse. Jede Meldung kommt einzeln als Toast mit Jingle. Bringt der Tagesbonus
+//   und zählt die Ereignisse. Jede Meldung kommt einzeln als Toast mit Jingle (Art 'news': auf
+//   schmalen Bildern unter der Anzeige und den Knöpfen oben, css/spiel.css). Bringt der Tagesbonus
 //   ein neues Level, folgen die Level-Zeilen der Welt unter ihrer Sperre.
 // - Die Tafel in der Bucht: A öffnet die Seite des Aushangs. Solange eine Aufgabe offen ist, blitzt
 //   ab und zu ein Glanz auf, bei „Bewegung reduzieren“ nie.
@@ -22,7 +24,7 @@ import { say } from '../ui/dialog.js';
 import { sound, jingle } from '../audio/bus.js';
 import { t } from '../i18n/i18n.js';
 
-const NEWS_MS = 4000; // so lange steht eine Meldung da
+const NEWS_MS = 6000; // so lange steht eine Meldung da (wie jeder Toast)
 const NEWS_GAP_MS = 400; // dann eine kleine Pause bis zur nächsten
 const INTRO_DELAY_MS = 800; // so lange läuft man frei in der Bucht, bevor Ilvy erzählt
 const GLINT_EVERY_MS = 2400; // alle so viele Millisekunden ein Glanz auf der Tafel …
@@ -51,10 +53,12 @@ export function addBoard(world, game, { levelUps = async () => {}, say: speak = 
   const queue = queueOf(game);
   const hasBoard = def.objects.some(o => o.type === 'board');
   const ilvy = def.objects.find(o => o.type === 'npc' && o.id === 'ilvy') ?? null;
+  const here = def.area ?? null; // „Besuche …“ nennt nie dieses Gebiet
 
   // Ein neuer Tag (oder noch gar kein Aushang): Erst zählen die Ereignisse für den alten Aushang, dann
-  // kommen neue Aufgaben und Wünsche. Was die Belohnungen von gestern melden (ein Schatz), zählt nicht
-  // mehr für heute. Ein früheres Datum ändert nichts (js/world/board.js).
+  // kommen neue Wünsche und danach neue Aufgaben, damit „Erfülle einen Wunsch“ die neuen Wünsche
+  // schon kennt. Was die Belohnungen von gestern melden (ein Schatz), zählt nicht mehr für heute. Ein
+  // früheres Datum ändert nichts (js/world/board.js).
   function newDay(day) {
     const s = game.state;
     if (s.board && !(day > s.board.day)) return false;
@@ -62,8 +66,8 @@ export function addBoard(world, game, { levelUps = async () => {}, say: speak = 
       take(processEvents(s, game.rng, pack()));
       s.events = [];
     }
-    ensureBoard(s, pack(), day, game.rng);
     ensureWishes(s, pack(), day, game.rng);
+    ensureBoard(s, pack(), day, game.rng, here);
     return true;
   }
 
@@ -84,7 +88,7 @@ export function addBoard(world, game, { levelUps = async () => {}, say: speak = 
   // ---------- Melden ----------
 
   function announce(n) {
-    toast(newsText(n), NEWS_MS);
+    toast(newsText(n), NEWS_MS, 'news');
     jingle('board');
     queue.wait = NEWS_MS + NEWS_GAP_MS;
     if (n.kind === 'bonus' && n.levelAfter > n.levelBefore) world.lock(() => levelUps(n.levelBefore, n.levelAfter));

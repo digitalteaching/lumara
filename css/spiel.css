@@ -520,6 +520,12 @@ body:not([data-mode="walk"]) .whisper { display: none; }
   box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35);
   pointer-events: none;
 }
+/* Meldungen des Aushangs: Ist das Bild schmaler als 1200 px (Fenster schmaler als 1200 px oder
+   niedriger als 800 px), fänden sie oben zwischen Anzeige und Knöpfen keinen Platz. Dann stehen sie
+   darunter: Anzeige und Knöpfe beginnen gpx × 4 unter dem Bild-Oberrand und sind höchstens 55 px hoch. */
+@media (max-width: 1199px), (max-height: 799px) {
+  .toast.news { top: calc(var(--img-top) + var(--gpx) * 4 + 64px); }
+}
 
 /* Spielstand wiederherstellen */
 .recover-title { font-weight: 700; font-size: calc(var(--text) * 1.1); }

@@ -26,18 +26,18 @@ const almost = () => [task('streak', { n: 3, progress: 3, done: true, rewarded: 
 const jingles = [];
 setAudio({ jingle: id => jingles.push(id), sfx() {}, music() {} });
 
-function setup({ map = 'bucht', state: given, b, reducedMotion = false, today = DAY } = {}) {
+function setup({ map = 'bucht', state: given, b, reducedMotion = false, today = DAY, seed = 7, pack = PACK } = {}) {
   const def = MAPS[map];
   const state = given ?? newGameState({ name: 'A', species: 'nixi', nickname: null });
   state.position = { map, ...def.spawn };
   if (b !== undefined) state.board = b;
-  const log = { toasts: [], says: [], sheets: [], saves: 0, levelUps: [] };
+  const log = { toasts: [], toastArgs: [], says: [], sheets: [], saves: 0, levelUps: [] };
   const game = {
     state,
     reducedMotion,
     mode: 'walk',
-    rng: createRng(7),
-    pack: { data: PACK },
+    rng: createRng(seed),
+    pack: { data: pack },
     save: () => log.saves++,
     input: { dir: () => null, pressed: () => false },
   };
@@ -46,7 +46,7 @@ function setup({ map = 'bucht', state: given, b, reducedMotion = false, today = 
   addBoard(world, game, {
     levelUps: async (before, after) => log.levelUps.push([before, after]),
     say: async (g, lines, opts = {}) => log.says.push({ lines, speaker: opts.speaker }),
-    toast: text => log.toasts.push(text),
+    toast: (text, ms, kind) => (log.toasts.push(text), log.toastArgs.push({ ms, kind })),
     sheet: async (g, page) => log.sheets.push(page),
     today: () => day,
   });
@@ -68,6 +68,7 @@ test('Ein Ereignis in der Welt führt zu genau einer Meldung mit Jingle, danach 
   assert.equal(log.toasts.length, 1);
   assert.ok(log.toasts[0].startsWith(newsPrefix('board.news.task')), log.toasts[0]);
   assert.deepEqual(jingles, ['board']);
+  assert.deepEqual(log.toastArgs, [{ ms: 6000, kind: 'news' }], 'so lange wie jeder Toast, mit eigenem Platz');
   assert.equal(log.saves, saves + 1);
   assert.equal(state.board.tasks[0].done, true);
   ticks(world, 8000);
@@ -211,6 +212,67 @@ test('Tageswechsel: Erst zählen die Ereignisse von gestern, dann kommen neue Au
   setDay('2026-11-20');
   ticks(world, 1000);
   assert.equal(JSON.stringify(state.board), before);
+});
+
+// Ein Spielstand aus 1.2.1 hat noch keinen Aushang und keine Wünsche: Erst kommen die Wünsche, dann die
+// Aufgaben, so kann schon am ersten Tag „Erfülle einen Wunsch“ dabei sein.
+test('Erster Tag: erst die Wünsche, dann die Aufgaben', () => {
+  let withWish = 0;
+  for (let seed = 1; seed <= 30; seed++) {
+    const s = newGameState({ name: 'A', species: 'nixi', nickname: null });
+    s.board = null;
+    s.wishes = {};
+    const { state } = setup({ state: s, seed });
+    assert.equal(state.wishes.pim.done, false, 'Pim hat einen Wunsch');
+    if (state.board.tasks.some(x => x.kind === 'wish')) withWish++;
+  }
+  assert.ok(withWish > 0, String(withWish));
+  // Auch beim Tageswechsel mitten im Spiel: Pims Wunsch von gestern ist erfüllt, der neue zählt schon.
+  let later = 0;
+  for (let seed = 1; seed <= 30; seed++) {
+    const s = newGameState({ name: 'A', species: 'nixi', nickname: null });
+    s.board = board([task('notes'), task('streak', { n: 3 }), task('wildWins')], { day: DAY });
+    s.wishes = { pim: { treasure: 'glassshell', day: DAY, done: true } };
+    const { world, state, setDay } = setup({ state: s, seed });
+    setDay('2026-11-23');
+    world.update(16);
+    assert.equal(state.board.day, '2026-11-23');
+    assert.equal(state.wishes.pim.done, false);
+    if (state.board.tasks.some(x => x.kind === 'wish')) later++;
+  }
+  assert.ok(later > 0, String(later));
+});
+
+test('Ein neuer Tag im Wald: „Besuche …“ nennt nie den Wald', () => {
+  const two = { ...PACK, trainers: [{ number: 1 }, { number: 2 }] };
+  for (let seed = 1; seed <= 30; seed++) {
+    const s = newGameState({ name: 'A', species: 'nixi', nickname: null });
+    s.stones = [1]; // Bucht und Wald offen: kein Ziel übrig
+    s.board = board([task('notes'), task('streak', { n: 3 }), task('wildWins')], { day: '2026-11-21' });
+    const { world, state, log } = setup({ map: 'wald', state: s, seed, pack: two });
+    assert.equal(state.board.day, DAY);
+    assert.ok(!state.board.tasks.some(x => x.kind === 'visit'), `seed ${seed}`);
+    world.update(16);
+    assert.ok(state.board.tasks.every(x => !x.done), 'nichts gleich beim ersten Takt erledigt');
+    assert.deepEqual(log.toasts, []);
+  }
+});
+
+test('Meldungen stehen auf schmalen Bildern unter Anzeige und Knöpfen und halten keinen Finger auf', () => {
+  const css = readFileSync(new URL('../css/spiel.css', import.meta.url), 'utf8');
+  const base = css.slice(css.indexOf('.toast {'), css.indexOf('}', css.indexOf('.toast {')));
+  assert.match(base, /pointer-events:\s*none/);
+  const at = css.indexOf('@media (max-width: 1199px), (max-height: 799px) {\n  .toast.news {');
+  assert.ok(at > 0, 'eigene Regel für schmale Bilder');
+  const rule = css.slice(at, css.indexOf('}', at));
+  assert.match(rule, /top:\s*calc\(var\(--img-top\) \+ var\(--gpx\) \* 4 \+ 64px\)/);
+  assert.ok(!/pointer-events/.test(rule), 'bleibt wie jeder Toast ohne Fingertipp');
+  // Anzeige und Knöpfe oben: beginnen gpx × 4 unter dem Bild-Oberrand, Knöpfe 52 px hoch (+ 3 px Schatten)
+  for (const sel of ['.hud {', '.menu-btn {', '.bag-btn {']) {
+    const r = css.slice(css.indexOf(sel), css.indexOf('}', css.indexOf(sel)));
+    assert.match(r, /top:\s*calc\(var\(--gpx\) \* 4\)/, sel);
+  }
+  for (const sel of ['.menu-btn {', '.bag-btn {']) assert.match(css.slice(css.indexOf(sel), css.indexOf('}', css.indexOf(sel))), /height:\s*52px/, sel);
 });
 
 test('A auf die Tafel öffnet die Seite des Aushangs; andere Felder gehen weiter', async () => {

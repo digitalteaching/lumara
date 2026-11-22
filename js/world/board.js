@@ -8,6 +8,7 @@ import { MAPS, areaOpen, mapOfArea, areaAt, areaTo } from './network.js';
 import { AREA_WILD } from '../data/species.js';
 import { FRIENDABLE, isFriend, giftOf } from '../friends/friends.js';
 import { HIDEOUTS } from '../data/hideouts.js';
+import { wishReachable } from './wishes.js';
 import { rollTreasure, addTreasure } from '../items/treasures.js';
 import { addItem } from '../items/bag.js';
 import { gainXp } from '../duel/progress.js';
@@ -31,39 +32,45 @@ const befriendAreas = (state, pack) => openAreas(state, pack).filter(a => {
   return w && [...w.common, w.rare].some(id => FRIENDABLE.includes(id) && !isFriend(state, id));
 });
 
-const openWishes = state => Object.values(state.wishes ?? {}).filter(w => w && w.done === false);
+// Ziele für „Besuche …“: nicht die Bucht mit der Tafel und nicht das Gebiet, in dem das Kind gerade
+// ist (here), sonst wäre die Aufgabe schon beim ersten Takt erledigt.
+const visitAreas = (state, pack, here) => openAreas(state, pack).filter(a => a !== 1 && a !== here);
 
-// Alle Arten, die das Kind jetzt schaffen kann.
-export function feasibleKinds(state, pack) {
+// Das Gebiet der Karte, auf der das Kind gerade ist (null im Zweifel).
+const areaHere = state => MAPS[state.position?.map]?.area ?? null;
+
+// Alle Arten, die das Kind jetzt schaffen kann. here: das Gebiet, in dem es gerade ist.
+export function feasibleKinds(state, pack, here = areaHere(state)) {
   const open = openAreas(state, pack);
   const gifts = new Set(FRIENDABLE.filter(id => isFriend(state, id)).map(giftOf).filter(g => g && g !== 'sniff'));
   const ok = {
     befriend: () => befriendAreas(state, pack).length > 0,
     hideouts: () => HIDEOUTS.some(h => gifts.has(h.gift) && open.includes(MAPS[h.map].area)),
-    visit: () => open.some(a => a !== 1),
-    wish: () => openWishes(state).length > 0,
+    visit: () => visitAreas(state, pack, here).length > 0,
+    wish: () => Object.keys(state.wishes ?? {}).some(npc => wishReachable(state, pack, npc)),
   };
   return BOARD_KINDS.filter(k => (ok[k] ? ok[k]() : true));
 }
 
-function makeTask(kind, state, pack, rng) {
+function makeTask(kind, state, pack, rng, here) {
   const range = CONFIG.board.counts[kind];
   const n = SINGLE.has(kind) ? 1 : rng.int(range[0], range[1]);
   let area = null;
   if (kind === 'befriend') area = rng.pick(befriendAreas(state, pack));
-  if (kind === 'visit') area = rng.pick(openAreas(state, pack).filter(a => a !== 1));
+  if (kind === 'visit') area = rng.pick(visitAreas(state, pack, here));
   return { kind, n, area, progress: 0, done: false, rewarded: false };
 }
 
 // Legt einen neuen Aushang an, wenn keiner da ist oder der Tag später ist als der des alten.
-export function ensureBoard(state, pack, today, rng) {
+// here: das Gebiet der Welt, die gerade aufgebaut wird (sonst das aus state.position).
+export function ensureBoard(state, pack, today, rng, here = areaHere(state)) {
   if (state.board && !(today > state.board.day)) return false;
-  const pool = [...feasibleKinds(state, pack)];
+  const pool = [...feasibleKinds(state, pack, here)];
   const tasks = [];
   while (tasks.length < 3 && pool.length) {
     const kind = rng.pick(pool);
     pool.splice(pool.indexOf(kind), 1);
-    tasks.push(makeTask(kind, state, pack, rng));
+    tasks.push(makeTask(kind, state, pack, rng, here));
   }
   state.board = { day: today, tasks, bonus: false, intro: state.board?.intro === true };
   return true;

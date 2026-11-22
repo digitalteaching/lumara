@@ -166,6 +166,9 @@ test('Texte in jeder Sprache ohne Text fehlt', () => {
   }
   setLanguage('fr');
   assert.match(t('board.done'), / !$/);
+  // Spanisch: das Perfekt wie im Rest des Spiels
+  setLanguage('es');
+  for (const k of ['board.news.task', 'board.news.bonus']) assert.ok(t(k, { reward: 'X', xp: 30 }).startsWith('¡Has hecho '), k);
   setLanguage('de');
 });
 
@@ -189,13 +192,51 @@ test('Verstecke: machbar mit Strandgut-Freund, nicht nur mit Spürnase', () => {
   assert.equal(feasibleKinds(s, pack(1)).includes('hideouts'), true);
 });
 
-test('Wunsch: nur mit offenem Wunsch machbar', () => {
+test('Wunsch: nur mit offenem Wunsch machbar, den das Kind auch erfüllen kann', () => {
   const s = st();
   assert.equal(feasibleKinds(s, pack(1)).includes('wish'), false);
-  s.wishes = { pim: { treasure: 'seashell', day: '2026-11-22', done: true } };
+  s.wishes = { pim: { treasure: 'glassshell', day: '2026-11-22', done: true } };
   assert.equal(feasibleKinds(s, pack(1)).includes('wish'), false);
-  s.wishes.lio = { treasure: 'seashell', day: '2026-11-22', done: false };
+  s.wishes.lio = { treasure: 'glassshell', day: '2026-11-22', done: false };
+  assert.equal(feasibleKinds(s, pack(1)).includes('wish'), false, 'Lio wohnt im Wald, der ist noch zu');
+  s.wishes.pim = { treasure: 'glassshell', day: '2026-11-22', done: false };
   assert.equal(feasibleKinds(s, pack(1)).includes('wish'), true);
+  // Ein seltener Schatz: machbar, solange die Spielaufgabe ihn noch bringt oder er im Rucksack ist.
+  s.wishes = { pim: { treasure: 'amber', day: '2026-11-22', done: false } };
+  assert.equal(feasibleKinds(s, pack(1)).includes('wish'), true);
+  s.tasks = [1];
+  assert.equal(feasibleKinds(s, pack(1)).includes('wish'), false);
+  s.treasures = { amber: 1 };
+  assert.equal(feasibleKinds(s, pack(1)).includes('wish'), true);
+});
+
+// Sonst wäre „Besuche …“ schon beim ersten Takt des neuen Tages erledigt.
+test('Besuch: nie das Gebiet, in dem das Kind gerade ist', () => {
+  const s = st([1]); // Bucht und Wald offen
+  assert.equal(feasibleKinds(s, pack(2), 2).includes('visit'), false, 'im Wald: kein Ziel übrig');
+  assert.ok(feasibleKinds(s, pack(2), 1).includes('visit'));
+  assert.ok(feasibleKinds(s, pack(2), null).includes('visit'));
+  const s3 = st([1, 2]); // dazu das Moor
+  let seen = 0;
+  for (let seed = 1; seed < 60; seed++) {
+    s3.board = null;
+    ensureBoard(s3, pack(3), '2026-11-22', createRng(seed), 2);
+    for (const x of s3.board.tasks.filter(x => x.kind === 'visit')) { assert.equal(x.area, 3); seen++; }
+  }
+  assert.ok(seen > 0);
+  // Ohne Angabe gilt die Karte aus state.position (auch geheime Orte haben ihr Gebiet).
+  s3.position = { map: 'moor', x: 1, y: 1, dir: 'down' };
+  for (let seed = 1; seed < 60; seed++) {
+    s3.board = null;
+    ensureBoard(s3, pack(3), '2026-11-22', createRng(seed));
+    for (const x of s3.board.tasks.filter(x => x.kind === 'visit')) assert.equal(x.area, 2);
+  }
+  s3.position = { map: 'eiche', x: 1, y: 1, dir: 'down' }; // ein geheimer Ort im Wald
+  for (let seed = 1; seed < 60; seed++) {
+    s3.board = null;
+    ensureBoard(s3, pack(3), '2026-11-22', createRng(seed));
+    for (const x of s3.board.tasks.filter(x => x.kind === 'visit')) assert.equal(x.area, 3);
+  }
 });
 
 test('Jedes Gebiet hat Ort und Ziel in allen Sprachen', () => {
