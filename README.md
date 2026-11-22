@@ -4,7 +4,7 @@
 
 Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, erkundet eine geheimnisvolle Insel unter einem Nebel des Vergessens und besteht Duelle mit Aufgaben aus dem Unterricht. Dafür bekommt es Punkte, und sein Wesen entwickelt sich weiter. Die Inhalte kommen aus einem Lernpaket, einer Textdatei, die die Lehrkraft selbst schreibt. Dadurch funktioniert das Spiel in jedem Fach. Das erste Beispielpaket ist für Jahrgang 6 Englisch.
 
-**Status:** Das Spiel ist fertig (Spielfassung 1.3.0). Gebaut in den Plänen 1 bis 8, danach 1.0.x, 1.1, 1.2 und 1.3. Es läuft unter https://digitalteaching.github.io/lumara/.
+**Status:** Das Spiel ist fertig (Spielfassung 1.3.1). Gebaut in den Plänen 1 bis 8, danach 1.0.x, 1.1, 1.2 und 1.3. Es läuft unter https://digitalteaching.github.io/lumara/.
 
 **Für Lehrkräfte:** Die [Anleitung](anleitung.html) erklärt, wie man ein Lernpaket erstellt, prüft und an die Klasse verteilt. Auf der [Seite für Lehrkräfte](lehrkraft.html) prüft man Pakete und Statistiken. Dazu gibt es die [Vorlage](pakete/vorlage.txt), das [Beispielpaket](pakete/englisch-6-beispiel.txt), einen [KI-Prompt](pakete/KI-PROMPT-Lernpaket.md), mit dem eine KI ein gültiges Paket schreibt, und eine [Kurzanleitung als PDF](pakete/Lumara-Kurzanleitung.pdf) zum Ausdrucken.
 
