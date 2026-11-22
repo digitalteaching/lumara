@@ -25,6 +25,9 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
   let wanted = null; // gewünschte Schleife (auch vor dem Entsperren)
   let playing = null;
   let jingle = false;
+  // Wo eine Schleife stand, als ein Jingle sie unterbrach: { id, pos } (Sekunden in der Schleife).
+  // Gilt nur für diese Musik und nur einmal, danach (oder bei anderer Musik, Musik aus) null.
+  let resumeAt = null;
   let plays = 0;
   // settings: ein Objekt oder eine Funktion (der Spielstand wird oft erst nach dem Start geladen).
   // setMusicOn/setSfxOn überschreiben; sonst gilt, was in den Einstellungen steht.
@@ -72,10 +75,13 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
       seq.stop();
       cut();
       playing = null;
+      resumeAt = null;
       return;
     }
     if (playing === wanted) return;
-    begin(wanted, { loop: true });
+    const from = resumeAt?.id === wanted ? resumeAt.pos : 0;
+    resumeAt = null;
+    begin(wanted, { loop: true, from });
     playing = wanted;
     plays++;
   }
@@ -116,6 +122,8 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
   function music(id) {
     if (id === wanted) return;
     wanted = id;
+    // Andere Musik gewünscht (Kartenwechsel, Duell): Die gemerkte Stelle gilt nicht mehr.
+    if (resumeAt?.id !== id) resumeAt = null;
     if (!jingle) startWanted();
   }
 
@@ -125,11 +133,16 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
     if (ctx) cut();
     playing = null;
     jingle = false;
+    resumeAt = null;
   }
 
-  // Ein Jingle unterbricht die Schleife; danach beginnt sie von vorn.
+  // Ein Jingle unterbricht die Schleife; danach läuft sie an derselben Stelle weiter (mit derselben
+  // kurzen Blende wie bei jedem Wechsel). Wird inzwischen andere Musik gewünscht oder die Musik
+  // ausgeschaltet, beginnt die neue Musik wie sonst von vorn.
   function playJingle(id) {
     if (!seq || !running() || !isMusicOn() || !songs[id]) return;
+    // Ein Jingle im Jingle behält die Stelle der Schleife, die der erste unterbrochen hat.
+    if (playing) resumeAt = { id: playing, pos: seq.position() ?? 0 };
     jingle = true;
     playing = null;
     begin(id, {
@@ -164,6 +177,7 @@ export function createAudio({ makeContext, settings = {}, songs = {}, setTimer =
       cut();
       playing = null;
       jingle = false;
+      resumeAt = null;
     }
   }
 

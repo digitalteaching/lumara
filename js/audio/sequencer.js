@@ -3,12 +3,25 @@
 // Uhr (now) und Ausgabe (schedule) kommen von außen.
 
 export function createSequencer({ now, schedule, lookahead = 0.12 }) {
-  let cur = null; // { song, loop, start, next: { voice: { i, cycle } }, onEnd, ended }
+  let cur = null; // { song, loop, start, from, next: { voice: { i, cycle } }, onEnd, ended }
 
-  function play(song, { loop = true, at = now() + 0.05, onEnd = null } = {}) {
+  // from: Sekunden im Stück, ab denen es zur Zeit at weitergeht (nach einem Jingle). Jede Stimme beginnt
+  // beim ersten Ereignis ab from; lange Noten, die vorher begonnen haben, fehlen bis zur nächsten Runde.
+  function play(song, { loop = true, at = now() + 0.05, from = 0, onEnd = null } = {}) {
+    const skip = loop && song.length > 0 ? Math.max(0, from) % song.length : Math.max(0, from);
     const next = {};
-    for (const v of Object.keys(song.voices)) next[v] = { i: 0, cycle: 0 };
-    cur = { song, loop, start: at, next, onEnd, ended: false };
+    for (const [v, events] of Object.entries(song.voices)) {
+      const i = events.findIndex(ev => ev.t >= skip);
+      next[v] = { i: i < 0 ? events.length : i, cycle: 0 };
+    }
+    cur = { song, loop, start: at - skip, from: skip, next, onEnd, ended: false };
+  }
+
+  // Sekunden in der laufenden Schleife (modulo Länge), im Vorlauf die Stelle, an der es losgeht;
+  // null, wenn keine Schleife läuft.
+  function position() {
+    if (!cur?.loop || !(cur.song.length > 0)) return null;
+    return Math.max(now() - cur.start, cur.from) % cur.song.length;
   }
 
   function stop() {
@@ -42,5 +55,5 @@ export function createSequencer({ now, schedule, lookahead = 0.12 }) {
     }
   }
 
-  return { play, stop, tick, get playing() { return cur !== null; } };
+  return { play, stop, tick, position, get playing() { return cur !== null; } };
 }
