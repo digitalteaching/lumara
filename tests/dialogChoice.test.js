@@ -78,10 +78,11 @@ trackPointers(fakeWindow);
 
 // Ein Ereignis wie im Browser: erst Capture von außen nach innen, dann das Ziel, dann Bubble.
 // detail: 1 bei Finger oder Maus, 0 bei einem Klick per Tastatur (Enter auf einem Knopf).
-function dispatch(target, type, { detail = 1, pointerId = 1 } = {}) {
+// isPrimary: der erste Finger (ein zweiter, solange einer liegt, ist es nicht).
+function dispatch(target, type, { detail = 1, pointerId = 1, isPrimary = true } = {}) {
   const path = [];
   for (let n = target.parent; n; n = n.parent) path.unshift(n);
-  const e = { type, target, detail, pointerId, stopped: false, defaultPrevented: false, preventDefault() { this.defaultPrevented = true; }, stopPropagation() { this.stopped = true; } };
+  const e = { type, target, detail, pointerId, isPrimary, stopped: false, defaultPrevented: false, preventDefault() { this.defaultPrevented = true; }, stopPropagation() { this.stopped = true; } };
   const run = (n, ok) => {
     for (const l of [...n.listeners]) if (l.type === type && ok(l)) l.fn.call(n, e);
   };
@@ -209,6 +210,46 @@ test('Ein Klick ohne Finger (Hilfstechnik) wählt nach der Schutzzeit', async ()
   dispatch(q.buttons[1], 'click'); // detail 1, kein pointerdown
   await settle();
   assert.equal(q.result.answer, 1);
+});
+
+// iOS verliert manches pointerup, wenn das Ziel beim Aufsetzen verschwindet. Danach darf keine Frage
+// für immer glauben, ein Finger liege noch (sonst wiese sie jeden Klick von Hilfstechnik ab).
+test('Ein verlorenes pointerup hängt nicht fest: Der nächste erste Finger löst es, eine spätere Frage nimmt Klicks ohne Finger an', async () => {
+  clock = 500;
+  const line = new FakeNode('div');
+  body.append(line);
+  dispatch(line, 'pointerdown', { pointerId: 21 });
+  line.remove(); // sein pointerup kommt nie an
+  assert.equal(pointerHeld(), true);
+  const canvas = new FakeNode('canvas');
+  body.append(canvas);
+  dispatch(canvas, 'pointerdown', { pointerId: 22 }); // ein neuer erster Finger
+  dispatch(canvas, 'pointerup', { pointerId: 22 });
+  assert.equal(pointerHeld(), false, 'nur Finger 22 lag, und der ist los');
+  const q = ask();
+  clock = 1700;
+  dispatch(q.buttons[0], 'click'); // ohne Zeigerereignis (VoiceOver)
+  await settle();
+  assert.equal(q.result.answer, 0);
+});
+
+test('Der Daumen liegt auf dem Steuerkreuz, ein zweiter Finger tippt die Antwort: der Klick zählt', async () => {
+  clock = 900;
+  const dpad = new FakeNode('div');
+  body.append(dpad);
+  dispatch(dpad, 'pointerdown', { pointerId: 31 }); // erster Finger, bleibt liegen
+  const q = ask(); // die Frage erscheint, während der Daumen liegt
+  body.append(dpad);
+  assert.equal(pointerHeld(), true);
+  clock = 1700;
+  dispatch(q.buttons[1], 'pointerdown', { pointerId: 32, isPrimary: false });
+  dispatch(q.buttons[1], 'pointerup', { pointerId: 32, isPrimary: false });
+  dispatch(q.buttons[1], 'click');
+  await settle();
+  assert.equal(q.result.answer, 1);
+  assert.equal(pointerHeld(), true, 'der Daumen liegt noch');
+  dispatch(dpad, 'pointerup', { pointerId: 31 });
+  assert.equal(pointerHeld(), false);
 });
 
 test('Enter auf einem fokussierten Knopf (Klick ohne Finger) wählt nach der Schutzzeit wie bisher', async () => {

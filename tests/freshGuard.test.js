@@ -73,26 +73,64 @@ test('guardClicks ohne Finger beim Erscheinen: nach der Schutzzeit zählt auch e
   assert.equal(node.fire('click').blocked, false);
 });
 
-test('trackPointers zählt aufliegende Finger nach pointerId; pointercancel und Fokusverlust heben sie auf', () => {
-  const on = {};
-  const target = {
-    addEventListener: (type, fn, opt) => (assert.equal(opt.capture, true), (on[type] ??= new Set()).add(fn)),
-    removeEventListener: (type, fn) => on[type]?.delete(fn),
-  };
-  const fire = (type, pointerId) => [...(on[type] ?? [])].forEach(fn => fn({ pointerId }));
-  const off = trackPointers(target);
+// Ein Ziel, das Zuhörer mit ihrer Capture-Angabe aufschreibt, und ein Dokument mit hidden.
+function pointerTarget() {
+  const on = [];
+  const add = (type, fn, opt) => on.push({ type, fn, capture: opt === true || !!opt?.capture });
+  const remove = (type, fn) => on.splice(on.findIndex(l => l.type === type && l.fn === fn), 1);
+  const target = { addEventListener: add, removeEventListener: remove };
+  const doc = { hidden: false, addEventListener: add, removeEventListener: remove };
+  const fire = (type, e = {}) => on.filter(l => l.type === type).forEach(l => l.fn({ target, isPrimary: true, ...e }));
+  return { target, doc, on, fire };
+}
+
+test('trackPointers zählt aufliegende Finger nach pointerId; pointercancel hebt sie auf', () => {
+  const { target, doc, on, fire } = pointerTarget();
+  const off = trackPointers(target, doc);
+  for (const type of ['pointerdown', 'pointerup', 'pointercancel']) assert.ok(on.some(l => l.type === type && l.capture), type);
   assert.equal(pointerHeld(), false);
-  fire('pointerdown', 1);
-  fire('pointerdown', 2);
-  fire('pointerup', 1);
+  fire('pointerdown', { pointerId: 1 });
+  fire('pointerdown', { pointerId: 2, isPrimary: false });
+  fire('pointerup', { pointerId: 1 });
   assert.equal(pointerHeld(), true, 'Finger 2 liegt noch');
-  fire('pointercancel', 2);
+  fire('pointercancel', { pointerId: 2 });
   assert.equal(pointerHeld(), false);
-  fire('pointerdown', 3);
-  fire('blur');
-  assert.equal(pointerHeld(), false, 'nach Fokusverlust liegt nichts mehr');
   off();
-  assert.equal(Object.values(on).reduce((n, set) => n + set.size, 0), 0);
+  assert.equal(on.length, 0, 'alle Zuhörer gehen wieder weg');
+});
+
+// iOS: Verschwindet das Ziel beim Aufsetzen (say(), Titel), kann das pointerup verloren gehen.
+test('trackPointers: Ein verlorenes pointerup hängt nicht fest; ein neuer erster Finger löst es', () => {
+  const { target, doc, fire } = pointerTarget();
+  const off = trackPointers(target, doc);
+  fire('pointerdown', { pointerId: 1 }); // sein pointerup geht verloren
+  fire('pointerdown', { pointerId: 2 }); // ein neuer erster Finger: Finger 1 liegt nicht mehr
+  fire('pointerup', { pointerId: 2 });
+  assert.equal(pointerHeld(), false, 'nur Finger 2 lag, und der ist los');
+  // Ein zweiter Finger (nicht isPrimary) löscht den ersten nicht, etwa den Daumen auf dem Steuerkreuz.
+  fire('pointerdown', { pointerId: 3 });
+  fire('pointerdown', { pointerId: 4, isPrimary: false });
+  fire('pointerup', { pointerId: 4 });
+  assert.equal(pointerHeld(), true, 'der Daumen liegt noch');
+  off();
+});
+
+test('trackPointers: Fokusverlust des Fensters und eine verdeckte App vergessen alle Finger, ein Knopf ohne Fokus nicht', () => {
+  const { target, doc, on, fire } = pointerTarget();
+  const off = trackPointers(target, doc);
+  assert.ok(on.some(l => l.type === 'blur' && !l.capture), 'blur ohne Capture: nur das Fenster selbst');
+  fire('pointerdown', { pointerId: 1 });
+  fire('blur', { target: { tagName: 'BUTTON' } });
+  assert.equal(pointerHeld(), true, 'ein Knopf verliert den Fokus: der Finger liegt noch');
+  fire('blur');
+  assert.equal(pointerHeld(), false, 'das Fenster verliert den Fokus');
+  fire('pointerdown', { pointerId: 2 });
+  fire('visibilitychange');
+  assert.equal(pointerHeld(), true, 'sichtbar: nichts ändert sich');
+  doc.hidden = true;
+  fire('visibilitychange');
+  assert.equal(pointerHeld(), false, 'verdeckt: alle vergessen');
+  off();
 });
 
 test('main.js meldet trackPointers am Fenster an', () => {

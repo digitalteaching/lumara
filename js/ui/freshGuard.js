@@ -19,17 +19,32 @@ export function createFreshGuard(ms = FRESH_MS, now = () => performance.now()) {
 
 // Welche Finger (Zeiger) gerade aufliegen, nach pointerId. main.js meldet das einmal am Fenster an
 // (Capture-Phase, vor allen anderen Zuhörern), damit eine Frage weiß, ob beim Erscheinen ein Finger lag.
+// iOS verliert manches pointerup, wenn das Ziel beim Aufsetzen verschwindet (say(), Titel). Damit kein
+// Finger für immer „liegt“: Ein neuer erster Finger (isPrimary) heißt, dass kein anderer mehr aufliegt;
+// Fokusverlust des Fensters und eine verdeckte App vergessen alle.
 const down = new Set();
 export const pointerHeld = () => down.size > 0;
-export function trackPointers(target = window) {
-  const press = e => down.add(e.pointerId);
+export function trackPointers(target = window, doc = globalThis.document) {
+  const press = e => {
+    if (e.isPrimary) down.clear();
+    down.add(e.pointerId);
+  };
   const lift = e => down.delete(e.pointerId);
-  // Verliert das Fenster den Fokus, kommt manches pointerup nie an.
-  const forget = () => down.clear();
-  const on = [['pointerdown', press], ['pointerup', lift], ['pointercancel', lift], ['blur', forget]];
-  for (const [type, fn] of on) target.addEventListener(type, fn, { capture: true });
+  const pointers = [['pointerdown', press], ['pointerup', lift], ['pointercancel', lift]];
+  for (const [type, fn] of pointers) target.addEventListener(type, fn, { capture: true });
+  // Ohne Capture und nur für das Fenster selbst: Verliert ein Knopf den Fokus, liegt der Finger noch.
+  const blur = e => {
+    if (e.target === target) down.clear();
+  };
+  target.addEventListener('blur', blur);
+  const hidden = () => {
+    if (doc.hidden) down.clear();
+  };
+  doc?.addEventListener?.('visibilitychange', hidden);
   return () => {
-    for (const [type, fn] of on) target.removeEventListener(type, fn, { capture: true });
+    for (const [type, fn] of pointers) target.removeEventListener(type, fn, { capture: true });
+    target.removeEventListener('blur', blur);
+    doc?.removeEventListener?.('visibilitychange', hidden);
     down.clear();
   };
 }
