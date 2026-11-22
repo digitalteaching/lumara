@@ -212,6 +212,15 @@ body.touch[data-mode="walk"] #pad { display: block; }
   #pad { top: calc(var(--img-top) + var(--img-height)); background: var(--ink); }
   #pad .dpad, #pad .ab { opacity: 1; }
 }
+/* Schmale Fenster (iPad in Split View oder Slide Over, bis 320 px): Unter 370 px lägen A und das
+   Steuerkreuz zu dicht beieinander oder übereinander. Hier rücken beide näher an den Rand, A wird
+   etwas kleiner (72 px, B bleibt 64 px), das Steuerkreuz bleibt gleich groß. Bei 320 px bleiben so
+   10 px zwischen A und dem Steuerkreuz. */
+@media (max-width: 369px) {
+  #pad .dpad { right: calc(10px + env(safe-area-inset-right)); }
+  #pad .ab { left: calc(10px + env(safe-area-inset-left)); width: 140px; }
+  #pad .pad-btn.a { width: 72px; height: 72px; }
+}
 
 /* Textfenster */
 #panel { padding-top: 20px; }
