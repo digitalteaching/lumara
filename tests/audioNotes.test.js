@@ -69,12 +69,12 @@ test('Sequencer: from beginnt beim ersten Ereignis ab from, mit den richtigen Ze
   seq.play(song, { loop: true, at: 10, from: 0.7 });
   seq.tick(); // plant bis 13
   const sq1 = planned.filter(p => p[0] === 'sq1');
-  assert.deepEqual(sq1.map(p => p[1]), [1, 1.5, 0, 0.5, 1, 1.5], 'zuerst das Ereignis bei 1 s, dann die Schleife von vorn');
-  const at = [10.3, 10.8, 11.3, 11.8, 12.3, 12.8];
+  assert.deepEqual(sq1.map(p => p[1]), [0.5, 1, 1.5, 0, 0.5, 1, 1.5], 'zuerst der Rest der Note von 0,5 s (1.3.3), dann das Ereignis bei 1 s, dann die Schleife von vorn');
+  const at = [10, 10.3, 10.8, 11.3, 11.8, 12.3, 12.8];
   sq1.forEach((p, i) => assert.ok(near(p[2], at[i]), `${p[2]} statt ${at[i]}`));
   const tri = planned.filter(p => p[0] === 'tri');
-  assert.equal(tri.length, 1, 'die lange Note von 0 s fehlt im ersten Durchgang');
-  assert.ok(near(tri[0][2], 11.3), 'und kommt mit der nächsten Runde');
+  assert.equal(tri.length, 2, 'die lange Note von 0 s klingt bei from noch (1.3.3) und kommt mit der nächsten Runde');
+  assert.ok(near(tri[0][2], 10) && near(tri[1][2], 11.3));
   assert.ok(planned.every(p => p[2] >= 10), 'nichts liegt vor dem Start');
   // Ohne from wie bisher: alles ab 0.
   planned.length = 0;
@@ -125,4 +125,34 @@ test('Sequencer: position() sagt, wie weit die laufende Schleife ist', () => {
   seq.play(song, { loop: true, at: 40 });
   seq.stop();
   assert.equal(seq.position(), null, 'nach stop');
+});
+
+// 1.3.3: Eine Note, die bei from noch klingt, wird mit ihrer Restlänge bei at nachgeholt.
+test('Sequencer: from holt die gerade klingende Note mit Restlänge nach (nicht noise, nicht bei Rest < 0,12 s)', () => {
+  const run = (voices, from) => {
+    const planned = [];
+    const seq = createSequencer({ now: () => 10, schedule: (voice, ev, when) => planned.push([voice, ev, when]), lookahead: 0.2 });
+    const song = parseSong({ tempo: 120, voices });
+    seq.play(song, { loop: true, at: 10, from });
+    seq.tick();
+    return { planned, song };
+  };
+  // tri: ganze Note 0-2 s, bei from 0,7 bleiben 1,3 s.
+  let { planned, song } = run({ sq1: 'c4/4 d4/4 e4/4 f4/4', tri: 'c2/1', noise: 'k/1' }, 0.7);
+  const extra = planned.filter(p => p[0] === 'tri');
+  assert.equal(extra.length, 1);
+  assert.ok(near(extra[0][2], 10) && near(extra[0][1].dur, 1.3) && near(extra[0][1].freq, noteFreq('c2')));
+  assert.equal(song.voices.tri[0].dur, 2, 'Song unverändert');
+  assert.equal(planned.filter(p => p[0] === 'noise').length, 0, 'noise nie');
+  // Rest 0,1 s < 0,12: keine zusätzliche Note.
+  ({ planned } = run({ tri: 'c2/1' }, 1.9));
+  assert.equal(planned.length, 1, 'genau eine Note: die reguläre der nächsten Runde');
+  assert.ok(planned.every(p => p[1].dur > 1), 'nur die reguläre Note der nächsten Runde (volle Länge)');
+  // Beginnt eine Note genau bei from: kein Doppelplan.
+  ({ planned } = run({ tri: 'c2/2 d2/2' }, 1));
+  assert.equal(planned.length, 1);
+  assert.ok(near(planned[0][2], 10));
+  // from = 0: nur reguläre Planung.
+  ({ planned } = run({ tri: 'c2/1' }, 0));
+  assert.equal(planned.length, 1);
 });

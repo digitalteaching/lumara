@@ -259,6 +259,9 @@ test('Ein Jingle unterbricht die Schleife bei 3,2 s; danach läuft dieselbe Musi
   assert.equal(audio.state().playing, 'long');
   for (let t = 4; t < 5; t += 0.05) tick(t);
   const notes = notesFrom(ctx, 3.9);
+  // Seit 1.3.3 klingt zuerst der angefangene Ton (b4, 3,0 bis 3,5 s) mit seinem Rest weiter.
+  assert.ok(close(notes[0][0], 493.88) && close(notes[0][1], 3.95), `zuerst Rest von b4 bei 3,95 s, nicht ${notes[0]}`);
+  notes.shift();
   // Bei 3,2 s weiter: Die nächste Note ist die bei 3,5 s, also 0,3 s nach dem Neubeginn, dann die
   // Schleife von vorn (c4 eine halbe Sekunde später).
   assert.ok(close(notes[0][0], C5) && close(notes[0][1], 3.95 + 0.3), `zuerst c5 bei 4,25 s, nicht ${notes[0]}`);
@@ -317,5 +320,7 @@ test('Ein zweiter Jingle im Jingle: danach läuft die Musik an der Stelle weiter
   assert.equal(audio.state().playing, 'long');
   for (let t = 4.25; t < 5; t += 0.05) tick(t);
   const notes = notesFrom(ctx, 4.2);
+  assert.ok(close(notes[0][0], 493.88) && close(notes[0][1], 4.25), `zuerst Rest von b4 bei 4,25 s, nicht ${notes[0]}`);
+  notes.shift();
   assert.ok(close(notes[0][0], C5) && close(notes[0][1], 4.25 + 0.3), `zuerst c5 bei 4,55 s, nicht ${notes[0]}`);
 });
