@@ -54,14 +54,20 @@ const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 const DELTA = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 
 // In ein anderes Gebiet (oder an einen anderen Ort) wechseln: überblenden, speichern, neue Welt.
+// game.traveling: Solange lässt der Aushang eine Meldung stehen (js/scenes/boardEvents.js).
 export async function travelTo(game, pos, style = 'fade') {
-  await playTransition(game, style, 300);
-  game.state.position = { map: pos.map, x: pos.x, y: pos.y, dir: pos.dir };
-  game.save();
-  const world = createGameWorld(game);
-  game.go(world);
-  await reveal(game);
-  return world;
+  game.traveling = true;
+  try {
+    await playTransition(game, style, 300);
+    game.state.position = { map: pos.map, x: pos.x, y: pos.y, dir: pos.dir };
+    game.save();
+    const world = createGameWorld(game);
+    game.go(world);
+    await reveal(game);
+    return world;
+  } finally {
+    game.traveling = false;
+  }
 }
 
 const samePlace = (a, b) => a.map === b.map && a.x === b.x && a.y === b.y;

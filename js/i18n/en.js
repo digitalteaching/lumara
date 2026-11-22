@@ -223,6 +223,7 @@ export const EN = {
   'board.title': 'Notice board',
   'board.empty': 'Nothing is here yet today. Come back later!',
   'board.allDone': 'All done! Tomorrow there will be new tasks here.',
+  'board.news.first': 'New: There is a notice board at the lighthouse now, with tasks for every day!',
   'board.news.task': 'Notice board task done! You get: {reward}.',
   'board.news.bonus': 'All three tasks done! You also get: {reward} and {xp} XP.',
   'wish.want': 'My biggest wish: {treasure}.',

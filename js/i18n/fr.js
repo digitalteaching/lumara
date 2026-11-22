@@ -224,6 +224,7 @@ export const FR = {
   'board.title': 'Tableau d’affichage',
   'board.empty': 'Il n’y a encore rien aujourd’hui. Reviens plus tard !',
   'board.allDone': 'Tout est fait ! Demain, il y aura de nouvelles tâches ici.',
+  'board.news.first': 'Nouveau : il y a maintenant un tableau d’affichage près du phare, avec des tâches pour chaque jour !',
   'board.news.task': 'Tâche du tableau réussie ! Tu reçois : {reward}.',
   'board.news.bonus': 'Les trois tâches sont réussies ! En plus, tu reçois : {reward} et {xp} XP.',
   'wish.want': 'Mon plus grand souhait : {treasure}.',

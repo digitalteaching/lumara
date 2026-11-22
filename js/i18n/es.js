@@ -223,6 +223,7 @@ export const ES = {
   'board.title': 'Tablón de anuncios',
   'board.empty': 'Hoy todavía no hay nada. ¡Vuelve más tarde!',
   'board.allDone': '¡Todo hecho! Mañana hay tareas nuevas aquí.',
+  'board.news.first': '¡Nuevo: ahora hay un tablón de anuncios junto al faro, con tareas para cada día!',
   'board.news.task': '¡Has hecho una tarea del tablón! Recibes: {reward}.',
   'board.news.bonus': '¡Has hecho las tres tareas! Además recibes: {reward} y {xp} XP.',
   'wish.want': 'Mi mayor deseo: {treasure}.',

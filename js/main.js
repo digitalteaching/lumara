@@ -46,6 +46,7 @@ const game = {
   reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
   scene: null,
   overlay: null,
+  traveling: false, // während eines Kartenwechsels (travelTo in js/scenes/worldEvents.js)
   pack: null,
   state: null,
   store: createSaveStore(),

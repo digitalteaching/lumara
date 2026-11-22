@@ -1,6 +1,7 @@
 // Der Aushang in einer echten Weltszene (js/scenes/boardEvents.js): Meldungen, Sperre, Ilvys Hinweis,
 // Besuch eines Gebiets, Tageswechsel, Tafel und Glitzern. Dialog, Toast und Seite sind hier
-// Aufzeichnungen; wie sie im DOM aussehen, prüft der Controller im Browser.
+// Aufzeichnungen (ein Toast gibt ein Objekt mit remove() zurück, wie der Knoten von showToast); wie
+// sie im DOM aussehen, prüft der Controller im Browser.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -31,7 +32,7 @@ function setup({ map = 'bucht', state: given, b, reducedMotion = false, today = 
   const state = given ?? newGameState({ name: 'A', species: 'nixi', nickname: null });
   state.position = { map, ...def.spawn };
   if (b !== undefined) state.board = b;
-  const log = { toasts: [], toastArgs: [], says: [], sheets: [], saves: 0, levelUps: [] };
+  const log = { toasts: [], toastArgs: [], removed: [], says: [], sheets: [], saves: 0, levelUps: [] };
   const game = {
     state,
     reducedMotion,
@@ -42,16 +43,29 @@ function setup({ map = 'bucht', state: given, b, reducedMotion = false, today = 
     input: { dir: () => null, pressed: () => false },
   };
   let day = today;
-  const world = createWorldScene(game, def, {});
-  addBoard(world, game, {
-    levelUps: async (before, after) => log.levelUps.push([before, after]),
-    say: async (g, lines, opts = {}) => log.says.push({ lines, speaker: opts.speaker }),
-    toast: (text, ms, kind) => (log.toasts.push(text), log.toastArgs.push({ ms, kind })),
-    sheet: async (g, page) => log.sheets.push(page),
-    today: () => day,
-  });
+  // Eine Welt dieses Spiels; more(map) baut nach einem Kartenwechsel die nächste mit denselben Aufzeichnungen.
+  const build = id => {
+    const w = createWorldScene(game, MAPS[id], {});
+    addBoard(w, game, {
+      levelUps: async (before, after) => log.levelUps.push([before, after]),
+      say: async (g, lines, opts = {}) => log.says.push({ lines, speaker: opts.speaker }),
+      toast: (text, ms, kind) => {
+        log.toasts.push(text);
+        log.toastArgs.push({ ms, kind });
+        return { remove: () => log.removed.push(text) };
+      },
+      sheet: async (g, page) => log.sheets.push(page),
+      today: () => day,
+    });
+    return w;
+  };
+  const world = build(map);
   jingles.length = 0;
-  return { world, state, game, log, setDay: d => (day = d) };
+  const more = id => {
+    state.position = { map: id, ...MAPS[id].spawn };
+    return build(id);
+  };
+  return { world, state, game, log, more, setDay: d => (day = d) };
 }
 
 const ticks = (world, ms) => {
@@ -118,6 +132,14 @@ test('Zwei Meldungen kommen nacheinander, der Tagesbonus mit Level-Zeilen nur be
   assert.ok(log.toasts[1].startsWith(newsPrefix('board.news.bonus')), log.toasts[1]);
   assert.deepEqual(jingles, ['board', 'board']);
   await settle();
+  assert.deepEqual(log.levelUps, [], 'erst lesen');
+  ticks(world, 2500);
+  await settle();
+  assert.deepEqual(log.levelUps, [[levelBefore, levelAfter]]);
+  assert.deepEqual(log.removed, [log.toasts[1]], 'die Level-Zeilen nehmen die gelesene Meldung weg');
+  ticks(world, 8000);
+  await settle();
+  assert.equal(log.toasts.length, 2, 'gelesen: kommt nicht wieder');
   assert.deepEqual(log.levelUps, [[levelBefore, levelAfter]]);
 
   // Ohne neues Level keine Level-Zeilen
@@ -129,6 +151,201 @@ test('Zwei Meldungen kommen nacheinander, der Tagesbonus mit Level-Zeilen nur be
   await settle();
   assert.equal(two.log.toasts.length, 2);
   assert.deepEqual(two.log.levelUps, []);
+});
+
+// ---------- Meldung und geöffnete Fenster (1.3.1) ----------
+
+// Eine Zettel-Aufgabe, die mit dem nächsten Zettel fertig ist; die anderen beiden bleiben offen.
+const oneNote = (over = {}) => board([task('notes', { progress: 1 }), task('wildWins', { progress: 1 }), task('streak', { n: 3 })], over);
+
+// Macht die Welt unfrei wie ein Menü, ein Dialog, ein Duell, eine Sperre oder eine Überblendung;
+// gibt zurück, wie sie wieder frei wird.
+function busy(world, game, kind) {
+  if (kind === 'lock') {
+    let release;
+    const held = world.lock(() => new Promise(r => (release = r)));
+    return async () => (release(), await held);
+  }
+  if (kind === 'overlay') {
+    game.overlay = { render() {} };
+    return async () => (game.overlay = null);
+  }
+  game.mode = kind;
+  return async () => (game.mode = 'walk');
+}
+const BUSY = ['screen', 'dialog', 'duel', 'lock', 'overlay'];
+
+test('Eine Seite geht auf: Die Meldung ist sofort weg und kommt ungelesen genau einmal wieder', () => {
+  const { world, state, game, log } = setup({ b: oneNote() });
+  emit(state, 'note');
+  world.update(16);
+  assert.equal(log.toasts.length, 1);
+  ticks(world, 1000);
+  game.mode = 'screen'; // openSheet, etwa die Seite an der Tafel
+  world.update(16);
+  assert.deepEqual(log.removed, [log.toasts[0]], 'sofort weg');
+  ticks(world, 8000);
+  assert.equal(log.toasts.length, 1, 'nicht, solange die Seite offen ist');
+  game.mode = 'walk';
+  world.update(16);
+  assert.deepEqual(log.toasts, [log.toasts[0], log.toasts[0]], 'dieselbe Meldung noch einmal');
+  assert.deepEqual(jingles, ['board', 'board'], 'mit Jingle');
+  ticks(world, 10000);
+  assert.equal(log.toasts.length, 2, 'genau einmal wieder');
+  assert.equal(log.removed.length, 1, 'danach geht sie von selbst');
+});
+
+test('Menü, Dialog, Duell, Sperre und Überblendung nehmen die Meldung weg; unter 2,5 s kommt sie wieder, ab 2,5 s nicht', async () => {
+  for (const kind of BUSY) {
+    for (const [ms, again] of [[2400, true], [2500, false]]) {
+      const { world, state, game, log } = setup({ b: oneNote() });
+      emit(state, 'note');
+      world.update(16);
+      ticks(world, ms - 16); // so lange war sie zu sehen
+      const free = busy(world, game, kind);
+      world.update(16);
+      assert.equal(log.removed.length, 1, `${kind} ${ms}`);
+      ticks(world, 1000);
+      await free();
+      ticks(world, 10000);
+      assert.equal(log.toasts.length, again ? 2 : 1, `${kind} ${ms}`);
+      if (again) assert.equal(log.toasts[1], log.toasts[0]);
+      assert.deepEqual(jingles, again ? ['board', 'board'] : ['board'], `${kind} ${ms}`);
+    }
+  }
+});
+
+test('Ein Kartenwechsel lässt die Meldung stehen; in der neuen Welt geht sie bei einem Dialog weg', async () => {
+  const { world, state, game, log, more } = setup({ b: oneNote() });
+  emit(state, 'note');
+  world.update(16);
+  ticks(world, 500);
+  // travelTo: unter der Sperre des Ausgangs, mit Überblendung, dann die neue Welt
+  game.traveling = true;
+  const free = busy(world, game, 'lock');
+  game.overlay = { render() {} };
+  ticks(world, 300);
+  assert.deepEqual(log.removed, [], 'bleibt beim Abdecken stehen');
+  const next = more('wald');
+  ticks(next, 300);
+  game.overlay = null;
+  game.traveling = false;
+  await free();
+  assert.deepEqual(log.removed, [], 'und beim Aufdecken');
+  ticks(next, 200);
+  assert.deepEqual(log.removed, []);
+  game.mode = 'dialog';
+  next.update(16);
+  assert.deepEqual(log.removed, [log.toasts[0]], 'die neue Welt kennt die Meldung');
+  game.mode = 'walk';
+  next.update(16);
+  assert.deepEqual(log.toasts, [log.toasts[0], log.toasts[0]], 'ungelesen: noch einmal');
+});
+
+test('Tagesbonus mit Level: Level-Zeilen erst nach dem Lesen und genau einmal, auch wenn die Meldung wiederkommt', async () => {
+  const s = newGameState({ name: 'A', species: 'nixi', nickname: null });
+  const levelBefore = s.creature.level;
+  s.creature.xpInLevel = xpToNext(levelBefore) - 1;
+  const { world, state, game, log } = setup({ state: s, b: board(almost()) });
+  emit(state, 'note');
+  world.update(16);
+  ticks(world, 7000);
+  assert.equal(log.toasts.length, 2);
+  assert.ok(log.toasts[1].startsWith(newsPrefix('board.news.bonus')), log.toasts[1]);
+  const levelAfter = state.creature.level;
+  assert.ok(levelAfter > levelBefore);
+  game.mode = 'screen'; // eine Seite, bevor der Bonus gelesen ist
+  world.update(16);
+  assert.deepEqual(log.removed, [log.toasts[1]]);
+  game.mode = 'walk';
+  world.update(16);
+  assert.equal(log.toasts.length, 3);
+  assert.equal(log.toasts[2], log.toasts[1], 'der Bonus noch einmal');
+  assert.deepEqual(jingles, ['board', 'board', 'board']);
+  await settle();
+  assert.deepEqual(log.levelUps, [], 'noch keine Level-Zeilen');
+  ticks(world, 2500);
+  await settle();
+  assert.deepEqual(log.levelUps, [[levelBefore, levelAfter]]);
+  ticks(world, 10000);
+  await settle();
+  assert.deepEqual(log.levelUps, [[levelBefore, levelAfter]], 'genau einmal');
+  assert.equal(log.toasts.length, 3, 'gelesen: kein weiteres Mal');
+});
+
+// ---------- Bevor Ilvy vom Aushang erzählt hat (1.3.1) ----------
+
+test('Ilvy hat noch nicht erzählt: In der Bucht kommt erst Ilvy, dann die Meldung', async () => {
+  const { world, state, log } = setup({ b: oneNote({ intro: false }) });
+  emit(state, 'note');
+  world.update(16);
+  assert.equal(state.board.tasks[0].done, true, 'gezählt ist sofort');
+  assert.deepEqual(log.toasts, [], 'aber noch keine Meldung');
+  ticks(world, 1000);
+  assert.equal(log.says.length, 1, 'Ilvy erzählt');
+  assert.deepEqual(log.toasts, [], 'nicht über Ilvy');
+  await settle();
+  assert.equal(state.board.intro, true);
+  world.update(16);
+  assert.equal(log.toasts.length, 1);
+  assert.ok(log.toasts[0].startsWith(newsPrefix('board.news.task')), log.toasts[0]);
+  ticks(world, 10000);
+  assert.ok(!log.toasts.includes(t('board.news.first')), 'kein „Neu: …“ in der Bucht');
+});
+
+test('Ilvy hat noch nicht erzählt: Anderswo erst einmal „Neu: …“, dann die Meldung; intro bleibt false', async () => {
+  const { world, state, log, more } = setup({ map: 'wald', b: oneNote({ intro: false }) });
+  emit(state, 'note');
+  world.update(16);
+  assert.deepEqual(log.toasts, [t('board.news.first')]);
+  assert.deepEqual(log.toastArgs, [{ ms: 6000, kind: 'news' }]);
+  assert.deepEqual(jingles, ['board']);
+  ticks(world, 6000);
+  assert.equal(log.toasts.length, 1, 'die übliche Pause');
+  ticks(world, 1000);
+  assert.equal(log.toasts.length, 2);
+  assert.ok(log.toasts[1].startsWith(newsPrefix('board.news.task')), log.toasts[1]);
+  assert.deepEqual(jingles, ['board', 'board']);
+  ticks(world, 7000);
+  // Die nächste Meldung, auch in einer anderen Welt: kein zweites „Neu: …“
+  const next = more('wald');
+  emit(state, 'wildWin');
+  next.update(16);
+  assert.equal(log.toasts.length, 3);
+  assert.ok(log.toasts[2].startsWith(newsPrefix('board.news.task')), log.toasts[2]);
+  assert.equal(log.toasts.filter(x => x === t('board.news.first')).length, 1, 'einmal pro Spielstart');
+  assert.equal(state.board.intro, false);
+  assert.deepEqual(log.says, []);
+  // In der Bucht erzählt Ilvy trotzdem.
+  const bucht = more('bucht');
+  ticks(bucht, 1000);
+  await settle();
+  assert.equal(log.says.length, 1);
+  assert.equal(state.board.intro, true);
+  // Ein neuer Spielstart (neues game) sagt es wieder einmal.
+  const again = setup({ map: 'wald', b: oneNote({ intro: false }) });
+  emit(again.state, 'note');
+  again.world.update(16);
+  assert.deepEqual(again.log.toasts, [t('board.news.first')]);
+});
+
+test('„Neu: …“ ungelesen weg, dann in die Bucht: Ilvy erzählt, „Neu: …“ entfällt, die Meldung kommt', async () => {
+  const { world, state, game, log, more } = setup({ map: 'wald', b: oneNote({ intro: false }) });
+  emit(state, 'note');
+  world.update(16);
+  assert.deepEqual(log.toasts, [t('board.news.first')]);
+  game.mode = 'screen';
+  world.update(16);
+  game.mode = 'walk';
+  const bucht = more('bucht');
+  ticks(bucht, 1000);
+  assert.equal(log.says.length, 1, 'erst Ilvy');
+  await settle();
+  bucht.update(16);
+  assert.equal(log.toasts.length, 2);
+  assert.ok(log.toasts[1].startsWith(newsPrefix('board.news.task')), log.toasts[1]);
+  ticks(bucht, 10000);
+  assert.equal(log.toasts.length, 2);
 });
 
 test('Ilvys Hinweis kommt nur einmal, in der Bucht und erst, wenn die Welt frei ist', async () => {
@@ -187,6 +404,7 @@ test('Tageswechsel: Erst zählen die Ereignisse von gestern, dann kommen neue Au
   assert.equal(state.wishes.pim.done, false);
   world.update(16);
   assert.equal(log.toasts.length, 1, 'die Zettel-Aufgabe von gestern');
+  ticks(world, 3000); // gelesen
 
   // Mitten im Spiel über Mitternacht, während eines Dialogs: Der Zettel zählt noch für gestern.
   state.board = board([task('notes', { progress: 1 }), task('streak', { n: 3 }), task('wildWins')]);
@@ -310,4 +528,12 @@ test('In createGameWorld: der Aushang vor Garten und Begleiter, mit den Level-Ze
   assert.ok(at > 0);
   assert.ok(at < body.indexOf('addGarden(world, game)'));
   assert.ok(at < body.indexOf('addCompanion(world, game)'));
+});
+
+test('travelTo meldet den Kartenwechsel (game.traveling), auch wenn etwas schiefgeht', () => {
+  const src = readFileSync(new URL('../js/scenes/worldEvents.js', import.meta.url), 'utf8');
+  const body = src.slice(src.indexOf('export async function travelTo'), src.indexOf('const samePlace'));
+  assert.match(body, /^export async function travelTo\(game, pos, style = 'fade'\) \{\n  game\.traveling = true;\n  try \{/);
+  assert.match(body, /\} finally \{\n    game\.traveling = false;\n  \}\n\}/);
+  assert.ok(body.indexOf('game.traveling = true') < body.indexOf('playTransition'));
 });

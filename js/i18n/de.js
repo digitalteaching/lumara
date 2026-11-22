@@ -223,6 +223,7 @@ export const DE = {
   'board.title': 'Aushang',
   'board.empty': 'Heute hängt hier noch nichts. Schau später wieder vorbei!',
   'board.allDone': 'Alles geschafft! Morgen hängen hier neue Aufgaben.',
+  'board.news.first': 'Neu: Am Leuchtturm hängt jetzt ein Aushang mit Aufgaben für jeden Tag!',
   'board.news.task': 'Aufgabe vom Aushang geschafft! Du bekommst: {reward}.',
   'board.news.bonus': 'Alle drei Aufgaben geschafft! Dazu gibt es: {reward} und {xp} XP.',
   'wish.want': 'Ich wünsche mir so sehr: {treasure}.',
