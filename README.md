@@ -4,7 +4,7 @@
 
 Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, erkundet eine geheimnisvolle Insel unter einem Nebel des Vergessens und besteht Duelle mit Aufgaben aus dem Unterricht. Dafür bekommt es Punkte, und sein Wesen entwickelt sich weiter. Die Inhalte kommen aus einem Lernpaket, einer Textdatei, die die Lehrkraft selbst schreibt. Dadurch funktioniert das Spiel in jedem Fach. Das erste Beispielpaket ist für Jahrgang 6 Englisch.
 
-**Status:** Das Spiel ist fertig (Spielfassung 1.2.1). Gebaut in den Plänen 1 bis 8, danach 1.0.x, 1.1 und 1.2. Es läuft unter https://digitalteaching.github.io/lumara/.
+**Status:** Das Spiel ist fertig (Spielfassung 1.3.0). Gebaut in den Plänen 1 bis 8, danach 1.0.x, 1.1, 1.2 und 1.3. Es läuft unter https://digitalteaching.github.io/lumara/.
 
 **Für Lehrkräfte:** Die [Anleitung](anleitung.html) erklärt, wie man ein Lernpaket erstellt, prüft und an die Klasse verteilt. Auf der [Seite für Lehrkräfte](lehrkraft.html) prüft man Pakete und Statistiken. Dazu gibt es die [Vorlage](pakete/vorlage.txt), das [Beispielpaket](pakete/englisch-6-beispiel.txt), einen [KI-Prompt](pakete/KI-PROMPT-Lernpaket.md), mit dem eine KI ein gültiges Paket schreibt, und eine [Kurzanleitung als PDF](pakete/Lumara-Kurzanleitung.pdf) zum Ausdrucken.
 
@@ -108,6 +108,10 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
   - Die Freunde leben im Garten am Leuchtturm, und ein Begleiter läuft hinter dem Kind her (Menü → Freunde).
   - 40 Verstecke öffnet man mit dem Geschenk des Begleiters: eine Frage aus dem Zettel-Pool oder eines von 8 neuen Wesen (das Buch hat jetzt 41 Plätze). Dazu gibt es je Gebiet eine kleine Spielaufgabe.
   - 1.2.1: Feinschliff. Hohes Gras verdeckt auch die Füße von Begleiter und Gartenfreunden, goldene Zeichenbäume im Wald, klarere Bilder für fünf neue Wesen und das Aufwind-Versteck, der Dünenkamm ist ein Strandgut-Versteck, kleine Text- und Menükorrekturen.
+- **1.3**, Aushang und Wünsche:
+  - Am Leuchtturm hängt jeden Tag ein Aushang mit drei Aufgaben, die zu dem passen, was das Kind jetzt kann. Es gibt Belohnungen und einen Tagesbonus. Der Aushang steht auch im Tagebuch.
+  - Je Gebiet wünscht sich ein Bewohner einen Schatz. Das Kind tauscht ihn gegen eine Belohnung, am nächsten Tag gibt es einen neuen Wunsch. Die Wünsche stehen im Tagebuch und auf der Rucksack-Karte.
+  - Spielstand-Format 11 mit einer Ereignisliste.
 
 - Design: [docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md](docs/superpowers/specs/2026-11-01-lernwelt-rpg-design.md)
 - Bauplan 1: [docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md](docs/superpowers/plans/2026-11-02-lumara-plan-1-spielbarer-kern.md)
@@ -128,6 +132,7 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
 - Bauplan 1.1, Rucksack und Schätze: [docs/superpowers/plans/2026-11-21-lumara-1.1-rucksack-schaetze.md](docs/superpowers/plans/2026-11-21-lumara-1.1-rucksack-schaetze.md)
 - Bauplan 1.2a, Freunde, Begleiter, Garten: [docs/superpowers/plans/2026-11-21-lumara-1.2a-freunde-begleiter-garten.md](docs/superpowers/plans/2026-11-21-lumara-1.2a-freunde-begleiter-garten.md)
 - Bauplan 1.2b, Verstecke, Wesen, Aufgaben: [docs/superpowers/plans/2026-11-21-lumara-1.2b-verstecke-wesen-aufgaben.md](docs/superpowers/plans/2026-11-21-lumara-1.2b-verstecke-wesen-aufgaben.md)
+- Bauplan 1.3, Aushang und Wünsche: [docs/superpowers/plans/2026-11-22-lumara-1.3-aushang-wuensche.md](docs/superpowers/plans/2026-11-22-lumara-1.3-aushang-wuensche.md)
 - Frühere Ideensammlung: [docs/2026-10-17-zwischenstand-ideensammlung.md](docs/2026-10-17-zwischenstand-ideensammlung.md)
 
 ## Für Lehrkräfte
@@ -199,6 +204,7 @@ Kinder bekommen die neue Fassung beim nächsten Öffnen. Das laufende Spiel läd
 - Format 3 (seit Spielfassung 0.4.0, mit Zeitsteinen im Rucksack) mit `tests/fixtures/spielstand-v3.txt`
 - Format 9 (seit 1.1.0, Schätze und Album) mit `tests/fixtures/spielstand-v9.txt`
 - Format 10 (seit 1.2.0, Freunde, Begleiter, Leckerli, Verstecke, Spielaufgaben) mit `tests/fixtures/spielstand-v10.txt`
+- Format 11 (seit 1.3.0, Aushang, Wünsche und Ereignisse) mit `tests/fixtures/spielstand-v11.txt`
 
 Diese Dateien werden nie geändert. Für jede Änderung am Format gilt:
 
