@@ -201,7 +201,7 @@ export const EN_WORLD = {
         lines: [
           'I draw maps of the dunes. They look a little different every day.',
           'Karim waits in the east. He is fast, and there is a clock in his duels!',
-          'A time stone stops the clock for one question. Sometimes one sparkles in the grass.',
+          'An hourglass stone stops the clock for one question. Sometimes one sparkles in the grass.',
           'I only know the glass tower in the north-west from far away. It is too high to climb.',
         ],
         linesNoClock: [
@@ -255,7 +255,7 @@ export const EN_WORLD = {
         lines: [
           'My kite dragon flies almost as high as Skye’s! But only almost.',
           'Skye waits up on the peak in the east. In her duels the clock runs even faster.',
-          'If you have a time stone, take it with you. It stops the time for a moment!',
+          'If you have an hourglass stone, take it with you. It stops the time for a moment!',
         ],
         linesNoClock: [
           'My kite dragon flies almost as high as Skye’s! But only almost.',

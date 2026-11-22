@@ -237,3 +237,19 @@ test('Kurze Texte auf dem kleinen Schirm: Zeitstein-Knopf und Kartenlegende', ()
     for (const k of ['map.lit', 'map.dark', 'map.here']) assert.ok(L[k].length <= 24, `${lang}: ${L[k]}`);
   }
 });
+
+// Lumara 1.3.1: Der Stein mit der Sanduhr heißt nach seinem Bild, nirgends mehr wie ein bekannter
+// Gegenstand aus Filmen. ids und Speicherfelder (bag.time) bleiben.
+test('Sanduhrstein: eigener Name in allen Sprachen, nirgends sichtbar der alte', () => {
+  const all = v => (typeof v === 'string' ? [v] : Array.isArray(v) ? v.flatMap(all) : v && typeof v === 'object' ? Object.values(v).flatMap(all) : []);
+  const OLD = /zeitstein|time stone|pierres? du temps|piedras? del tiempo/i;
+  const texts = [DE, STORY, SECRET_STORY, QUEST_TEXT, Object.values(MAPS).map(d => d.objects), Object.values(FOREIGN)];
+  for (const s of all(texts)) assert.ok(!OLD.test(s), s);
+  for (const page of ['README.md', 'anleitung.html', 'lehrkraft.html', 'index.html']) {
+    assert.ok(!OLD.test(readFileSync(new URL(`../${page}`, import.meta.url), 'utf8')), page);
+  }
+  const names = { de: DE, en: EN, fr: FR, es: ES };
+  assert.deepEqual(Object.fromEntries(Object.entries(names).map(([k, L]) => [k, L['item.time.name']])), { de: 'Sanduhrstein', en: 'Hourglass stone', fr: 'Pierre-sablier', es: 'Piedra-reloj' });
+  assert.equal(DE['item.aTime'], 'einen Sanduhrstein');
+  assert.equal(EN['item.aTime'], 'an hourglass stone');
+});

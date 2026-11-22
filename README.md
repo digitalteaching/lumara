@@ -31,7 +31,7 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
   - drei neue Gebiete mit je einer Hüterin oder einem Hüter (Hazel, Karim, Skye), Bewohnern, drei wilden Arten, eigener Arena, Teilchen und drei Geschichtsstücken
   - Pilzmoor mit Stegen, Leuchtpilzen und der Irrlichtinsel; Spiegeldünen mit Glasstatuen und Luftspiegelungen, die wie Wege aussehen; Windklippen mit Hängebrücken und Windrädern
   - Zeitdruck ab Trainer 4: ein Zeitbalken im Antwortfeld, beim Eintippen ×1,5, beim Satzbau ×2, Flausch +25 %. `ZEITDRUCK: lang` verdoppelt, `aus` schaltet die Uhr ab. Abgelaufene Zeit zählt als falsch.
-  - Zeitsteine (ab Gebiet 4): halten die Uhr für eine Frage an
+  - Sanduhrsteine (ab Gebiet 4): halten die Uhr für eine Frage an
   - Beispielpaket mit den Themen 1 bis 5 und 21 Zetteln
 - **Plan 3c**, Uhrwerkruinen, Nordlichtsee und Sternenwiese:
   - drei neue Gebiete mit Otto (30 s pro Frage), Freya (25 s) und Luna (20 s), Bewohnern, je drei wilden Arten, eigener Arena, Teilchen und drei Geschichtsstücken. Das letzte Stück verrät Morrows Namen.
@@ -41,7 +41,7 @@ Ein HTML-Lernspiel im Stil alter Handheld-Konsolen. Ein Kind wählt ein Wesen, e
   - Nach dem Sieg über Luna führt ein Pfad von der Sternenwiese hinunter in die Bucht: Der Ring der Insel ist geschlossen.
   - Karte der Insel im Menü: Gebiete im Nebel grau und mit „Im Nebel“, dazu „Du bist hier“. Das Reisemenü zeigt viele Ziele in zwei Spalten.
   - Beispielpaket mit allen acht Themen und 27 Zetteln
-  - Mit `ZEITDRUCK: aus` gibt es keine Zeitsteine, und nach einem Zeitstein ist Füttern gesperrt.
+  - Mit `ZEITDRUCK: aus` gibt es keine Sanduhrsteine, und nach einem Sanduhrstein ist Füttern gesperrt.
 - **Plan 4a**, die Spielsprache (Design 10.6):
   - Ist das Lernpaket für Englisch, ist das ganze Spiel auf Englisch: Oberfläche, Duelle, Bewohner, Schilder, Geschichte und die Namen der Gebiete und Wesen. Jedes andere Paket läuft auf Deutsch.
   - Die Sprache kommt aus `SPIELSPRACHE:` oder, ohne diese Zeile, aus `FACH:`. Das Spiel kann Deutsch, Englisch, Französisch und Spanisch.
@@ -201,7 +201,7 @@ Kinder bekommen die neue Fassung beim nächsten Öffnen. Das laufende Spiel läd
 
 - Format 1 mit `tests/fixtures/spielstand-v1.txt`
 - Format 2 (seit Spielfassung 0.3.0) mit `tests/fixtures/spielstand-v2.txt`
-- Format 3 (seit Spielfassung 0.4.0, mit Zeitsteinen im Rucksack) mit `tests/fixtures/spielstand-v3.txt`
+- Format 3 (seit Spielfassung 0.4.0, mit Sanduhrsteinen im Rucksack) mit `tests/fixtures/spielstand-v3.txt`
 - Format 9 (seit 1.1.0, Schätze und Album) mit `tests/fixtures/spielstand-v9.txt`
 - Format 10 (seit 1.2.0, Freunde, Begleiter, Leckerli, Verstecke, Spielaufgaben) mit `tests/fixtures/spielstand-v10.txt`
 - Format 11 (seit 1.3.0, Aushang, Wünsche und Ereignisse) mit `tests/fixtures/spielstand-v11.txt`

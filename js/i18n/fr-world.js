@@ -201,7 +201,7 @@ export const FR_WORLD = {
         lines: [
           'Je dessine des cartes des dunes. Chaque jour, elles sont un peu différentes.',
           'Karim attend à l’est. Il est rapide, et dans ses duels, il y a un chrono !',
-          'Une pierre du temps arrête le chrono pendant une question. Parfois, il y en a une qui brille dans l’herbe.',
+          'Une pierre-sablier arrête le chrono pendant une question. Parfois, il y en a une qui brille dans l’herbe.',
           'La Tour de Verre, au nord-ouest, je la connais seulement de loin. Elle est trop haute pour grimper.',
         ],
         linesNoClock: [
@@ -255,7 +255,7 @@ export const FR_WORLD = {
         lines: [
           'Mon cerf-volant vole presque aussi haut que celui de Skye ! Mais seulement presque.',
           'Skye attend en haut, sur le sommet, à l’est. Dans ses duels, le chrono va encore plus vite.',
-          'Si tu as une pierre du temps, prends-la avec toi. Elle arrête le temps un moment !',
+          'Si tu as une pierre-sablier, prends-la avec toi. Elle arrête le temps un moment !',
         ],
         linesNoClock: [
           'Mon cerf-volant vole presque aussi haut que celui de Skye ! Mais seulement presque.',

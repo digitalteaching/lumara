@@ -201,7 +201,7 @@ export const ES_WORLD = {
         lines: [
           'Dibujo mapas de las dunas. Cada día son un poco diferentes.',
           'Karim espera en el este. Es muy rápido, ¡y en sus duelos hay un reloj!',
-          'Una piedra del tiempo para el reloj durante una pregunta. A veces brilla una en la hierba.',
+          'Una piedra-reloj para el tiempo durante una pregunta. A veces brilla una en la hierba.',
           'La Torre de Cristal del noroeste solo la conozco de lejos. Es demasiado alta para subir.',
         ],
         linesNoClock: [
@@ -255,7 +255,7 @@ export const ES_WORLD = {
         lines: [
           '¡Mi cometa de dragón vuela casi tan alto como la de Skye! Pero solo casi.',
           'Skye espera arriba, en la cima del este. En sus duelos, el reloj va todavía más rápido.',
-          'Si tienes una piedra del tiempo, llévala. ¡Para el tiempo un momento!',
+          'Si tienes una piedra-reloj, llévala. ¡Para el tiempo un momento!',
         ],
         linesNoClock: [
           '¡Mi cometa de dragón vuela casi tan alto como la de Skye! Pero solo casi.',

@@ -75,7 +75,7 @@ export const DUENEN = {
       lines: [
         'Ich zeichne Karten von den Dünen. Sie sehen jeden Tag ein bisschen anders aus.',
         'Karim wartet im Osten. Er ist schnell, und bei ihm läuft eine Uhr!',
-        'Ein Zeitstein hält die Uhr für eine Frage an. Manchmal glitzert einer im Gras.',
+        'Ein Sanduhrstein hält die Uhr für eine Frage an. Manchmal glitzert einer im Gras.',
         'Den Glasturm im Nordwesten kenne ich nur von weitem. Er ist zu hoch zum Klettern.',
       ],
       // Mit ZEITDRUCK: aus läuft bei Karim keine Uhr.

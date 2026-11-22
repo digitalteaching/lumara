@@ -85,7 +85,7 @@ export const KLIPPEN = {
       lines: [
         'Mein Drache fliegt fast so hoch wie der von Skye! Aber nur fast.',
         'Skye wartet oben auf dem Gipfel im Osten. Bei ihr läuft die Uhr noch schneller.',
-        'Wenn du einen Zeitstein hast, nimm ihn mit. Er hält die Zeit kurz an!',
+        'Wenn du einen Sanduhrstein hast, nimm ihn mit. Er hält die Zeit kurz an!',
       ],
       // Mit ZEITDRUCK: aus läuft bei Skye keine Uhr.
       linesNoClock: [
