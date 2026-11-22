@@ -201,7 +201,7 @@ export const ES_WORLD = {
         lines: [
           'Dibujo mapas de las dunas. Cada día son un poco diferentes.',
           'Karim espera en el este. Es muy rápido, ¡y en sus duelos hay un reloj!',
-          'Una piedra-reloj para el tiempo durante una pregunta. A veces brilla una en la hierba.',
+          'Una piedra-reloj detiene el tiempo durante una pregunta. A veces brilla una en la hierba.',
           'La Torre de Cristal del noroeste solo la conozco de lejos. Es demasiado alta para subir.',
         ],
         linesNoClock: [

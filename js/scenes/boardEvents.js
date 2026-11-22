@@ -11,8 +11,10 @@
 //   ist (NEWS_READ_MS).
 // - Ist die Welt nicht mehr frei (Sperre, Menü, Rucksack, Seite, Dialog, Duell), geht eine sichtbare
 //   Meldung sofort weg. War sie kürzer als NEWS_READ_MS zu sehen, kommt sie vorn wieder in die Reihe
-//   und erscheint noch einmal, sobald die Welt frei ist. Nur ein Kartenwechsel (game.traveling, aus
-//   travelTo in js/scenes/worldEvents.js) lässt sie stehen; die nächste Welt übernimmt sie.
+//   und erscheint noch einmal, sobald die Welt frei ist, höchstens NEWS_AGAIN_MAX-mal; danach gilt sie
+//   als gelesen (die Level-Zeilen eines Bonus kommen trotzdem, genau einmal). Nur ein Kartenwechsel
+//   (game.traveling, aus travelTo in js/scenes/worldEvents.js) lässt sie stehen; die nächste Welt
+//   übernimmt sie.
 // - Hat Ilvy noch nicht vom Aushang erzählt (board.intro === false): In der Bucht wartet jede Meldung,
 //   bis sie fertig ist. Anderswo kommt vor der ersten Meldung des Spiels einmal „Neu: …“
 //   (board.news.first); intro bleibt dabei false, Ilvy erzählt trotzdem.
@@ -34,6 +36,7 @@ import { t } from '../i18n/i18n.js';
 
 const NEWS_MS = 6000; // so lange steht eine Meldung da (wie jeder Toast)
 const NEWS_READ_MS = 2500; // so lange zu sehen, gilt eine Meldung als gelesen
+const NEWS_AGAIN_MAX = 2; // so oft kommt eine unterbrochene Meldung höchstens wieder
 const NEWS_GAP_MS = 400; // dann eine kleine Pause bis zur nächsten
 const INTRO_DELAY_MS = 800; // so lange läuft man frei in der Bucht, bevor Ilvy erzählt
 const GLINT_EVERY_MS = 2400; // alle so viele Millisekunden ein Glanz auf der Tafel …
@@ -42,11 +45,12 @@ const GLINT_MS = 240; // … der so lange bleibt
 // Meldungen, die noch kommen, je Spiel. Sie überstehen einen Kartenwechsel: Jede Welt macht weiter,
 // wo die vorige aufgehört hat. wait: so lange steht die letzte Meldung noch da. shown: die Meldung,
 // die gerade zu sehen ist ({ news, node, ms, levels }; levels: noch offene Level-Zeilen des Bonus).
-// first: „Neu: …“ ist in diesem Spiel schon gekommen (einmal pro Spielstart).
+// levels: Level-Zeilen, die beim nächsten freien Takt kommen. first: „Neu: …“ ist in diesem Spiel
+// schon gekommen (einmal pro Spielstart). news.again: so oft ist eine Meldung schon wiedergekommen.
 const queues = new WeakMap();
 function queueOf(game) {
   let q = queues.get(game);
-  if (!q) queues.set(game, (q = { items: [], wait: 0, shown: null, first: false }));
+  if (!q) queues.set(game, (q = { items: [], wait: 0, shown: null, levels: null, first: false }));
   return q;
 }
 
@@ -107,13 +111,16 @@ export function addBoard(world, game, { levelUps = async () => {}, say: speak = 
   }
 
   // Die Welt ist nicht mehr frei: Die Meldung geht weg. Ungelesen (oder mit noch offenen Level-Zeilen)
-  // kommt sie vorn wieder in die Reihe, gleich wenn die Welt wieder frei ist.
+  // kommt sie vorn wieder in die Reihe, gleich wenn die Welt wieder frei ist, höchstens
+  // NEWS_AGAIN_MAX-mal. Danach gilt sie als gelesen; offene Level-Zeilen kommen dann ohne sie.
   function hide() {
     const s = queue.shown;
     if (!s) return;
     queue.shown = null;
     s.node?.remove();
-    if (s.ms < NEWS_READ_MS || s.levels) queue.items.unshift(s.news);
+    const again = s.news.again ?? 0;
+    if ((s.ms < NEWS_READ_MS || s.levels) && again < NEWS_AGAIN_MAX) queue.items.unshift({ ...s.news, again: again + 1 });
+    else if (s.levels) queue.levels = s.levels;
     queue.wait = 0;
   }
 
@@ -172,10 +179,15 @@ export function addBoard(world, game, { levelUps = async () => {}, say: speak = 
     }
     if (changed) game.save();
     if (introDue()) return introduce();
-    // Der Bonus ist gelesen: jetzt seine Level-Zeilen. Die Sperre nimmt die Meldung weg, gelesen.
+    // Der Bonus ist gelesen (oder gilt als gelesen): jetzt seine Level-Zeilen. Die Sperre nimmt die
+    // Meldung weg, gelesen.
     if (shown?.levels && shown.ms >= NEWS_READ_MS) {
-      const [before, after] = shown.levels;
+      queue.levels = shown.levels;
       shown.levels = null;
+    }
+    if (queue.levels) {
+      const [before, after] = queue.levels;
+      queue.levels = null;
       return world.lock(() => levelUps(before, after));
     }
     const next = nextNews();

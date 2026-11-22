@@ -273,6 +273,45 @@ test('Tagesbonus mit Level: Level-Zeilen erst nach dem Lesen und genau einmal, a
   assert.equal(log.toasts.length, 3, 'gelesen: kein weiteres Mal');
 });
 
+test('Eine unterbrochene Meldung kommt höchstens zweimal wieder; die Level-Zeilen des Bonus trotzdem genau einmal', async () => {
+  // Immer wieder nach 1 s eine Seite: erst zweimal wieder, beim dritten Mal gilt sie als gelesen.
+  const interrupt = (world, game) => {
+    ticks(world, 1000);
+    game.mode = 'screen';
+    world.update(16);
+    game.mode = 'walk';
+    world.update(16);
+  };
+  const { world, state, game, log } = setup({ b: oneNote() });
+  emit(state, 'note');
+  world.update(16);
+  for (let i = 0; i < 4; i++) interrupt(world, game);
+  ticks(world, 10000);
+  assert.equal(log.toasts.length, 3, 'einmal und zweimal wieder');
+  assert.ok(log.toasts.every(x => x === log.toasts[0]));
+  assert.deepEqual(jingles, ['board', 'board', 'board']);
+  assert.equal(log.removed.length, 3);
+
+  // Der Bonus mit neuem Level: dreimal unterbrochen, dann die Level-Zeilen ohne weitere Meldung.
+  const s = newGameState({ name: 'A', species: 'nixi', nickname: null });
+  const levelBefore = s.creature.level;
+  s.creature.xpInLevel = xpToNext(levelBefore) - 1;
+  const two = setup({ state: s, b: board(almost()) });
+  emit(two.state, 'note');
+  two.world.update(16);
+  ticks(two.world, 6500); // die Aufgabe ist gelesen, der Bonus gerade erschienen
+  assert.equal(two.log.toasts.length, 2);
+  for (let i = 0; i < 3; i++) interrupt(two.world, two.game);
+  await settle();
+  assert.equal(two.log.toasts.length, 4, 'der Bonus einmal und zweimal wieder');
+  assert.deepEqual(two.log.levelUps, [[levelBefore, two.state.creature.level]], 'gilt als gelesen: jetzt die Level-Zeilen');
+  ticks(two.world, 10000);
+  await settle();
+  assert.equal(two.log.toasts.length, 4, 'keine weitere Meldung');
+  assert.equal(jingles.filter(j => j === 'board').length, 4);
+  assert.equal(two.log.levelUps.length, 1, 'genau einmal');
+});
+
 // ---------- Bevor Ilvy vom Aushang erzählt hat (1.3.1) ----------
 
 test('Ilvy hat noch nicht erzählt: In der Bucht kommt erst Ilvy, dann die Meldung', async () => {

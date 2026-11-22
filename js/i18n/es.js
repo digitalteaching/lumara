@@ -563,8 +563,8 @@ export const ES = {
   'gift.sniff.text': 'Muestra cada escondite cercano y qué don necesita.',
 
   'menu.friends': 'Amigos',
-  'friends.none': 'Todavía no hay amigos. Gana a una criatura salvaje y podrás hacerte su amigo.',
-  'friends.notYet': 'Todavía no eres amigo de {name}.',
+  'friends.none': 'Todavía no hay amigos. Gana a una criatura salvaje y podrás hacer amistad con ella.',
+  'friends.notYet': 'Todavía no has hecho amistad con {name}.',
   'friends.count': 'Amigos: {n} de {max}',
   'friends.gift': 'Don: {gift}',
   'friends.withYou': 'va contigo',

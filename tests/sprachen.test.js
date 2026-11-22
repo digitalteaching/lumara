@@ -253,3 +253,17 @@ test('Sanduhrstein: eigener Name in allen Sprachen, nirgends sichtbar der alte',
   assert.equal(DE['item.aTime'], 'einen Sanduhrstein');
   assert.equal(EN['item.aTime'], 'an hourglass stone');
 });
+
+// Lumara 1.3.1: Das Kind ist in den Freundschaftstexten weder Junge noch Mädchen („hacer amistad“,
+// „se lier d’amitié“ statt „hacerte amigo“, „devenir ami“).
+test('Freundschaft: es und fr sprechen das Kind ohne Geschlecht an', () => {
+  const MALE = /eres amigo\b|hacerte (su )?amigo\b|devenir ami\b|es pas encore ami\b/i;
+  for (const L of [ES, FR]) {
+    for (const [k, v] of Object.entries(L)) for (const line of lines(v)) assert.ok(!MALE.test(line), `${k}: ${line}`);
+  }
+  assert.equal(ES['friends.none'], 'Todavía no hay amigos. Gana a una criatura salvaje y podrás hacer amistad con ella.');
+  assert.equal(ES['friends.notYet'], 'Todavía no has hecho amistad con {name}.');
+  assert.equal(FR['friends.none'], 'Pas encore d’ami. Bats une créature sauvage, et tu pourras te lier d’amitié avec elle.');
+  assert.equal(FR['friends.notYet'], 'Pas encore d’amitié avec {name}.');
+  assert.equal(ES['bag.forFriends'], 'La das al hacer amistad con una criatura');
+});
