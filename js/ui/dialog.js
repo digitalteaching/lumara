@@ -3,7 +3,7 @@
 
 import { sound } from '../audio/bus.js';
 import { el } from './dom.js';
-import { CHOICE_FRESH_MS, createFreshGuard, guardClicks } from './freshGuard.js';
+import { CHOICE_FRESH_MS, createFreshGuard, guardClicks, pointerHeld } from './freshGuard.js';
 import { textSpeedCps } from '../state.js';
 
 // Offene Fenster, damit ein Szenenwechsel sie sauber schließen kann.
@@ -106,8 +106,8 @@ export function say(game, lines, { speaker } = {}) {
 }
 
 // selected: vorausgewählte Möglichkeit (bei riskanten Fragen wie „Aufgeben?“ die sichere).
-// Eine Frage nimmt CHOICE_FRESH_MS lang weder Tipp noch A an, und ein Tipp, der schon vor ihr begann,
-// wählt nie eine Antwort (freshGuard.js). B bricht sofort ab: Abbrechen ist sicher.
+// Eine Frage nimmt CHOICE_FRESH_MS lang weder Tipp noch A an, und ein Finger, der beim Erscheinen schon
+// auflag, wählt nie eine Antwort (freshGuard.js). B bricht sofort ab: Abbrechen ist sicher.
 export function choose(game, prompt, options, { cancelIndex = options.length - 1, selected: initial = 0 } = {}) {
   return new Promise(resolve => {
     const restore = enterDialogMode(game);
@@ -124,7 +124,7 @@ export function choose(game, prompt, options, { cancelIndex = options.length - 1
       el('div', { class: options.length > 5 ? 'choice many' : 'choice' }, buttons),
     );
     game.panel.append(box);
-    guardClicks(box, fresh, { ownPress: true });
+    guardClicks(box, fresh, { heldAtShow: pointerHeld() });
 
     function highlight() {
       buttons.forEach((b, i) => b.classList.toggle('selected', i === selected));

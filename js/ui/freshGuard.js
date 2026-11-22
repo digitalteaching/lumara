@@ -17,25 +17,43 @@ export function createFreshGuard(ms = FRESH_MS, now = () => performance.now()) {
   };
 }
 
+// Welche Finger (Zeiger) gerade aufliegen, nach pointerId. main.js meldet das einmal am Fenster an
+// (Capture-Phase, vor allen anderen Zuhörern), damit eine Frage weiß, ob beim Erscheinen ein Finger lag.
+const down = new Set();
+export const pointerHeld = () => down.size > 0;
+export function trackPointers(target = window) {
+  const press = e => down.add(e.pointerId);
+  const lift = e => down.delete(e.pointerId);
+  // Verliert das Fenster den Fokus, kommt manches pointerup nie an.
+  const forget = () => down.clear();
+  const on = [['pointerdown', press], ['pointerup', lift], ['pointercancel', lift], ['blur', forget]];
+  for (const [type, fn] of on) target.addEventListener(type, fn, { capture: true });
+  return () => {
+    for (const [type, fn] of on) target.removeEventListener(type, fn, { capture: true });
+    down.clear();
+  };
+}
+
 // Blockiert Klicks auf alles in `node`, solange der Wächter frisch ist (Capture-Phase).
-// ownPress: Ein Klick zählt außerdem nur, wenn ein Finger nach dem Erscheinen auf `node` aufgesetzt hat
-// (pointerdown). Ein Tipp, der schon vorher begann (etwa auf der letzten Gesprächszeile), wählt so nie
-// etwas, auch wenn der Finger länger liegen bleibt als die Schutzzeit. Ein Klick per Tastatur (Enter
-// auf einem Knopf, detail 0) braucht keinen Finger.
-export function guardClicks(node, guard, { ownPress = false } = {}) {
-  let pressed = false;
+// heldAtShow: Lag beim Erscheinen schon ein Finger auf (etwa der letzte Tipp auf eine Gesprächszeile),
+// zählt ein Klick erst, wenn danach ein neuer Finger auf `node` aufgesetzt hat. Der Klick des alten
+// Fingers wählt so nie etwas, auch wenn er länger liegen bleibt als die Schutzzeit. Ohne Finger beim
+// Erscheinen gilt jeder Klick nach der Schutzzeit, auch einer ohne pointerdown (Tastatur, VoiceOver,
+// Schaltersteuerung).
+export function guardClicks(node, guard, { heldAtShow = false } = {}) {
+  let held = heldAtShow;
   const press = () => {
-    pressed = true;
+    held = false;
   };
   const block = e => {
-    if (!guard.isFresh() && (!ownPress || pressed || e.detail === 0)) return;
+    if (!guard.isFresh() && !held) return;
     e.preventDefault();
     e.stopPropagation();
   };
-  if (ownPress) node.addEventListener('pointerdown', press, true);
+  if (heldAtShow) node.addEventListener('pointerdown', press, true);
   node.addEventListener('click', block, true);
   return () => {
     node.removeEventListener('click', block, true);
-    if (ownPress) node.removeEventListener('pointerdown', press, true);
+    if (heldAtShow) node.removeEventListener('pointerdown', press, true);
   };
 }

@@ -1,6 +1,7 @@
 import { test } from 'node:test';
+import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
-import { createFreshGuard, guardClicks } from '../js/ui/freshGuard.js';
+import { createFreshGuard, guardClicks, trackPointers, pointerHeld } from '../js/ui/freshGuard.js';
 
 test('Prüffokus Doppeltipp: frisch erschienene Knöpfe nehmen 350 ms lang nichts an', () => {
   let now = 1000;
@@ -50,15 +51,52 @@ test('guardClicks wie bisher: in der Schutzzeit blockiert, danach zählt jeder K
   assert.equal(node.fire('click').blocked, false, 'auch ohne pointerdown auf dem Knoten');
 });
 
-test('guardClicks mit ownPress: Ein Klick zählt nur, wenn sein Finger nach dem Erscheinen auf dem Knoten aufsetzte', () => {
+test('guardClicks mit heldAtShow: Der Klick des Fingers, der beim Erscheinen lag, zählt nie; ein neuer Tipp schon', () => {
   let now = 0;
   const node = guardedNode();
-  const off = guardClicks(node, createFreshGuard(650, () => now), { ownPress: true });
+  const off = guardClicks(node, createFreshGuard(650, () => now), { heldAtShow: true });
   now = 900;
-  assert.equal(node.fire('click').blocked, true, 'der Finger lag schon vorher: blockiert');
-  assert.equal(node.fire('click', 0).blocked, false, 'Tastatur (detail 0) gilt');
+  assert.equal(node.fire('click').blocked, true, 'der Finger lag schon vorher: blockiert, auch nach der Schutzzeit');
   node.fire('pointerdown');
   assert.equal(node.fire('click').blocked, false, 'ein neuer Tipp gilt');
   off();
   assert.equal(node.count(), 0, 'alle Zuhörer gehen wieder weg');
+});
+
+test('guardClicks ohne Finger beim Erscheinen: nach der Schutzzeit zählt auch ein Klick ohne pointerdown (VoiceOver)', () => {
+  let now = 0;
+  const node = guardedNode();
+  guardClicks(node, createFreshGuard(650, () => now), { heldAtShow: false });
+  now = 400;
+  assert.equal(node.fire('click').blocked, true);
+  now = 700;
+  assert.equal(node.fire('click').blocked, false);
+});
+
+test('trackPointers zählt aufliegende Finger nach pointerId; pointercancel und Fokusverlust heben sie auf', () => {
+  const on = {};
+  const target = {
+    addEventListener: (type, fn, opt) => (assert.equal(opt.capture, true), (on[type] ??= new Set()).add(fn)),
+    removeEventListener: (type, fn) => on[type]?.delete(fn),
+  };
+  const fire = (type, pointerId) => [...(on[type] ?? [])].forEach(fn => fn({ pointerId }));
+  const off = trackPointers(target);
+  assert.equal(pointerHeld(), false);
+  fire('pointerdown', 1);
+  fire('pointerdown', 2);
+  fire('pointerup', 1);
+  assert.equal(pointerHeld(), true, 'Finger 2 liegt noch');
+  fire('pointercancel', 2);
+  assert.equal(pointerHeld(), false);
+  fire('pointerdown', 3);
+  fire('blur');
+  assert.equal(pointerHeld(), false, 'nach Fokusverlust liegt nichts mehr');
+  off();
+  assert.equal(Object.values(on).reduce((n, set) => n + set.size, 0), 0);
+});
+
+test('main.js meldet trackPointers am Fenster an', () => {
+  const src = readFileSync(new URL('../js/main.js', import.meta.url), 'utf8');
+  assert.match(src, /import\s*\{[^}]*trackPointers[^}]*\}\s*from\s*'\.\/ui\/freshGuard\.js'/);
+  assert.match(src, /^trackPointers\(window\);$/m);
 });

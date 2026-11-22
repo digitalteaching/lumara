@@ -31,6 +31,7 @@ import { createAudio } from './audio/audio.js';
 import { FRIENDABLE, makeFriend, setCompanion } from './friends/friends.js';
 import { SONGS } from './audio/songs.js';
 import { setAudio } from './audio/bus.js';
+import { trackPointers } from './ui/freshGuard.js';
 
 const screen = createScreen(document.getElementById('screen'), document.getElementById('stage'));
 const input = createInput();
@@ -112,6 +113,9 @@ document.addEventListener('visibilitychange', () => (document.hidden ? game.audi
 const markActivity = () => game.clock.activity(performance.now());
 window.addEventListener('keydown', markActivity, { capture: true });
 window.addEventListener('pointerdown', markActivity, { capture: true });
+// Welche Finger gerade aufliegen: Eine Frage, die unter einem liegenden Finger erscheint, nimmt seinen
+// Klick nicht an (ui/freshGuard.js).
+trackPointers(window);
 
 // Entwickler-Abkürzungen nur auf dem eigenen Rechner.
 const params = new URLSearchParams(location.search);
